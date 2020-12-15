@@ -2,6 +2,7 @@ package schema
 
 import "github.com/facebookincubator/ent"
 
+//test
 // Deliver holds the schema definition for the Deliver entity.
 type Deliver struct {
 	ent.Schema
