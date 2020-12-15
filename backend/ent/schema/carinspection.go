@@ -2,6 +2,7 @@ package schema
 
 import "github.com/facebookincubator/ent"
 
+// Test
 // CarInspection holds the schema definition for the CarInspection entity.
 type CarInspection struct {
 	ent.Schema
