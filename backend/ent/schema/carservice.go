@@ -13,6 +13,6 @@ func (CCarService) Fields() []ent.Field {
 }
 
 // Edges of the CarService.
-func (CarServie) Edges() []ent.Edge {
+func (CarService) Edges() []ent.Edge {
 	return nil
 }
