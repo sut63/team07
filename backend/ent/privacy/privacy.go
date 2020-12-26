@@ -210,76 +210,124 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The PlaylistQueryRuleFunc type is an adapter to allow the use of ordinary
+// The AmbulanceQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type PlaylistQueryRuleFunc func(context.Context, *ent.PlaylistQuery) error
+type AmbulanceQueryRuleFunc func(context.Context, *ent.AmbulanceQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f PlaylistQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.PlaylistQuery); ok {
+func (f AmbulanceQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AmbulanceQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PlaylistQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AmbulanceQuery", q)
 }
 
-// The PlaylistMutationRuleFunc type is an adapter to allow the use of ordinary
+// The AmbulanceMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type PlaylistMutationRuleFunc func(context.Context, *ent.PlaylistMutation) error
+type AmbulanceMutationRuleFunc func(context.Context, *ent.AmbulanceMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f PlaylistMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.PlaylistMutation); ok {
+func (f AmbulanceMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.AmbulanceMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PlaylistMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AmbulanceMutation", m)
 }
 
-// The Playlist_VideoQueryRuleFunc type is an adapter to allow the use of ordinary
+// The CarInspectionQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type Playlist_VideoQueryRuleFunc func(context.Context, *ent.PlaylistVideoQuery) error
+type CarInspectionQueryRuleFunc func(context.Context, *ent.CarInspectionQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f Playlist_VideoQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.PlaylistVideoQuery); ok {
+func (f CarInspectionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CarInspectionQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PlaylistVideoQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CarInspectionQuery", q)
 }
 
-// The Playlist_VideoMutationRuleFunc type is an adapter to allow the use of ordinary
+// The CarInspectionMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type Playlist_VideoMutationRuleFunc func(context.Context, *ent.PlaylistVideoMutation) error
+type CarInspectionMutationRuleFunc func(context.Context, *ent.CarInspectionMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f Playlist_VideoMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.PlaylistVideoMutation); ok {
+func (f CarInspectionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CarInspectionMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PlaylistVideoMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CarInspectionMutation", m)
 }
 
-// The ResolutionQueryRuleFunc type is an adapter to allow the use of ordinary
+// The CarRepairrecordQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type ResolutionQueryRuleFunc func(context.Context, *ent.ResolutionQuery) error
+type CarRepairrecordQueryRuleFunc func(context.Context, *ent.CarRepairrecordQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f ResolutionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.ResolutionQuery); ok {
+func (f CarRepairrecordQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CarRepairrecordQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ResolutionQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CarRepairrecordQuery", q)
 }
 
-// The ResolutionMutationRuleFunc type is an adapter to allow the use of ordinary
+// The CarRepairrecordMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type ResolutionMutationRuleFunc func(context.Context, *ent.ResolutionMutation) error
+type CarRepairrecordMutationRuleFunc func(context.Context, *ent.CarRepairrecordMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f ResolutionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.ResolutionMutation); ok {
+func (f CarRepairrecordMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CarRepairrecordMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ResolutionMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CarRepairrecordMutation", m)
+}
+
+// The CarregisterQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type CarregisterQueryRuleFunc func(context.Context, *ent.CarregisterQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f CarregisterQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CarregisterQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CarregisterQuery", q)
+}
+
+// The CarregisterMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type CarregisterMutationRuleFunc func(context.Context, *ent.CarregisterMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f CarregisterMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.CarregisterMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CarregisterMutation", m)
+}
+
+// The DeliverQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type DeliverQueryRuleFunc func(context.Context, *ent.DeliverQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f DeliverQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.DeliverQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.DeliverQuery", q)
+}
+
+// The DeliverMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type DeliverMutationRuleFunc func(context.Context, *ent.DeliverMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f DeliverMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.DeliverMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.DeliverMutation", m)
 }
 
 // The UserQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -304,28 +352,4 @@ func (f UserMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) 
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.UserMutation", m)
-}
-
-// The VideoQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type VideoQueryRuleFunc func(context.Context, *ent.VideoQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f VideoQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.VideoQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.VideoQuery", q)
-}
-
-// The VideoMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type VideoMutationRuleFunc func(context.Context, *ent.VideoMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f VideoMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.VideoMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.VideoMutation", m)
 }

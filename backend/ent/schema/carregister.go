@@ -2,17 +2,17 @@ package schema
 
 import "github.com/facebookincubator/ent"
 
-// CarRegister holds the schema definition for the CarRegister entity.
-type CarRegister struct {
+// Carregister holds the schema definition for the Carregister entity.
+type Carregister struct {
 	ent.Schema
 }
 
-// Fields of the CarRegister.
-func (CarRegister) Fields() []ent.Field {
+// Fields of the Carregister.
+func (Carregister) Fields() []ent.Field {
 	return nil
 }
 
-// Edges of the CarRegister.
-func (CarRegister) Edges() []ent.Edge {
+// Edges of the Carregister.
+func (Carregister) Edges() []ent.Edge {
 	return nil
 }

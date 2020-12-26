@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/team07/app/ent/user"
-
 	"github.com/gin-gonic/gin"
 	"github.com/team07/app/ent"
+	"github.com/team07/app/ent/user"
 )
 
 // UserController defines the struct for the user controller
@@ -39,10 +38,9 @@ func (ctl *UserController) CreateUser(c *gin.Context) {
 
 	u, err := ctl.client.User.
 		Create().
-		SetEmail(obj.Email).
+		SetAge(obj.Age).
 		SetName(obj.Name).
 		Save(context.Background())
-
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": "saving failed",
@@ -72,11 +70,11 @@ func (ctl *UserController) GetUser(c *gin.Context) {
 		})
 		return
 	}
+
 	u, err := ctl.client.User.
 		Query().
 		Where(user.IDEQ(int(id))).
 		Only(context.Background())
-
 	if err != nil {
 		c.JSON(404, gin.H{
 			"error": err.Error(),
@@ -122,11 +120,8 @@ func (ctl *UserController) ListUser(c *gin.Context) {
 		Limit(limit).
 		Offset(offset).
 		All(context.Background())
-
 	if err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -195,16 +190,11 @@ func (ctl *UserController) UpdateUser(c *gin.Context) {
 		return
 	}
 	obj.ID = int(id)
-	fmt.Println(obj.ID)
 	u, err := ctl.client.User.
-		UpdateOneID(int(id)).
-		SetEmail(obj.Email).
-		SetName(obj.Name).
+		UpdateOne(&obj).
 		Save(context.Background())
 	if err != nil {
-		c.JSON(400, gin.H{
-			"error": "update failed",
-		})
+		c.JSON(400, gin.H{"error": "update failed"})
 		return
 	}
 
@@ -217,13 +207,11 @@ func NewUserController(router gin.IRouter, client *ent.Client) *UserController {
 		client: client,
 		router: router,
 	}
-
 	uc.register()
-
 	return uc
-
 }
 
+// InitUserController registers routes to the main engine
 func (ctl *UserController) register() {
 	users := ctl.router.Group("/users")
 
