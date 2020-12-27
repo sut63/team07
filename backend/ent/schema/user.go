@@ -9,7 +9,7 @@ import (
 type User struct {
 	ent.Schema
 }
-
+//
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
