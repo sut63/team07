@@ -1,18 +1,22 @@
 package schema
-
-import "github.com/facebookincubator/ent"
-
+import (
+ "github.com/facebookincubator/ent"
+ "github.com/facebookincubator/ent/schema/field"
+ "github.com/facebookincubator/ent/schema/edge"
+)
 // Servicetype holds the schema definition for the Servicetype entity.
 type Servicetype struct {
-	ent.Schema
+ ent.Schema
 }
-
 // Fields of the Servicetype.
 func (Servicetype) Fields() []ent.Field {
-	return nil
+ return []ent.Field{
+ 	field.String("servicetype").NotEmpty(),
+ }
 }
-
 // Edges of the Servicetype.
 func (Servicetype) Edges() []ent.Edge {
-	return nil
+ return []ent.Edge{
+    edge.To("typeid",Carservice.Type),
+ }
 }
