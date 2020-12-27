@@ -28,7 +28,10 @@ type hooks struct {
 	CarInspection   []ent.Hook
 	CarRepairrecord []ent.Hook
 	Carregister     []ent.Hook
+	Carservice      []ent.Hook
 	Deliver         []ent.Hook
+	Servicetype     []ent.Hook
+	Urgent          []ent.Hook
 	User            []ent.Hook
 }
 

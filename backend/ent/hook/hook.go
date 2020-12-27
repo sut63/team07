@@ -61,6 +61,19 @@ func (f CarregisterFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return f(ctx, mv)
 }
 
+// The CarserviceFunc type is an adapter to allow the use of ordinary
+// function as Carservice mutator.
+type CarserviceFunc func(context.Context, *ent.CarserviceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CarserviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CarserviceMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CarserviceMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The DeliverFunc type is an adapter to allow the use of ordinary
 // function as Deliver mutator.
 type DeliverFunc func(context.Context, *ent.DeliverMutation) (ent.Value, error)
@@ -70,6 +83,32 @@ func (f DeliverFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	mv, ok := m.(*ent.DeliverMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeliverMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ServicetypeFunc type is an adapter to allow the use of ordinary
+// function as Servicetype mutator.
+type ServicetypeFunc func(context.Context, *ent.ServicetypeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ServicetypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ServicetypeMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ServicetypeMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The UrgentFunc type is an adapter to allow the use of ordinary
+// function as Urgent mutator.
+type UrgentFunc func(context.Context, *ent.UrgentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UrgentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.UrgentMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UrgentMutation", m)
 	}
 	return f(ctx, mv)
 }

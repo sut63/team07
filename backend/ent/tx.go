@@ -20,8 +20,14 @@ type Tx struct {
 	CarRepairrecord *CarRepairrecordClient
 	// Carregister is the client for interacting with the Carregister builders.
 	Carregister *CarregisterClient
+	// Carservice is the client for interacting with the Carservice builders.
+	Carservice *CarserviceClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
+	// Servicetype is the client for interacting with the Servicetype builders.
+	Servicetype *ServicetypeClient
+	// Urgent is the client for interacting with the Urgent builders.
+	Urgent *UrgentClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -163,7 +169,10 @@ func (tx *Tx) init() {
 	tx.CarInspection = NewCarInspectionClient(tx.config)
 	tx.CarRepairrecord = NewCarRepairrecordClient(tx.config)
 	tx.Carregister = NewCarregisterClient(tx.config)
+	tx.Carservice = NewCarserviceClient(tx.config)
 	tx.Deliver = NewDeliverClient(tx.config)
+	tx.Servicetype = NewServicetypeClient(tx.config)
+	tx.Urgent = NewUrgentClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

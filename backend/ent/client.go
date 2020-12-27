@@ -13,7 +13,10 @@ import (
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carregister"
 	"github.com/team07/app/ent/carrepairrecord"
+	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/deliver"
+	"github.com/team07/app/ent/servicetype"
+	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
 
 	"github.com/facebookincubator/ent/dialect"
@@ -33,8 +36,14 @@ type Client struct {
 	CarRepairrecord *CarRepairrecordClient
 	// Carregister is the client for interacting with the Carregister builders.
 	Carregister *CarregisterClient
+	// Carservice is the client for interacting with the Carservice builders.
+	Carservice *CarserviceClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
+	// Servicetype is the client for interacting with the Servicetype builders.
+	Servicetype *ServicetypeClient
+	// Urgent is the client for interacting with the Urgent builders.
+	Urgent *UrgentClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -54,7 +63,10 @@ func (c *Client) init() {
 	c.CarInspection = NewCarInspectionClient(c.config)
 	c.CarRepairrecord = NewCarRepairrecordClient(c.config)
 	c.Carregister = NewCarregisterClient(c.config)
+	c.Carservice = NewCarserviceClient(c.config)
 	c.Deliver = NewDeliverClient(c.config)
+	c.Servicetype = NewServicetypeClient(c.config)
+	c.Urgent = NewUrgentClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -92,7 +104,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CarInspection:   NewCarInspectionClient(cfg),
 		CarRepairrecord: NewCarRepairrecordClient(cfg),
 		Carregister:     NewCarregisterClient(cfg),
+		Carservice:      NewCarserviceClient(cfg),
 		Deliver:         NewDeliverClient(cfg),
+		Servicetype:     NewServicetypeClient(cfg),
+		Urgent:          NewUrgentClient(cfg),
 		User:            NewUserClient(cfg),
 	}, nil
 }
@@ -113,7 +128,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CarInspection:   NewCarInspectionClient(cfg),
 		CarRepairrecord: NewCarRepairrecordClient(cfg),
 		Carregister:     NewCarregisterClient(cfg),
+		Carservice:      NewCarserviceClient(cfg),
 		Deliver:         NewDeliverClient(cfg),
+		Servicetype:     NewServicetypeClient(cfg),
+		Urgent:          NewUrgentClient(cfg),
 		User:            NewUserClient(cfg),
 	}, nil
 }
@@ -147,7 +165,10 @@ func (c *Client) Use(hooks ...Hook) {
 	c.CarInspection.Use(hooks...)
 	c.CarRepairrecord.Use(hooks...)
 	c.Carregister.Use(hooks...)
+	c.Carservice.Use(hooks...)
 	c.Deliver.Use(hooks...)
+	c.Servicetype.Use(hooks...)
+	c.Urgent.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -483,6 +504,89 @@ func (c *CarregisterClient) Hooks() []Hook {
 	return c.hooks.Carregister
 }
 
+// CarserviceClient is a client for the Carservice schema.
+type CarserviceClient struct {
+	config
+}
+
+// NewCarserviceClient returns a client for the Carservice from the given config.
+func NewCarserviceClient(c config) *CarserviceClient {
+	return &CarserviceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `carservice.Hooks(f(g(h())))`.
+func (c *CarserviceClient) Use(hooks ...Hook) {
+	c.hooks.Carservice = append(c.hooks.Carservice, hooks...)
+}
+
+// Create returns a create builder for Carservice.
+func (c *CarserviceClient) Create() *CarserviceCreate {
+	mutation := newCarserviceMutation(c.config, OpCreate)
+	return &CarserviceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Carservice.
+func (c *CarserviceClient) Update() *CarserviceUpdate {
+	mutation := newCarserviceMutation(c.config, OpUpdate)
+	return &CarserviceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CarserviceClient) UpdateOne(ca *Carservice) *CarserviceUpdateOne {
+	mutation := newCarserviceMutation(c.config, OpUpdateOne, withCarservice(ca))
+	return &CarserviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CarserviceClient) UpdateOneID(id int) *CarserviceUpdateOne {
+	mutation := newCarserviceMutation(c.config, OpUpdateOne, withCarserviceID(id))
+	return &CarserviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Carservice.
+func (c *CarserviceClient) Delete() *CarserviceDelete {
+	mutation := newCarserviceMutation(c.config, OpDelete)
+	return &CarserviceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CarserviceClient) DeleteOne(ca *Carservice) *CarserviceDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CarserviceClient) DeleteOneID(id int) *CarserviceDeleteOne {
+	builder := c.Delete().Where(carservice.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CarserviceDeleteOne{builder}
+}
+
+// Create returns a query builder for Carservice.
+func (c *CarserviceClient) Query() *CarserviceQuery {
+	return &CarserviceQuery{config: c.config}
+}
+
+// Get returns a Carservice entity by its id.
+func (c *CarserviceClient) Get(ctx context.Context, id int) (*Carservice, error) {
+	return c.Query().Where(carservice.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CarserviceClient) GetX(ctx context.Context, id int) *Carservice {
+	ca, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return ca
+}
+
+// Hooks returns the client hooks.
+func (c *CarserviceClient) Hooks() []Hook {
+	return c.hooks.Carservice
+}
+
 // DeliverClient is a client for the Deliver schema.
 type DeliverClient struct {
 	config
@@ -564,6 +668,172 @@ func (c *DeliverClient) GetX(ctx context.Context, id int) *Deliver {
 // Hooks returns the client hooks.
 func (c *DeliverClient) Hooks() []Hook {
 	return c.hooks.Deliver
+}
+
+// ServicetypeClient is a client for the Servicetype schema.
+type ServicetypeClient struct {
+	config
+}
+
+// NewServicetypeClient returns a client for the Servicetype from the given config.
+func NewServicetypeClient(c config) *ServicetypeClient {
+	return &ServicetypeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `servicetype.Hooks(f(g(h())))`.
+func (c *ServicetypeClient) Use(hooks ...Hook) {
+	c.hooks.Servicetype = append(c.hooks.Servicetype, hooks...)
+}
+
+// Create returns a create builder for Servicetype.
+func (c *ServicetypeClient) Create() *ServicetypeCreate {
+	mutation := newServicetypeMutation(c.config, OpCreate)
+	return &ServicetypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Servicetype.
+func (c *ServicetypeClient) Update() *ServicetypeUpdate {
+	mutation := newServicetypeMutation(c.config, OpUpdate)
+	return &ServicetypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServicetypeClient) UpdateOne(s *Servicetype) *ServicetypeUpdateOne {
+	mutation := newServicetypeMutation(c.config, OpUpdateOne, withServicetype(s))
+	return &ServicetypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServicetypeClient) UpdateOneID(id int) *ServicetypeUpdateOne {
+	mutation := newServicetypeMutation(c.config, OpUpdateOne, withServicetypeID(id))
+	return &ServicetypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Servicetype.
+func (c *ServicetypeClient) Delete() *ServicetypeDelete {
+	mutation := newServicetypeMutation(c.config, OpDelete)
+	return &ServicetypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ServicetypeClient) DeleteOne(s *Servicetype) *ServicetypeDeleteOne {
+	return c.DeleteOneID(s.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ServicetypeClient) DeleteOneID(id int) *ServicetypeDeleteOne {
+	builder := c.Delete().Where(servicetype.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServicetypeDeleteOne{builder}
+}
+
+// Create returns a query builder for Servicetype.
+func (c *ServicetypeClient) Query() *ServicetypeQuery {
+	return &ServicetypeQuery{config: c.config}
+}
+
+// Get returns a Servicetype entity by its id.
+func (c *ServicetypeClient) Get(ctx context.Context, id int) (*Servicetype, error) {
+	return c.Query().Where(servicetype.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServicetypeClient) GetX(ctx context.Context, id int) *Servicetype {
+	s, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return s
+}
+
+// Hooks returns the client hooks.
+func (c *ServicetypeClient) Hooks() []Hook {
+	return c.hooks.Servicetype
+}
+
+// UrgentClient is a client for the Urgent schema.
+type UrgentClient struct {
+	config
+}
+
+// NewUrgentClient returns a client for the Urgent from the given config.
+func NewUrgentClient(c config) *UrgentClient {
+	return &UrgentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `urgent.Hooks(f(g(h())))`.
+func (c *UrgentClient) Use(hooks ...Hook) {
+	c.hooks.Urgent = append(c.hooks.Urgent, hooks...)
+}
+
+// Create returns a create builder for Urgent.
+func (c *UrgentClient) Create() *UrgentCreate {
+	mutation := newUrgentMutation(c.config, OpCreate)
+	return &UrgentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Urgent.
+func (c *UrgentClient) Update() *UrgentUpdate {
+	mutation := newUrgentMutation(c.config, OpUpdate)
+	return &UrgentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UrgentClient) UpdateOne(u *Urgent) *UrgentUpdateOne {
+	mutation := newUrgentMutation(c.config, OpUpdateOne, withUrgent(u))
+	return &UrgentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UrgentClient) UpdateOneID(id int) *UrgentUpdateOne {
+	mutation := newUrgentMutation(c.config, OpUpdateOne, withUrgentID(id))
+	return &UrgentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Urgent.
+func (c *UrgentClient) Delete() *UrgentDelete {
+	mutation := newUrgentMutation(c.config, OpDelete)
+	return &UrgentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *UrgentClient) DeleteOne(u *Urgent) *UrgentDeleteOne {
+	return c.DeleteOneID(u.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *UrgentClient) DeleteOneID(id int) *UrgentDeleteOne {
+	builder := c.Delete().Where(urgent.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UrgentDeleteOne{builder}
+}
+
+// Create returns a query builder for Urgent.
+func (c *UrgentClient) Query() *UrgentQuery {
+	return &UrgentQuery{config: c.config}
+}
+
+// Get returns a Urgent entity by its id.
+func (c *UrgentClient) Get(ctx context.Context, id int) (*Urgent, error) {
+	return c.Query().Where(urgent.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UrgentClient) GetX(ctx context.Context, id int) *Urgent {
+	u, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return u
+}
+
+// Hooks returns the client hooks.
+func (c *UrgentClient) Hooks() []Hook {
+	return c.hooks.Urgent
 }
 
 // UserClient is a client for the User schema.
