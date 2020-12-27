@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/facebook/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/team07/app/ent/user"
 )
 
@@ -15,50 +15,18 @@ type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Age holds the value of the "age" field.
+	Age int `json:"age,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Email holds the value of the "email" field.
-	Email string `json:"email,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges UserEdges `json:"edges"`
-}
-
-// UserEdges holds the relations/edges for other nodes in the graph.
-type UserEdges struct {
-	// Playlists holds the value of the playlists edge.
-	Playlists []*Playlist
-	// Videos holds the value of the videos edge.
-	Videos []*Video
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
-}
-
-// PlaylistsOrErr returns the Playlists value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) PlaylistsOrErr() ([]*Playlist, error) {
-	if e.loadedTypes[0] {
-		return e.Playlists, nil
-	}
-	return nil, &NotLoadedError{edge: "playlists"}
-}
-
-// VideosOrErr returns the Videos value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) VideosOrErr() ([]*Video, error) {
-	if e.loadedTypes[1] {
-		return e.Videos, nil
-	}
-	return nil, &NotLoadedError{edge: "videos"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*User) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
+		&sql.NullInt64{},  // age
 		&sql.NullString{}, // name
-		&sql.NullString{}, // email
 	}
 }
 
@@ -74,27 +42,17 @@ func (u *User) assignValues(values ...interface{}) error {
 	}
 	u.ID = int(value.Int64)
 	values = values[1:]
-	if value, ok := values[0].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field name", values[0])
+	if value, ok := values[0].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field age", values[0])
+	} else if value.Valid {
+		u.Age = int(value.Int64)
+	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field name", values[1])
 	} else if value.Valid {
 		u.Name = value.String
 	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field email", values[1])
-	} else if value.Valid {
-		u.Email = value.String
-	}
 	return nil
-}
-
-// QueryPlaylists queries the playlists edge of the User.
-func (u *User) QueryPlaylists() *PlaylistQuery {
-	return (&UserClient{config: u.config}).QueryPlaylists(u)
-}
-
-// QueryVideos queries the videos edge of the User.
-func (u *User) QueryVideos() *VideoQuery {
-	return (&UserClient{config: u.config}).QueryVideos(u)
 }
 
 // Update returns a builder for updating this User.
@@ -120,10 +78,10 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
+	builder.WriteString(", age=")
+	builder.WriteString(fmt.Sprintf("%v", u.Age))
 	builder.WriteString(", name=")
 	builder.WriteString(u.Name)
-	builder.WriteString(", email=")
-	builder.WriteString(u.Email)
 	builder.WriteByte(')')
 	return builder.String()
 }

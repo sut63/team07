@@ -9,41 +9,67 @@ import (
 	"github.com/team07/app/ent"
 )
 
-// The PlaylistFunc type is an adapter to allow the use of ordinary
-// function as Playlist mutator.
-type PlaylistFunc func(context.Context, *ent.PlaylistMutation) (ent.Value, error)
+// The AmbulanceFunc type is an adapter to allow the use of ordinary
+// function as Ambulance mutator.
+type AmbulanceFunc func(context.Context, *ent.AmbulanceMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f PlaylistFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.PlaylistMutation)
+func (f AmbulanceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AmbulanceMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PlaylistMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AmbulanceMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The Playlist_VideoFunc type is an adapter to allow the use of ordinary
-// function as Playlist_Video mutator.
-type Playlist_VideoFunc func(context.Context, *ent.PlaylistVideoMutation) (ent.Value, error)
+// The CarInspectionFunc type is an adapter to allow the use of ordinary
+// function as CarInspection mutator.
+type CarInspectionFunc func(context.Context, *ent.CarInspectionMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f Playlist_VideoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.PlaylistVideoMutation)
+func (f CarInspectionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CarInspectionMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PlaylistVideoMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CarInspectionMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The ResolutionFunc type is an adapter to allow the use of ordinary
-// function as Resolution mutator.
-type ResolutionFunc func(context.Context, *ent.ResolutionMutation) (ent.Value, error)
+// The CarRepairrecordFunc type is an adapter to allow the use of ordinary
+// function as CarRepairrecord mutator.
+type CarRepairrecordFunc func(context.Context, *ent.CarRepairrecordMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ResolutionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.ResolutionMutation)
+func (f CarRepairrecordFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CarRepairrecordMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ResolutionMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CarRepairrecordMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The CarregisterFunc type is an adapter to allow the use of ordinary
+// function as Carregister mutator.
+type CarregisterFunc func(context.Context, *ent.CarregisterMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CarregisterFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CarregisterMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CarregisterMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The DeliverFunc type is an adapter to allow the use of ordinary
+// function as Deliver mutator.
+type DeliverFunc func(context.Context, *ent.DeliverMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DeliverFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.DeliverMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeliverMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -57,19 +83,6 @@ func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	mv, ok := m.(*ent.UserMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
-	}
-	return f(ctx, mv)
-}
-
-// The VideoFunc type is an adapter to allow the use of ordinary
-// function as Video mutator.
-type VideoFunc func(context.Context, *ent.VideoMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f VideoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.VideoMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.VideoMutation", m)
 	}
 	return f(ctx, mv)
 }
