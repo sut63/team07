@@ -11,11 +11,8 @@ type Servicetype struct {
 // Fields of the Servicetype.
 func (Servicetype) Fields() []ent.Field {
  return []ent.Field{
-<<<<<<< HEAD
  	field.String("servicetype").NotEmpty(),
-=======
- field.String("servicetype").NotEmpty(),
->>>>>>> 25d8802865fff53f93cd0b353382b86d42a93860
+ 	field.String("servicetype").NotEmpty(),
  }
 }
 // Edges of the Servicetype.

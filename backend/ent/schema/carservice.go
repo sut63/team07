@@ -9,17 +9,10 @@ type Carservice struct {
 
 // Fields of the Carservice.
 func (Carservice) Fields() []ent.Field {
-<<<<<<< HEAD
 	return []ent.Field{
 		field.String("customer"),
 		field.String("location"),
 		field.Time("date"),
-
-=======
-	return []ent.field{
-		field.String("customer"),
-		field.String("location"),
->>>>>>> 25d8802865fff53f93cd0b353382b86d42a93860
 	}
 }
 
@@ -35,8 +28,4 @@ func (Carservice) Edges() []ent.Edge {
 		edge.From("urgentid",Urgent.Type).
 			Ref("urgentid").Unique(),
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 25d8802865fff53f93cd0b353382b86d42a93860

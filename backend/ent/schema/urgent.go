@@ -5,7 +5,7 @@ import (
  "github.com/facebookincubator/ent/schema/edge"
 )
 // Urgent holds the schema definition for the Urgent entity.
-type Range struct {
+type Urgent struct {
  ent.Schema
 }
 // Fields of the Urgent.
