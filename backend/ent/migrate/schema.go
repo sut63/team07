@@ -52,6 +52,17 @@ var (
 		PrimaryKey:  []*schema.Column{CarregistersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
+	// CarservicesColumns holds the columns for the "carservices" table.
+	CarservicesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+	}
+	// CarservicesTable holds the schema information for the "carservices" table.
+	CarservicesTable = &schema.Table{
+		Name:        "carservices",
+		Columns:     CarservicesColumns,
+		PrimaryKey:  []*schema.Column{CarservicesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// DeliversColumns holds the columns for the "delivers" table.
 	DeliversColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -61,6 +72,28 @@ var (
 		Name:        "delivers",
 		Columns:     DeliversColumns,
 		PrimaryKey:  []*schema.Column{DeliversColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// ServicetypesColumns holds the columns for the "servicetypes" table.
+	ServicetypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+	}
+	// ServicetypesTable holds the schema information for the "servicetypes" table.
+	ServicetypesTable = &schema.Table{
+		Name:        "servicetypes",
+		Columns:     ServicetypesColumns,
+		PrimaryKey:  []*schema.Column{ServicetypesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// UrgentsColumns holds the columns for the "urgents" table.
+	UrgentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+	}
+	// UrgentsTable holds the schema information for the "urgents" table.
+	UrgentsTable = &schema.Table{
+		Name:        "urgents",
+		Columns:     UrgentsColumns,
+		PrimaryKey:  []*schema.Column{UrgentsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
 	// UsersColumns holds the columns for the "users" table.
@@ -82,7 +115,10 @@ var (
 		CarInspectionsTable,
 		CarRepairrecordsTable,
 		CarregistersTable,
+		CarservicesTable,
 		DeliversTable,
+		ServicetypesTable,
+		UrgentsTable,
 		UsersTable,
 	}
 )

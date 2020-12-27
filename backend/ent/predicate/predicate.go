@@ -18,8 +18,17 @@ type CarRepairrecord func(*sql.Selector)
 // Carregister is the predicate function for carregister builders.
 type Carregister func(*sql.Selector)
 
+// Carservice is the predicate function for carservice builders.
+type Carservice func(*sql.Selector)
+
 // Deliver is the predicate function for deliver builders.
 type Deliver func(*sql.Selector)
+
+// Servicetype is the predicate function for servicetype builders.
+type Servicetype func(*sql.Selector)
+
+// Urgent is the predicate function for urgent builders.
+type Urgent func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
