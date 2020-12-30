@@ -1,6 +1,9 @@
 package schema
 
-import "github.com/facebookincubator/ent"
+import (
+	"github.com/facebookincubator/ent/schema/field"
+	"github.com/facebookincubator/ent"
+)
 
 // Carservice holds the schema definition for the Carservice entity.
 type Carservice struct {
@@ -12,6 +15,7 @@ func (Carservice) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("customer"),
 		field.String("location"),
+		field.Time("Datetime"),
 	}
 }
 
