@@ -12,39 +12,15 @@ import (
 
 // Urgent is the model entity for the Urgent schema.
 type Urgent struct {
-	config `json:"-"`
+	config
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Urgent holds the value of the "urgent" field.
-	Urgent string `json:"urgent,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the UrgentQuery when eager-loading is set.
-	Edges UrgentEdges `json:"edges"`
-}
-
-// UrgentEdges holds the relations/edges for other nodes in the graph.
-type UrgentEdges struct {
-	// Urgentid holds the value of the urgentid edge.
-	Urgentid []*Carservice
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
-}
-
-// UrgentidOrErr returns the Urgentid value or an error if the edge
-// was not loaded in eager-loading.
-func (e UrgentEdges) UrgentidOrErr() ([]*Carservice, error) {
-	if e.loadedTypes[0] {
-		return e.Urgentid, nil
-	}
-	return nil, &NotLoadedError{edge: "urgentid"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Urgent) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{},  // id
-		&sql.NullString{}, // urgent
+		&sql.NullInt64{}, // id
 	}
 }
 
@@ -60,17 +36,7 @@ func (u *Urgent) assignValues(values ...interface{}) error {
 	}
 	u.ID = int(value.Int64)
 	values = values[1:]
-	if value, ok := values[0].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field urgent", values[0])
-	} else if value.Valid {
-		u.Urgent = value.String
-	}
 	return nil
-}
-
-// QueryUrgentid queries the urgentid edge of the Urgent.
-func (u *Urgent) QueryUrgentid() *CarserviceQuery {
-	return (&UrgentClient{config: u.config}).QueryUrgentid(u)
 }
 
 // Update returns a builder for updating this Urgent.
@@ -96,8 +62,6 @@ func (u *Urgent) String() string {
 	var builder strings.Builder
 	builder.WriteString("Urgent(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
-	builder.WriteString(", urgent=")
-	builder.WriteString(u.Urgent)
 	builder.WriteByte(')')
 	return builder.String()
 }

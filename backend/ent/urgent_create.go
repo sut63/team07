@@ -4,12 +4,10 @@ package ent
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/urgent"
 )
 
@@ -20,27 +18,6 @@ type UrgentCreate struct {
 	hooks    []Hook
 }
 
-// SetUrgent sets the urgent field.
-func (uc *UrgentCreate) SetUrgent(s string) *UrgentCreate {
-	uc.mutation.SetUrgent(s)
-	return uc
-}
-
-// AddUrgentidIDs adds the urgentid edge to Carservice by ids.
-func (uc *UrgentCreate) AddUrgentidIDs(ids ...int) *UrgentCreate {
-	uc.mutation.AddUrgentidIDs(ids...)
-	return uc
-}
-
-// AddUrgentid adds the urgentid edges to Carservice.
-func (uc *UrgentCreate) AddUrgentid(c ...*Carservice) *UrgentCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return uc.AddUrgentidIDs(ids...)
-}
-
 // Mutation returns the UrgentMutation object of the builder.
 func (uc *UrgentCreate) Mutation() *UrgentMutation {
 	return uc.mutation
@@ -48,14 +25,6 @@ func (uc *UrgentCreate) Mutation() *UrgentMutation {
 
 // Save creates the Urgent in the database.
 func (uc *UrgentCreate) Save(ctx context.Context) (*Urgent, error) {
-	if _, ok := uc.mutation.Urgent(); !ok {
-		return nil, &ValidationError{Name: "urgent", err: errors.New("ent: missing required field \"urgent\"")}
-	}
-	if v, ok := uc.mutation.Urgent(); ok {
-		if err := urgent.UrgentValidator(v); err != nil {
-			return nil, &ValidationError{Name: "urgent", err: fmt.Errorf("ent: validator failed for field \"urgent\": %w", err)}
-		}
-	}
 	var (
 		err  error
 		node *Urgent
@@ -116,32 +85,5 @@ func (uc *UrgentCreate) createSpec() (*Urgent, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := uc.mutation.Urgent(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: urgent.FieldUrgent,
-		})
-		u.Urgent = value
-	}
-	if nodes := uc.mutation.UrgentidIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   urgent.UrgentidTable,
-			Columns: []string{urgent.UrgentidColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: carservice.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	return u, _spec
 }

@@ -14,32 +14,18 @@ type Tx struct {
 	config
 	// Ambulance is the client for interacting with the Ambulance builders.
 	Ambulance *AmbulanceClient
-	// CarCheckInOut is the client for interacting with the CarCheckInOut builders.
-	CarCheckInOut *CarCheckInOutClient
 	// CarInspection is the client for interacting with the CarInspection builders.
 	CarInspection *CarInspectionClient
 	// CarRepairrecord is the client for interacting with the CarRepairrecord builders.
 	CarRepairrecord *CarRepairrecordClient
-	// Carbrand is the client for interacting with the Carbrand builders.
-	Carbrand *CarbrandClient
 	// Carregister is the client for interacting with the Carregister builders.
 	Carregister *CarregisterClient
 	// Carservice is the client for interacting with the Carservice builders.
 	Carservice *CarserviceClient
-	// Carstatus is the client for interacting with the Carstatus builders.
-	Carstatus *CarstatusClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
-	// Distances is the client for interacting with the Distances builders.
-	Distances *DistancesClient
-	// InspectionResult is the client for interacting with the InspectionResult builders.
-	InspectionResult *InspectionResultClient
-	// Insurance is the client for interacting with the Insurance builders.
-	Insurance *InsuranceClient
-	// JobPosition is the client for interacting with the JobPosition builders.
-	JobPosition *JobPositionClient
-	// Purpose is the client for interacting with the Purpose builders.
-	Purpose *PurposeClient
+	// Servicetype is the client for interacting with the Servicetype builders.
+	Servicetype *ServicetypeClient
 	// Urgent is the client for interacting with the Urgent builders.
 	Urgent *UrgentClient
 	// User is the client for interacting with the User builders.
@@ -180,19 +166,12 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Ambulance = NewAmbulanceClient(tx.config)
-	tx.CarCheckInOut = NewCarCheckInOutClient(tx.config)
 	tx.CarInspection = NewCarInspectionClient(tx.config)
 	tx.CarRepairrecord = NewCarRepairrecordClient(tx.config)
-	tx.Carbrand = NewCarbrandClient(tx.config)
 	tx.Carregister = NewCarregisterClient(tx.config)
 	tx.Carservice = NewCarserviceClient(tx.config)
-	tx.Carstatus = NewCarstatusClient(tx.config)
 	tx.Deliver = NewDeliverClient(tx.config)
-	tx.Distances = NewDistancesClient(tx.config)
-	tx.InspectionResult = NewInspectionResultClient(tx.config)
-	tx.Insurance = NewInsuranceClient(tx.config)
-	tx.JobPosition = NewJobPositionClient(tx.config)
-	tx.Purpose = NewPurposeClient(tx.config)
+	tx.Servicetype = NewServicetypeClient(tx.config)
 	tx.Urgent = NewUrgentClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }

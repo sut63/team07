@@ -9,17 +9,11 @@ import (
 // Ambulance is the predicate function for ambulance builders.
 type Ambulance func(*sql.Selector)
 
-// CarCheckInOut is the predicate function for carcheckinout builders.
-type CarCheckInOut func(*sql.Selector)
-
 // CarInspection is the predicate function for carinspection builders.
 type CarInspection func(*sql.Selector)
 
 // CarRepairrecord is the predicate function for carrepairrecord builders.
 type CarRepairrecord func(*sql.Selector)
-
-// Carbrand is the predicate function for carbrand builders.
-type Carbrand func(*sql.Selector)
 
 // Carregister is the predicate function for carregister builders.
 type Carregister func(*sql.Selector)
@@ -27,26 +21,11 @@ type Carregister func(*sql.Selector)
 // Carservice is the predicate function for carservice builders.
 type Carservice func(*sql.Selector)
 
-// Carstatus is the predicate function for carstatus builders.
-type Carstatus func(*sql.Selector)
-
 // Deliver is the predicate function for deliver builders.
 type Deliver func(*sql.Selector)
 
-// Distances is the predicate function for distances builders.
-type Distances func(*sql.Selector)
-
-// InspectionResult is the predicate function for inspectionresult builders.
-type InspectionResult func(*sql.Selector)
-
-// Insurance is the predicate function for insurance builders.
-type Insurance func(*sql.Selector)
-
-// JobPosition is the predicate function for jobposition builders.
-type JobPosition func(*sql.Selector)
-
-// Purpose is the predicate function for purpose builders.
-type Purpose func(*sql.Selector)
+// Servicetype is the predicate function for servicetype builders.
+type Servicetype func(*sql.Selector)
 
 // Urgent is the predicate function for urgent builders.
 type Urgent func(*sql.Selector)

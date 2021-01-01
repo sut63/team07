@@ -37,9 +37,5 @@ func (Ambulance) Edges() []ent.Edge {
 		edge.From("hasuser",User.Type).
 		Ref("userof").
 		Unique(),
-
-		//To CarInspection
-		edge.To("carinspections",CarInspection.Type).
-		    StorageKey(edge.Column("ambulance_id")),
 	}
 }
