@@ -24,22 +24,15 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
-	Ambulance        []ent.Hook
-	CarCheckInOut    []ent.Hook
-	CarInspection    []ent.Hook
-	CarRepairrecord  []ent.Hook
-	Carbrand         []ent.Hook
-	Carregister      []ent.Hook
-	Carservice       []ent.Hook
-	Carstatus        []ent.Hook
-	Deliver          []ent.Hook
-	Distances        []ent.Hook
-	InspectionResult []ent.Hook
-	Insurance        []ent.Hook
-	JobPosition      []ent.Hook
-	Purpose          []ent.Hook
-	Urgent           []ent.Hook
-	User             []ent.Hook
+	Ambulance       []ent.Hook
+	CarInspection   []ent.Hook
+	CarRepairrecord []ent.Hook
+	Carregister     []ent.Hook
+	Carservice      []ent.Hook
+	Deliver         []ent.Hook
+	Servicetype     []ent.Hook
+	Urgent          []ent.Hook
+	User            []ent.Hook
 }
 
 // Options applies the options on the config object.

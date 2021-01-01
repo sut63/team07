@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -12,10 +11,6 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
 )
@@ -28,12 +23,6 @@ type UserQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.User
-	// eager-loading edges.
-	withJobposition    *JobPositionQuery
-	withUserof         *AmbulanceQuery
-	withUserid         *CarserviceQuery
-	withCarinspections *CarInspectionQuery
-	withFKs            bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,78 +50,6 @@ func (uq *UserQuery) Offset(offset int) *UserQuery {
 func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
 	uq.order = append(uq.order, o...)
 	return uq
-}
-
-// QueryJobposition chains the current query on the jobposition edge.
-func (uq *UserQuery) QueryJobposition() *JobPositionQuery {
-	query := &JobPositionQuery{config: uq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
-			sqlgraph.To(jobposition.Table, jobposition.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, user.JobpositionTable, user.JobpositionColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryUserof chains the current query on the userof edge.
-func (uq *UserQuery) QueryUserof() *AmbulanceQuery {
-	query := &AmbulanceQuery{config: uq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.UserofTable, user.UserofColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryUserid chains the current query on the userid edge.
-func (uq *UserQuery) QueryUserid() *CarserviceQuery {
-	query := &CarserviceQuery{config: uq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
-			sqlgraph.To(carservice.Table, carservice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.UseridTable, user.UseridColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryCarinspections chains the current query on the carinspections edge.
-func (uq *UserQuery) QueryCarinspections() *CarInspectionQuery {
-	query := &CarInspectionQuery{config: uq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
-			sqlgraph.To(carinspection.Table, carinspection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.CarinspectionsTable, user.CarinspectionsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first User entity in the query. Returns *NotFoundError when no user was found.
@@ -314,62 +231,18 @@ func (uq *UserQuery) Clone() *UserQuery {
 	}
 }
 
-//  WithJobposition tells the query-builder to eager-loads the nodes that are connected to
-// the "jobposition" edge. The optional arguments used to configure the query builder of the edge.
-func (uq *UserQuery) WithJobposition(opts ...func(*JobPositionQuery)) *UserQuery {
-	query := &JobPositionQuery{config: uq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withJobposition = query
-	return uq
-}
-
-//  WithUserof tells the query-builder to eager-loads the nodes that are connected to
-// the "userof" edge. The optional arguments used to configure the query builder of the edge.
-func (uq *UserQuery) WithUserof(opts ...func(*AmbulanceQuery)) *UserQuery {
-	query := &AmbulanceQuery{config: uq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withUserof = query
-	return uq
-}
-
-//  WithUserid tells the query-builder to eager-loads the nodes that are connected to
-// the "userid" edge. The optional arguments used to configure the query builder of the edge.
-func (uq *UserQuery) WithUserid(opts ...func(*CarserviceQuery)) *UserQuery {
-	query := &CarserviceQuery{config: uq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withUserid = query
-	return uq
-}
-
-//  WithCarinspections tells the query-builder to eager-loads the nodes that are connected to
-// the "carinspections" edge. The optional arguments used to configure the query builder of the edge.
-func (uq *UserQuery) WithCarinspections(opts ...func(*CarInspectionQuery)) *UserQuery {
-	query := &CarInspectionQuery{config: uq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withCarinspections = query
-	return uq
-}
-
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Age int `json:"age,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		GroupBy(user.FieldName).
+//		GroupBy(user.FieldAge).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -390,11 +263,11 @@ func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Age int `json:"age,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		Select(user.FieldName).
+//		Select(user.FieldAge).
 //		Scan(ctx, &v)
 //
 func (uq *UserQuery) Select(field string, fields ...string) *UserSelect {
@@ -422,29 +295,13 @@ func (uq *UserQuery) prepareQuery(ctx context.Context) error {
 
 func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 	var (
-		nodes       = []*User{}
-		withFKs     = uq.withFKs
-		_spec       = uq.querySpec()
-		loadedTypes = [4]bool{
-			uq.withJobposition != nil,
-			uq.withUserof != nil,
-			uq.withUserid != nil,
-			uq.withCarinspections != nil,
-		}
+		nodes = []*User{}
+		_spec = uq.querySpec()
 	)
-	if uq.withJobposition != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, user.ForeignKeys...)
-	}
 	_spec.ScanValues = func() []interface{} {
 		node := &User{config: uq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
-		if withFKs {
-			values = append(values, node.fkValues()...)
-		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -452,7 +309,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, uq.driver, _spec); err != nil {
@@ -461,116 +317,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-
-	if query := uq.withJobposition; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*User)
-		for i := range nodes {
-			if fk := nodes[i].jobposition_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(jobposition.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "jobposition_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Jobposition = n
-			}
-		}
-	}
-
-	if query := uq.withUserof; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*User)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-		}
-		query.withFKs = true
-		query.Where(predicate.Ambulance(func(s *sql.Selector) {
-			s.Where(sql.InValues(user.UserofColumn, fks...))
-		}))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			fk := n.user_id
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_id" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
-			}
-			node.Edges.Userof = append(node.Edges.Userof, n)
-		}
-	}
-
-	if query := uq.withUserid; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*User)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-		}
-		query.withFKs = true
-		query.Where(predicate.Carservice(func(s *sql.Selector) {
-			s.Where(sql.InValues(user.UseridColumn, fks...))
-		}))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			fk := n.user_id
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_id" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
-			}
-			node.Edges.Userid = append(node.Edges.Userid, n)
-		}
-	}
-
-	if query := uq.withCarinspections; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*User)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-		}
-		query.withFKs = true
-		query.Where(predicate.CarInspection(func(s *sql.Selector) {
-			s.Where(sql.InValues(user.CarinspectionsColumn, fks...))
-		}))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			fk := n.user_id
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_id" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
-			}
-			node.Edges.Carinspections = append(node.Edges.Carinspections, n)
-		}
-	}
-
 	return nodes, nil
 }
 

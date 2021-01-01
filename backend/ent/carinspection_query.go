@@ -11,11 +11,8 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/predicate"
-	"github.com/team07/app/ent/user"
 )
 
 // CarInspectionQuery is the builder for querying CarInspection entities.
@@ -26,11 +23,6 @@ type CarInspectionQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.CarInspection
-	// eager-loading edges.
-	withUser             *UserQuery
-	withAmbulance        *AmbulanceQuery
-	withInspectionresult *InspectionResultQuery
-	withFKs              bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,60 +50,6 @@ func (ciq *CarInspectionQuery) Offset(offset int) *CarInspectionQuery {
 func (ciq *CarInspectionQuery) Order(o ...OrderFunc) *CarInspectionQuery {
 	ciq.order = append(ciq.order, o...)
 	return ciq
-}
-
-// QueryUser chains the current query on the user edge.
-func (ciq *CarInspectionQuery) QueryUser() *UserQuery {
-	query := &UserQuery{config: ciq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ciq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carinspection.Table, carinspection.FieldID, ciq.sqlQuery()),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.UserTable, carinspection.UserColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(ciq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryAmbulance chains the current query on the ambulance edge.
-func (ciq *CarInspectionQuery) QueryAmbulance() *AmbulanceQuery {
-	query := &AmbulanceQuery{config: ciq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ciq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carinspection.Table, carinspection.FieldID, ciq.sqlQuery()),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.AmbulanceTable, carinspection.AmbulanceColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(ciq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryInspectionresult chains the current query on the inspectionresult edge.
-func (ciq *CarInspectionQuery) QueryInspectionresult() *InspectionResultQuery {
-	query := &InspectionResultQuery{config: ciq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ciq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carinspection.Table, carinspection.FieldID, ciq.sqlQuery()),
-			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.InspectionresultTable, carinspection.InspectionresultColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(ciq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first CarInspection entity in the query. Returns *NotFoundError when no carinspection was found.
@@ -293,54 +231,8 @@ func (ciq *CarInspectionQuery) Clone() *CarInspectionQuery {
 	}
 }
 
-//  WithUser tells the query-builder to eager-loads the nodes that are connected to
-// the "user" edge. The optional arguments used to configure the query builder of the edge.
-func (ciq *CarInspectionQuery) WithUser(opts ...func(*UserQuery)) *CarInspectionQuery {
-	query := &UserQuery{config: ciq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	ciq.withUser = query
-	return ciq
-}
-
-//  WithAmbulance tells the query-builder to eager-loads the nodes that are connected to
-// the "ambulance" edge. The optional arguments used to configure the query builder of the edge.
-func (ciq *CarInspectionQuery) WithAmbulance(opts ...func(*AmbulanceQuery)) *CarInspectionQuery {
-	query := &AmbulanceQuery{config: ciq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	ciq.withAmbulance = query
-	return ciq
-}
-
-//  WithInspectionresult tells the query-builder to eager-loads the nodes that are connected to
-// the "inspectionresult" edge. The optional arguments used to configure the query builder of the edge.
-func (ciq *CarInspectionQuery) WithInspectionresult(opts ...func(*InspectionResultQuery)) *CarInspectionQuery {
-	query := &InspectionResultQuery{config: ciq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	ciq.withInspectionresult = query
-	return ciq
-}
-
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
-//
-// Example:
-//
-//	var v []struct {
-//		Datetime time.Time `json:"datetime,omitempty"`
-//		Count int `json:"count,omitempty"`
-//	}
-//
-//	client.CarInspection.Query().
-//		GroupBy(carinspection.FieldDatetime).
-//		Aggregate(ent.Count()).
-//		Scan(ctx, &v)
-//
 func (ciq *CarInspectionQuery) GroupBy(field string, fields ...string) *CarInspectionGroupBy {
 	group := &CarInspectionGroupBy{config: ciq.config}
 	group.fields = append([]string{field}, fields...)
@@ -354,17 +246,6 @@ func (ciq *CarInspectionQuery) GroupBy(field string, fields ...string) *CarInspe
 }
 
 // Select one or more fields from the given query.
-//
-// Example:
-//
-//	var v []struct {
-//		Datetime time.Time `json:"datetime,omitempty"`
-//	}
-//
-//	client.CarInspection.Query().
-//		Select(carinspection.FieldDatetime).
-//		Scan(ctx, &v)
-//
 func (ciq *CarInspectionQuery) Select(field string, fields ...string) *CarInspectionSelect {
 	selector := &CarInspectionSelect{config: ciq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -390,28 +271,13 @@ func (ciq *CarInspectionQuery) prepareQuery(ctx context.Context) error {
 
 func (ciq *CarInspectionQuery) sqlAll(ctx context.Context) ([]*CarInspection, error) {
 	var (
-		nodes       = []*CarInspection{}
-		withFKs     = ciq.withFKs
-		_spec       = ciq.querySpec()
-		loadedTypes = [3]bool{
-			ciq.withUser != nil,
-			ciq.withAmbulance != nil,
-			ciq.withInspectionresult != nil,
-		}
+		nodes = []*CarInspection{}
+		_spec = ciq.querySpec()
 	)
-	if ciq.withUser != nil || ciq.withAmbulance != nil || ciq.withInspectionresult != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, carinspection.ForeignKeys...)
-	}
 	_spec.ScanValues = func() []interface{} {
 		node := &CarInspection{config: ciq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
-		if withFKs {
-			values = append(values, node.fkValues()...)
-		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -419,7 +285,6 @@ func (ciq *CarInspectionQuery) sqlAll(ctx context.Context) ([]*CarInspection, er
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, ciq.driver, _spec); err != nil {
@@ -428,82 +293,6 @@ func (ciq *CarInspectionQuery) sqlAll(ctx context.Context) ([]*CarInspection, er
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-
-	if query := ciq.withUser; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*CarInspection)
-		for i := range nodes {
-			if fk := nodes[i].user_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(user.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.User = n
-			}
-		}
-	}
-
-	if query := ciq.withAmbulance; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*CarInspection)
-		for i := range nodes {
-			if fk := nodes[i].ambulance_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(ambulance.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "ambulance_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Ambulance = n
-			}
-		}
-	}
-
-	if query := ciq.withInspectionresult; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*CarInspection)
-		for i := range nodes {
-			if fk := nodes[i].inspectionresult_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(inspectionresult.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "inspectionresult_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Inspectionresult = n
-			}
-		}
-	}
-
 	return nodes, nil
 }
 
