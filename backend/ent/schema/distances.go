@@ -17,6 +17,6 @@ func (Distances) Fields() []ent.Field {
 // Edges of the Distances.
 func (Distances) Edges() []ent.Edge {
  return []ent.Edge{
-    edge.To("Disid",Carservice.Type),
+    edge.To("disid",Carservice.Type),
  }
 }
