@@ -9,6 +9,10 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carservice"
+	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
 )
@@ -27,23 +31,86 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetAge sets the age field.
-func (uu *UserUpdate) SetAge(i int) *UserUpdate {
-	uu.mutation.ResetAge()
-	uu.mutation.SetAge(i)
-	return uu
-}
-
-// AddAge adds i to age.
-func (uu *UserUpdate) AddAge(i int) *UserUpdate {
-	uu.mutation.AddAge(i)
-	return uu
-}
-
 // SetName sets the name field.
 func (uu *UserUpdate) SetName(s string) *UserUpdate {
 	uu.mutation.SetName(s)
 	return uu
+}
+
+// SetEmail sets the email field.
+func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
+	uu.mutation.SetEmail(s)
+	return uu
+}
+
+// SetPassword sets the password field.
+func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
+	uu.mutation.SetPassword(s)
+	return uu
+}
+
+// SetJobpositionID sets the jobposition edge to JobPosition by id.
+func (uu *UserUpdate) SetJobpositionID(id int) *UserUpdate {
+	uu.mutation.SetJobpositionID(id)
+	return uu
+}
+
+// SetNillableJobpositionID sets the jobposition edge to JobPosition by id if the given value is not nil.
+func (uu *UserUpdate) SetNillableJobpositionID(id *int) *UserUpdate {
+	if id != nil {
+		uu = uu.SetJobpositionID(*id)
+	}
+	return uu
+}
+
+// SetJobposition sets the jobposition edge to JobPosition.
+func (uu *UserUpdate) SetJobposition(j *JobPosition) *UserUpdate {
+	return uu.SetJobpositionID(j.ID)
+}
+
+// AddUserofIDs adds the userof edge to Ambulance by ids.
+func (uu *UserUpdate) AddUserofIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddUserofIDs(ids...)
+	return uu
+}
+
+// AddUserof adds the userof edges to Ambulance.
+func (uu *UserUpdate) AddUserof(a ...*Ambulance) *UserUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uu.AddUserofIDs(ids...)
+}
+
+// AddUseridIDs adds the userid edge to Carservice by ids.
+func (uu *UserUpdate) AddUseridIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddUseridIDs(ids...)
+	return uu
+}
+
+// AddUserid adds the userid edges to Carservice.
+func (uu *UserUpdate) AddUserid(c ...*Carservice) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.AddUseridIDs(ids...)
+}
+
+// AddCarinspectionIDs adds the carinspections edge to CarInspection by ids.
+func (uu *UserUpdate) AddCarinspectionIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddCarinspectionIDs(ids...)
+	return uu
+}
+
+// AddCarinspections adds the carinspections edges to CarInspection.
+func (uu *UserUpdate) AddCarinspections(c ...*CarInspection) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.AddCarinspectionIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -51,18 +118,75 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
+// ClearJobposition clears the jobposition edge to JobPosition.
+func (uu *UserUpdate) ClearJobposition() *UserUpdate {
+	uu.mutation.ClearJobposition()
+	return uu
+}
+
+// RemoveUserofIDs removes the userof edge to Ambulance by ids.
+func (uu *UserUpdate) RemoveUserofIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveUserofIDs(ids...)
+	return uu
+}
+
+// RemoveUserof removes userof edges to Ambulance.
+func (uu *UserUpdate) RemoveUserof(a ...*Ambulance) *UserUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uu.RemoveUserofIDs(ids...)
+}
+
+// RemoveUseridIDs removes the userid edge to Carservice by ids.
+func (uu *UserUpdate) RemoveUseridIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveUseridIDs(ids...)
+	return uu
+}
+
+// RemoveUserid removes userid edges to Carservice.
+func (uu *UserUpdate) RemoveUserid(c ...*Carservice) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.RemoveUseridIDs(ids...)
+}
+
+// RemoveCarinspectionIDs removes the carinspections edge to CarInspection by ids.
+func (uu *UserUpdate) RemoveCarinspectionIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveCarinspectionIDs(ids...)
+	return uu
+}
+
+// RemoveCarinspections removes carinspections edges to CarInspection.
+func (uu *UserUpdate) RemoveCarinspections(c ...*CarInspection) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.RemoveCarinspectionIDs(ids...)
+}
+
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
-	if v, ok := uu.mutation.Age(); ok {
-		if err := user.AgeValidator(v); err != nil {
-			return 0, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
-		}
-	}
 	if v, ok := uu.mutation.Name(); ok {
 		if err := user.NameValidator(v); err != nil {
 			return 0, &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
 		}
 	}
+	if v, ok := uu.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return 0, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
+	if v, ok := uu.mutation.Password(); ok {
+		if err := user.PasswordValidator(v); err != nil {
+			return 0, &ValidationError{Name: "password", err: fmt.Errorf("ent: validator failed for field \"password\": %w", err)}
+		}
+	}
+
 	var (
 		err      error
 		affected int
@@ -130,26 +254,175 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.Age(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldAge,
-		})
-	}
-	if value, ok := uu.mutation.AddedAge(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldAge,
-		})
-	}
 	if value, ok := uu.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldName,
 		})
+	}
+	if value, ok := uu.mutation.Email(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldEmail,
+		})
+	}
+	if value, ok := uu.mutation.Password(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldPassword,
+		})
+	}
+	if uu.mutation.JobpositionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.JobpositionTable,
+			Columns: []string{user.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.JobpositionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.JobpositionTable,
+			Columns: []string{user.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uu.mutation.RemovedUserofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserofTable,
+			Columns: []string{user.UserofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.UserofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserofTable,
+			Columns: []string{user.UserofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uu.mutation.RemovedUseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UseridTable,
+			Columns: []string{user.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.UseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UseridTable,
+			Columns: []string{user.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uu.mutation.RemovedCarinspectionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarinspectionsTable,
+			Columns: []string{user.CarinspectionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.CarinspectionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarinspectionsTable,
+			Columns: []string{user.CarinspectionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -169,23 +442,86 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetAge sets the age field.
-func (uuo *UserUpdateOne) SetAge(i int) *UserUpdateOne {
-	uuo.mutation.ResetAge()
-	uuo.mutation.SetAge(i)
-	return uuo
-}
-
-// AddAge adds i to age.
-func (uuo *UserUpdateOne) AddAge(i int) *UserUpdateOne {
-	uuo.mutation.AddAge(i)
-	return uuo
-}
-
 // SetName sets the name field.
 func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
 	uuo.mutation.SetName(s)
 	return uuo
+}
+
+// SetEmail sets the email field.
+func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
+	uuo.mutation.SetEmail(s)
+	return uuo
+}
+
+// SetPassword sets the password field.
+func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
+	uuo.mutation.SetPassword(s)
+	return uuo
+}
+
+// SetJobpositionID sets the jobposition edge to JobPosition by id.
+func (uuo *UserUpdateOne) SetJobpositionID(id int) *UserUpdateOne {
+	uuo.mutation.SetJobpositionID(id)
+	return uuo
+}
+
+// SetNillableJobpositionID sets the jobposition edge to JobPosition by id if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableJobpositionID(id *int) *UserUpdateOne {
+	if id != nil {
+		uuo = uuo.SetJobpositionID(*id)
+	}
+	return uuo
+}
+
+// SetJobposition sets the jobposition edge to JobPosition.
+func (uuo *UserUpdateOne) SetJobposition(j *JobPosition) *UserUpdateOne {
+	return uuo.SetJobpositionID(j.ID)
+}
+
+// AddUserofIDs adds the userof edge to Ambulance by ids.
+func (uuo *UserUpdateOne) AddUserofIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddUserofIDs(ids...)
+	return uuo
+}
+
+// AddUserof adds the userof edges to Ambulance.
+func (uuo *UserUpdateOne) AddUserof(a ...*Ambulance) *UserUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uuo.AddUserofIDs(ids...)
+}
+
+// AddUseridIDs adds the userid edge to Carservice by ids.
+func (uuo *UserUpdateOne) AddUseridIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddUseridIDs(ids...)
+	return uuo
+}
+
+// AddUserid adds the userid edges to Carservice.
+func (uuo *UserUpdateOne) AddUserid(c ...*Carservice) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.AddUseridIDs(ids...)
+}
+
+// AddCarinspectionIDs adds the carinspections edge to CarInspection by ids.
+func (uuo *UserUpdateOne) AddCarinspectionIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddCarinspectionIDs(ids...)
+	return uuo
+}
+
+// AddCarinspections adds the carinspections edges to CarInspection.
+func (uuo *UserUpdateOne) AddCarinspections(c ...*CarInspection) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.AddCarinspectionIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -193,18 +529,75 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
+// ClearJobposition clears the jobposition edge to JobPosition.
+func (uuo *UserUpdateOne) ClearJobposition() *UserUpdateOne {
+	uuo.mutation.ClearJobposition()
+	return uuo
+}
+
+// RemoveUserofIDs removes the userof edge to Ambulance by ids.
+func (uuo *UserUpdateOne) RemoveUserofIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveUserofIDs(ids...)
+	return uuo
+}
+
+// RemoveUserof removes userof edges to Ambulance.
+func (uuo *UserUpdateOne) RemoveUserof(a ...*Ambulance) *UserUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uuo.RemoveUserofIDs(ids...)
+}
+
+// RemoveUseridIDs removes the userid edge to Carservice by ids.
+func (uuo *UserUpdateOne) RemoveUseridIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveUseridIDs(ids...)
+	return uuo
+}
+
+// RemoveUserid removes userid edges to Carservice.
+func (uuo *UserUpdateOne) RemoveUserid(c ...*Carservice) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.RemoveUseridIDs(ids...)
+}
+
+// RemoveCarinspectionIDs removes the carinspections edge to CarInspection by ids.
+func (uuo *UserUpdateOne) RemoveCarinspectionIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveCarinspectionIDs(ids...)
+	return uuo
+}
+
+// RemoveCarinspections removes carinspections edges to CarInspection.
+func (uuo *UserUpdateOne) RemoveCarinspections(c ...*CarInspection) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.RemoveCarinspectionIDs(ids...)
+}
+
 // Save executes the query and returns the updated entity.
 func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
-	if v, ok := uuo.mutation.Age(); ok {
-		if err := user.AgeValidator(v); err != nil {
-			return nil, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
-		}
-	}
 	if v, ok := uuo.mutation.Name(); ok {
 		if err := user.NameValidator(v); err != nil {
 			return nil, &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
 		}
 	}
+	if v, ok := uuo.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return nil, &ValidationError{Name: "email", err: fmt.Errorf("ent: validator failed for field \"email\": %w", err)}
+		}
+	}
+	if v, ok := uuo.mutation.Password(); ok {
+		if err := user.PasswordValidator(v); err != nil {
+			return nil, &ValidationError{Name: "password", err: fmt.Errorf("ent: validator failed for field \"password\": %w", err)}
+		}
+	}
+
 	var (
 		err  error
 		node *User
@@ -270,26 +663,175 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing User.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := uuo.mutation.Age(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldAge,
-		})
-	}
-	if value, ok := uuo.mutation.AddedAge(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
-			Value:  value,
-			Column: user.FieldAge,
-		})
-	}
 	if value, ok := uuo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldName,
 		})
+	}
+	if value, ok := uuo.mutation.Email(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldEmail,
+		})
+	}
+	if value, ok := uuo.mutation.Password(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldPassword,
+		})
+	}
+	if uuo.mutation.JobpositionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.JobpositionTable,
+			Columns: []string{user.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.JobpositionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.JobpositionTable,
+			Columns: []string{user.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uuo.mutation.RemovedUserofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserofTable,
+			Columns: []string{user.UserofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.UserofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserofTable,
+			Columns: []string{user.UserofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uuo.mutation.RemovedUseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UseridTable,
+			Columns: []string{user.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.UseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UseridTable,
+			Columns: []string{user.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uuo.mutation.RemovedCarinspectionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarinspectionsTable,
+			Columns: []string{user.CarinspectionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.CarinspectionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarinspectionsTable,
+			Columns: []string{user.CarinspectionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	u = &User{config: uuo.config}
 	_spec.Assign = u.assignValues

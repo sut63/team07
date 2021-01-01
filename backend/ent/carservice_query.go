@@ -12,7 +12,10 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/carservice"
+	"github.com/team07/app/ent/distances"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/urgent"
+	"github.com/team07/app/ent/user"
 )
 
 // CarserviceQuery is the builder for querying Carservice entities.
@@ -23,6 +26,11 @@ type CarserviceQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.Carservice
+	// eager-loading edges.
+	withUserid   *UserQuery
+	withDisid    *DistancesQuery
+	withUrgentid *UrgentQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -50,6 +58,60 @@ func (cq *CarserviceQuery) Offset(offset int) *CarserviceQuery {
 func (cq *CarserviceQuery) Order(o ...OrderFunc) *CarserviceQuery {
 	cq.order = append(cq.order, o...)
 	return cq
+}
+
+// QueryUserid chains the current query on the userid edge.
+func (cq *CarserviceQuery) QueryUserid() *UserQuery {
+	query := &UserQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carservice.Table, carservice.FieldID, cq.sqlQuery()),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carservice.UseridTable, carservice.UseridColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDisid chains the current query on the disid edge.
+func (cq *CarserviceQuery) QueryDisid() *DistancesQuery {
+	query := &DistancesQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carservice.Table, carservice.FieldID, cq.sqlQuery()),
+			sqlgraph.To(distances.Table, distances.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carservice.DisidTable, carservice.DisidColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryUrgentid chains the current query on the urgentid edge.
+func (cq *CarserviceQuery) QueryUrgentid() *UrgentQuery {
+	query := &UrgentQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carservice.Table, carservice.FieldID, cq.sqlQuery()),
+			sqlgraph.To(urgent.Table, urgent.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carservice.UrgentidTable, carservice.UrgentidColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Carservice entity in the query. Returns *NotFoundError when no carservice was found.
@@ -231,8 +293,54 @@ func (cq *CarserviceQuery) Clone() *CarserviceQuery {
 	}
 }
 
+//  WithUserid tells the query-builder to eager-loads the nodes that are connected to
+// the "userid" edge. The optional arguments used to configure the query builder of the edge.
+func (cq *CarserviceQuery) WithUserid(opts ...func(*UserQuery)) *CarserviceQuery {
+	query := &UserQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withUserid = query
+	return cq
+}
+
+//  WithDisid tells the query-builder to eager-loads the nodes that are connected to
+// the "disid" edge. The optional arguments used to configure the query builder of the edge.
+func (cq *CarserviceQuery) WithDisid(opts ...func(*DistancesQuery)) *CarserviceQuery {
+	query := &DistancesQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withDisid = query
+	return cq
+}
+
+//  WithUrgentid tells the query-builder to eager-loads the nodes that are connected to
+// the "urgentid" edge. The optional arguments used to configure the query builder of the edge.
+func (cq *CarserviceQuery) WithUrgentid(opts ...func(*UrgentQuery)) *CarserviceQuery {
+	query := &UrgentQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withUrgentid = query
+	return cq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Customer string `json:"customer,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Carservice.Query().
+//		GroupBy(carservice.FieldCustomer).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (cq *CarserviceQuery) GroupBy(field string, fields ...string) *CarserviceGroupBy {
 	group := &CarserviceGroupBy{config: cq.config}
 	group.fields = append([]string{field}, fields...)
@@ -246,6 +354,17 @@ func (cq *CarserviceQuery) GroupBy(field string, fields ...string) *CarserviceGr
 }
 
 // Select one or more fields from the given query.
+//
+// Example:
+//
+//	var v []struct {
+//		Customer string `json:"customer,omitempty"`
+//	}
+//
+//	client.Carservice.Query().
+//		Select(carservice.FieldCustomer).
+//		Scan(ctx, &v)
+//
 func (cq *CarserviceQuery) Select(field string, fields ...string) *CarserviceSelect {
 	selector := &CarserviceSelect{config: cq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -271,13 +390,28 @@ func (cq *CarserviceQuery) prepareQuery(ctx context.Context) error {
 
 func (cq *CarserviceQuery) sqlAll(ctx context.Context) ([]*Carservice, error) {
 	var (
-		nodes = []*Carservice{}
-		_spec = cq.querySpec()
+		nodes       = []*Carservice{}
+		withFKs     = cq.withFKs
+		_spec       = cq.querySpec()
+		loadedTypes = [3]bool{
+			cq.withUserid != nil,
+			cq.withDisid != nil,
+			cq.withUrgentid != nil,
+		}
 	)
+	if cq.withUserid != nil || cq.withDisid != nil || cq.withUrgentid != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, carservice.ForeignKeys...)
+	}
 	_spec.ScanValues = func() []interface{} {
 		node := &Carservice{config: cq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -285,6 +419,7 @@ func (cq *CarserviceQuery) sqlAll(ctx context.Context) ([]*Carservice, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, cq.driver, _spec); err != nil {
@@ -293,6 +428,82 @@ func (cq *CarserviceQuery) sqlAll(ctx context.Context) ([]*Carservice, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := cq.withUserid; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Carservice)
+		for i := range nodes {
+			if fk := nodes[i].user_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(user.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Userid = n
+			}
+		}
+	}
+
+	if query := cq.withDisid; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Carservice)
+		for i := range nodes {
+			if fk := nodes[i].distances_disid; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(distances.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "distances_disid" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Disid = n
+			}
+		}
+	}
+
+	if query := cq.withUrgentid; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Carservice)
+		for i := range nodes {
+			if fk := nodes[i].urgent_urgentid; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(urgent.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "urgent_urgentid" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Urgentid = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

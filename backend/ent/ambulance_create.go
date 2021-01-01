@@ -4,11 +4,18 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/carbrand"
+	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carstatus"
+	"github.com/team07/app/ent/insurance"
+	"github.com/team07/app/ent/user"
 )
 
 // AmbulanceCreate is the builder for creating a Ambulance entity.
@@ -18,6 +25,117 @@ type AmbulanceCreate struct {
 	hooks    []Hook
 }
 
+// SetCarregistration sets the carregistration field.
+func (ac *AmbulanceCreate) SetCarregistration(s string) *AmbulanceCreate {
+	ac.mutation.SetCarregistration(s)
+	return ac
+}
+
+// SetRegisterAt sets the register_at field.
+func (ac *AmbulanceCreate) SetRegisterAt(t time.Time) *AmbulanceCreate {
+	ac.mutation.SetRegisterAt(t)
+	return ac
+}
+
+// SetNillableRegisterAt sets the register_at field if the given value is not nil.
+func (ac *AmbulanceCreate) SetNillableRegisterAt(t *time.Time) *AmbulanceCreate {
+	if t != nil {
+		ac.SetRegisterAt(*t)
+	}
+	return ac
+}
+
+// SetHasbrandID sets the hasbrand edge to Carbrand by id.
+func (ac *AmbulanceCreate) SetHasbrandID(id int) *AmbulanceCreate {
+	ac.mutation.SetHasbrandID(id)
+	return ac
+}
+
+// SetNillableHasbrandID sets the hasbrand edge to Carbrand by id if the given value is not nil.
+func (ac *AmbulanceCreate) SetNillableHasbrandID(id *int) *AmbulanceCreate {
+	if id != nil {
+		ac = ac.SetHasbrandID(*id)
+	}
+	return ac
+}
+
+// SetHasbrand sets the hasbrand edge to Carbrand.
+func (ac *AmbulanceCreate) SetHasbrand(c *Carbrand) *AmbulanceCreate {
+	return ac.SetHasbrandID(c.ID)
+}
+
+// SetHasinsuranceID sets the hasinsurance edge to Insurance by id.
+func (ac *AmbulanceCreate) SetHasinsuranceID(id int) *AmbulanceCreate {
+	ac.mutation.SetHasinsuranceID(id)
+	return ac
+}
+
+// SetNillableHasinsuranceID sets the hasinsurance edge to Insurance by id if the given value is not nil.
+func (ac *AmbulanceCreate) SetNillableHasinsuranceID(id *int) *AmbulanceCreate {
+	if id != nil {
+		ac = ac.SetHasinsuranceID(*id)
+	}
+	return ac
+}
+
+// SetHasinsurance sets the hasinsurance edge to Insurance.
+func (ac *AmbulanceCreate) SetHasinsurance(i *Insurance) *AmbulanceCreate {
+	return ac.SetHasinsuranceID(i.ID)
+}
+
+// SetHasstatusID sets the hasstatus edge to Carstatus by id.
+func (ac *AmbulanceCreate) SetHasstatusID(id int) *AmbulanceCreate {
+	ac.mutation.SetHasstatusID(id)
+	return ac
+}
+
+// SetNillableHasstatusID sets the hasstatus edge to Carstatus by id if the given value is not nil.
+func (ac *AmbulanceCreate) SetNillableHasstatusID(id *int) *AmbulanceCreate {
+	if id != nil {
+		ac = ac.SetHasstatusID(*id)
+	}
+	return ac
+}
+
+// SetHasstatus sets the hasstatus edge to Carstatus.
+func (ac *AmbulanceCreate) SetHasstatus(c *Carstatus) *AmbulanceCreate {
+	return ac.SetHasstatusID(c.ID)
+}
+
+// SetHasuserID sets the hasuser edge to User by id.
+func (ac *AmbulanceCreate) SetHasuserID(id int) *AmbulanceCreate {
+	ac.mutation.SetHasuserID(id)
+	return ac
+}
+
+// SetNillableHasuserID sets the hasuser edge to User by id if the given value is not nil.
+func (ac *AmbulanceCreate) SetNillableHasuserID(id *int) *AmbulanceCreate {
+	if id != nil {
+		ac = ac.SetHasuserID(*id)
+	}
+	return ac
+}
+
+// SetHasuser sets the hasuser edge to User.
+func (ac *AmbulanceCreate) SetHasuser(u *User) *AmbulanceCreate {
+	return ac.SetHasuserID(u.ID)
+}
+
+// AddCarinspectionIDs adds the carinspections edge to CarInspection by ids.
+func (ac *AmbulanceCreate) AddCarinspectionIDs(ids ...int) *AmbulanceCreate {
+	ac.mutation.AddCarinspectionIDs(ids...)
+	return ac
+}
+
+// AddCarinspections adds the carinspections edges to CarInspection.
+func (ac *AmbulanceCreate) AddCarinspections(c ...*CarInspection) *AmbulanceCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ac.AddCarinspectionIDs(ids...)
+}
+
 // Mutation returns the AmbulanceMutation object of the builder.
 func (ac *AmbulanceCreate) Mutation() *AmbulanceMutation {
 	return ac.mutation
@@ -25,6 +143,13 @@ func (ac *AmbulanceCreate) Mutation() *AmbulanceMutation {
 
 // Save creates the Ambulance in the database.
 func (ac *AmbulanceCreate) Save(ctx context.Context) (*Ambulance, error) {
+	if _, ok := ac.mutation.Carregistration(); !ok {
+		return nil, &ValidationError{Name: "carregistration", err: errors.New("ent: missing required field \"carregistration\"")}
+	}
+	if _, ok := ac.mutation.RegisterAt(); !ok {
+		v := ambulance.DefaultRegisterAt()
+		ac.mutation.SetRegisterAt(v)
+	}
 	var (
 		err  error
 		node *Ambulance
@@ -85,5 +210,116 @@ func (ac *AmbulanceCreate) createSpec() (*Ambulance, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := ac.mutation.Carregistration(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: ambulance.FieldCarregistration,
+		})
+		a.Carregistration = value
+	}
+	if value, ok := ac.mutation.RegisterAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: ambulance.FieldRegisterAt,
+		})
+		a.RegisterAt = value
+	}
+	if nodes := ac.mutation.HasbrandIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   ambulance.HasbrandTable,
+			Columns: []string{ambulance.HasbrandColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carbrand.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.HasinsuranceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   ambulance.HasinsuranceTable,
+			Columns: []string{ambulance.HasinsuranceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: insurance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.HasstatusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   ambulance.HasstatusTable,
+			Columns: []string{ambulance.HasstatusColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carstatus.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.HasuserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   ambulance.HasuserTable,
+			Columns: []string{ambulance.HasuserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.CarinspectionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.CarinspectionsTable,
+			Columns: []string{ambulance.CarinspectionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return a, _spec
 }

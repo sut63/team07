@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -11,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/urgent"
 )
@@ -23,6 +25,8 @@ type UrgentQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.Urgent
+	// eager-loading edges.
+	withUrgentid *CarserviceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -50,6 +54,24 @@ func (uq *UrgentQuery) Offset(offset int) *UrgentQuery {
 func (uq *UrgentQuery) Order(o ...OrderFunc) *UrgentQuery {
 	uq.order = append(uq.order, o...)
 	return uq
+}
+
+// QueryUrgentid chains the current query on the urgentid edge.
+func (uq *UrgentQuery) QueryUrgentid() *CarserviceQuery {
+	query := &CarserviceQuery{config: uq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(urgent.Table, urgent.FieldID, uq.sqlQuery()),
+			sqlgraph.To(carservice.Table, carservice.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, urgent.UrgentidTable, urgent.UrgentidColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Urgent entity in the query. Returns *NotFoundError when no urgent was found.
@@ -231,8 +253,32 @@ func (uq *UrgentQuery) Clone() *UrgentQuery {
 	}
 }
 
+//  WithUrgentid tells the query-builder to eager-loads the nodes that are connected to
+// the "urgentid" edge. The optional arguments used to configure the query builder of the edge.
+func (uq *UrgentQuery) WithUrgentid(opts ...func(*CarserviceQuery)) *UrgentQuery {
+	query := &CarserviceQuery{config: uq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withUrgentid = query
+	return uq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Urgent string `json:"urgent,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Urgent.Query().
+//		GroupBy(urgent.FieldUrgent).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (uq *UrgentQuery) GroupBy(field string, fields ...string) *UrgentGroupBy {
 	group := &UrgentGroupBy{config: uq.config}
 	group.fields = append([]string{field}, fields...)
@@ -246,6 +292,17 @@ func (uq *UrgentQuery) GroupBy(field string, fields ...string) *UrgentGroupBy {
 }
 
 // Select one or more fields from the given query.
+//
+// Example:
+//
+//	var v []struct {
+//		Urgent string `json:"urgent,omitempty"`
+//	}
+//
+//	client.Urgent.Query().
+//		Select(urgent.FieldUrgent).
+//		Scan(ctx, &v)
+//
 func (uq *UrgentQuery) Select(field string, fields ...string) *UrgentSelect {
 	selector := &UrgentSelect{config: uq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -271,8 +328,11 @@ func (uq *UrgentQuery) prepareQuery(ctx context.Context) error {
 
 func (uq *UrgentQuery) sqlAll(ctx context.Context) ([]*Urgent, error) {
 	var (
-		nodes = []*Urgent{}
-		_spec = uq.querySpec()
+		nodes       = []*Urgent{}
+		_spec       = uq.querySpec()
+		loadedTypes = [1]bool{
+			uq.withUrgentid != nil,
+		}
 	)
 	_spec.ScanValues = func() []interface{} {
 		node := &Urgent{config: uq.config}
@@ -285,6 +345,7 @@ func (uq *UrgentQuery) sqlAll(ctx context.Context) ([]*Urgent, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, uq.driver, _spec); err != nil {
@@ -293,6 +354,35 @@ func (uq *UrgentQuery) sqlAll(ctx context.Context) ([]*Urgent, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := uq.withUrgentid; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Urgent)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Carservice(func(s *sql.Selector) {
+			s.Where(sql.InValues(urgent.UrgentidColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.urgent_urgentid
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "urgent_urgentid" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "urgent_urgentid" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Urgentid = append(node.Edges.Urgentid, n)
+		}
+	}
+
 	return nodes, nil
 }
 
