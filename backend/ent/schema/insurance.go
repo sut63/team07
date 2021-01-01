@@ -24,6 +24,6 @@ func (Insurance) Fields() []ent.Field {
 func (Insurance) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("insuranceof",Ambulance.Type).
-		StorageKey(edge.Column("insurance_id")),
+		   StorageKey(edge.Column("insurance_id")),
 	}
 }

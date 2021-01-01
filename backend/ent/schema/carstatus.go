@@ -22,8 +22,8 @@ func (Carstatus) Fields() []ent.Field {
 func (Carstatus) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("statusof",Ambulance.Type).
-		StorageKey(edge.Column("status_id")),
+		   StorageKey(edge.Column("status_id")),
 			
-		}
+	}
 }
 
