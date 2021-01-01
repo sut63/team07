@@ -3,14 +3,7 @@
 package ent
 
 import (
-	"time"
-
-	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/distances"
-	"github.com/team07/app/ent/inspectionresult"
-	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/schema"
-	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
 )
 
@@ -18,48 +11,14 @@ import (
 // code (default values, validators or hooks) and stitches it
 // to their package variables.
 func init() {
-	ambulanceFields := schema.Ambulance{}.Fields()
-	_ = ambulanceFields
-	// ambulanceDescRegisterAt is the schema descriptor for register_at field.
-	ambulanceDescRegisterAt := ambulanceFields[1].Descriptor()
-	// ambulance.DefaultRegisterAt holds the default value on creation for the register_at field.
-	ambulance.DefaultRegisterAt = ambulanceDescRegisterAt.Default.(func() time.Time)
-	distancesFields := schema.Distances{}.Fields()
-	_ = distancesFields
-	// distancesDescDistances is the schema descriptor for Distances field.
-	distancesDescDistances := distancesFields[0].Descriptor()
-	// distances.DistancesValidator is a validator for the "Distances" field. It is called by the builders before save.
-	distances.DistancesValidator = distancesDescDistances.Validators[0].(func(string) error)
-	inspectionresultFields := schema.InspectionResult{}.Fields()
-	_ = inspectionresultFields
-	// inspectionresultDescResultName is the schema descriptor for result_name field.
-	inspectionresultDescResultName := inspectionresultFields[0].Descriptor()
-	// inspectionresult.ResultNameValidator is a validator for the "result_name" field. It is called by the builders before save.
-	inspectionresult.ResultNameValidator = inspectionresultDescResultName.Validators[0].(func(string) error)
-	jobpositionFields := schema.JobPosition{}.Fields()
-	_ = jobpositionFields
-	// jobpositionDescPositionName is the schema descriptor for position_name field.
-	jobpositionDescPositionName := jobpositionFields[0].Descriptor()
-	// jobposition.PositionNameValidator is a validator for the "position_name" field. It is called by the builders before save.
-	jobposition.PositionNameValidator = jobpositionDescPositionName.Validators[0].(func(string) error)
-	urgentFields := schema.Urgent{}.Fields()
-	_ = urgentFields
-	// urgentDescUrgent is the schema descriptor for urgent field.
-	urgentDescUrgent := urgentFields[0].Descriptor()
-	// urgent.UrgentValidator is a validator for the "urgent" field. It is called by the builders before save.
-	urgent.UrgentValidator = urgentDescUrgent.Validators[0].(func(string) error)
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescAge is the schema descriptor for age field.
+	userDescAge := userFields[0].Descriptor()
+	// user.AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	user.AgeValidator = userDescAge.Validators[0].(func(int) error)
 	// userDescName is the schema descriptor for name field.
-	userDescName := userFields[0].Descriptor()
+	userDescName := userFields[1].Descriptor()
 	// user.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	user.NameValidator = userDescName.Validators[0].(func(string) error)
-	// userDescEmail is the schema descriptor for email field.
-	userDescEmail := userFields[1].Descriptor()
-	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	user.EmailValidator = userDescEmail.Validators[0].(func(string) error)
-	// userDescPassword is the schema descriptor for password field.
-	userDescPassword := userFields[2].Descriptor()
-	// user.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
-	user.PasswordValidator = userDescPassword.Validators[0].(func(string) error)
 }

@@ -29,10 +29,6 @@ func (User) Edges() []ent.Edge {
 		edge.To("userof",Ambulance.Type).
 			StorageKey(edge.Column("user_id")),
 		edge.To("userid",Carservice.Type).
-			StorageKey(edge.Column("user_id")),
-			
-		//To CarInspection	
-		edge.To("carinspections",CarInspection.Type).
 		    StorageKey(edge.Column("user_id")),
 		    
 	}

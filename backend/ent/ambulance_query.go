@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -13,12 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/carbrand"
-	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/carstatus"
-	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/predicate"
-	"github.com/team07/app/ent/user"
 )
 
 // AmbulanceQuery is the builder for querying Ambulance entities.
@@ -29,13 +23,6 @@ type AmbulanceQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.Ambulance
-	// eager-loading edges.
-	withHasbrand       *CarbrandQuery
-	withHasinsurance   *InsuranceQuery
-	withHasstatus      *CarstatusQuery
-	withHasuser        *UserQuery
-	withCarinspections *CarInspectionQuery
-	withFKs            bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,96 +50,6 @@ func (aq *AmbulanceQuery) Offset(offset int) *AmbulanceQuery {
 func (aq *AmbulanceQuery) Order(o ...OrderFunc) *AmbulanceQuery {
 	aq.order = append(aq.order, o...)
 	return aq
-}
-
-// QueryHasbrand chains the current query on the hasbrand edge.
-func (aq *AmbulanceQuery) QueryHasbrand() *CarbrandQuery {
-	query := &CarbrandQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
-			sqlgraph.To(carbrand.Table, carbrand.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasbrandTable, ambulance.HasbrandColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryHasinsurance chains the current query on the hasinsurance edge.
-func (aq *AmbulanceQuery) QueryHasinsurance() *InsuranceQuery {
-	query := &InsuranceQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
-			sqlgraph.To(insurance.Table, insurance.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasinsuranceTable, ambulance.HasinsuranceColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryHasstatus chains the current query on the hasstatus edge.
-func (aq *AmbulanceQuery) QueryHasstatus() *CarstatusQuery {
-	query := &CarstatusQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
-			sqlgraph.To(carstatus.Table, carstatus.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasstatusTable, ambulance.HasstatusColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryHasuser chains the current query on the hasuser edge.
-func (aq *AmbulanceQuery) QueryHasuser() *UserQuery {
-	query := &UserQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasuserTable, ambulance.HasuserColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryCarinspections chains the current query on the carinspections edge.
-func (aq *AmbulanceQuery) QueryCarinspections() *CarInspectionQuery {
-	query := &CarInspectionQuery{config: aq.config}
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
-			sqlgraph.To(carinspection.Table, carinspection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ambulance.CarinspectionsTable, ambulance.CarinspectionsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first Ambulance entity in the query. Returns *NotFoundError when no ambulance was found.
@@ -334,76 +231,8 @@ func (aq *AmbulanceQuery) Clone() *AmbulanceQuery {
 	}
 }
 
-//  WithHasbrand tells the query-builder to eager-loads the nodes that are connected to
-// the "hasbrand" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *AmbulanceQuery) WithHasbrand(opts ...func(*CarbrandQuery)) *AmbulanceQuery {
-	query := &CarbrandQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withHasbrand = query
-	return aq
-}
-
-//  WithHasinsurance tells the query-builder to eager-loads the nodes that are connected to
-// the "hasinsurance" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *AmbulanceQuery) WithHasinsurance(opts ...func(*InsuranceQuery)) *AmbulanceQuery {
-	query := &InsuranceQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withHasinsurance = query
-	return aq
-}
-
-//  WithHasstatus tells the query-builder to eager-loads the nodes that are connected to
-// the "hasstatus" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *AmbulanceQuery) WithHasstatus(opts ...func(*CarstatusQuery)) *AmbulanceQuery {
-	query := &CarstatusQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withHasstatus = query
-	return aq
-}
-
-//  WithHasuser tells the query-builder to eager-loads the nodes that are connected to
-// the "hasuser" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *AmbulanceQuery) WithHasuser(opts ...func(*UserQuery)) *AmbulanceQuery {
-	query := &UserQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withHasuser = query
-	return aq
-}
-
-//  WithCarinspections tells the query-builder to eager-loads the nodes that are connected to
-// the "carinspections" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *AmbulanceQuery) WithCarinspections(opts ...func(*CarInspectionQuery)) *AmbulanceQuery {
-	query := &CarInspectionQuery{config: aq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	aq.withCarinspections = query
-	return aq
-}
-
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
-//
-// Example:
-//
-//	var v []struct {
-//		Carregistration string `json:"carregistration,omitempty"`
-//		Count int `json:"count,omitempty"`
-//	}
-//
-//	client.Ambulance.Query().
-//		GroupBy(ambulance.FieldCarregistration).
-//		Aggregate(ent.Count()).
-//		Scan(ctx, &v)
-//
 func (aq *AmbulanceQuery) GroupBy(field string, fields ...string) *AmbulanceGroupBy {
 	group := &AmbulanceGroupBy{config: aq.config}
 	group.fields = append([]string{field}, fields...)
@@ -417,17 +246,6 @@ func (aq *AmbulanceQuery) GroupBy(field string, fields ...string) *AmbulanceGrou
 }
 
 // Select one or more fields from the given query.
-//
-// Example:
-//
-//	var v []struct {
-//		Carregistration string `json:"carregistration,omitempty"`
-//	}
-//
-//	client.Ambulance.Query().
-//		Select(ambulance.FieldCarregistration).
-//		Scan(ctx, &v)
-//
 func (aq *AmbulanceQuery) Select(field string, fields ...string) *AmbulanceSelect {
 	selector := &AmbulanceSelect{config: aq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -453,30 +271,13 @@ func (aq *AmbulanceQuery) prepareQuery(ctx context.Context) error {
 
 func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 	var (
-		nodes       = []*Ambulance{}
-		withFKs     = aq.withFKs
-		_spec       = aq.querySpec()
-		loadedTypes = [5]bool{
-			aq.withHasbrand != nil,
-			aq.withHasinsurance != nil,
-			aq.withHasstatus != nil,
-			aq.withHasuser != nil,
-			aq.withCarinspections != nil,
-		}
+		nodes = []*Ambulance{}
+		_spec = aq.querySpec()
 	)
-	if aq.withHasbrand != nil || aq.withHasinsurance != nil || aq.withHasstatus != nil || aq.withHasuser != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, ambulance.ForeignKeys...)
-	}
 	_spec.ScanValues = func() []interface{} {
 		node := &Ambulance{config: aq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
-		if withFKs {
-			values = append(values, node.fkValues()...)
-		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -484,7 +285,6 @@ func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, aq.driver, _spec); err != nil {
@@ -493,135 +293,6 @@ func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-
-	if query := aq.withHasbrand; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Ambulance)
-		for i := range nodes {
-			if fk := nodes[i].brand_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(carbrand.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "brand_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Hasbrand = n
-			}
-		}
-	}
-
-	if query := aq.withHasinsurance; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Ambulance)
-		for i := range nodes {
-			if fk := nodes[i].insurance_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(insurance.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "insurance_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Hasinsurance = n
-			}
-		}
-	}
-
-	if query := aq.withHasstatus; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Ambulance)
-		for i := range nodes {
-			if fk := nodes[i].status_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(carstatus.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "status_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Hasstatus = n
-			}
-		}
-	}
-
-	if query := aq.withHasuser; query != nil {
-		ids := make([]int, 0, len(nodes))
-		nodeids := make(map[int][]*Ambulance)
-		for i := range nodes {
-			if fk := nodes[i].user_id; fk != nil {
-				ids = append(ids, *fk)
-				nodeids[*fk] = append(nodeids[*fk], nodes[i])
-			}
-		}
-		query.Where(user.IDIn(ids...))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			nodes, ok := nodeids[n.ID]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
-			}
-			for i := range nodes {
-				nodes[i].Edges.Hasuser = n
-			}
-		}
-	}
-
-	if query := aq.withCarinspections; query != nil {
-		fks := make([]driver.Value, 0, len(nodes))
-		nodeids := make(map[int]*Ambulance)
-		for i := range nodes {
-			fks = append(fks, nodes[i].ID)
-			nodeids[nodes[i].ID] = nodes[i]
-		}
-		query.withFKs = true
-		query.Where(predicate.CarInspection(func(s *sql.Selector) {
-			s.Where(sql.InValues(ambulance.CarinspectionsColumn, fks...))
-		}))
-		neighbors, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, n := range neighbors {
-			fk := n.ambulance_id
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "ambulance_id" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "ambulance_id" returned %v for node %v`, *fk, n.ID)
-			}
-			node.Edges.Carinspections = append(node.Edges.Carinspections, n)
-		}
-	}
-
 	return nodes, nil
 }
 

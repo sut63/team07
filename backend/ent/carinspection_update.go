@@ -5,16 +5,12 @@ package ent
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
-	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/predicate"
-	"github.com/team07/app/ent/user"
 )
 
 // CarInspectionUpdate is the builder for updating CarInspection entities.
@@ -31,101 +27,13 @@ func (ciu *CarInspectionUpdate) Where(ps ...predicate.CarInspection) *CarInspect
 	return ciu
 }
 
-// SetDatetime sets the datetime field.
-func (ciu *CarInspectionUpdate) SetDatetime(t time.Time) *CarInspectionUpdate {
-	ciu.mutation.SetDatetime(t)
-	return ciu
-}
-
-// SetNote sets the note field.
-func (ciu *CarInspectionUpdate) SetNote(s string) *CarInspectionUpdate {
-	ciu.mutation.SetNote(s)
-	return ciu
-}
-
-// SetUserID sets the user edge to User by id.
-func (ciu *CarInspectionUpdate) SetUserID(id int) *CarInspectionUpdate {
-	ciu.mutation.SetUserID(id)
-	return ciu
-}
-
-// SetNillableUserID sets the user edge to User by id if the given value is not nil.
-func (ciu *CarInspectionUpdate) SetNillableUserID(id *int) *CarInspectionUpdate {
-	if id != nil {
-		ciu = ciu.SetUserID(*id)
-	}
-	return ciu
-}
-
-// SetUser sets the user edge to User.
-func (ciu *CarInspectionUpdate) SetUser(u *User) *CarInspectionUpdate {
-	return ciu.SetUserID(u.ID)
-}
-
-// SetAmbulanceID sets the ambulance edge to Ambulance by id.
-func (ciu *CarInspectionUpdate) SetAmbulanceID(id int) *CarInspectionUpdate {
-	ciu.mutation.SetAmbulanceID(id)
-	return ciu
-}
-
-// SetNillableAmbulanceID sets the ambulance edge to Ambulance by id if the given value is not nil.
-func (ciu *CarInspectionUpdate) SetNillableAmbulanceID(id *int) *CarInspectionUpdate {
-	if id != nil {
-		ciu = ciu.SetAmbulanceID(*id)
-	}
-	return ciu
-}
-
-// SetAmbulance sets the ambulance edge to Ambulance.
-func (ciu *CarInspectionUpdate) SetAmbulance(a *Ambulance) *CarInspectionUpdate {
-	return ciu.SetAmbulanceID(a.ID)
-}
-
-// SetInspectionresultID sets the inspectionresult edge to InspectionResult by id.
-func (ciu *CarInspectionUpdate) SetInspectionresultID(id int) *CarInspectionUpdate {
-	ciu.mutation.SetInspectionresultID(id)
-	return ciu
-}
-
-// SetNillableInspectionresultID sets the inspectionresult edge to InspectionResult by id if the given value is not nil.
-func (ciu *CarInspectionUpdate) SetNillableInspectionresultID(id *int) *CarInspectionUpdate {
-	if id != nil {
-		ciu = ciu.SetInspectionresultID(*id)
-	}
-	return ciu
-}
-
-// SetInspectionresult sets the inspectionresult edge to InspectionResult.
-func (ciu *CarInspectionUpdate) SetInspectionresult(i *InspectionResult) *CarInspectionUpdate {
-	return ciu.SetInspectionresultID(i.ID)
-}
-
 // Mutation returns the CarInspectionMutation object of the builder.
 func (ciu *CarInspectionUpdate) Mutation() *CarInspectionMutation {
 	return ciu.mutation
 }
 
-// ClearUser clears the user edge to User.
-func (ciu *CarInspectionUpdate) ClearUser() *CarInspectionUpdate {
-	ciu.mutation.ClearUser()
-	return ciu
-}
-
-// ClearAmbulance clears the ambulance edge to Ambulance.
-func (ciu *CarInspectionUpdate) ClearAmbulance() *CarInspectionUpdate {
-	ciu.mutation.ClearAmbulance()
-	return ciu
-}
-
-// ClearInspectionresult clears the inspectionresult edge to InspectionResult.
-func (ciu *CarInspectionUpdate) ClearInspectionresult() *CarInspectionUpdate {
-	ciu.mutation.ClearInspectionresult()
-	return ciu
-}
-
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (ciu *CarInspectionUpdate) Save(ctx context.Context) (int, error) {
-
 	var (
 		err      error
 		affected int
@@ -193,125 +101,6 @@ func (ciu *CarInspectionUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			}
 		}
 	}
-	if value, ok := ciu.mutation.Datetime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: carinspection.FieldDatetime,
-		})
-	}
-	if value, ok := ciu.mutation.Note(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: carinspection.FieldNote,
-		})
-	}
-	if ciu.mutation.UserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.UserTable,
-			Columns: []string{carinspection.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ciu.mutation.UserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.UserTable,
-			Columns: []string{carinspection.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if ciu.mutation.AmbulanceCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.AmbulanceTable,
-			Columns: []string{carinspection.AmbulanceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: ambulance.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ciu.mutation.AmbulanceIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.AmbulanceTable,
-			Columns: []string{carinspection.AmbulanceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: ambulance.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if ciu.mutation.InspectionresultCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.InspectionresultTable,
-			Columns: []string{carinspection.InspectionresultColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: inspectionresult.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ciu.mutation.InspectionresultIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.InspectionresultTable,
-			Columns: []string{carinspection.InspectionresultColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: inspectionresult.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ciu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{carinspection.Label}
@@ -330,101 +119,13 @@ type CarInspectionUpdateOne struct {
 	mutation *CarInspectionMutation
 }
 
-// SetDatetime sets the datetime field.
-func (ciuo *CarInspectionUpdateOne) SetDatetime(t time.Time) *CarInspectionUpdateOne {
-	ciuo.mutation.SetDatetime(t)
-	return ciuo
-}
-
-// SetNote sets the note field.
-func (ciuo *CarInspectionUpdateOne) SetNote(s string) *CarInspectionUpdateOne {
-	ciuo.mutation.SetNote(s)
-	return ciuo
-}
-
-// SetUserID sets the user edge to User by id.
-func (ciuo *CarInspectionUpdateOne) SetUserID(id int) *CarInspectionUpdateOne {
-	ciuo.mutation.SetUserID(id)
-	return ciuo
-}
-
-// SetNillableUserID sets the user edge to User by id if the given value is not nil.
-func (ciuo *CarInspectionUpdateOne) SetNillableUserID(id *int) *CarInspectionUpdateOne {
-	if id != nil {
-		ciuo = ciuo.SetUserID(*id)
-	}
-	return ciuo
-}
-
-// SetUser sets the user edge to User.
-func (ciuo *CarInspectionUpdateOne) SetUser(u *User) *CarInspectionUpdateOne {
-	return ciuo.SetUserID(u.ID)
-}
-
-// SetAmbulanceID sets the ambulance edge to Ambulance by id.
-func (ciuo *CarInspectionUpdateOne) SetAmbulanceID(id int) *CarInspectionUpdateOne {
-	ciuo.mutation.SetAmbulanceID(id)
-	return ciuo
-}
-
-// SetNillableAmbulanceID sets the ambulance edge to Ambulance by id if the given value is not nil.
-func (ciuo *CarInspectionUpdateOne) SetNillableAmbulanceID(id *int) *CarInspectionUpdateOne {
-	if id != nil {
-		ciuo = ciuo.SetAmbulanceID(*id)
-	}
-	return ciuo
-}
-
-// SetAmbulance sets the ambulance edge to Ambulance.
-func (ciuo *CarInspectionUpdateOne) SetAmbulance(a *Ambulance) *CarInspectionUpdateOne {
-	return ciuo.SetAmbulanceID(a.ID)
-}
-
-// SetInspectionresultID sets the inspectionresult edge to InspectionResult by id.
-func (ciuo *CarInspectionUpdateOne) SetInspectionresultID(id int) *CarInspectionUpdateOne {
-	ciuo.mutation.SetInspectionresultID(id)
-	return ciuo
-}
-
-// SetNillableInspectionresultID sets the inspectionresult edge to InspectionResult by id if the given value is not nil.
-func (ciuo *CarInspectionUpdateOne) SetNillableInspectionresultID(id *int) *CarInspectionUpdateOne {
-	if id != nil {
-		ciuo = ciuo.SetInspectionresultID(*id)
-	}
-	return ciuo
-}
-
-// SetInspectionresult sets the inspectionresult edge to InspectionResult.
-func (ciuo *CarInspectionUpdateOne) SetInspectionresult(i *InspectionResult) *CarInspectionUpdateOne {
-	return ciuo.SetInspectionresultID(i.ID)
-}
-
 // Mutation returns the CarInspectionMutation object of the builder.
 func (ciuo *CarInspectionUpdateOne) Mutation() *CarInspectionMutation {
 	return ciuo.mutation
 }
 
-// ClearUser clears the user edge to User.
-func (ciuo *CarInspectionUpdateOne) ClearUser() *CarInspectionUpdateOne {
-	ciuo.mutation.ClearUser()
-	return ciuo
-}
-
-// ClearAmbulance clears the ambulance edge to Ambulance.
-func (ciuo *CarInspectionUpdateOne) ClearAmbulance() *CarInspectionUpdateOne {
-	ciuo.mutation.ClearAmbulance()
-	return ciuo
-}
-
-// ClearInspectionresult clears the inspectionresult edge to InspectionResult.
-func (ciuo *CarInspectionUpdateOne) ClearInspectionresult() *CarInspectionUpdateOne {
-	ciuo.mutation.ClearInspectionresult()
-	return ciuo
-}
-
 // Save executes the query and returns the updated entity.
 func (ciuo *CarInspectionUpdateOne) Save(ctx context.Context) (*CarInspection, error) {
-
 	var (
 		err  error
 		node *CarInspection
@@ -490,125 +191,6 @@ func (ciuo *CarInspectionUpdateOne) sqlSave(ctx context.Context) (ci *CarInspect
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing CarInspection.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := ciuo.mutation.Datetime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: carinspection.FieldDatetime,
-		})
-	}
-	if value, ok := ciuo.mutation.Note(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: carinspection.FieldNote,
-		})
-	}
-	if ciuo.mutation.UserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.UserTable,
-			Columns: []string{carinspection.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ciuo.mutation.UserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.UserTable,
-			Columns: []string{carinspection.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if ciuo.mutation.AmbulanceCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.AmbulanceTable,
-			Columns: []string{carinspection.AmbulanceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: ambulance.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ciuo.mutation.AmbulanceIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.AmbulanceTable,
-			Columns: []string{carinspection.AmbulanceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: ambulance.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if ciuo.mutation.InspectionresultCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.InspectionresultTable,
-			Columns: []string{carinspection.InspectionresultColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: inspectionresult.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ciuo.mutation.InspectionresultIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   carinspection.InspectionresultTable,
-			Columns: []string{carinspection.InspectionresultColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: inspectionresult.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	ci = &CarInspection{config: ciuo.config}
 	_spec.Assign = ci.assignValues
 	_spec.ScanValues = ci.scanValues()

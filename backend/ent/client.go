@@ -10,25 +10,17 @@ import (
 	"github.com/team07/app/ent/migrate"
 
 	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/carbrand"
-	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carregister"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/carstatus"
 	"github.com/team07/app/ent/deliver"
-	"github.com/team07/app/ent/distances"
-	"github.com/team07/app/ent/inspectionresult"
-	"github.com/team07/app/ent/insurance"
-	"github.com/team07/app/ent/jobposition"
-	"github.com/team07/app/ent/purpose"
+	"github.com/team07/app/ent/servicetype"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
 
 	"github.com/facebookincubator/ent/dialect"
 	"github.com/facebookincubator/ent/dialect/sql"
-	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -38,32 +30,18 @@ type Client struct {
 	Schema *migrate.Schema
 	// Ambulance is the client for interacting with the Ambulance builders.
 	Ambulance *AmbulanceClient
-	// CarCheckInOut is the client for interacting with the CarCheckInOut builders.
-	CarCheckInOut *CarCheckInOutClient
 	// CarInspection is the client for interacting with the CarInspection builders.
 	CarInspection *CarInspectionClient
 	// CarRepairrecord is the client for interacting with the CarRepairrecord builders.
 	CarRepairrecord *CarRepairrecordClient
-	// Carbrand is the client for interacting with the Carbrand builders.
-	Carbrand *CarbrandClient
 	// Carregister is the client for interacting with the Carregister builders.
 	Carregister *CarregisterClient
 	// Carservice is the client for interacting with the Carservice builders.
 	Carservice *CarserviceClient
-	// Carstatus is the client for interacting with the Carstatus builders.
-	Carstatus *CarstatusClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
-	// Distances is the client for interacting with the Distances builders.
-	Distances *DistancesClient
-	// InspectionResult is the client for interacting with the InspectionResult builders.
-	InspectionResult *InspectionResultClient
-	// Insurance is the client for interacting with the Insurance builders.
-	Insurance *InsuranceClient
-	// JobPosition is the client for interacting with the JobPosition builders.
-	JobPosition *JobPositionClient
-	// Purpose is the client for interacting with the Purpose builders.
-	Purpose *PurposeClient
+	// Servicetype is the client for interacting with the Servicetype builders.
+	Servicetype *ServicetypeClient
 	// Urgent is the client for interacting with the Urgent builders.
 	Urgent *UrgentClient
 	// User is the client for interacting with the User builders.
@@ -82,19 +60,12 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Ambulance = NewAmbulanceClient(c.config)
-	c.CarCheckInOut = NewCarCheckInOutClient(c.config)
 	c.CarInspection = NewCarInspectionClient(c.config)
 	c.CarRepairrecord = NewCarRepairrecordClient(c.config)
-	c.Carbrand = NewCarbrandClient(c.config)
 	c.Carregister = NewCarregisterClient(c.config)
 	c.Carservice = NewCarserviceClient(c.config)
-	c.Carstatus = NewCarstatusClient(c.config)
 	c.Deliver = NewDeliverClient(c.config)
-	c.Distances = NewDistancesClient(c.config)
-	c.InspectionResult = NewInspectionResultClient(c.config)
-	c.Insurance = NewInsuranceClient(c.config)
-	c.JobPosition = NewJobPositionClient(c.config)
-	c.Purpose = NewPurposeClient(c.config)
+	c.Servicetype = NewServicetypeClient(c.config)
 	c.Urgent = NewUrgentClient(c.config)
 	c.User = NewUserClient(c.config)
 }
@@ -127,24 +98,17 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	}
 	cfg := config{driver: tx, log: c.log, debug: c.debug, hooks: c.hooks}
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		Ambulance:        NewAmbulanceClient(cfg),
-		CarCheckInOut:    NewCarCheckInOutClient(cfg),
-		CarInspection:    NewCarInspectionClient(cfg),
-		CarRepairrecord:  NewCarRepairrecordClient(cfg),
-		Carbrand:         NewCarbrandClient(cfg),
-		Carregister:      NewCarregisterClient(cfg),
-		Carservice:       NewCarserviceClient(cfg),
-		Carstatus:        NewCarstatusClient(cfg),
-		Deliver:          NewDeliverClient(cfg),
-		Distances:        NewDistancesClient(cfg),
-		InspectionResult: NewInspectionResultClient(cfg),
-		Insurance:        NewInsuranceClient(cfg),
-		JobPosition:      NewJobPositionClient(cfg),
-		Purpose:          NewPurposeClient(cfg),
-		Urgent:           NewUrgentClient(cfg),
-		User:             NewUserClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		Ambulance:       NewAmbulanceClient(cfg),
+		CarInspection:   NewCarInspectionClient(cfg),
+		CarRepairrecord: NewCarRepairrecordClient(cfg),
+		Carregister:     NewCarregisterClient(cfg),
+		Carservice:      NewCarserviceClient(cfg),
+		Deliver:         NewDeliverClient(cfg),
+		Servicetype:     NewServicetypeClient(cfg),
+		Urgent:          NewUrgentClient(cfg),
+		User:            NewUserClient(cfg),
 	}, nil
 }
 
@@ -159,23 +123,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	}
 	cfg := config{driver: &txDriver{tx: tx, drv: c.driver}, log: c.log, debug: c.debug, hooks: c.hooks}
 	return &Tx{
-		config:           cfg,
-		Ambulance:        NewAmbulanceClient(cfg),
-		CarCheckInOut:    NewCarCheckInOutClient(cfg),
-		CarInspection:    NewCarInspectionClient(cfg),
-		CarRepairrecord:  NewCarRepairrecordClient(cfg),
-		Carbrand:         NewCarbrandClient(cfg),
-		Carregister:      NewCarregisterClient(cfg),
-		Carservice:       NewCarserviceClient(cfg),
-		Carstatus:        NewCarstatusClient(cfg),
-		Deliver:          NewDeliverClient(cfg),
-		Distances:        NewDistancesClient(cfg),
-		InspectionResult: NewInspectionResultClient(cfg),
-		Insurance:        NewInsuranceClient(cfg),
-		JobPosition:      NewJobPositionClient(cfg),
-		Purpose:          NewPurposeClient(cfg),
-		Urgent:           NewUrgentClient(cfg),
-		User:             NewUserClient(cfg),
+		config:          cfg,
+		Ambulance:       NewAmbulanceClient(cfg),
+		CarInspection:   NewCarInspectionClient(cfg),
+		CarRepairrecord: NewCarRepairrecordClient(cfg),
+		Carregister:     NewCarregisterClient(cfg),
+		Carservice:      NewCarserviceClient(cfg),
+		Deliver:         NewDeliverClient(cfg),
+		Servicetype:     NewServicetypeClient(cfg),
+		Urgent:          NewUrgentClient(cfg),
+		User:            NewUserClient(cfg),
 	}, nil
 }
 
@@ -205,19 +162,12 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Ambulance.Use(hooks...)
-	c.CarCheckInOut.Use(hooks...)
 	c.CarInspection.Use(hooks...)
 	c.CarRepairrecord.Use(hooks...)
-	c.Carbrand.Use(hooks...)
 	c.Carregister.Use(hooks...)
 	c.Carservice.Use(hooks...)
-	c.Carstatus.Use(hooks...)
 	c.Deliver.Use(hooks...)
-	c.Distances.Use(hooks...)
-	c.InspectionResult.Use(hooks...)
-	c.Insurance.Use(hooks...)
-	c.JobPosition.Use(hooks...)
-	c.Purpose.Use(hooks...)
+	c.Servicetype.Use(hooks...)
 	c.Urgent.Use(hooks...)
 	c.User.Use(hooks...)
 }
@@ -300,172 +250,9 @@ func (c *AmbulanceClient) GetX(ctx context.Context, id int) *Ambulance {
 	return a
 }
 
-// QueryHasbrand queries the hasbrand edge of a Ambulance.
-func (c *AmbulanceClient) QueryHasbrand(a *Ambulance) *CarbrandQuery {
-	query := &CarbrandQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
-			sqlgraph.To(carbrand.Table, carbrand.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasbrandTable, ambulance.HasbrandColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryHasinsurance queries the hasinsurance edge of a Ambulance.
-func (c *AmbulanceClient) QueryHasinsurance(a *Ambulance) *InsuranceQuery {
-	query := &InsuranceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
-			sqlgraph.To(insurance.Table, insurance.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasinsuranceTable, ambulance.HasinsuranceColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryHasstatus queries the hasstatus edge of a Ambulance.
-func (c *AmbulanceClient) QueryHasstatus(a *Ambulance) *CarstatusQuery {
-	query := &CarstatusQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
-			sqlgraph.To(carstatus.Table, carstatus.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasstatusTable, ambulance.HasstatusColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryHasuser queries the hasuser edge of a Ambulance.
-func (c *AmbulanceClient) QueryHasuser(a *Ambulance) *UserQuery {
-	query := &UserQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasuserTable, ambulance.HasuserColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryCarinspections queries the carinspections edge of a Ambulance.
-func (c *AmbulanceClient) QueryCarinspections(a *Ambulance) *CarInspectionQuery {
-	query := &CarInspectionQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
-			sqlgraph.To(carinspection.Table, carinspection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ambulance.CarinspectionsTable, ambulance.CarinspectionsColumn),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *AmbulanceClient) Hooks() []Hook {
 	return c.hooks.Ambulance
-}
-
-// CarCheckInOutClient is a client for the CarCheckInOut schema.
-type CarCheckInOutClient struct {
-	config
-}
-
-// NewCarCheckInOutClient returns a client for the CarCheckInOut from the given config.
-func NewCarCheckInOutClient(c config) *CarCheckInOutClient {
-	return &CarCheckInOutClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `carcheckinout.Hooks(f(g(h())))`.
-func (c *CarCheckInOutClient) Use(hooks ...Hook) {
-	c.hooks.CarCheckInOut = append(c.hooks.CarCheckInOut, hooks...)
-}
-
-// Create returns a create builder for CarCheckInOut.
-func (c *CarCheckInOutClient) Create() *CarCheckInOutCreate {
-	mutation := newCarCheckInOutMutation(c.config, OpCreate)
-	return &CarCheckInOutCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for CarCheckInOut.
-func (c *CarCheckInOutClient) Update() *CarCheckInOutUpdate {
-	mutation := newCarCheckInOutMutation(c.config, OpUpdate)
-	return &CarCheckInOutUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *CarCheckInOutClient) UpdateOne(ccio *CarCheckInOut) *CarCheckInOutUpdateOne {
-	mutation := newCarCheckInOutMutation(c.config, OpUpdateOne, withCarCheckInOut(ccio))
-	return &CarCheckInOutUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *CarCheckInOutClient) UpdateOneID(id int) *CarCheckInOutUpdateOne {
-	mutation := newCarCheckInOutMutation(c.config, OpUpdateOne, withCarCheckInOutID(id))
-	return &CarCheckInOutUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for CarCheckInOut.
-func (c *CarCheckInOutClient) Delete() *CarCheckInOutDelete {
-	mutation := newCarCheckInOutMutation(c.config, OpDelete)
-	return &CarCheckInOutDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *CarCheckInOutClient) DeleteOne(ccio *CarCheckInOut) *CarCheckInOutDeleteOne {
-	return c.DeleteOneID(ccio.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *CarCheckInOutClient) DeleteOneID(id int) *CarCheckInOutDeleteOne {
-	builder := c.Delete().Where(carcheckinout.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &CarCheckInOutDeleteOne{builder}
-}
-
-// Create returns a query builder for CarCheckInOut.
-func (c *CarCheckInOutClient) Query() *CarCheckInOutQuery {
-	return &CarCheckInOutQuery{config: c.config}
-}
-
-// Get returns a CarCheckInOut entity by its id.
-func (c *CarCheckInOutClient) Get(ctx context.Context, id int) (*CarCheckInOut, error) {
-	return c.Query().Where(carcheckinout.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *CarCheckInOutClient) GetX(ctx context.Context, id int) *CarCheckInOut {
-	ccio, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return ccio
-}
-
-// Hooks returns the client hooks.
-func (c *CarCheckInOutClient) Hooks() []Hook {
-	return c.hooks.CarCheckInOut
 }
 
 // CarInspectionClient is a client for the CarInspection schema.
@@ -544,54 +331,6 @@ func (c *CarInspectionClient) GetX(ctx context.Context, id int) *CarInspection {
 		panic(err)
 	}
 	return ci
-}
-
-// QueryUser queries the user edge of a CarInspection.
-func (c *CarInspectionClient) QueryUser(ci *CarInspection) *UserQuery {
-	query := &UserQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ci.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carinspection.Table, carinspection.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.UserTable, carinspection.UserColumn),
-		)
-		fromV = sqlgraph.Neighbors(ci.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryAmbulance queries the ambulance edge of a CarInspection.
-func (c *CarInspectionClient) QueryAmbulance(ci *CarInspection) *AmbulanceQuery {
-	query := &AmbulanceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ci.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carinspection.Table, carinspection.FieldID, id),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.AmbulanceTable, carinspection.AmbulanceColumn),
-		)
-		fromV = sqlgraph.Neighbors(ci.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryInspectionresult queries the inspectionresult edge of a CarInspection.
-func (c *CarInspectionClient) QueryInspectionresult(ci *CarInspection) *InspectionResultQuery {
-	query := &InspectionResultQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ci.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carinspection.Table, carinspection.FieldID, id),
-			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.InspectionresultTable, carinspection.InspectionresultColumn),
-		)
-		fromV = sqlgraph.Neighbors(ci.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
 }
 
 // Hooks returns the client hooks.
@@ -680,105 +419,6 @@ func (c *CarRepairrecordClient) GetX(ctx context.Context, id int) *CarRepairreco
 // Hooks returns the client hooks.
 func (c *CarRepairrecordClient) Hooks() []Hook {
 	return c.hooks.CarRepairrecord
-}
-
-// CarbrandClient is a client for the Carbrand schema.
-type CarbrandClient struct {
-	config
-}
-
-// NewCarbrandClient returns a client for the Carbrand from the given config.
-func NewCarbrandClient(c config) *CarbrandClient {
-	return &CarbrandClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `carbrand.Hooks(f(g(h())))`.
-func (c *CarbrandClient) Use(hooks ...Hook) {
-	c.hooks.Carbrand = append(c.hooks.Carbrand, hooks...)
-}
-
-// Create returns a create builder for Carbrand.
-func (c *CarbrandClient) Create() *CarbrandCreate {
-	mutation := newCarbrandMutation(c.config, OpCreate)
-	return &CarbrandCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Carbrand.
-func (c *CarbrandClient) Update() *CarbrandUpdate {
-	mutation := newCarbrandMutation(c.config, OpUpdate)
-	return &CarbrandUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *CarbrandClient) UpdateOne(ca *Carbrand) *CarbrandUpdateOne {
-	mutation := newCarbrandMutation(c.config, OpUpdateOne, withCarbrand(ca))
-	return &CarbrandUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *CarbrandClient) UpdateOneID(id int) *CarbrandUpdateOne {
-	mutation := newCarbrandMutation(c.config, OpUpdateOne, withCarbrandID(id))
-	return &CarbrandUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Carbrand.
-func (c *CarbrandClient) Delete() *CarbrandDelete {
-	mutation := newCarbrandMutation(c.config, OpDelete)
-	return &CarbrandDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *CarbrandClient) DeleteOne(ca *Carbrand) *CarbrandDeleteOne {
-	return c.DeleteOneID(ca.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *CarbrandClient) DeleteOneID(id int) *CarbrandDeleteOne {
-	builder := c.Delete().Where(carbrand.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &CarbrandDeleteOne{builder}
-}
-
-// Create returns a query builder for Carbrand.
-func (c *CarbrandClient) Query() *CarbrandQuery {
-	return &CarbrandQuery{config: c.config}
-}
-
-// Get returns a Carbrand entity by its id.
-func (c *CarbrandClient) Get(ctx context.Context, id int) (*Carbrand, error) {
-	return c.Query().Where(carbrand.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *CarbrandClient) GetX(ctx context.Context, id int) *Carbrand {
-	ca, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return ca
-}
-
-// QueryBrandof queries the brandof edge of a Carbrand.
-func (c *CarbrandClient) QueryBrandof(ca *Carbrand) *AmbulanceQuery {
-	query := &AmbulanceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ca.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carbrand.Table, carbrand.FieldID, id),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, carbrand.BrandofTable, carbrand.BrandofColumn),
-		)
-		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *CarbrandClient) Hooks() []Hook {
-	return c.hooks.Carbrand
 }
 
 // CarregisterClient is a client for the Carregister schema.
@@ -942,156 +582,9 @@ func (c *CarserviceClient) GetX(ctx context.Context, id int) *Carservice {
 	return ca
 }
 
-// QueryUserid queries the userid edge of a Carservice.
-func (c *CarserviceClient) QueryUserid(ca *Carservice) *UserQuery {
-	query := &UserQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ca.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carservice.Table, carservice.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carservice.UseridTable, carservice.UseridColumn),
-		)
-		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryDisid queries the disid edge of a Carservice.
-func (c *CarserviceClient) QueryDisid(ca *Carservice) *DistancesQuery {
-	query := &DistancesQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ca.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carservice.Table, carservice.FieldID, id),
-			sqlgraph.To(distances.Table, distances.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carservice.DisidTable, carservice.DisidColumn),
-		)
-		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryUrgentid queries the urgentid edge of a Carservice.
-func (c *CarserviceClient) QueryUrgentid(ca *Carservice) *UrgentQuery {
-	query := &UrgentQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ca.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carservice.Table, carservice.FieldID, id),
-			sqlgraph.To(urgent.Table, urgent.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, carservice.UrgentidTable, carservice.UrgentidColumn),
-		)
-		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *CarserviceClient) Hooks() []Hook {
 	return c.hooks.Carservice
-}
-
-// CarstatusClient is a client for the Carstatus schema.
-type CarstatusClient struct {
-	config
-}
-
-// NewCarstatusClient returns a client for the Carstatus from the given config.
-func NewCarstatusClient(c config) *CarstatusClient {
-	return &CarstatusClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `carstatus.Hooks(f(g(h())))`.
-func (c *CarstatusClient) Use(hooks ...Hook) {
-	c.hooks.Carstatus = append(c.hooks.Carstatus, hooks...)
-}
-
-// Create returns a create builder for Carstatus.
-func (c *CarstatusClient) Create() *CarstatusCreate {
-	mutation := newCarstatusMutation(c.config, OpCreate)
-	return &CarstatusCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Carstatus.
-func (c *CarstatusClient) Update() *CarstatusUpdate {
-	mutation := newCarstatusMutation(c.config, OpUpdate)
-	return &CarstatusUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *CarstatusClient) UpdateOne(ca *Carstatus) *CarstatusUpdateOne {
-	mutation := newCarstatusMutation(c.config, OpUpdateOne, withCarstatus(ca))
-	return &CarstatusUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *CarstatusClient) UpdateOneID(id int) *CarstatusUpdateOne {
-	mutation := newCarstatusMutation(c.config, OpUpdateOne, withCarstatusID(id))
-	return &CarstatusUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Carstatus.
-func (c *CarstatusClient) Delete() *CarstatusDelete {
-	mutation := newCarstatusMutation(c.config, OpDelete)
-	return &CarstatusDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *CarstatusClient) DeleteOne(ca *Carstatus) *CarstatusDeleteOne {
-	return c.DeleteOneID(ca.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *CarstatusClient) DeleteOneID(id int) *CarstatusDeleteOne {
-	builder := c.Delete().Where(carstatus.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &CarstatusDeleteOne{builder}
-}
-
-// Create returns a query builder for Carstatus.
-func (c *CarstatusClient) Query() *CarstatusQuery {
-	return &CarstatusQuery{config: c.config}
-}
-
-// Get returns a Carstatus entity by its id.
-func (c *CarstatusClient) Get(ctx context.Context, id int) (*Carstatus, error) {
-	return c.Query().Where(carstatus.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *CarstatusClient) GetX(ctx context.Context, id int) *Carstatus {
-	ca, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return ca
-}
-
-// QueryStatusof queries the statusof edge of a Carstatus.
-func (c *CarstatusClient) QueryStatusof(ca *Carstatus) *AmbulanceQuery {
-	query := &AmbulanceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ca.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carstatus.Table, carstatus.FieldID, id),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, carstatus.StatusofTable, carstatus.StatusofColumn),
-		)
-		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *CarstatusClient) Hooks() []Hook {
-	return c.hooks.Carstatus
 }
 
 // DeliverClient is a client for the Deliver schema.
@@ -1177,483 +670,87 @@ func (c *DeliverClient) Hooks() []Hook {
 	return c.hooks.Deliver
 }
 
-// DistancesClient is a client for the Distances schema.
-type DistancesClient struct {
+// ServicetypeClient is a client for the Servicetype schema.
+type ServicetypeClient struct {
 	config
 }
 
-// NewDistancesClient returns a client for the Distances from the given config.
-func NewDistancesClient(c config) *DistancesClient {
-	return &DistancesClient{config: c}
+// NewServicetypeClient returns a client for the Servicetype from the given config.
+func NewServicetypeClient(c config) *ServicetypeClient {
+	return &ServicetypeClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `distances.Hooks(f(g(h())))`.
-func (c *DistancesClient) Use(hooks ...Hook) {
-	c.hooks.Distances = append(c.hooks.Distances, hooks...)
+// A call to `Use(f, g, h)` equals to `servicetype.Hooks(f(g(h())))`.
+func (c *ServicetypeClient) Use(hooks ...Hook) {
+	c.hooks.Servicetype = append(c.hooks.Servicetype, hooks...)
 }
 
-// Create returns a create builder for Distances.
-func (c *DistancesClient) Create() *DistancesCreate {
-	mutation := newDistancesMutation(c.config, OpCreate)
-	return &DistancesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for Servicetype.
+func (c *ServicetypeClient) Create() *ServicetypeCreate {
+	mutation := newServicetypeMutation(c.config, OpCreate)
+	return &ServicetypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Update returns an update builder for Distances.
-func (c *DistancesClient) Update() *DistancesUpdate {
-	mutation := newDistancesMutation(c.config, OpUpdate)
-	return &DistancesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *DistancesClient) UpdateOne(d *Distances) *DistancesUpdateOne {
-	mutation := newDistancesMutation(c.config, OpUpdateOne, withDistances(d))
-	return &DistancesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *DistancesClient) UpdateOneID(id int) *DistancesUpdateOne {
-	mutation := newDistancesMutation(c.config, OpUpdateOne, withDistancesID(id))
-	return &DistancesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Distances.
-func (c *DistancesClient) Delete() *DistancesDelete {
-	mutation := newDistancesMutation(c.config, OpDelete)
-	return &DistancesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *DistancesClient) DeleteOne(d *Distances) *DistancesDeleteOne {
-	return c.DeleteOneID(d.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *DistancesClient) DeleteOneID(id int) *DistancesDeleteOne {
-	builder := c.Delete().Where(distances.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &DistancesDeleteOne{builder}
-}
-
-// Create returns a query builder for Distances.
-func (c *DistancesClient) Query() *DistancesQuery {
-	return &DistancesQuery{config: c.config}
-}
-
-// Get returns a Distances entity by its id.
-func (c *DistancesClient) Get(ctx context.Context, id int) (*Distances, error) {
-	return c.Query().Where(distances.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *DistancesClient) GetX(ctx context.Context, id int) *Distances {
-	d, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return d
-}
-
-// QueryDisid queries the disid edge of a Distances.
-func (c *DistancesClient) QueryDisid(d *Distances) *CarserviceQuery {
-	query := &CarserviceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := d.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(distances.Table, distances.FieldID, id),
-			sqlgraph.To(carservice.Table, carservice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, distances.DisidTable, distances.DisidColumn),
-		)
-		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *DistancesClient) Hooks() []Hook {
-	return c.hooks.Distances
-}
-
-// InspectionResultClient is a client for the InspectionResult schema.
-type InspectionResultClient struct {
-	config
-}
-
-// NewInspectionResultClient returns a client for the InspectionResult from the given config.
-func NewInspectionResultClient(c config) *InspectionResultClient {
-	return &InspectionResultClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `inspectionresult.Hooks(f(g(h())))`.
-func (c *InspectionResultClient) Use(hooks ...Hook) {
-	c.hooks.InspectionResult = append(c.hooks.InspectionResult, hooks...)
-}
-
-// Create returns a create builder for InspectionResult.
-func (c *InspectionResultClient) Create() *InspectionResultCreate {
-	mutation := newInspectionResultMutation(c.config, OpCreate)
-	return &InspectionResultCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for InspectionResult.
-func (c *InspectionResultClient) Update() *InspectionResultUpdate {
-	mutation := newInspectionResultMutation(c.config, OpUpdate)
-	return &InspectionResultUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Servicetype.
+func (c *ServicetypeClient) Update() *ServicetypeUpdate {
+	mutation := newServicetypeMutation(c.config, OpUpdate)
+	return &ServicetypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *InspectionResultClient) UpdateOne(ir *InspectionResult) *InspectionResultUpdateOne {
-	mutation := newInspectionResultMutation(c.config, OpUpdateOne, withInspectionResult(ir))
-	return &InspectionResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *ServicetypeClient) UpdateOne(s *Servicetype) *ServicetypeUpdateOne {
+	mutation := newServicetypeMutation(c.config, OpUpdateOne, withServicetype(s))
+	return &ServicetypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *InspectionResultClient) UpdateOneID(id int) *InspectionResultUpdateOne {
-	mutation := newInspectionResultMutation(c.config, OpUpdateOne, withInspectionResultID(id))
-	return &InspectionResultUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *ServicetypeClient) UpdateOneID(id int) *ServicetypeUpdateOne {
+	mutation := newServicetypeMutation(c.config, OpUpdateOne, withServicetypeID(id))
+	return &ServicetypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for InspectionResult.
-func (c *InspectionResultClient) Delete() *InspectionResultDelete {
-	mutation := newInspectionResultMutation(c.config, OpDelete)
-	return &InspectionResultDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *InspectionResultClient) DeleteOne(ir *InspectionResult) *InspectionResultDeleteOne {
-	return c.DeleteOneID(ir.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *InspectionResultClient) DeleteOneID(id int) *InspectionResultDeleteOne {
-	builder := c.Delete().Where(inspectionresult.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &InspectionResultDeleteOne{builder}
-}
-
-// Create returns a query builder for InspectionResult.
-func (c *InspectionResultClient) Query() *InspectionResultQuery {
-	return &InspectionResultQuery{config: c.config}
-}
-
-// Get returns a InspectionResult entity by its id.
-func (c *InspectionResultClient) Get(ctx context.Context, id int) (*InspectionResult, error) {
-	return c.Query().Where(inspectionresult.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *InspectionResultClient) GetX(ctx context.Context, id int) *InspectionResult {
-	ir, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return ir
-}
-
-// QueryCarinspections queries the carinspections edge of a InspectionResult.
-func (c *InspectionResultClient) QueryCarinspections(ir *InspectionResult) *CarInspectionQuery {
-	query := &CarInspectionQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ir.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, id),
-			sqlgraph.To(carinspection.Table, carinspection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, inspectionresult.CarinspectionsTable, inspectionresult.CarinspectionsColumn),
-		)
-		fromV = sqlgraph.Neighbors(ir.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *InspectionResultClient) Hooks() []Hook {
-	return c.hooks.InspectionResult
-}
-
-// InsuranceClient is a client for the Insurance schema.
-type InsuranceClient struct {
-	config
-}
-
-// NewInsuranceClient returns a client for the Insurance from the given config.
-func NewInsuranceClient(c config) *InsuranceClient {
-	return &InsuranceClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `insurance.Hooks(f(g(h())))`.
-func (c *InsuranceClient) Use(hooks ...Hook) {
-	c.hooks.Insurance = append(c.hooks.Insurance, hooks...)
-}
-
-// Create returns a create builder for Insurance.
-func (c *InsuranceClient) Create() *InsuranceCreate {
-	mutation := newInsuranceMutation(c.config, OpCreate)
-	return &InsuranceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Insurance.
-func (c *InsuranceClient) Update() *InsuranceUpdate {
-	mutation := newInsuranceMutation(c.config, OpUpdate)
-	return &InsuranceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *InsuranceClient) UpdateOne(i *Insurance) *InsuranceUpdateOne {
-	mutation := newInsuranceMutation(c.config, OpUpdateOne, withInsurance(i))
-	return &InsuranceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *InsuranceClient) UpdateOneID(id int) *InsuranceUpdateOne {
-	mutation := newInsuranceMutation(c.config, OpUpdateOne, withInsuranceID(id))
-	return &InsuranceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Insurance.
-func (c *InsuranceClient) Delete() *InsuranceDelete {
-	mutation := newInsuranceMutation(c.config, OpDelete)
-	return &InsuranceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Servicetype.
+func (c *ServicetypeClient) Delete() *ServicetypeDelete {
+	mutation := newServicetypeMutation(c.config, OpDelete)
+	return &ServicetypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *InsuranceClient) DeleteOne(i *Insurance) *InsuranceDeleteOne {
-	return c.DeleteOneID(i.ID)
+func (c *ServicetypeClient) DeleteOne(s *Servicetype) *ServicetypeDeleteOne {
+	return c.DeleteOneID(s.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *InsuranceClient) DeleteOneID(id int) *InsuranceDeleteOne {
-	builder := c.Delete().Where(insurance.ID(id))
+func (c *ServicetypeClient) DeleteOneID(id int) *ServicetypeDeleteOne {
+	builder := c.Delete().Where(servicetype.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &InsuranceDeleteOne{builder}
+	return &ServicetypeDeleteOne{builder}
 }
 
-// Create returns a query builder for Insurance.
-func (c *InsuranceClient) Query() *InsuranceQuery {
-	return &InsuranceQuery{config: c.config}
+// Create returns a query builder for Servicetype.
+func (c *ServicetypeClient) Query() *ServicetypeQuery {
+	return &ServicetypeQuery{config: c.config}
 }
 
-// Get returns a Insurance entity by its id.
-func (c *InsuranceClient) Get(ctx context.Context, id int) (*Insurance, error) {
-	return c.Query().Where(insurance.ID(id)).Only(ctx)
+// Get returns a Servicetype entity by its id.
+func (c *ServicetypeClient) Get(ctx context.Context, id int) (*Servicetype, error) {
+	return c.Query().Where(servicetype.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *InsuranceClient) GetX(ctx context.Context, id int) *Insurance {
-	i, err := c.Get(ctx, id)
+func (c *ServicetypeClient) GetX(ctx context.Context, id int) *Servicetype {
+	s, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
-	return i
-}
-
-// QueryInsuranceof queries the insuranceof edge of a Insurance.
-func (c *InsuranceClient) QueryInsuranceof(i *Insurance) *AmbulanceQuery {
-	query := &AmbulanceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := i.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(insurance.Table, insurance.FieldID, id),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, insurance.InsuranceofTable, insurance.InsuranceofColumn),
-		)
-		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
+	return s
 }
 
 // Hooks returns the client hooks.
-func (c *InsuranceClient) Hooks() []Hook {
-	return c.hooks.Insurance
-}
-
-// JobPositionClient is a client for the JobPosition schema.
-type JobPositionClient struct {
-	config
-}
-
-// NewJobPositionClient returns a client for the JobPosition from the given config.
-func NewJobPositionClient(c config) *JobPositionClient {
-	return &JobPositionClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `jobposition.Hooks(f(g(h())))`.
-func (c *JobPositionClient) Use(hooks ...Hook) {
-	c.hooks.JobPosition = append(c.hooks.JobPosition, hooks...)
-}
-
-// Create returns a create builder for JobPosition.
-func (c *JobPositionClient) Create() *JobPositionCreate {
-	mutation := newJobPositionMutation(c.config, OpCreate)
-	return &JobPositionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for JobPosition.
-func (c *JobPositionClient) Update() *JobPositionUpdate {
-	mutation := newJobPositionMutation(c.config, OpUpdate)
-	return &JobPositionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *JobPositionClient) UpdateOne(jp *JobPosition) *JobPositionUpdateOne {
-	mutation := newJobPositionMutation(c.config, OpUpdateOne, withJobPosition(jp))
-	return &JobPositionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *JobPositionClient) UpdateOneID(id int) *JobPositionUpdateOne {
-	mutation := newJobPositionMutation(c.config, OpUpdateOne, withJobPositionID(id))
-	return &JobPositionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for JobPosition.
-func (c *JobPositionClient) Delete() *JobPositionDelete {
-	mutation := newJobPositionMutation(c.config, OpDelete)
-	return &JobPositionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *JobPositionClient) DeleteOne(jp *JobPosition) *JobPositionDeleteOne {
-	return c.DeleteOneID(jp.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *JobPositionClient) DeleteOneID(id int) *JobPositionDeleteOne {
-	builder := c.Delete().Where(jobposition.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &JobPositionDeleteOne{builder}
-}
-
-// Create returns a query builder for JobPosition.
-func (c *JobPositionClient) Query() *JobPositionQuery {
-	return &JobPositionQuery{config: c.config}
-}
-
-// Get returns a JobPosition entity by its id.
-func (c *JobPositionClient) Get(ctx context.Context, id int) (*JobPosition, error) {
-	return c.Query().Where(jobposition.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *JobPositionClient) GetX(ctx context.Context, id int) *JobPosition {
-	jp, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return jp
-}
-
-// QueryUsers queries the users edge of a JobPosition.
-func (c *JobPositionClient) QueryUsers(jp *JobPosition) *UserQuery {
-	query := &UserQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := jp.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(jobposition.Table, jobposition.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, jobposition.UsersTable, jobposition.UsersColumn),
-		)
-		fromV = sqlgraph.Neighbors(jp.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *JobPositionClient) Hooks() []Hook {
-	return c.hooks.JobPosition
-}
-
-// PurposeClient is a client for the Purpose schema.
-type PurposeClient struct {
-	config
-}
-
-// NewPurposeClient returns a client for the Purpose from the given config.
-func NewPurposeClient(c config) *PurposeClient {
-	return &PurposeClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `purpose.Hooks(f(g(h())))`.
-func (c *PurposeClient) Use(hooks ...Hook) {
-	c.hooks.Purpose = append(c.hooks.Purpose, hooks...)
-}
-
-// Create returns a create builder for Purpose.
-func (c *PurposeClient) Create() *PurposeCreate {
-	mutation := newPurposeMutation(c.config, OpCreate)
-	return &PurposeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Purpose.
-func (c *PurposeClient) Update() *PurposeUpdate {
-	mutation := newPurposeMutation(c.config, OpUpdate)
-	return &PurposeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *PurposeClient) UpdateOne(pu *Purpose) *PurposeUpdateOne {
-	mutation := newPurposeMutation(c.config, OpUpdateOne, withPurpose(pu))
-	return &PurposeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *PurposeClient) UpdateOneID(id int) *PurposeUpdateOne {
-	mutation := newPurposeMutation(c.config, OpUpdateOne, withPurposeID(id))
-	return &PurposeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Purpose.
-func (c *PurposeClient) Delete() *PurposeDelete {
-	mutation := newPurposeMutation(c.config, OpDelete)
-	return &PurposeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *PurposeClient) DeleteOne(pu *Purpose) *PurposeDeleteOne {
-	return c.DeleteOneID(pu.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *PurposeClient) DeleteOneID(id int) *PurposeDeleteOne {
-	builder := c.Delete().Where(purpose.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &PurposeDeleteOne{builder}
-}
-
-// Create returns a query builder for Purpose.
-func (c *PurposeClient) Query() *PurposeQuery {
-	return &PurposeQuery{config: c.config}
-}
-
-// Get returns a Purpose entity by its id.
-func (c *PurposeClient) Get(ctx context.Context, id int) (*Purpose, error) {
-	return c.Query().Where(purpose.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *PurposeClient) GetX(ctx context.Context, id int) *Purpose {
-	pu, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return pu
-}
-
-// Hooks returns the client hooks.
-func (c *PurposeClient) Hooks() []Hook {
-	return c.hooks.Purpose
+func (c *ServicetypeClient) Hooks() []Hook {
+	return c.hooks.Servicetype
 }
 
 // UrgentClient is a client for the Urgent schema.
@@ -1732,22 +829,6 @@ func (c *UrgentClient) GetX(ctx context.Context, id int) *Urgent {
 		panic(err)
 	}
 	return u
-}
-
-// QueryUrgentid queries the urgentid edge of a Urgent.
-func (c *UrgentClient) QueryUrgentid(u *Urgent) *CarserviceQuery {
-	query := &CarserviceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(urgent.Table, urgent.FieldID, id),
-			sqlgraph.To(carservice.Table, carservice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, urgent.UrgentidTable, urgent.UrgentidColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
 }
 
 // Hooks returns the client hooks.
@@ -1831,70 +912,6 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 		panic(err)
 	}
 	return u
-}
-
-// QueryJobposition queries the jobposition edge of a User.
-func (c *UserClient) QueryJobposition(u *User) *JobPositionQuery {
-	query := &JobPositionQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(jobposition.Table, jobposition.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, user.JobpositionTable, user.JobpositionColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryUserof queries the userof edge of a User.
-func (c *UserClient) QueryUserof(u *User) *AmbulanceQuery {
-	query := &AmbulanceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.UserofTable, user.UserofColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryUserid queries the userid edge of a User.
-func (c *UserClient) QueryUserid(u *User) *CarserviceQuery {
-	query := &CarserviceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(carservice.Table, carservice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.UseridTable, user.UseridColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryCarinspections queries the carinspections edge of a User.
-func (c *UserClient) QueryCarinspections(u *User) *CarInspectionQuery {
-	query := &CarInspectionQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(carinspection.Table, carinspection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.CarinspectionsTable, user.CarinspectionsColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
 }
 
 // Hooks returns the client hooks.
