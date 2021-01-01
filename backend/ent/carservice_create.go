@@ -4,11 +4,16 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/carservice"
+	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/urgent"
+	"github.com/team07/app/ent/user"
 )
 
 // CarserviceCreate is the builder for creating a Carservice entity.
@@ -18,6 +23,81 @@ type CarserviceCreate struct {
 	hooks    []Hook
 }
 
+// SetCustomer sets the customer field.
+func (cc *CarserviceCreate) SetCustomer(s string) *CarserviceCreate {
+	cc.mutation.SetCustomer(s)
+	return cc
+}
+
+// SetLocation sets the location field.
+func (cc *CarserviceCreate) SetLocation(s string) *CarserviceCreate {
+	cc.mutation.SetLocation(s)
+	return cc
+}
+
+// SetDatetime sets the Datetime field.
+func (cc *CarserviceCreate) SetDatetime(t time.Time) *CarserviceCreate {
+	cc.mutation.SetDatetime(t)
+	return cc
+}
+
+// SetUseridID sets the userid edge to User by id.
+func (cc *CarserviceCreate) SetUseridID(id int) *CarserviceCreate {
+	cc.mutation.SetUseridID(id)
+	return cc
+}
+
+// SetNillableUseridID sets the userid edge to User by id if the given value is not nil.
+func (cc *CarserviceCreate) SetNillableUseridID(id *int) *CarserviceCreate {
+	if id != nil {
+		cc = cc.SetUseridID(*id)
+	}
+	return cc
+}
+
+// SetUserid sets the userid edge to User.
+func (cc *CarserviceCreate) SetUserid(u *User) *CarserviceCreate {
+	return cc.SetUseridID(u.ID)
+}
+
+// SetDisidID sets the disid edge to Distances by id.
+func (cc *CarserviceCreate) SetDisidID(id int) *CarserviceCreate {
+	cc.mutation.SetDisidID(id)
+	return cc
+}
+
+// SetNillableDisidID sets the disid edge to Distances by id if the given value is not nil.
+func (cc *CarserviceCreate) SetNillableDisidID(id *int) *CarserviceCreate {
+	if id != nil {
+		cc = cc.SetDisidID(*id)
+	}
+	return cc
+}
+
+// SetDisid sets the disid edge to Distances.
+func (cc *CarserviceCreate) SetDisid(d *Distances) *CarserviceCreate {
+	return cc.SetDisidID(d.ID)
+}
+
+// SetUrgentidID sets the urgentid edge to Urgent by id.
+func (cc *CarserviceCreate) SetUrgentidID(id int) *CarserviceCreate {
+	cc.mutation.SetUrgentidID(id)
+	return cc
+}
+
+// SetNillableUrgentidID sets the urgentid edge to Urgent by id if the given value is not nil.
+func (cc *CarserviceCreate) SetNillableUrgentidID(id *int) *CarserviceCreate {
+	if id != nil {
+		cc = cc.SetUrgentidID(*id)
+	}
+	return cc
+}
+
+// SetUrgentid sets the urgentid edge to Urgent.
+func (cc *CarserviceCreate) SetUrgentid(u *Urgent) *CarserviceCreate {
+	return cc.SetUrgentidID(u.ID)
+}
+
 // Mutation returns the CarserviceMutation object of the builder.
 func (cc *CarserviceCreate) Mutation() *CarserviceMutation {
 	return cc.mutation
@@ -25,6 +105,15 @@ func (cc *CarserviceCreate) Mutation() *CarserviceMutation {
 
 // Save creates the Carservice in the database.
 func (cc *CarserviceCreate) Save(ctx context.Context) (*Carservice, error) {
+	if _, ok := cc.mutation.Customer(); !ok {
+		return nil, &ValidationError{Name: "customer", err: errors.New("ent: missing required field \"customer\"")}
+	}
+	if _, ok := cc.mutation.Location(); !ok {
+		return nil, &ValidationError{Name: "location", err: errors.New("ent: missing required field \"location\"")}
+	}
+	if _, ok := cc.mutation.Datetime(); !ok {
+		return nil, &ValidationError{Name: "Datetime", err: errors.New("ent: missing required field \"Datetime\"")}
+	}
 	var (
 		err  error
 		node *Carservice
@@ -85,5 +174,86 @@ func (cc *CarserviceCreate) createSpec() (*Carservice, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := cc.mutation.Customer(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carservice.FieldCustomer,
+		})
+		c.Customer = value
+	}
+	if value, ok := cc.mutation.Location(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carservice.FieldLocation,
+		})
+		c.Location = value
+	}
+	if value, ok := cc.mutation.Datetime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carservice.FieldDatetime,
+		})
+		c.Datetime = value
+	}
+	if nodes := cc.mutation.UseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UseridTable,
+			Columns: []string{carservice.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.DisidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.DisidTable,
+			Columns: []string{carservice.DisidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: distances.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.UrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UrgentidTable,
+			Columns: []string{carservice.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: urgent.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return c, _spec
 }

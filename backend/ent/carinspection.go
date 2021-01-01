@@ -5,22 +5,102 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/user"
 )
 
 // CarInspection is the model entity for the CarInspection schema.
 type CarInspection struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Datetime holds the value of the "datetime" field.
+	Datetime time.Time `json:"datetime,omitempty"`
+	// Note holds the value of the "note" field.
+	Note string `json:"note,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CarInspectionQuery when eager-loading is set.
+	Edges               CarInspectionEdges `json:"edges"`
+	ambulance_id        *int
+	inspectionresult_id *int
+	user_id             *int
+}
+
+// CarInspectionEdges holds the relations/edges for other nodes in the graph.
+type CarInspectionEdges struct {
+	// User holds the value of the user edge.
+	User *User
+	// Ambulance holds the value of the ambulance edge.
+	Ambulance *Ambulance
+	// Inspectionresult holds the value of the inspectionresult edge.
+	Inspectionresult *InspectionResult
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CarInspectionEdges) UserOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.User == nil {
+			// The edge user was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
+}
+
+// AmbulanceOrErr returns the Ambulance value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CarInspectionEdges) AmbulanceOrErr() (*Ambulance, error) {
+	if e.loadedTypes[1] {
+		if e.Ambulance == nil {
+			// The edge ambulance was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: ambulance.Label}
+		}
+		return e.Ambulance, nil
+	}
+	return nil, &NotLoadedError{edge: "ambulance"}
+}
+
+// InspectionresultOrErr returns the Inspectionresult value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CarInspectionEdges) InspectionresultOrErr() (*InspectionResult, error) {
+	if e.loadedTypes[2] {
+		if e.Inspectionresult == nil {
+			// The edge inspectionresult was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: inspectionresult.Label}
+		}
+		return e.Inspectionresult, nil
+	}
+	return nil, &NotLoadedError{edge: "inspectionresult"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*CarInspection) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // id
+		&sql.NullInt64{},  // id
+		&sql.NullTime{},   // datetime
+		&sql.NullString{}, // note
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*CarInspection) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // ambulance_id
+		&sql.NullInt64{}, // inspectionresult_id
+		&sql.NullInt64{}, // user_id
 	}
 }
 
@@ -36,7 +116,53 @@ func (ci *CarInspection) assignValues(values ...interface{}) error {
 	}
 	ci.ID = int(value.Int64)
 	values = values[1:]
+	if value, ok := values[0].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field datetime", values[0])
+	} else if value.Valid {
+		ci.Datetime = value.Time
+	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field note", values[1])
+	} else if value.Valid {
+		ci.Note = value.String
+	}
+	values = values[2:]
+	if len(values) == len(carinspection.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field ambulance_id", value)
+		} else if value.Valid {
+			ci.ambulance_id = new(int)
+			*ci.ambulance_id = int(value.Int64)
+		}
+		if value, ok := values[1].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field inspectionresult_id", value)
+		} else if value.Valid {
+			ci.inspectionresult_id = new(int)
+			*ci.inspectionresult_id = int(value.Int64)
+		}
+		if value, ok := values[2].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field user_id", value)
+		} else if value.Valid {
+			ci.user_id = new(int)
+			*ci.user_id = int(value.Int64)
+		}
+	}
 	return nil
+}
+
+// QueryUser queries the user edge of the CarInspection.
+func (ci *CarInspection) QueryUser() *UserQuery {
+	return (&CarInspectionClient{config: ci.config}).QueryUser(ci)
+}
+
+// QueryAmbulance queries the ambulance edge of the CarInspection.
+func (ci *CarInspection) QueryAmbulance() *AmbulanceQuery {
+	return (&CarInspectionClient{config: ci.config}).QueryAmbulance(ci)
+}
+
+// QueryInspectionresult queries the inspectionresult edge of the CarInspection.
+func (ci *CarInspection) QueryInspectionresult() *InspectionResultQuery {
+	return (&CarInspectionClient{config: ci.config}).QueryInspectionresult(ci)
 }
 
 // Update returns a builder for updating this CarInspection.
@@ -62,6 +188,10 @@ func (ci *CarInspection) String() string {
 	var builder strings.Builder
 	builder.WriteString("CarInspection(")
 	builder.WriteString(fmt.Sprintf("id=%v", ci.ID))
+	builder.WriteString(", datetime=")
+	builder.WriteString(ci.Datetime.Format(time.ANSIC))
+	builder.WriteString(", note=")
+	builder.WriteString(ci.Note)
 	builder.WriteByte(')')
 	return builder.String()
 }
