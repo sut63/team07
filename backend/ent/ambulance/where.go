@@ -3,7 +3,10 @@
 package ambulance
 
 import (
+	"time"
+
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -87,6 +90,347 @@ func IDLT(id int) predicate.Ambulance {
 func IDLTE(id int) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Carregistration applies equality check predicate on the "carregistration" field. It's identical to CarregistrationEQ.
+func Carregistration(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCarregistration), v))
+	})
+}
+
+// RegisterAt applies equality check predicate on the "register_at" field. It's identical to RegisterAtEQ.
+func RegisterAt(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRegisterAt), v))
+	})
+}
+
+// CarregistrationEQ applies the EQ predicate on the "carregistration" field.
+func CarregistrationEQ(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationNEQ applies the NEQ predicate on the "carregistration" field.
+func CarregistrationNEQ(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationIn applies the In predicate on the "carregistration" field.
+func CarregistrationIn(vs ...string) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCarregistration), v...))
+	})
+}
+
+// CarregistrationNotIn applies the NotIn predicate on the "carregistration" field.
+func CarregistrationNotIn(vs ...string) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCarregistration), v...))
+	})
+}
+
+// CarregistrationGT applies the GT predicate on the "carregistration" field.
+func CarregistrationGT(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationGTE applies the GTE predicate on the "carregistration" field.
+func CarregistrationGTE(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationLT applies the LT predicate on the "carregistration" field.
+func CarregistrationLT(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationLTE applies the LTE predicate on the "carregistration" field.
+func CarregistrationLTE(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationContains applies the Contains predicate on the "carregistration" field.
+func CarregistrationContains(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationHasPrefix applies the HasPrefix predicate on the "carregistration" field.
+func CarregistrationHasPrefix(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationHasSuffix applies the HasSuffix predicate on the "carregistration" field.
+func CarregistrationHasSuffix(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationEqualFold applies the EqualFold predicate on the "carregistration" field.
+func CarregistrationEqualFold(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldCarregistration), v))
+	})
+}
+
+// CarregistrationContainsFold applies the ContainsFold predicate on the "carregistration" field.
+func CarregistrationContainsFold(v string) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldCarregistration), v))
+	})
+}
+
+// RegisterAtEQ applies the EQ predicate on the "register_at" field.
+func RegisterAtEQ(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRegisterAt), v))
+	})
+}
+
+// RegisterAtNEQ applies the NEQ predicate on the "register_at" field.
+func RegisterAtNEQ(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRegisterAt), v))
+	})
+}
+
+// RegisterAtIn applies the In predicate on the "register_at" field.
+func RegisterAtIn(vs ...time.Time) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldRegisterAt), v...))
+	})
+}
+
+// RegisterAtNotIn applies the NotIn predicate on the "register_at" field.
+func RegisterAtNotIn(vs ...time.Time) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldRegisterAt), v...))
+	})
+}
+
+// RegisterAtGT applies the GT predicate on the "register_at" field.
+func RegisterAtGT(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRegisterAt), v))
+	})
+}
+
+// RegisterAtGTE applies the GTE predicate on the "register_at" field.
+func RegisterAtGTE(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRegisterAt), v))
+	})
+}
+
+// RegisterAtLT applies the LT predicate on the "register_at" field.
+func RegisterAtLT(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRegisterAt), v))
+	})
+}
+
+// RegisterAtLTE applies the LTE predicate on the "register_at" field.
+func RegisterAtLTE(v time.Time) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRegisterAt), v))
+	})
+}
+
+// HasHasbrand applies the HasEdge predicate on the "hasbrand" edge.
+func HasHasbrand() predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasbrandTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasbrandTable, HasbrandColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHasbrandWith applies the HasEdge predicate on the "hasbrand" edge with a given conditions (other predicates).
+func HasHasbrandWith(preds ...predicate.Carbrand) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasbrandInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasbrandTable, HasbrandColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHasinsurance applies the HasEdge predicate on the "hasinsurance" edge.
+func HasHasinsurance() predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasinsuranceTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasinsuranceTable, HasinsuranceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHasinsuranceWith applies the HasEdge predicate on the "hasinsurance" edge with a given conditions (other predicates).
+func HasHasinsuranceWith(preds ...predicate.Insurance) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasinsuranceInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasinsuranceTable, HasinsuranceColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHasstatus applies the HasEdge predicate on the "hasstatus" edge.
+func HasHasstatus() predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasstatusTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasstatusTable, HasstatusColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHasstatusWith applies the HasEdge predicate on the "hasstatus" edge with a given conditions (other predicates).
+func HasHasstatusWith(preds ...predicate.Carstatus) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasstatusInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasstatusTable, HasstatusColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasHasuser applies the HasEdge predicate on the "hasuser" edge.
+func HasHasuser() predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasuserTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasuserTable, HasuserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasHasuserWith applies the HasEdge predicate on the "hasuser" edge with a given conditions (other predicates).
+func HasHasuserWith(preds ...predicate.User) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(HasuserInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, HasuserTable, HasuserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCarinspections applies the HasEdge predicate on the "carinspections" edge.
+func HasCarinspections() predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarinspectionsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CarinspectionsTable, CarinspectionsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCarinspectionsWith applies the HasEdge predicate on the "carinspections" edge with a given conditions (other predicates).
+func HasCarinspectionsWith(preds ...predicate.CarInspection) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarinspectionsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CarinspectionsTable, CarinspectionsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 
