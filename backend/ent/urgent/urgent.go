@@ -7,12 +7,30 @@ const (
 	Label = "urgent"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldUrgent holds the string denoting the urgent field in the database.
+	FieldUrgent = "urgent"
+
+	// EdgeUrgentid holds the string denoting the urgentid edge name in mutations.
+	EdgeUrgentid = "urgentid"
 
 	// Table holds the table name of the urgent in the database.
 	Table = "urgents"
+	// UrgentidTable is the table the holds the urgentid relation/edge.
+	UrgentidTable = "carservices"
+	// UrgentidInverseTable is the table name for the Carservice entity.
+	// It exists in this package in order to avoid circular dependency with the "carservice" package.
+	UrgentidInverseTable = "carservices"
+	// UrgentidColumn is the table column denoting the urgentid relation/edge.
+	UrgentidColumn = "urgent_urgentid"
 )
 
 // Columns holds all SQL columns for urgent fields.
 var Columns = []string{
 	FieldID,
+	FieldUrgent,
 }
+
+var (
+	// UrgentValidator is a validator for the "urgent" field. It is called by the builders before save.
+	UrgentValidator func(string) error
+)

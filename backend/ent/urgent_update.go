@@ -9,6 +9,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/urgent"
 )
@@ -27,13 +28,55 @@ func (uu *UrgentUpdate) Where(ps ...predicate.Urgent) *UrgentUpdate {
 	return uu
 }
 
+// SetUrgent sets the urgent field.
+func (uu *UrgentUpdate) SetUrgent(s string) *UrgentUpdate {
+	uu.mutation.SetUrgent(s)
+	return uu
+}
+
+// AddUrgentidIDs adds the urgentid edge to Carservice by ids.
+func (uu *UrgentUpdate) AddUrgentidIDs(ids ...int) *UrgentUpdate {
+	uu.mutation.AddUrgentidIDs(ids...)
+	return uu
+}
+
+// AddUrgentid adds the urgentid edges to Carservice.
+func (uu *UrgentUpdate) AddUrgentid(c ...*Carservice) *UrgentUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.AddUrgentidIDs(ids...)
+}
+
 // Mutation returns the UrgentMutation object of the builder.
 func (uu *UrgentUpdate) Mutation() *UrgentMutation {
 	return uu.mutation
 }
 
+// RemoveUrgentidIDs removes the urgentid edge to Carservice by ids.
+func (uu *UrgentUpdate) RemoveUrgentidIDs(ids ...int) *UrgentUpdate {
+	uu.mutation.RemoveUrgentidIDs(ids...)
+	return uu
+}
+
+// RemoveUrgentid removes urgentid edges to Carservice.
+func (uu *UrgentUpdate) RemoveUrgentid(c ...*Carservice) *UrgentUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.RemoveUrgentidIDs(ids...)
+}
+
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (uu *UrgentUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := uu.mutation.Urgent(); ok {
+		if err := urgent.UrgentValidator(v); err != nil {
+			return 0, &ValidationError{Name: "urgent", err: fmt.Errorf("ent: validator failed for field \"urgent\": %w", err)}
+		}
+	}
+
 	var (
 		err      error
 		affected int
@@ -101,6 +144,51 @@ func (uu *UrgentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := uu.mutation.Urgent(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: urgent.FieldUrgent,
+		})
+	}
+	if nodes := uu.mutation.RemovedUrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   urgent.UrgentidTable,
+			Columns: []string{urgent.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.UrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   urgent.UrgentidTable,
+			Columns: []string{urgent.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{urgent.Label}
@@ -119,13 +207,55 @@ type UrgentUpdateOne struct {
 	mutation *UrgentMutation
 }
 
+// SetUrgent sets the urgent field.
+func (uuo *UrgentUpdateOne) SetUrgent(s string) *UrgentUpdateOne {
+	uuo.mutation.SetUrgent(s)
+	return uuo
+}
+
+// AddUrgentidIDs adds the urgentid edge to Carservice by ids.
+func (uuo *UrgentUpdateOne) AddUrgentidIDs(ids ...int) *UrgentUpdateOne {
+	uuo.mutation.AddUrgentidIDs(ids...)
+	return uuo
+}
+
+// AddUrgentid adds the urgentid edges to Carservice.
+func (uuo *UrgentUpdateOne) AddUrgentid(c ...*Carservice) *UrgentUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.AddUrgentidIDs(ids...)
+}
+
 // Mutation returns the UrgentMutation object of the builder.
 func (uuo *UrgentUpdateOne) Mutation() *UrgentMutation {
 	return uuo.mutation
 }
 
+// RemoveUrgentidIDs removes the urgentid edge to Carservice by ids.
+func (uuo *UrgentUpdateOne) RemoveUrgentidIDs(ids ...int) *UrgentUpdateOne {
+	uuo.mutation.RemoveUrgentidIDs(ids...)
+	return uuo
+}
+
+// RemoveUrgentid removes urgentid edges to Carservice.
+func (uuo *UrgentUpdateOne) RemoveUrgentid(c ...*Carservice) *UrgentUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.RemoveUrgentidIDs(ids...)
+}
+
 // Save executes the query and returns the updated entity.
 func (uuo *UrgentUpdateOne) Save(ctx context.Context) (*Urgent, error) {
+	if v, ok := uuo.mutation.Urgent(); ok {
+		if err := urgent.UrgentValidator(v); err != nil {
+			return nil, &ValidationError{Name: "urgent", err: fmt.Errorf("ent: validator failed for field \"urgent\": %w", err)}
+		}
+	}
+
 	var (
 		err  error
 		node *Urgent
@@ -191,6 +321,51 @@ func (uuo *UrgentUpdateOne) sqlSave(ctx context.Context) (u *Urgent, err error) 
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Urgent.ID for update")}
 	}
 	_spec.Node.ID.Value = id
+	if value, ok := uuo.mutation.Urgent(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: urgent.FieldUrgent,
+		})
+	}
+	if nodes := uuo.mutation.RemovedUrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   urgent.UrgentidTable,
+			Columns: []string{urgent.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.UrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   urgent.UrgentidTable,
+			Columns: []string{urgent.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carservice.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	u = &Urgent{config: uuo.config}
 	_spec.Assign = u.assignValues
 	_spec.ScanValues = u.scanValues()

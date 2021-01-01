@@ -5,22 +5,105 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/team07/app/ent/carservice"
+	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/urgent"
+	"github.com/team07/app/ent/user"
 )
 
 // Carservice is the model entity for the Carservice schema.
 type Carservice struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Customer holds the value of the "customer" field.
+	Customer string `json:"customer,omitempty"`
+	// Location holds the value of the "location" field.
+	Location string `json:"location,omitempty"`
+	// Datetime holds the value of the "Datetime" field.
+	Datetime time.Time `json:"Datetime,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CarserviceQuery when eager-loading is set.
+	Edges           CarserviceEdges `json:"edges"`
+	distances_disid *int
+	urgent_urgentid *int
+	user_id         *int
+}
+
+// CarserviceEdges holds the relations/edges for other nodes in the graph.
+type CarserviceEdges struct {
+	// Userid holds the value of the userid edge.
+	Userid *User
+	// Disid holds the value of the disid edge.
+	Disid *Distances
+	// Urgentid holds the value of the urgentid edge.
+	Urgentid *Urgent
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+}
+
+// UseridOrErr returns the Userid value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CarserviceEdges) UseridOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.Userid == nil {
+			// The edge userid was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.Userid, nil
+	}
+	return nil, &NotLoadedError{edge: "userid"}
+}
+
+// DisidOrErr returns the Disid value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CarserviceEdges) DisidOrErr() (*Distances, error) {
+	if e.loadedTypes[1] {
+		if e.Disid == nil {
+			// The edge disid was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: distances.Label}
+		}
+		return e.Disid, nil
+	}
+	return nil, &NotLoadedError{edge: "disid"}
+}
+
+// UrgentidOrErr returns the Urgentid value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CarserviceEdges) UrgentidOrErr() (*Urgent, error) {
+	if e.loadedTypes[2] {
+		if e.Urgentid == nil {
+			// The edge urgentid was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: urgent.Label}
+		}
+		return e.Urgentid, nil
+	}
+	return nil, &NotLoadedError{edge: "urgentid"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Carservice) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // id
+		&sql.NullInt64{},  // id
+		&sql.NullString{}, // customer
+		&sql.NullString{}, // location
+		&sql.NullTime{},   // Datetime
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*Carservice) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // distances_disid
+		&sql.NullInt64{}, // urgent_urgentid
+		&sql.NullInt64{}, // user_id
 	}
 }
 
@@ -36,7 +119,58 @@ func (c *Carservice) assignValues(values ...interface{}) error {
 	}
 	c.ID = int(value.Int64)
 	values = values[1:]
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field customer", values[0])
+	} else if value.Valid {
+		c.Customer = value.String
+	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field location", values[1])
+	} else if value.Valid {
+		c.Location = value.String
+	}
+	if value, ok := values[2].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field Datetime", values[2])
+	} else if value.Valid {
+		c.Datetime = value.Time
+	}
+	values = values[3:]
+	if len(values) == len(carservice.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field distances_disid", value)
+		} else if value.Valid {
+			c.distances_disid = new(int)
+			*c.distances_disid = int(value.Int64)
+		}
+		if value, ok := values[1].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field urgent_urgentid", value)
+		} else if value.Valid {
+			c.urgent_urgentid = new(int)
+			*c.urgent_urgentid = int(value.Int64)
+		}
+		if value, ok := values[2].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field user_id", value)
+		} else if value.Valid {
+			c.user_id = new(int)
+			*c.user_id = int(value.Int64)
+		}
+	}
 	return nil
+}
+
+// QueryUserid queries the userid edge of the Carservice.
+func (c *Carservice) QueryUserid() *UserQuery {
+	return (&CarserviceClient{config: c.config}).QueryUserid(c)
+}
+
+// QueryDisid queries the disid edge of the Carservice.
+func (c *Carservice) QueryDisid() *DistancesQuery {
+	return (&CarserviceClient{config: c.config}).QueryDisid(c)
+}
+
+// QueryUrgentid queries the urgentid edge of the Carservice.
+func (c *Carservice) QueryUrgentid() *UrgentQuery {
+	return (&CarserviceClient{config: c.config}).QueryUrgentid(c)
 }
 
 // Update returns a builder for updating this Carservice.
@@ -62,6 +196,12 @@ func (c *Carservice) String() string {
 	var builder strings.Builder
 	builder.WriteString("Carservice(")
 	builder.WriteString(fmt.Sprintf("id=%v", c.ID))
+	builder.WriteString(", customer=")
+	builder.WriteString(c.Customer)
+	builder.WriteString(", location=")
+	builder.WriteString(c.Location)
+	builder.WriteString(", Datetime=")
+	builder.WriteString(c.Datetime.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -3,7 +3,10 @@
 package carinspection
 
 import (
+	"time"
+
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -87,6 +90,291 @@ func IDLT(id int) predicate.CarInspection {
 func IDLTE(id int) predicate.CarInspection {
 	return predicate.CarInspection(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Datetime applies equality check predicate on the "datetime" field. It's identical to DatetimeEQ.
+func Datetime(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDatetime), v))
+	})
+}
+
+// Note applies equality check predicate on the "note" field. It's identical to NoteEQ.
+func Note(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNote), v))
+	})
+}
+
+// DatetimeEQ applies the EQ predicate on the "datetime" field.
+func DatetimeEQ(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeNEQ applies the NEQ predicate on the "datetime" field.
+func DatetimeNEQ(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeIn applies the In predicate on the "datetime" field.
+func DatetimeIn(vs ...time.Time) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldDatetime), v...))
+	})
+}
+
+// DatetimeNotIn applies the NotIn predicate on the "datetime" field.
+func DatetimeNotIn(vs ...time.Time) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldDatetime), v...))
+	})
+}
+
+// DatetimeGT applies the GT predicate on the "datetime" field.
+func DatetimeGT(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeGTE applies the GTE predicate on the "datetime" field.
+func DatetimeGTE(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeLT applies the LT predicate on the "datetime" field.
+func DatetimeLT(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeLTE applies the LTE predicate on the "datetime" field.
+func DatetimeLTE(v time.Time) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldDatetime), v))
+	})
+}
+
+// NoteEQ applies the EQ predicate on the "note" field.
+func NoteEQ(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNote), v))
+	})
+}
+
+// NoteNEQ applies the NEQ predicate on the "note" field.
+func NoteNEQ(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNote), v))
+	})
+}
+
+// NoteIn applies the In predicate on the "note" field.
+func NoteIn(vs ...string) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNote), v...))
+	})
+}
+
+// NoteNotIn applies the NotIn predicate on the "note" field.
+func NoteNotIn(vs ...string) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNote), v...))
+	})
+}
+
+// NoteGT applies the GT predicate on the "note" field.
+func NoteGT(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNote), v))
+	})
+}
+
+// NoteGTE applies the GTE predicate on the "note" field.
+func NoteGTE(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNote), v))
+	})
+}
+
+// NoteLT applies the LT predicate on the "note" field.
+func NoteLT(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNote), v))
+	})
+}
+
+// NoteLTE applies the LTE predicate on the "note" field.
+func NoteLTE(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNote), v))
+	})
+}
+
+// NoteContains applies the Contains predicate on the "note" field.
+func NoteContains(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldNote), v))
+	})
+}
+
+// NoteHasPrefix applies the HasPrefix predicate on the "note" field.
+func NoteHasPrefix(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldNote), v))
+	})
+}
+
+// NoteHasSuffix applies the HasSuffix predicate on the "note" field.
+func NoteHasSuffix(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldNote), v))
+	})
+}
+
+// NoteEqualFold applies the EqualFold predicate on the "note" field.
+func NoteEqualFold(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldNote), v))
+	})
+}
+
+// NoteContainsFold applies the ContainsFold predicate on the "note" field.
+func NoteContainsFold(v string) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldNote), v))
+	})
+}
+
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAmbulance applies the HasEdge predicate on the "ambulance" edge.
+func HasAmbulance() predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AmbulanceTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, AmbulanceTable, AmbulanceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAmbulanceWith applies the HasEdge predicate on the "ambulance" edge with a given conditions (other predicates).
+func HasAmbulanceWith(preds ...predicate.Ambulance) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AmbulanceInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, AmbulanceTable, AmbulanceColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasInspectionresult applies the HasEdge predicate on the "inspectionresult" edge.
+func HasInspectionresult() predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(InspectionresultTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, InspectionresultTable, InspectionresultColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasInspectionresultWith applies the HasEdge predicate on the "inspectionresult" edge with a given conditions (other predicates).
+func HasInspectionresultWith(preds ...predicate.InspectionResult) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(InspectionresultInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, InspectionresultTable, InspectionresultColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

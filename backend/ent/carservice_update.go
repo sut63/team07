@@ -5,12 +5,16 @@ package ent
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/carservice"
+	"github.com/team07/app/ent/distances"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/urgent"
+	"github.com/team07/app/ent/user"
 )
 
 // CarserviceUpdate is the builder for updating Carservice entities.
@@ -27,13 +31,107 @@ func (cu *CarserviceUpdate) Where(ps ...predicate.Carservice) *CarserviceUpdate 
 	return cu
 }
 
+// SetCustomer sets the customer field.
+func (cu *CarserviceUpdate) SetCustomer(s string) *CarserviceUpdate {
+	cu.mutation.SetCustomer(s)
+	return cu
+}
+
+// SetLocation sets the location field.
+func (cu *CarserviceUpdate) SetLocation(s string) *CarserviceUpdate {
+	cu.mutation.SetLocation(s)
+	return cu
+}
+
+// SetDatetime sets the Datetime field.
+func (cu *CarserviceUpdate) SetDatetime(t time.Time) *CarserviceUpdate {
+	cu.mutation.SetDatetime(t)
+	return cu
+}
+
+// SetUseridID sets the userid edge to User by id.
+func (cu *CarserviceUpdate) SetUseridID(id int) *CarserviceUpdate {
+	cu.mutation.SetUseridID(id)
+	return cu
+}
+
+// SetNillableUseridID sets the userid edge to User by id if the given value is not nil.
+func (cu *CarserviceUpdate) SetNillableUseridID(id *int) *CarserviceUpdate {
+	if id != nil {
+		cu = cu.SetUseridID(*id)
+	}
+	return cu
+}
+
+// SetUserid sets the userid edge to User.
+func (cu *CarserviceUpdate) SetUserid(u *User) *CarserviceUpdate {
+	return cu.SetUseridID(u.ID)
+}
+
+// SetDisidID sets the disid edge to Distances by id.
+func (cu *CarserviceUpdate) SetDisidID(id int) *CarserviceUpdate {
+	cu.mutation.SetDisidID(id)
+	return cu
+}
+
+// SetNillableDisidID sets the disid edge to Distances by id if the given value is not nil.
+func (cu *CarserviceUpdate) SetNillableDisidID(id *int) *CarserviceUpdate {
+	if id != nil {
+		cu = cu.SetDisidID(*id)
+	}
+	return cu
+}
+
+// SetDisid sets the disid edge to Distances.
+func (cu *CarserviceUpdate) SetDisid(d *Distances) *CarserviceUpdate {
+	return cu.SetDisidID(d.ID)
+}
+
+// SetUrgentidID sets the urgentid edge to Urgent by id.
+func (cu *CarserviceUpdate) SetUrgentidID(id int) *CarserviceUpdate {
+	cu.mutation.SetUrgentidID(id)
+	return cu
+}
+
+// SetNillableUrgentidID sets the urgentid edge to Urgent by id if the given value is not nil.
+func (cu *CarserviceUpdate) SetNillableUrgentidID(id *int) *CarserviceUpdate {
+	if id != nil {
+		cu = cu.SetUrgentidID(*id)
+	}
+	return cu
+}
+
+// SetUrgentid sets the urgentid edge to Urgent.
+func (cu *CarserviceUpdate) SetUrgentid(u *Urgent) *CarserviceUpdate {
+	return cu.SetUrgentidID(u.ID)
+}
+
 // Mutation returns the CarserviceMutation object of the builder.
 func (cu *CarserviceUpdate) Mutation() *CarserviceMutation {
 	return cu.mutation
 }
 
+// ClearUserid clears the userid edge to User.
+func (cu *CarserviceUpdate) ClearUserid() *CarserviceUpdate {
+	cu.mutation.ClearUserid()
+	return cu
+}
+
+// ClearDisid clears the disid edge to Distances.
+func (cu *CarserviceUpdate) ClearDisid() *CarserviceUpdate {
+	cu.mutation.ClearDisid()
+	return cu
+}
+
+// ClearUrgentid clears the urgentid edge to Urgent.
+func (cu *CarserviceUpdate) ClearUrgentid() *CarserviceUpdate {
+	cu.mutation.ClearUrgentid()
+	return cu
+}
+
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (cu *CarserviceUpdate) Save(ctx context.Context) (int, error) {
+
 	var (
 		err      error
 		affected int
@@ -101,6 +199,132 @@ func (cu *CarserviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := cu.mutation.Customer(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carservice.FieldCustomer,
+		})
+	}
+	if value, ok := cu.mutation.Location(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carservice.FieldLocation,
+		})
+	}
+	if value, ok := cu.mutation.Datetime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carservice.FieldDatetime,
+		})
+	}
+	if cu.mutation.UseridCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UseridTable,
+			Columns: []string{carservice.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.UseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UseridTable,
+			Columns: []string{carservice.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.DisidCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.DisidTable,
+			Columns: []string{carservice.DisidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: distances.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.DisidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.DisidTable,
+			Columns: []string{carservice.DisidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: distances.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.UrgentidCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UrgentidTable,
+			Columns: []string{carservice.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: urgent.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.UrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UrgentidTable,
+			Columns: []string{carservice.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: urgent.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{carservice.Label}
@@ -119,13 +343,107 @@ type CarserviceUpdateOne struct {
 	mutation *CarserviceMutation
 }
 
+// SetCustomer sets the customer field.
+func (cuo *CarserviceUpdateOne) SetCustomer(s string) *CarserviceUpdateOne {
+	cuo.mutation.SetCustomer(s)
+	return cuo
+}
+
+// SetLocation sets the location field.
+func (cuo *CarserviceUpdateOne) SetLocation(s string) *CarserviceUpdateOne {
+	cuo.mutation.SetLocation(s)
+	return cuo
+}
+
+// SetDatetime sets the Datetime field.
+func (cuo *CarserviceUpdateOne) SetDatetime(t time.Time) *CarserviceUpdateOne {
+	cuo.mutation.SetDatetime(t)
+	return cuo
+}
+
+// SetUseridID sets the userid edge to User by id.
+func (cuo *CarserviceUpdateOne) SetUseridID(id int) *CarserviceUpdateOne {
+	cuo.mutation.SetUseridID(id)
+	return cuo
+}
+
+// SetNillableUseridID sets the userid edge to User by id if the given value is not nil.
+func (cuo *CarserviceUpdateOne) SetNillableUseridID(id *int) *CarserviceUpdateOne {
+	if id != nil {
+		cuo = cuo.SetUseridID(*id)
+	}
+	return cuo
+}
+
+// SetUserid sets the userid edge to User.
+func (cuo *CarserviceUpdateOne) SetUserid(u *User) *CarserviceUpdateOne {
+	return cuo.SetUseridID(u.ID)
+}
+
+// SetDisidID sets the disid edge to Distances by id.
+func (cuo *CarserviceUpdateOne) SetDisidID(id int) *CarserviceUpdateOne {
+	cuo.mutation.SetDisidID(id)
+	return cuo
+}
+
+// SetNillableDisidID sets the disid edge to Distances by id if the given value is not nil.
+func (cuo *CarserviceUpdateOne) SetNillableDisidID(id *int) *CarserviceUpdateOne {
+	if id != nil {
+		cuo = cuo.SetDisidID(*id)
+	}
+	return cuo
+}
+
+// SetDisid sets the disid edge to Distances.
+func (cuo *CarserviceUpdateOne) SetDisid(d *Distances) *CarserviceUpdateOne {
+	return cuo.SetDisidID(d.ID)
+}
+
+// SetUrgentidID sets the urgentid edge to Urgent by id.
+func (cuo *CarserviceUpdateOne) SetUrgentidID(id int) *CarserviceUpdateOne {
+	cuo.mutation.SetUrgentidID(id)
+	return cuo
+}
+
+// SetNillableUrgentidID sets the urgentid edge to Urgent by id if the given value is not nil.
+func (cuo *CarserviceUpdateOne) SetNillableUrgentidID(id *int) *CarserviceUpdateOne {
+	if id != nil {
+		cuo = cuo.SetUrgentidID(*id)
+	}
+	return cuo
+}
+
+// SetUrgentid sets the urgentid edge to Urgent.
+func (cuo *CarserviceUpdateOne) SetUrgentid(u *Urgent) *CarserviceUpdateOne {
+	return cuo.SetUrgentidID(u.ID)
+}
+
 // Mutation returns the CarserviceMutation object of the builder.
 func (cuo *CarserviceUpdateOne) Mutation() *CarserviceMutation {
 	return cuo.mutation
 }
 
+// ClearUserid clears the userid edge to User.
+func (cuo *CarserviceUpdateOne) ClearUserid() *CarserviceUpdateOne {
+	cuo.mutation.ClearUserid()
+	return cuo
+}
+
+// ClearDisid clears the disid edge to Distances.
+func (cuo *CarserviceUpdateOne) ClearDisid() *CarserviceUpdateOne {
+	cuo.mutation.ClearDisid()
+	return cuo
+}
+
+// ClearUrgentid clears the urgentid edge to Urgent.
+func (cuo *CarserviceUpdateOne) ClearUrgentid() *CarserviceUpdateOne {
+	cuo.mutation.ClearUrgentid()
+	return cuo
+}
+
 // Save executes the query and returns the updated entity.
 func (cuo *CarserviceUpdateOne) Save(ctx context.Context) (*Carservice, error) {
+
 	var (
 		err  error
 		node *Carservice
@@ -191,6 +509,132 @@ func (cuo *CarserviceUpdateOne) sqlSave(ctx context.Context) (c *Carservice, err
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Carservice.ID for update")}
 	}
 	_spec.Node.ID.Value = id
+	if value, ok := cuo.mutation.Customer(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carservice.FieldCustomer,
+		})
+	}
+	if value, ok := cuo.mutation.Location(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carservice.FieldLocation,
+		})
+	}
+	if value, ok := cuo.mutation.Datetime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carservice.FieldDatetime,
+		})
+	}
+	if cuo.mutation.UseridCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UseridTable,
+			Columns: []string{carservice.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.UseridIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UseridTable,
+			Columns: []string{carservice.UseridColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.DisidCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.DisidTable,
+			Columns: []string{carservice.DisidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: distances.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.DisidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.DisidTable,
+			Columns: []string{carservice.DisidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: distances.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.UrgentidCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UrgentidTable,
+			Columns: []string{carservice.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: urgent.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.UrgentidIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carservice.UrgentidTable,
+			Columns: []string{carservice.UrgentidColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: urgent.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	c = &Carservice{config: cuo.config}
 	_spec.Assign = c.assignValues
 	_spec.ScanValues = c.scanValues()
