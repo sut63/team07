@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/user"
 )
 
@@ -15,18 +16,88 @@ type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Age holds the value of the "age" field.
-	Age int `json:"age,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Email holds the value of the "email" field.
+	Email string `json:"email,omitempty"`
+	// Password holds the value of the "password" field.
+	Password string `json:"password,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges          UserEdges `json:"edges"`
+	jobposition_id *int
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Jobposition holds the value of the jobposition edge.
+	Jobposition *JobPosition
+	// Userof holds the value of the userof edge.
+	Userof []*Ambulance
+	// Userid holds the value of the userid edge.
+	Userid []*Carservice
+	// Carinspections holds the value of the carinspections edge.
+	Carinspections []*CarInspection
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [4]bool
+}
+
+// JobpositionOrErr returns the Jobposition value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) JobpositionOrErr() (*JobPosition, error) {
+	if e.loadedTypes[0] {
+		if e.Jobposition == nil {
+			// The edge jobposition was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: jobposition.Label}
+		}
+		return e.Jobposition, nil
+	}
+	return nil, &NotLoadedError{edge: "jobposition"}
+}
+
+// UserofOrErr returns the Userof value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) UserofOrErr() ([]*Ambulance, error) {
+	if e.loadedTypes[1] {
+		return e.Userof, nil
+	}
+	return nil, &NotLoadedError{edge: "userof"}
+}
+
+// UseridOrErr returns the Userid value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) UseridOrErr() ([]*Carservice, error) {
+	if e.loadedTypes[2] {
+		return e.Userid, nil
+	}
+	return nil, &NotLoadedError{edge: "userid"}
+}
+
+// CarinspectionsOrErr returns the Carinspections value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) CarinspectionsOrErr() ([]*CarInspection, error) {
+	if e.loadedTypes[3] {
+		return e.Carinspections, nil
+	}
+	return nil, &NotLoadedError{edge: "carinspections"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*User) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
-		&sql.NullInt64{},  // age
 		&sql.NullString{}, // name
+		&sql.NullString{}, // email
+		&sql.NullString{}, // password
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*User) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // jobposition_id
 	}
 }
 
@@ -42,17 +113,51 @@ func (u *User) assignValues(values ...interface{}) error {
 	}
 	u.ID = int(value.Int64)
 	values = values[1:]
-	if value, ok := values[0].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field age", values[0])
-	} else if value.Valid {
-		u.Age = int(value.Int64)
-	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field name", values[1])
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field name", values[0])
 	} else if value.Valid {
 		u.Name = value.String
 	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field email", values[1])
+	} else if value.Valid {
+		u.Email = value.String
+	}
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field password", values[2])
+	} else if value.Valid {
+		u.Password = value.String
+	}
+	values = values[3:]
+	if len(values) == len(user.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field jobposition_id", value)
+		} else if value.Valid {
+			u.jobposition_id = new(int)
+			*u.jobposition_id = int(value.Int64)
+		}
+	}
 	return nil
+}
+
+// QueryJobposition queries the jobposition edge of the User.
+func (u *User) QueryJobposition() *JobPositionQuery {
+	return (&UserClient{config: u.config}).QueryJobposition(u)
+}
+
+// QueryUserof queries the userof edge of the User.
+func (u *User) QueryUserof() *AmbulanceQuery {
+	return (&UserClient{config: u.config}).QueryUserof(u)
+}
+
+// QueryUserid queries the userid edge of the User.
+func (u *User) QueryUserid() *CarserviceQuery {
+	return (&UserClient{config: u.config}).QueryUserid(u)
+}
+
+// QueryCarinspections queries the carinspections edge of the User.
+func (u *User) QueryCarinspections() *CarInspectionQuery {
+	return (&UserClient{config: u.config}).QueryCarinspections(u)
 }
 
 // Update returns a builder for updating this User.
@@ -78,10 +183,12 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
-	builder.WriteString(", age=")
-	builder.WriteString(fmt.Sprintf("%v", u.Age))
 	builder.WriteString(", name=")
 	builder.WriteString(u.Name)
+	builder.WriteString(", email=")
+	builder.WriteString(u.Email)
+	builder.WriteString(", password=")
+	builder.WriteString(u.Password)
 	builder.WriteByte(')')
 	return builder.String()
 }

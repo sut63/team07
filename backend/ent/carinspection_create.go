@@ -4,11 +4,16 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/user"
 )
 
 // CarInspectionCreate is the builder for creating a CarInspection entity.
@@ -18,6 +23,75 @@ type CarInspectionCreate struct {
 	hooks    []Hook
 }
 
+// SetDatetime sets the datetime field.
+func (cic *CarInspectionCreate) SetDatetime(t time.Time) *CarInspectionCreate {
+	cic.mutation.SetDatetime(t)
+	return cic
+}
+
+// SetNote sets the note field.
+func (cic *CarInspectionCreate) SetNote(s string) *CarInspectionCreate {
+	cic.mutation.SetNote(s)
+	return cic
+}
+
+// SetUserID sets the user edge to User by id.
+func (cic *CarInspectionCreate) SetUserID(id int) *CarInspectionCreate {
+	cic.mutation.SetUserID(id)
+	return cic
+}
+
+// SetNillableUserID sets the user edge to User by id if the given value is not nil.
+func (cic *CarInspectionCreate) SetNillableUserID(id *int) *CarInspectionCreate {
+	if id != nil {
+		cic = cic.SetUserID(*id)
+	}
+	return cic
+}
+
+// SetUser sets the user edge to User.
+func (cic *CarInspectionCreate) SetUser(u *User) *CarInspectionCreate {
+	return cic.SetUserID(u.ID)
+}
+
+// SetAmbulanceID sets the ambulance edge to Ambulance by id.
+func (cic *CarInspectionCreate) SetAmbulanceID(id int) *CarInspectionCreate {
+	cic.mutation.SetAmbulanceID(id)
+	return cic
+}
+
+// SetNillableAmbulanceID sets the ambulance edge to Ambulance by id if the given value is not nil.
+func (cic *CarInspectionCreate) SetNillableAmbulanceID(id *int) *CarInspectionCreate {
+	if id != nil {
+		cic = cic.SetAmbulanceID(*id)
+	}
+	return cic
+}
+
+// SetAmbulance sets the ambulance edge to Ambulance.
+func (cic *CarInspectionCreate) SetAmbulance(a *Ambulance) *CarInspectionCreate {
+	return cic.SetAmbulanceID(a.ID)
+}
+
+// SetInspectionresultID sets the inspectionresult edge to InspectionResult by id.
+func (cic *CarInspectionCreate) SetInspectionresultID(id int) *CarInspectionCreate {
+	cic.mutation.SetInspectionresultID(id)
+	return cic
+}
+
+// SetNillableInspectionresultID sets the inspectionresult edge to InspectionResult by id if the given value is not nil.
+func (cic *CarInspectionCreate) SetNillableInspectionresultID(id *int) *CarInspectionCreate {
+	if id != nil {
+		cic = cic.SetInspectionresultID(*id)
+	}
+	return cic
+}
+
+// SetInspectionresult sets the inspectionresult edge to InspectionResult.
+func (cic *CarInspectionCreate) SetInspectionresult(i *InspectionResult) *CarInspectionCreate {
+	return cic.SetInspectionresultID(i.ID)
+}
+
 // Mutation returns the CarInspectionMutation object of the builder.
 func (cic *CarInspectionCreate) Mutation() *CarInspectionMutation {
 	return cic.mutation
@@ -25,6 +99,12 @@ func (cic *CarInspectionCreate) Mutation() *CarInspectionMutation {
 
 // Save creates the CarInspection in the database.
 func (cic *CarInspectionCreate) Save(ctx context.Context) (*CarInspection, error) {
+	if _, ok := cic.mutation.Datetime(); !ok {
+		return nil, &ValidationError{Name: "datetime", err: errors.New("ent: missing required field \"datetime\"")}
+	}
+	if _, ok := cic.mutation.Note(); !ok {
+		return nil, &ValidationError{Name: "note", err: errors.New("ent: missing required field \"note\"")}
+	}
 	var (
 		err  error
 		node *CarInspection
@@ -85,5 +165,78 @@ func (cic *CarInspectionCreate) createSpec() (*CarInspection, *sqlgraph.CreateSp
 			},
 		}
 	)
+	if value, ok := cic.mutation.Datetime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carinspection.FieldDatetime,
+		})
+		ci.Datetime = value
+	}
+	if value, ok := cic.mutation.Note(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carinspection.FieldNote,
+		})
+		ci.Note = value
+	}
+	if nodes := cic.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carinspection.UserTable,
+			Columns: []string{carinspection.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cic.mutation.AmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carinspection.AmbulanceTable,
+			Columns: []string{carinspection.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cic.mutation.InspectionresultIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carinspection.InspectionresultTable,
+			Columns: []string{carinspection.InspectionresultColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: inspectionresult.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return ci, _spec
 }
