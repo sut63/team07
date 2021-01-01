@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/facebookincubator/ent"
+	"github.com/facebookincubator/ent/schema/edge"
 )
 
 // Carservice holds the schema definition for the Carservice entity.
