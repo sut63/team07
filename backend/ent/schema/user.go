@@ -27,6 +27,8 @@ func (User) Edges() []ent.Edge {
 			Ref("users").
 			Unique(),
 		edge.To("userof",Ambulance.Type).
+			StorageKey(edge.Column("user_id")),
+		edge.To("userid",Carservice.Type).
 		    StorageKey(edge.Column("user_id")),
 		    
 	}
