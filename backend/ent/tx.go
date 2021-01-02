@@ -26,8 +26,6 @@ type Tx struct {
 	Carregister *CarregisterClient
 	// Carservice is the client for interacting with the Carservice builders.
 	Carservice *CarserviceClient
-	// Carstatus is the client for interacting with the Carstatus builders.
-	Carstatus *CarstatusClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
 	// Distances is the client for interacting with the Distances builders.
@@ -186,7 +184,6 @@ func (tx *Tx) init() {
 	tx.Carbrand = NewCarbrandClient(tx.config)
 	tx.Carregister = NewCarregisterClient(tx.config)
 	tx.Carservice = NewCarserviceClient(tx.config)
-	tx.Carstatus = NewCarstatusClient(tx.config)
 	tx.Deliver = NewDeliverClient(tx.config)
 	tx.Distances = NewDistancesClient(tx.config)
 	tx.InspectionResult = NewInspectionResultClient(tx.config)

@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/predicate"
@@ -27,6 +28,7 @@ type InspectionResultQuery struct {
 	predicates []predicate.InspectionResult
 	// eager-loading edges.
 	withCarinspections *CarInspectionQuery
+	withStatusof       *AmbulanceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -67,6 +69,24 @@ func (irq *InspectionResultQuery) QueryCarinspections() *CarInspectionQuery {
 			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, irq.sqlQuery()),
 			sqlgraph.To(carinspection.Table, carinspection.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, inspectionresult.CarinspectionsTable, inspectionresult.CarinspectionsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(irq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStatusof chains the current query on the statusof edge.
+func (irq *InspectionResultQuery) QueryStatusof() *AmbulanceQuery {
+	query := &AmbulanceQuery{config: irq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := irq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, irq.sqlQuery()),
+			sqlgraph.To(ambulance.Table, ambulance.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, inspectionresult.StatusofTable, inspectionresult.StatusofColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(irq.driver.Dialect(), step)
 		return fromU, nil
@@ -264,6 +284,17 @@ func (irq *InspectionResultQuery) WithCarinspections(opts ...func(*CarInspection
 	return irq
 }
 
+//  WithStatusof tells the query-builder to eager-loads the nodes that are connected to
+// the "statusof" edge. The optional arguments used to configure the query builder of the edge.
+func (irq *InspectionResultQuery) WithStatusof(opts ...func(*AmbulanceQuery)) *InspectionResultQuery {
+	query := &AmbulanceQuery{config: irq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	irq.withStatusof = query
+	return irq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -330,8 +361,9 @@ func (irq *InspectionResultQuery) sqlAll(ctx context.Context) ([]*InspectionResu
 	var (
 		nodes       = []*InspectionResult{}
 		_spec       = irq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			irq.withCarinspections != nil,
+			irq.withStatusof != nil,
 		}
 	)
 	_spec.ScanValues = func() []interface{} {
@@ -380,6 +412,34 @@ func (irq *InspectionResultQuery) sqlAll(ctx context.Context) ([]*InspectionResu
 				return nil, fmt.Errorf(`unexpected foreign-key "inspectionresult_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Carinspections = append(node.Edges.Carinspections, n)
+		}
+	}
+
+	if query := irq.withStatusof; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*InspectionResult)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Ambulance(func(s *sql.Selector) {
+			s.Where(sql.InValues(inspectionresult.StatusofColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.carstatus_id
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "carstatus_id" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "carstatus_id" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Statusof = append(node.Edges.Statusof, n)
 		}
 	}
 

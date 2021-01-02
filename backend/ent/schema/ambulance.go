@@ -18,7 +18,7 @@ func (Ambulance) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("carregistration").
 			Unique(),
-		field.Time("register_at").
+		field.Time("registerat").
 			Default(time.Now),
 	}
 }
@@ -32,7 +32,7 @@ func (Ambulance) Edges() []ent.Edge {
 		edge.From("hasinsurance", Insurance.Type).
 			Ref("insuranceof").
 			Unique(),
-		edge.From("hasstatus", Carstatus.Type).
+		edge.From("hasstatus", InspectionResult.Type).
 			Ref("statusof").
 			Unique(),
 		edge.From("hasuser", User.Type).

@@ -13,7 +13,7 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carbrand"
 	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/carstatus"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/user"
 )
@@ -31,16 +31,16 @@ func (ac *AmbulanceCreate) SetCarregistration(s string) *AmbulanceCreate {
 	return ac
 }
 
-// SetRegisterAt sets the register_at field.
-func (ac *AmbulanceCreate) SetRegisterAt(t time.Time) *AmbulanceCreate {
-	ac.mutation.SetRegisterAt(t)
+// SetRegisterat sets the registerat field.
+func (ac *AmbulanceCreate) SetRegisterat(t time.Time) *AmbulanceCreate {
+	ac.mutation.SetRegisterat(t)
 	return ac
 }
 
-// SetNillableRegisterAt sets the register_at field if the given value is not nil.
-func (ac *AmbulanceCreate) SetNillableRegisterAt(t *time.Time) *AmbulanceCreate {
+// SetNillableRegisterat sets the registerat field if the given value is not nil.
+func (ac *AmbulanceCreate) SetNillableRegisterat(t *time.Time) *AmbulanceCreate {
 	if t != nil {
-		ac.SetRegisterAt(*t)
+		ac.SetRegisterat(*t)
 	}
 	return ac
 }
@@ -83,13 +83,13 @@ func (ac *AmbulanceCreate) SetHasinsurance(i *Insurance) *AmbulanceCreate {
 	return ac.SetHasinsuranceID(i.ID)
 }
 
-// SetHasstatusID sets the hasstatus edge to Carstatus by id.
+// SetHasstatusID sets the hasstatus edge to InspectionResult by id.
 func (ac *AmbulanceCreate) SetHasstatusID(id int) *AmbulanceCreate {
 	ac.mutation.SetHasstatusID(id)
 	return ac
 }
 
-// SetNillableHasstatusID sets the hasstatus edge to Carstatus by id if the given value is not nil.
+// SetNillableHasstatusID sets the hasstatus edge to InspectionResult by id if the given value is not nil.
 func (ac *AmbulanceCreate) SetNillableHasstatusID(id *int) *AmbulanceCreate {
 	if id != nil {
 		ac = ac.SetHasstatusID(*id)
@@ -97,9 +97,9 @@ func (ac *AmbulanceCreate) SetNillableHasstatusID(id *int) *AmbulanceCreate {
 	return ac
 }
 
-// SetHasstatus sets the hasstatus edge to Carstatus.
-func (ac *AmbulanceCreate) SetHasstatus(c *Carstatus) *AmbulanceCreate {
-	return ac.SetHasstatusID(c.ID)
+// SetHasstatus sets the hasstatus edge to InspectionResult.
+func (ac *AmbulanceCreate) SetHasstatus(i *InspectionResult) *AmbulanceCreate {
+	return ac.SetHasstatusID(i.ID)
 }
 
 // SetHasuserID sets the hasuser edge to User by id.
@@ -146,9 +146,9 @@ func (ac *AmbulanceCreate) Save(ctx context.Context) (*Ambulance, error) {
 	if _, ok := ac.mutation.Carregistration(); !ok {
 		return nil, &ValidationError{Name: "carregistration", err: errors.New("ent: missing required field \"carregistration\"")}
 	}
-	if _, ok := ac.mutation.RegisterAt(); !ok {
-		v := ambulance.DefaultRegisterAt()
-		ac.mutation.SetRegisterAt(v)
+	if _, ok := ac.mutation.Registerat(); !ok {
+		v := ambulance.DefaultRegisterat()
+		ac.mutation.SetRegisterat(v)
 	}
 	var (
 		err  error
@@ -218,13 +218,13 @@ func (ac *AmbulanceCreate) createSpec() (*Ambulance, *sqlgraph.CreateSpec) {
 		})
 		a.Carregistration = value
 	}
-	if value, ok := ac.mutation.RegisterAt(); ok {
+	if value, ok := ac.mutation.Registerat(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: ambulance.FieldRegisterAt,
+			Column: ambulance.FieldRegisterat,
 		})
-		a.RegisterAt = value
+		a.Registerat = value
 	}
 	if nodes := ac.mutation.HasbrandIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -274,7 +274,7 @@ func (ac *AmbulanceCreate) createSpec() (*Ambulance, *sqlgraph.CreateSpec) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: carstatus.FieldID,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}

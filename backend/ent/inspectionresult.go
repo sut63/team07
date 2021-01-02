@@ -26,9 +26,11 @@ type InspectionResult struct {
 type InspectionResultEdges struct {
 	// Carinspections holds the value of the carinspections edge.
 	Carinspections []*CarInspection
+	// Statusof holds the value of the statusof edge.
+	Statusof []*Ambulance
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // CarinspectionsOrErr returns the Carinspections value or an error if the edge
@@ -38,6 +40,15 @@ func (e InspectionResultEdges) CarinspectionsOrErr() ([]*CarInspection, error) {
 		return e.Carinspections, nil
 	}
 	return nil, &NotLoadedError{edge: "carinspections"}
+}
+
+// StatusofOrErr returns the Statusof value or an error if the edge
+// was not loaded in eager-loading.
+func (e InspectionResultEdges) StatusofOrErr() ([]*Ambulance, error) {
+	if e.loadedTypes[1] {
+		return e.Statusof, nil
+	}
+	return nil, &NotLoadedError{edge: "statusof"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -71,6 +82,11 @@ func (ir *InspectionResult) assignValues(values ...interface{}) error {
 // QueryCarinspections queries the carinspections edge of the InspectionResult.
 func (ir *InspectionResult) QueryCarinspections() *CarInspectionQuery {
 	return (&InspectionResultClient{config: ir.config}).QueryCarinspections(ir)
+}
+
+// QueryStatusof queries the statusof edge of the InspectionResult.
+func (ir *InspectionResult) QueryStatusof() *AmbulanceQuery {
+	return (&InspectionResultClient{config: ir.config}).QueryStatusof(ir)
 }
 
 // Update returns a builder for updating this InspectionResult.

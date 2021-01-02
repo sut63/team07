@@ -237,6 +237,34 @@ func HasCarinspectionsWith(preds ...predicate.CarInspection) predicate.Inspectio
 	})
 }
 
+// HasStatusof applies the HasEdge predicate on the "statusof" edge.
+func HasStatusof() predicate.InspectionResult {
+	return predicate.InspectionResult(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(StatusofTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, StatusofTable, StatusofColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStatusofWith applies the HasEdge predicate on the "statusof" edge with a given conditions (other predicates).
+func HasStatusofWith(preds ...predicate.Ambulance) predicate.InspectionResult {
+	return predicate.InspectionResult(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(StatusofInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, StatusofTable, StatusofColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.InspectionResult) predicate.InspectionResult {
 	return predicate.InspectionResult(func(s *sql.Selector) {

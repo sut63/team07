@@ -9,6 +9,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/predicate"
@@ -49,6 +50,21 @@ func (iru *InspectionResultUpdate) AddCarinspections(c ...*CarInspection) *Inspe
 	return iru.AddCarinspectionIDs(ids...)
 }
 
+// AddStatusofIDs adds the statusof edge to Ambulance by ids.
+func (iru *InspectionResultUpdate) AddStatusofIDs(ids ...int) *InspectionResultUpdate {
+	iru.mutation.AddStatusofIDs(ids...)
+	return iru
+}
+
+// AddStatusof adds the statusof edges to Ambulance.
+func (iru *InspectionResultUpdate) AddStatusof(a ...*Ambulance) *InspectionResultUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return iru.AddStatusofIDs(ids...)
+}
+
 // Mutation returns the InspectionResultMutation object of the builder.
 func (iru *InspectionResultUpdate) Mutation() *InspectionResultMutation {
 	return iru.mutation
@@ -67,6 +83,21 @@ func (iru *InspectionResultUpdate) RemoveCarinspections(c ...*CarInspection) *In
 		ids[i] = c[i].ID
 	}
 	return iru.RemoveCarinspectionIDs(ids...)
+}
+
+// RemoveStatusofIDs removes the statusof edge to Ambulance by ids.
+func (iru *InspectionResultUpdate) RemoveStatusofIDs(ids ...int) *InspectionResultUpdate {
+	iru.mutation.RemoveStatusofIDs(ids...)
+	return iru
+}
+
+// RemoveStatusof removes statusof edges to Ambulance.
+func (iru *InspectionResultUpdate) RemoveStatusof(a ...*Ambulance) *InspectionResultUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return iru.RemoveStatusofIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -189,6 +220,44 @@ func (iru *InspectionResultUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := iru.mutation.RemovedStatusofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   inspectionresult.StatusofTable,
+			Columns: []string{inspectionresult.StatusofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iru.mutation.StatusofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   inspectionresult.StatusofTable,
+			Columns: []string{inspectionresult.StatusofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{inspectionresult.Label}
@@ -228,6 +297,21 @@ func (iruo *InspectionResultUpdateOne) AddCarinspections(c ...*CarInspection) *I
 	return iruo.AddCarinspectionIDs(ids...)
 }
 
+// AddStatusofIDs adds the statusof edge to Ambulance by ids.
+func (iruo *InspectionResultUpdateOne) AddStatusofIDs(ids ...int) *InspectionResultUpdateOne {
+	iruo.mutation.AddStatusofIDs(ids...)
+	return iruo
+}
+
+// AddStatusof adds the statusof edges to Ambulance.
+func (iruo *InspectionResultUpdateOne) AddStatusof(a ...*Ambulance) *InspectionResultUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return iruo.AddStatusofIDs(ids...)
+}
+
 // Mutation returns the InspectionResultMutation object of the builder.
 func (iruo *InspectionResultUpdateOne) Mutation() *InspectionResultMutation {
 	return iruo.mutation
@@ -246,6 +330,21 @@ func (iruo *InspectionResultUpdateOne) RemoveCarinspections(c ...*CarInspection)
 		ids[i] = c[i].ID
 	}
 	return iruo.RemoveCarinspectionIDs(ids...)
+}
+
+// RemoveStatusofIDs removes the statusof edge to Ambulance by ids.
+func (iruo *InspectionResultUpdateOne) RemoveStatusofIDs(ids ...int) *InspectionResultUpdateOne {
+	iruo.mutation.RemoveStatusofIDs(ids...)
+	return iruo
+}
+
+// RemoveStatusof removes statusof edges to Ambulance.
+func (iruo *InspectionResultUpdateOne) RemoveStatusof(a ...*Ambulance) *InspectionResultUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return iruo.RemoveStatusofIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -358,6 +457,44 @@ func (iruo *InspectionResultUpdateOne) sqlSave(ctx context.Context) (ir *Inspect
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := iruo.mutation.RemovedStatusofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   inspectionresult.StatusofTable,
+			Columns: []string{inspectionresult.StatusofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iruo.mutation.StatusofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   inspectionresult.StatusofTable,
+			Columns: []string{inspectionresult.StatusofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
 				},
 			},
 		}

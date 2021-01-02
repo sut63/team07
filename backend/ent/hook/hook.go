@@ -100,19 +100,6 @@ func (f CarserviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return f(ctx, mv)
 }
 
-// The CarstatusFunc type is an adapter to allow the use of ordinary
-// function as Carstatus mutator.
-type CarstatusFunc func(context.Context, *ent.CarstatusMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f CarstatusFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.CarstatusMutation)
-	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CarstatusMutation", m)
-	}
-	return f(ctx, mv)
-}
-
 // The DeliverFunc type is an adapter to allow the use of ordinary
 // function as Deliver mutator.
 type DeliverFunc func(context.Context, *ent.DeliverMutation) (ent.Value, error)

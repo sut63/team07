@@ -12,9 +12,9 @@ var (
 	AmbulancesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "carregistration", Type: field.TypeString, Unique: true},
-		{Name: "register_at", Type: field.TypeTime},
+		{Name: "registerat", Type: field.TypeTime},
 		{Name: "brand_id", Type: field.TypeInt, Nullable: true},
-		{Name: "status_id", Type: field.TypeInt, Nullable: true},
+		{Name: "carstatus_id", Type: field.TypeInt, Nullable: true},
 		{Name: "insurance_id", Type: field.TypeInt, Nullable: true},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -32,10 +32,10 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:  "ambulances_carstatuses_statusof",
+				Symbol:  "ambulances_inspection_results_statusof",
 				Columns: []*schema.Column{AmbulancesColumns[4]},
 
-				RefColumns: []*schema.Column{CarstatusesColumns[0]},
+				RefColumns: []*schema.Column{InspectionResultsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
@@ -176,18 +176,6 @@ var (
 			},
 		},
 	}
-	// CarstatusesColumns holds the columns for the "carstatuses" table.
-	CarstatusesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "carstatus", Type: field.TypeString, Unique: true},
-	}
-	// CarstatusesTable holds the schema information for the "carstatuses" table.
-	CarstatusesTable = &schema.Table{
-		Name:        "carstatuses",
-		Columns:     CarstatusesColumns,
-		PrimaryKey:  []*schema.Column{CarstatusesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
-	}
 	// DeliversColumns holds the columns for the "delivers" table.
 	DeliversColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -303,7 +291,6 @@ var (
 		CarbrandsTable,
 		CarregistersTable,
 		CarservicesTable,
-		CarstatusesTable,
 		DeliversTable,
 		DistancesTable,
 		InspectionResultsTable,
@@ -317,7 +304,7 @@ var (
 
 func init() {
 	AmbulancesTable.ForeignKeys[0].RefTable = CarbrandsTable
-	AmbulancesTable.ForeignKeys[1].RefTable = CarstatusesTable
+	AmbulancesTable.ForeignKeys[1].RefTable = InspectionResultsTable
 	AmbulancesTable.ForeignKeys[2].RefTable = InsurancesTable
 	AmbulancesTable.ForeignKeys[3].RefTable = UsersTable
 	CarInspectionsTable.ForeignKeys[0].RefTable = AmbulancesTable

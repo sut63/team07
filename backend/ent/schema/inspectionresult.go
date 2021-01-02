@@ -22,6 +22,8 @@ func (InspectionResult) Fields() []ent.Field {
 func (InspectionResult) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("carinspections",CarInspection.Type).
-		    StorageKey(edge.Column("inspectionresult_id")),
+			StorageKey(edge.Column("inspectionresult_id")),
+		edge.To("statusof", Ambulance.Type).
+			StorageKey(edge.Column("carstatus_id")),
 	}
 }

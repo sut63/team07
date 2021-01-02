@@ -100,10 +100,10 @@ func Carregistration(v string) predicate.Ambulance {
 	})
 }
 
-// RegisterAt applies equality check predicate on the "register_at" field. It's identical to RegisterAtEQ.
-func RegisterAt(v time.Time) predicate.Ambulance {
+// Registerat applies equality check predicate on the "registerat" field. It's identical to RegisteratEQ.
+func Registerat(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRegisterAt), v))
+		s.Where(sql.EQ(s.C(FieldRegisterat), v))
 	})
 }
 
@@ -218,22 +218,22 @@ func CarregistrationContainsFold(v string) predicate.Ambulance {
 	})
 }
 
-// RegisterAtEQ applies the EQ predicate on the "register_at" field.
-func RegisterAtEQ(v time.Time) predicate.Ambulance {
+// RegisteratEQ applies the EQ predicate on the "registerat" field.
+func RegisteratEQ(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRegisterAt), v))
+		s.Where(sql.EQ(s.C(FieldRegisterat), v))
 	})
 }
 
-// RegisterAtNEQ applies the NEQ predicate on the "register_at" field.
-func RegisterAtNEQ(v time.Time) predicate.Ambulance {
+// RegisteratNEQ applies the NEQ predicate on the "registerat" field.
+func RegisteratNEQ(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRegisterAt), v))
+		s.Where(sql.NEQ(s.C(FieldRegisterat), v))
 	})
 }
 
-// RegisterAtIn applies the In predicate on the "register_at" field.
-func RegisterAtIn(vs ...time.Time) predicate.Ambulance {
+// RegisteratIn applies the In predicate on the "registerat" field.
+func RegisteratIn(vs ...time.Time) predicate.Ambulance {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -245,12 +245,12 @@ func RegisterAtIn(vs ...time.Time) predicate.Ambulance {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldRegisterAt), v...))
+		s.Where(sql.In(s.C(FieldRegisterat), v...))
 	})
 }
 
-// RegisterAtNotIn applies the NotIn predicate on the "register_at" field.
-func RegisterAtNotIn(vs ...time.Time) predicate.Ambulance {
+// RegisteratNotIn applies the NotIn predicate on the "registerat" field.
+func RegisteratNotIn(vs ...time.Time) predicate.Ambulance {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -262,35 +262,35 @@ func RegisterAtNotIn(vs ...time.Time) predicate.Ambulance {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldRegisterAt), v...))
+		s.Where(sql.NotIn(s.C(FieldRegisterat), v...))
 	})
 }
 
-// RegisterAtGT applies the GT predicate on the "register_at" field.
-func RegisterAtGT(v time.Time) predicate.Ambulance {
+// RegisteratGT applies the GT predicate on the "registerat" field.
+func RegisteratGT(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRegisterAt), v))
+		s.Where(sql.GT(s.C(FieldRegisterat), v))
 	})
 }
 
-// RegisterAtGTE applies the GTE predicate on the "register_at" field.
-func RegisterAtGTE(v time.Time) predicate.Ambulance {
+// RegisteratGTE applies the GTE predicate on the "registerat" field.
+func RegisteratGTE(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRegisterAt), v))
+		s.Where(sql.GTE(s.C(FieldRegisterat), v))
 	})
 }
 
-// RegisterAtLT applies the LT predicate on the "register_at" field.
-func RegisterAtLT(v time.Time) predicate.Ambulance {
+// RegisteratLT applies the LT predicate on the "registerat" field.
+func RegisteratLT(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRegisterAt), v))
+		s.Where(sql.LT(s.C(FieldRegisterat), v))
 	})
 }
 
-// RegisterAtLTE applies the LTE predicate on the "register_at" field.
-func RegisterAtLTE(v time.Time) predicate.Ambulance {
+// RegisteratLTE applies the LTE predicate on the "registerat" field.
+func RegisteratLTE(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRegisterAt), v))
+		s.Where(sql.LTE(s.C(FieldRegisterat), v))
 	})
 }
 
@@ -363,7 +363,7 @@ func HasHasstatus() predicate.Ambulance {
 }
 
 // HasHasstatusWith applies the HasEdge predicate on the "hasstatus" edge with a given conditions (other predicates).
-func HasHasstatusWith(preds ...predicate.Carstatus) predicate.Ambulance {
+func HasHasstatusWith(preds ...predicate.InspectionResult) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),

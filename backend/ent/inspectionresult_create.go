@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
 )
@@ -39,6 +40,21 @@ func (irc *InspectionResultCreate) AddCarinspections(c ...*CarInspection) *Inspe
 		ids[i] = c[i].ID
 	}
 	return irc.AddCarinspectionIDs(ids...)
+}
+
+// AddStatusofIDs adds the statusof edge to Ambulance by ids.
+func (irc *InspectionResultCreate) AddStatusofIDs(ids ...int) *InspectionResultCreate {
+	irc.mutation.AddStatusofIDs(ids...)
+	return irc
+}
+
+// AddStatusof adds the statusof edges to Ambulance.
+func (irc *InspectionResultCreate) AddStatusof(a ...*Ambulance) *InspectionResultCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return irc.AddStatusofIDs(ids...)
 }
 
 // Mutation returns the InspectionResultMutation object of the builder.
@@ -135,6 +151,25 @@ func (irc *InspectionResultCreate) createSpec() (*InspectionResult, *sqlgraph.Cr
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := irc.mutation.StatusofIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   inspectionresult.StatusofTable,
+			Columns: []string{inspectionresult.StatusofColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
 				},
 			},
 		}

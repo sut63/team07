@@ -10,7 +10,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carbrand"
-	"github.com/team07/app/ent/carstatus"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/user"
 )
@@ -22,13 +22,13 @@ type Ambulance struct {
 	ID int `json:"id,omitempty"`
 	// Carregistration holds the value of the "carregistration" field.
 	Carregistration string `json:"carregistration,omitempty"`
-	// RegisterAt holds the value of the "register_at" field.
-	RegisterAt time.Time `json:"register_at,omitempty"`
+	// Registerat holds the value of the "registerat" field.
+	Registerat time.Time `json:"registerat,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AmbulanceQuery when eager-loading is set.
 	Edges        AmbulanceEdges `json:"edges"`
 	brand_id     *int
-	status_id    *int
+	carstatus_id *int
 	insurance_id *int
 	user_id      *int
 }
@@ -40,7 +40,7 @@ type AmbulanceEdges struct {
 	// Hasinsurance holds the value of the hasinsurance edge.
 	Hasinsurance *Insurance
 	// Hasstatus holds the value of the hasstatus edge.
-	Hasstatus *Carstatus
+	Hasstatus *InspectionResult
 	// Hasuser holds the value of the hasuser edge.
 	Hasuser *User
 	// Carinspections holds the value of the carinspections edge.
@@ -80,12 +80,12 @@ func (e AmbulanceEdges) HasinsuranceOrErr() (*Insurance, error) {
 
 // HasstatusOrErr returns the Hasstatus value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AmbulanceEdges) HasstatusOrErr() (*Carstatus, error) {
+func (e AmbulanceEdges) HasstatusOrErr() (*InspectionResult, error) {
 	if e.loadedTypes[2] {
 		if e.Hasstatus == nil {
 			// The edge hasstatus was loaded in eager-loading,
 			// but was not found.
-			return nil, &NotFoundError{label: carstatus.Label}
+			return nil, &NotFoundError{label: inspectionresult.Label}
 		}
 		return e.Hasstatus, nil
 	}
@@ -120,7 +120,7 @@ func (*Ambulance) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // carregistration
-		&sql.NullTime{},   // register_at
+		&sql.NullTime{},   // registerat
 	}
 }
 
@@ -128,7 +128,7 @@ func (*Ambulance) scanValues() []interface{} {
 func (*Ambulance) fkValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{}, // brand_id
-		&sql.NullInt64{}, // status_id
+		&sql.NullInt64{}, // carstatus_id
 		&sql.NullInt64{}, // insurance_id
 		&sql.NullInt64{}, // user_id
 	}
@@ -152,9 +152,9 @@ func (a *Ambulance) assignValues(values ...interface{}) error {
 		a.Carregistration = value.String
 	}
 	if value, ok := values[1].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field register_at", values[1])
+		return fmt.Errorf("unexpected type %T for field registerat", values[1])
 	} else if value.Valid {
-		a.RegisterAt = value.Time
+		a.Registerat = value.Time
 	}
 	values = values[2:]
 	if len(values) == len(ambulance.ForeignKeys) {
@@ -165,10 +165,10 @@ func (a *Ambulance) assignValues(values ...interface{}) error {
 			*a.brand_id = int(value.Int64)
 		}
 		if value, ok := values[1].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field status_id", value)
+			return fmt.Errorf("unexpected type %T for edge-field carstatus_id", value)
 		} else if value.Valid {
-			a.status_id = new(int)
-			*a.status_id = int(value.Int64)
+			a.carstatus_id = new(int)
+			*a.carstatus_id = int(value.Int64)
 		}
 		if value, ok := values[2].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field insurance_id", value)
@@ -197,7 +197,7 @@ func (a *Ambulance) QueryHasinsurance() *InsuranceQuery {
 }
 
 // QueryHasstatus queries the hasstatus edge of the Ambulance.
-func (a *Ambulance) QueryHasstatus() *CarstatusQuery {
+func (a *Ambulance) QueryHasstatus() *InspectionResultQuery {
 	return (&AmbulanceClient{config: a.config}).QueryHasstatus(a)
 }
 
@@ -236,8 +236,8 @@ func (a *Ambulance) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", a.ID))
 	builder.WriteString(", carregistration=")
 	builder.WriteString(a.Carregistration)
-	builder.WriteString(", register_at=")
-	builder.WriteString(a.RegisterAt.Format(time.ANSIC))
+	builder.WriteString(", registerat=")
+	builder.WriteString(a.Registerat.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
