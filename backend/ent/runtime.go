@@ -20,10 +20,10 @@ import (
 func init() {
 	ambulanceFields := schema.Ambulance{}.Fields()
 	_ = ambulanceFields
-	// ambulanceDescRegisterAt is the schema descriptor for register_at field.
-	ambulanceDescRegisterAt := ambulanceFields[1].Descriptor()
-	// ambulance.DefaultRegisterAt holds the default value on creation for the register_at field.
-	ambulance.DefaultRegisterAt = ambulanceDescRegisterAt.Default.(func() time.Time)
+	// ambulanceDescRegisterat is the schema descriptor for registerat field.
+	ambulanceDescRegisterat := ambulanceFields[1].Descriptor()
+	// ambulance.DefaultRegisterat holds the default value on creation for the registerat field.
+	ambulance.DefaultRegisterat = ambulanceDescRegisterat.Default.(func() time.Time)
 	distancesFields := schema.Distances{}.Fields()
 	_ = distancesFields
 	// distancesDescDistances is the schema descriptor for Distances field.

@@ -15,7 +15,7 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carbrand"
 	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/carstatus"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
@@ -32,7 +32,7 @@ type AmbulanceQuery struct {
 	// eager-loading edges.
 	withHasbrand       *CarbrandQuery
 	withHasinsurance   *InsuranceQuery
-	withHasstatus      *CarstatusQuery
+	withHasstatus      *InspectionResultQuery
 	withHasuser        *UserQuery
 	withCarinspections *CarInspectionQuery
 	withFKs            bool
@@ -102,15 +102,15 @@ func (aq *AmbulanceQuery) QueryHasinsurance() *InsuranceQuery {
 }
 
 // QueryHasstatus chains the current query on the hasstatus edge.
-func (aq *AmbulanceQuery) QueryHasstatus() *CarstatusQuery {
-	query := &CarstatusQuery{config: aq.config}
+func (aq *AmbulanceQuery) QueryHasstatus() *InspectionResultQuery {
+	query := &InspectionResultQuery{config: aq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
-			sqlgraph.To(carstatus.Table, carstatus.FieldID),
+			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasstatusTable, ambulance.HasstatusColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
@@ -358,8 +358,8 @@ func (aq *AmbulanceQuery) WithHasinsurance(opts ...func(*InsuranceQuery)) *Ambul
 
 //  WithHasstatus tells the query-builder to eager-loads the nodes that are connected to
 // the "hasstatus" edge. The optional arguments used to configure the query builder of the edge.
-func (aq *AmbulanceQuery) WithHasstatus(opts ...func(*CarstatusQuery)) *AmbulanceQuery {
-	query := &CarstatusQuery{config: aq.config}
+func (aq *AmbulanceQuery) WithHasstatus(opts ...func(*InspectionResultQuery)) *AmbulanceQuery {
+	query := &InspectionResultQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -548,12 +548,12 @@ func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Ambulance)
 		for i := range nodes {
-			if fk := nodes[i].status_id; fk != nil {
+			if fk := nodes[i].carstatus_id; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
 		}
-		query.Where(carstatus.IDIn(ids...))
+		query.Where(inspectionresult.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
@@ -561,7 +561,7 @@ func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "status_id" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "carstatus_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Hasstatus = n

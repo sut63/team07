@@ -12,7 +12,6 @@ import (
 	"github.com/team07/app/ent/carbrand"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/carstatus"
 	"github.com/team07/app/ent/distances"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
@@ -39,7 +38,6 @@ const (
 	TypeCarbrand         = "Carbrand"
 	TypeCarregister      = "Carregister"
 	TypeCarservice       = "Carservice"
-	TypeCarstatus        = "Carstatus"
 	TypeDeliver          = "Deliver"
 	TypeDistances        = "Distances"
 	TypeInspectionResult = "InspectionResult"
@@ -58,7 +56,7 @@ type AmbulanceMutation struct {
 	typ                   string
 	id                    *int
 	carregistration       *string
-	register_at           *time.Time
+	registerat            *time.Time
 	clearedFields         map[string]struct{}
 	hasbrand              *int
 	clearedhasbrand       bool
@@ -190,41 +188,41 @@ func (m *AmbulanceMutation) ResetCarregistration() {
 	m.carregistration = nil
 }
 
-// SetRegisterAt sets the register_at field.
-func (m *AmbulanceMutation) SetRegisterAt(t time.Time) {
-	m.register_at = &t
+// SetRegisterat sets the registerat field.
+func (m *AmbulanceMutation) SetRegisterat(t time.Time) {
+	m.registerat = &t
 }
 
-// RegisterAt returns the register_at value in the mutation.
-func (m *AmbulanceMutation) RegisterAt() (r time.Time, exists bool) {
-	v := m.register_at
+// Registerat returns the registerat value in the mutation.
+func (m *AmbulanceMutation) Registerat() (r time.Time, exists bool) {
+	v := m.registerat
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRegisterAt returns the old register_at value of the Ambulance.
+// OldRegisterat returns the old registerat value of the Ambulance.
 // If the Ambulance object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *AmbulanceMutation) OldRegisterAt(ctx context.Context) (v time.Time, err error) {
+func (m *AmbulanceMutation) OldRegisterat(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldRegisterAt is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldRegisterat is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldRegisterAt requires an ID field in the mutation")
+		return v, fmt.Errorf("OldRegisterat requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRegisterAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldRegisterat: %w", err)
 	}
-	return oldValue.RegisterAt, nil
+	return oldValue.Registerat, nil
 }
 
-// ResetRegisterAt reset all changes of the "register_at" field.
-func (m *AmbulanceMutation) ResetRegisterAt() {
-	m.register_at = nil
+// ResetRegisterat reset all changes of the "registerat" field.
+func (m *AmbulanceMutation) ResetRegisterat() {
+	m.registerat = nil
 }
 
 // SetHasbrandID sets the hasbrand edge to Carbrand by id.
@@ -305,12 +303,12 @@ func (m *AmbulanceMutation) ResetHasinsurance() {
 	m.clearedhasinsurance = false
 }
 
-// SetHasstatusID sets the hasstatus edge to Carstatus by id.
+// SetHasstatusID sets the hasstatus edge to InspectionResult by id.
 func (m *AmbulanceMutation) SetHasstatusID(id int) {
 	m.hasstatus = &id
 }
 
-// ClearHasstatus clears the hasstatus edge to Carstatus.
+// ClearHasstatus clears the hasstatus edge to InspectionResult.
 func (m *AmbulanceMutation) ClearHasstatus() {
 	m.clearedhasstatus = true
 }
@@ -443,8 +441,8 @@ func (m *AmbulanceMutation) Fields() []string {
 	if m.carregistration != nil {
 		fields = append(fields, ambulance.FieldCarregistration)
 	}
-	if m.register_at != nil {
-		fields = append(fields, ambulance.FieldRegisterAt)
+	if m.registerat != nil {
+		fields = append(fields, ambulance.FieldRegisterat)
 	}
 	return fields
 }
@@ -456,8 +454,8 @@ func (m *AmbulanceMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case ambulance.FieldCarregistration:
 		return m.Carregistration()
-	case ambulance.FieldRegisterAt:
-		return m.RegisterAt()
+	case ambulance.FieldRegisterat:
+		return m.Registerat()
 	}
 	return nil, false
 }
@@ -469,8 +467,8 @@ func (m *AmbulanceMutation) OldField(ctx context.Context, name string) (ent.Valu
 	switch name {
 	case ambulance.FieldCarregistration:
 		return m.OldCarregistration(ctx)
-	case ambulance.FieldRegisterAt:
-		return m.OldRegisterAt(ctx)
+	case ambulance.FieldRegisterat:
+		return m.OldRegisterat(ctx)
 	}
 	return nil, fmt.Errorf("unknown Ambulance field %s", name)
 }
@@ -487,12 +485,12 @@ func (m *AmbulanceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCarregistration(v)
 		return nil
-	case ambulance.FieldRegisterAt:
+	case ambulance.FieldRegisterat:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRegisterAt(v)
+		m.SetRegisterat(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Ambulance field %s", name)
@@ -547,8 +545,8 @@ func (m *AmbulanceMutation) ResetField(name string) error {
 	case ambulance.FieldCarregistration:
 		m.ResetCarregistration()
 		return nil
-	case ambulance.FieldRegisterAt:
-		m.ResetRegisterAt()
+	case ambulance.FieldRegisterat:
+		m.ResetRegisterat()
 		return nil
 	}
 	return fmt.Errorf("unknown Ambulance field %s", name)
@@ -2892,374 +2890,6 @@ func (m *CarserviceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Carservice edge %s", name)
 }
 
-// CarstatusMutation represents an operation that mutate the Carstatuses
-// nodes in the graph.
-type CarstatusMutation struct {
-	config
-	op              Op
-	typ             string
-	id              *int
-	carstatus       *string
-	clearedFields   map[string]struct{}
-	statusof        map[int]struct{}
-	removedstatusof map[int]struct{}
-	done            bool
-	oldValue        func(context.Context) (*Carstatus, error)
-}
-
-var _ ent.Mutation = (*CarstatusMutation)(nil)
-
-// carstatusOption allows to manage the mutation configuration using functional options.
-type carstatusOption func(*CarstatusMutation)
-
-// newCarstatusMutation creates new mutation for $n.Name.
-func newCarstatusMutation(c config, op Op, opts ...carstatusOption) *CarstatusMutation {
-	m := &CarstatusMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeCarstatus,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withCarstatusID sets the id field of the mutation.
-func withCarstatusID(id int) carstatusOption {
-	return func(m *CarstatusMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Carstatus
-		)
-		m.oldValue = func(ctx context.Context) (*Carstatus, error) {
-			once.Do(func() {
-				if m.done {
-					err = fmt.Errorf("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Carstatus.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withCarstatus sets the old Carstatus of the mutation.
-func withCarstatus(node *Carstatus) carstatusOption {
-	return func(m *CarstatusMutation) {
-		m.oldValue = func(context.Context) (*Carstatus, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m CarstatusMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m CarstatusMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
-func (m *CarstatusMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// SetCarstatus sets the carstatus field.
-func (m *CarstatusMutation) SetCarstatus(s string) {
-	m.carstatus = &s
-}
-
-// Carstatus returns the carstatus value in the mutation.
-func (m *CarstatusMutation) Carstatus() (r string, exists bool) {
-	v := m.carstatus
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCarstatus returns the old carstatus value of the Carstatus.
-// If the Carstatus object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *CarstatusMutation) OldCarstatus(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldCarstatus is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldCarstatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCarstatus: %w", err)
-	}
-	return oldValue.Carstatus, nil
-}
-
-// ResetCarstatus reset all changes of the "carstatus" field.
-func (m *CarstatusMutation) ResetCarstatus() {
-	m.carstatus = nil
-}
-
-// AddStatusofIDs adds the statusof edge to Ambulance by ids.
-func (m *CarstatusMutation) AddStatusofIDs(ids ...int) {
-	if m.statusof == nil {
-		m.statusof = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.statusof[ids[i]] = struct{}{}
-	}
-}
-
-// RemoveStatusofIDs removes the statusof edge to Ambulance by ids.
-func (m *CarstatusMutation) RemoveStatusofIDs(ids ...int) {
-	if m.removedstatusof == nil {
-		m.removedstatusof = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedstatusof[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedStatusof returns the removed ids of statusof.
-func (m *CarstatusMutation) RemovedStatusofIDs() (ids []int) {
-	for id := range m.removedstatusof {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// StatusofIDs returns the statusof ids in the mutation.
-func (m *CarstatusMutation) StatusofIDs() (ids []int) {
-	for id := range m.statusof {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetStatusof reset all changes of the "statusof" edge.
-func (m *CarstatusMutation) ResetStatusof() {
-	m.statusof = nil
-	m.removedstatusof = nil
-}
-
-// Op returns the operation name.
-func (m *CarstatusMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (Carstatus).
-func (m *CarstatusMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
-func (m *CarstatusMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.carstatus != nil {
-		fields = append(fields, carstatus.FieldCarstatus)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
-func (m *CarstatusMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case carstatus.FieldCarstatus:
-		return m.Carstatus()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
-func (m *CarstatusMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case carstatus.FieldCarstatus:
-		return m.OldCarstatus(ctx)
-	}
-	return nil, fmt.Errorf("unknown Carstatus field %s", name)
-}
-
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *CarstatusMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case carstatus.FieldCarstatus:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCarstatus(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Carstatus field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
-func (m *CarstatusMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
-func (m *CarstatusMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *CarstatusMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Carstatus numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
-func (m *CarstatusMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicates if this field was
-// cleared in this mutation.
-func (m *CarstatusMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value for the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *CarstatusMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Carstatus nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
-func (m *CarstatusMutation) ResetField(name string) error {
-	switch name {
-	case carstatus.FieldCarstatus:
-		m.ResetCarstatus()
-		return nil
-	}
-	return fmt.Errorf("unknown Carstatus field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
-func (m *CarstatusMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.statusof != nil {
-		edges = append(edges, carstatus.EdgeStatusof)
-	}
-	return edges
-}
-
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
-func (m *CarstatusMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case carstatus.EdgeStatusof:
-		ids := make([]ent.Value, 0, len(m.statusof))
-		for id := range m.statusof {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
-func (m *CarstatusMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedstatusof != nil {
-		edges = append(edges, carstatus.EdgeStatusof)
-	}
-	return edges
-}
-
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
-func (m *CarstatusMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case carstatus.EdgeStatusof:
-		ids := make([]ent.Value, 0, len(m.removedstatusof))
-		for id := range m.removedstatusof {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
-func (m *CarstatusMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
-func (m *CarstatusMutation) EdgeCleared(name string) bool {
-	switch name {
-	}
-	return false
-}
-
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
-func (m *CarstatusMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Carstatus unique edge %s", name)
-}
-
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
-func (m *CarstatusMutation) ResetEdge(name string) error {
-	switch name {
-	case carstatus.EdgeStatusof:
-		m.ResetStatusof()
-		return nil
-	}
-	return fmt.Errorf("unknown Carstatus edge %s", name)
-}
-
 // DeliverMutation represents an operation that mutate the Delivers
 // nodes in the graph.
 type DeliverMutation struct {
@@ -3869,6 +3499,8 @@ type InspectionResultMutation struct {
 	clearedFields         map[string]struct{}
 	carinspections        map[int]struct{}
 	removedcarinspections map[int]struct{}
+	statusof              map[int]struct{}
+	removedstatusof       map[int]struct{}
 	done                  bool
 	oldValue              func(context.Context) (*InspectionResult, error)
 }
@@ -4031,6 +3663,48 @@ func (m *InspectionResultMutation) ResetCarinspections() {
 	m.removedcarinspections = nil
 }
 
+// AddStatusofIDs adds the statusof edge to Ambulance by ids.
+func (m *InspectionResultMutation) AddStatusofIDs(ids ...int) {
+	if m.statusof == nil {
+		m.statusof = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.statusof[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveStatusofIDs removes the statusof edge to Ambulance by ids.
+func (m *InspectionResultMutation) RemoveStatusofIDs(ids ...int) {
+	if m.removedstatusof == nil {
+		m.removedstatusof = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedstatusof[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedStatusof returns the removed ids of statusof.
+func (m *InspectionResultMutation) RemovedStatusofIDs() (ids []int) {
+	for id := range m.removedstatusof {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// StatusofIDs returns the statusof ids in the mutation.
+func (m *InspectionResultMutation) StatusofIDs() (ids []int) {
+	for id := range m.statusof {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetStatusof reset all changes of the "statusof" edge.
+func (m *InspectionResultMutation) ResetStatusof() {
+	m.statusof = nil
+	m.removedstatusof = nil
+}
+
 // Op returns the operation name.
 func (m *InspectionResultMutation) Op() Op {
 	return m.op
@@ -4146,9 +3820,12 @@ func (m *InspectionResultMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *InspectionResultMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.carinspections != nil {
 		edges = append(edges, inspectionresult.EdgeCarinspections)
+	}
+	if m.statusof != nil {
+		edges = append(edges, inspectionresult.EdgeStatusof)
 	}
 	return edges
 }
@@ -4163,6 +3840,12 @@ func (m *InspectionResultMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case inspectionresult.EdgeStatusof:
+		ids := make([]ent.Value, 0, len(m.statusof))
+		for id := range m.statusof {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -4170,9 +3853,12 @@ func (m *InspectionResultMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *InspectionResultMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedcarinspections != nil {
 		edges = append(edges, inspectionresult.EdgeCarinspections)
+	}
+	if m.removedstatusof != nil {
+		edges = append(edges, inspectionresult.EdgeStatusof)
 	}
 	return edges
 }
@@ -4187,6 +3873,12 @@ func (m *InspectionResultMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case inspectionresult.EdgeStatusof:
+		ids := make([]ent.Value, 0, len(m.removedstatusof))
+		for id := range m.removedstatusof {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -4194,7 +3886,7 @@ func (m *InspectionResultMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *InspectionResultMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -4221,6 +3913,9 @@ func (m *InspectionResultMutation) ResetEdge(name string) error {
 	switch name {
 	case inspectionresult.EdgeCarinspections:
 		m.ResetCarinspections()
+		return nil
+	case inspectionresult.EdgeStatusof:
+		m.ResetStatusof()
 		return nil
 	}
 	return fmt.Errorf("unknown InspectionResult edge %s", name)

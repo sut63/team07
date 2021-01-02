@@ -27,9 +27,6 @@ type Carregister func(*sql.Selector)
 // Carservice is the predicate function for carservice builders.
 type Carservice func(*sql.Selector)
 
-// Carstatus is the predicate function for carstatus builders.
-type Carstatus func(*sql.Selector)
-
 // Deliver is the predicate function for deliver builders.
 type Deliver func(*sql.Selector)
 

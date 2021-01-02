@@ -31,7 +31,6 @@ type hooks struct {
 	Carbrand         []ent.Hook
 	Carregister      []ent.Hook
 	Carservice       []ent.Hook
-	Carstatus        []ent.Hook
 	Deliver          []ent.Hook
 	Distances        []ent.Hook
 	InspectionResult []ent.Hook

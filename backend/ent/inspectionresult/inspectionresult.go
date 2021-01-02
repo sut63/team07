@@ -12,6 +12,8 @@ const (
 
 	// EdgeCarinspections holds the string denoting the carinspections edge name in mutations.
 	EdgeCarinspections = "carinspections"
+	// EdgeStatusof holds the string denoting the statusof edge name in mutations.
+	EdgeStatusof = "statusof"
 
 	// Table holds the table name of the inspectionresult in the database.
 	Table = "inspection_results"
@@ -22,6 +24,13 @@ const (
 	CarinspectionsInverseTable = "car_inspections"
 	// CarinspectionsColumn is the table column denoting the carinspections relation/edge.
 	CarinspectionsColumn = "inspectionresult_id"
+	// StatusofTable is the table the holds the statusof relation/edge.
+	StatusofTable = "ambulances"
+	// StatusofInverseTable is the table name for the Ambulance entity.
+	// It exists in this package in order to avoid circular dependency with the "ambulance" package.
+	StatusofInverseTable = "ambulances"
+	// StatusofColumn is the table column denoting the statusof relation/edge.
+	StatusofColumn = "carstatus_id"
 )
 
 // Columns holds all SQL columns for inspectionresult fields.

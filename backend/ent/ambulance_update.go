@@ -13,7 +13,7 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carbrand"
 	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/carstatus"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
@@ -39,16 +39,16 @@ func (au *AmbulanceUpdate) SetCarregistration(s string) *AmbulanceUpdate {
 	return au
 }
 
-// SetRegisterAt sets the register_at field.
-func (au *AmbulanceUpdate) SetRegisterAt(t time.Time) *AmbulanceUpdate {
-	au.mutation.SetRegisterAt(t)
+// SetRegisterat sets the registerat field.
+func (au *AmbulanceUpdate) SetRegisterat(t time.Time) *AmbulanceUpdate {
+	au.mutation.SetRegisterat(t)
 	return au
 }
 
-// SetNillableRegisterAt sets the register_at field if the given value is not nil.
-func (au *AmbulanceUpdate) SetNillableRegisterAt(t *time.Time) *AmbulanceUpdate {
+// SetNillableRegisterat sets the registerat field if the given value is not nil.
+func (au *AmbulanceUpdate) SetNillableRegisterat(t *time.Time) *AmbulanceUpdate {
 	if t != nil {
-		au.SetRegisterAt(*t)
+		au.SetRegisterat(*t)
 	}
 	return au
 }
@@ -91,13 +91,13 @@ func (au *AmbulanceUpdate) SetHasinsurance(i *Insurance) *AmbulanceUpdate {
 	return au.SetHasinsuranceID(i.ID)
 }
 
-// SetHasstatusID sets the hasstatus edge to Carstatus by id.
+// SetHasstatusID sets the hasstatus edge to InspectionResult by id.
 func (au *AmbulanceUpdate) SetHasstatusID(id int) *AmbulanceUpdate {
 	au.mutation.SetHasstatusID(id)
 	return au
 }
 
-// SetNillableHasstatusID sets the hasstatus edge to Carstatus by id if the given value is not nil.
+// SetNillableHasstatusID sets the hasstatus edge to InspectionResult by id if the given value is not nil.
 func (au *AmbulanceUpdate) SetNillableHasstatusID(id *int) *AmbulanceUpdate {
 	if id != nil {
 		au = au.SetHasstatusID(*id)
@@ -105,9 +105,9 @@ func (au *AmbulanceUpdate) SetNillableHasstatusID(id *int) *AmbulanceUpdate {
 	return au
 }
 
-// SetHasstatus sets the hasstatus edge to Carstatus.
-func (au *AmbulanceUpdate) SetHasstatus(c *Carstatus) *AmbulanceUpdate {
-	return au.SetHasstatusID(c.ID)
+// SetHasstatus sets the hasstatus edge to InspectionResult.
+func (au *AmbulanceUpdate) SetHasstatus(i *InspectionResult) *AmbulanceUpdate {
+	return au.SetHasstatusID(i.ID)
 }
 
 // SetHasuserID sets the hasuser edge to User by id.
@@ -161,7 +161,7 @@ func (au *AmbulanceUpdate) ClearHasinsurance() *AmbulanceUpdate {
 	return au
 }
 
-// ClearHasstatus clears the hasstatus edge to Carstatus.
+// ClearHasstatus clears the hasstatus edge to InspectionResult.
 func (au *AmbulanceUpdate) ClearHasstatus() *AmbulanceUpdate {
 	au.mutation.ClearHasstatus()
 	return au
@@ -265,11 +265,11 @@ func (au *AmbulanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: ambulance.FieldCarregistration,
 		})
 	}
-	if value, ok := au.mutation.RegisterAt(); ok {
+	if value, ok := au.mutation.Registerat(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: ambulance.FieldRegisterAt,
+			Column: ambulance.FieldRegisterat,
 		})
 	}
 	if au.mutation.HasbrandCleared() {
@@ -352,7 +352,7 @@ func (au *AmbulanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: carstatus.FieldID,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}
@@ -368,7 +368,7 @@ func (au *AmbulanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: carstatus.FieldID,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}
@@ -474,16 +474,16 @@ func (auo *AmbulanceUpdateOne) SetCarregistration(s string) *AmbulanceUpdateOne 
 	return auo
 }
 
-// SetRegisterAt sets the register_at field.
-func (auo *AmbulanceUpdateOne) SetRegisterAt(t time.Time) *AmbulanceUpdateOne {
-	auo.mutation.SetRegisterAt(t)
+// SetRegisterat sets the registerat field.
+func (auo *AmbulanceUpdateOne) SetRegisterat(t time.Time) *AmbulanceUpdateOne {
+	auo.mutation.SetRegisterat(t)
 	return auo
 }
 
-// SetNillableRegisterAt sets the register_at field if the given value is not nil.
-func (auo *AmbulanceUpdateOne) SetNillableRegisterAt(t *time.Time) *AmbulanceUpdateOne {
+// SetNillableRegisterat sets the registerat field if the given value is not nil.
+func (auo *AmbulanceUpdateOne) SetNillableRegisterat(t *time.Time) *AmbulanceUpdateOne {
 	if t != nil {
-		auo.SetRegisterAt(*t)
+		auo.SetRegisterat(*t)
 	}
 	return auo
 }
@@ -526,13 +526,13 @@ func (auo *AmbulanceUpdateOne) SetHasinsurance(i *Insurance) *AmbulanceUpdateOne
 	return auo.SetHasinsuranceID(i.ID)
 }
 
-// SetHasstatusID sets the hasstatus edge to Carstatus by id.
+// SetHasstatusID sets the hasstatus edge to InspectionResult by id.
 func (auo *AmbulanceUpdateOne) SetHasstatusID(id int) *AmbulanceUpdateOne {
 	auo.mutation.SetHasstatusID(id)
 	return auo
 }
 
-// SetNillableHasstatusID sets the hasstatus edge to Carstatus by id if the given value is not nil.
+// SetNillableHasstatusID sets the hasstatus edge to InspectionResult by id if the given value is not nil.
 func (auo *AmbulanceUpdateOne) SetNillableHasstatusID(id *int) *AmbulanceUpdateOne {
 	if id != nil {
 		auo = auo.SetHasstatusID(*id)
@@ -540,9 +540,9 @@ func (auo *AmbulanceUpdateOne) SetNillableHasstatusID(id *int) *AmbulanceUpdateO
 	return auo
 }
 
-// SetHasstatus sets the hasstatus edge to Carstatus.
-func (auo *AmbulanceUpdateOne) SetHasstatus(c *Carstatus) *AmbulanceUpdateOne {
-	return auo.SetHasstatusID(c.ID)
+// SetHasstatus sets the hasstatus edge to InspectionResult.
+func (auo *AmbulanceUpdateOne) SetHasstatus(i *InspectionResult) *AmbulanceUpdateOne {
+	return auo.SetHasstatusID(i.ID)
 }
 
 // SetHasuserID sets the hasuser edge to User by id.
@@ -596,7 +596,7 @@ func (auo *AmbulanceUpdateOne) ClearHasinsurance() *AmbulanceUpdateOne {
 	return auo
 }
 
-// ClearHasstatus clears the hasstatus edge to Carstatus.
+// ClearHasstatus clears the hasstatus edge to InspectionResult.
 func (auo *AmbulanceUpdateOne) ClearHasstatus() *AmbulanceUpdateOne {
 	auo.mutation.ClearHasstatus()
 	return auo
@@ -698,11 +698,11 @@ func (auo *AmbulanceUpdateOne) sqlSave(ctx context.Context) (a *Ambulance, err e
 			Column: ambulance.FieldCarregistration,
 		})
 	}
-	if value, ok := auo.mutation.RegisterAt(); ok {
+	if value, ok := auo.mutation.Registerat(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: ambulance.FieldRegisterAt,
+			Column: ambulance.FieldRegisterat,
 		})
 	}
 	if auo.mutation.HasbrandCleared() {
@@ -785,7 +785,7 @@ func (auo *AmbulanceUpdateOne) sqlSave(ctx context.Context) (a *Ambulance, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: carstatus.FieldID,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}
@@ -801,7 +801,7 @@ func (auo *AmbulanceUpdateOne) sqlSave(ctx context.Context) (a *Ambulance, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: carstatus.FieldID,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}

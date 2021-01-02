@@ -13,8 +13,8 @@ const (
 	FieldID = "id"
 	// FieldCarregistration holds the string denoting the carregistration field in the database.
 	FieldCarregistration = "carregistration"
-	// FieldRegisterAt holds the string denoting the register_at field in the database.
-	FieldRegisterAt = "register_at"
+	// FieldRegisterat holds the string denoting the registerat field in the database.
+	FieldRegisterat = "registerat"
 
 	// EdgeHasbrand holds the string denoting the hasbrand edge name in mutations.
 	EdgeHasbrand = "hasbrand"
@@ -45,11 +45,11 @@ const (
 	HasinsuranceColumn = "insurance_id"
 	// HasstatusTable is the table the holds the hasstatus relation/edge.
 	HasstatusTable = "ambulances"
-	// HasstatusInverseTable is the table name for the Carstatus entity.
-	// It exists in this package in order to avoid circular dependency with the "carstatus" package.
-	HasstatusInverseTable = "carstatuses"
+	// HasstatusInverseTable is the table name for the InspectionResult entity.
+	// It exists in this package in order to avoid circular dependency with the "inspectionresult" package.
+	HasstatusInverseTable = "inspection_results"
 	// HasstatusColumn is the table column denoting the hasstatus relation/edge.
-	HasstatusColumn = "status_id"
+	HasstatusColumn = "carstatus_id"
 	// HasuserTable is the table the holds the hasuser relation/edge.
 	HasuserTable = "ambulances"
 	// HasuserInverseTable is the table name for the User entity.
@@ -70,18 +70,18 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldCarregistration,
-	FieldRegisterAt,
+	FieldRegisterat,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Ambulance type.
 var ForeignKeys = []string{
 	"brand_id",
-	"status_id",
+	"carstatus_id",
 	"insurance_id",
 	"user_id",
 }
 
 var (
-	// DefaultRegisterAt holds the default value on creation for the register_at field.
-	DefaultRegisterAt func() time.Time
+	// DefaultRegisterat holds the default value on creation for the registerat field.
+	DefaultRegisterat func() time.Time
 )

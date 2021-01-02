@@ -16,7 +16,6 @@ import (
 	"github.com/team07/app/ent/carregister"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/carstatus"
 	"github.com/team07/app/ent/deliver"
 	"github.com/team07/app/ent/distances"
 	"github.com/team07/app/ent/inspectionresult"
@@ -50,8 +49,6 @@ type Client struct {
 	Carregister *CarregisterClient
 	// Carservice is the client for interacting with the Carservice builders.
 	Carservice *CarserviceClient
-	// Carstatus is the client for interacting with the Carstatus builders.
-	Carstatus *CarstatusClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
 	// Distances is the client for interacting with the Distances builders.
@@ -88,7 +85,6 @@ func (c *Client) init() {
 	c.Carbrand = NewCarbrandClient(c.config)
 	c.Carregister = NewCarregisterClient(c.config)
 	c.Carservice = NewCarserviceClient(c.config)
-	c.Carstatus = NewCarstatusClient(c.config)
 	c.Deliver = NewDeliverClient(c.config)
 	c.Distances = NewDistancesClient(c.config)
 	c.InspectionResult = NewInspectionResultClient(c.config)
@@ -136,7 +132,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Carbrand:         NewCarbrandClient(cfg),
 		Carregister:      NewCarregisterClient(cfg),
 		Carservice:       NewCarserviceClient(cfg),
-		Carstatus:        NewCarstatusClient(cfg),
 		Deliver:          NewDeliverClient(cfg),
 		Distances:        NewDistancesClient(cfg),
 		InspectionResult: NewInspectionResultClient(cfg),
@@ -167,7 +162,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Carbrand:         NewCarbrandClient(cfg),
 		Carregister:      NewCarregisterClient(cfg),
 		Carservice:       NewCarserviceClient(cfg),
-		Carstatus:        NewCarstatusClient(cfg),
 		Deliver:          NewDeliverClient(cfg),
 		Distances:        NewDistancesClient(cfg),
 		InspectionResult: NewInspectionResultClient(cfg),
@@ -211,7 +205,6 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Carbrand.Use(hooks...)
 	c.Carregister.Use(hooks...)
 	c.Carservice.Use(hooks...)
-	c.Carstatus.Use(hooks...)
 	c.Deliver.Use(hooks...)
 	c.Distances.Use(hooks...)
 	c.InspectionResult.Use(hooks...)
@@ -333,13 +326,13 @@ func (c *AmbulanceClient) QueryHasinsurance(a *Ambulance) *InsuranceQuery {
 }
 
 // QueryHasstatus queries the hasstatus edge of a Ambulance.
-func (c *AmbulanceClient) QueryHasstatus(a *Ambulance) *CarstatusQuery {
-	query := &CarstatusQuery{config: c.config}
+func (c *AmbulanceClient) QueryHasstatus(a *Ambulance) *InspectionResultQuery {
+	query := &InspectionResultQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
-			sqlgraph.To(carstatus.Table, carstatus.FieldID),
+			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, ambulance.HasstatusTable, ambulance.HasstatusColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
@@ -995,105 +988,6 @@ func (c *CarserviceClient) Hooks() []Hook {
 	return c.hooks.Carservice
 }
 
-// CarstatusClient is a client for the Carstatus schema.
-type CarstatusClient struct {
-	config
-}
-
-// NewCarstatusClient returns a client for the Carstatus from the given config.
-func NewCarstatusClient(c config) *CarstatusClient {
-	return &CarstatusClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `carstatus.Hooks(f(g(h())))`.
-func (c *CarstatusClient) Use(hooks ...Hook) {
-	c.hooks.Carstatus = append(c.hooks.Carstatus, hooks...)
-}
-
-// Create returns a create builder for Carstatus.
-func (c *CarstatusClient) Create() *CarstatusCreate {
-	mutation := newCarstatusMutation(c.config, OpCreate)
-	return &CarstatusCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Carstatus.
-func (c *CarstatusClient) Update() *CarstatusUpdate {
-	mutation := newCarstatusMutation(c.config, OpUpdate)
-	return &CarstatusUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *CarstatusClient) UpdateOne(ca *Carstatus) *CarstatusUpdateOne {
-	mutation := newCarstatusMutation(c.config, OpUpdateOne, withCarstatus(ca))
-	return &CarstatusUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *CarstatusClient) UpdateOneID(id int) *CarstatusUpdateOne {
-	mutation := newCarstatusMutation(c.config, OpUpdateOne, withCarstatusID(id))
-	return &CarstatusUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Carstatus.
-func (c *CarstatusClient) Delete() *CarstatusDelete {
-	mutation := newCarstatusMutation(c.config, OpDelete)
-	return &CarstatusDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *CarstatusClient) DeleteOne(ca *Carstatus) *CarstatusDeleteOne {
-	return c.DeleteOneID(ca.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *CarstatusClient) DeleteOneID(id int) *CarstatusDeleteOne {
-	builder := c.Delete().Where(carstatus.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &CarstatusDeleteOne{builder}
-}
-
-// Create returns a query builder for Carstatus.
-func (c *CarstatusClient) Query() *CarstatusQuery {
-	return &CarstatusQuery{config: c.config}
-}
-
-// Get returns a Carstatus entity by its id.
-func (c *CarstatusClient) Get(ctx context.Context, id int) (*Carstatus, error) {
-	return c.Query().Where(carstatus.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *CarstatusClient) GetX(ctx context.Context, id int) *Carstatus {
-	ca, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return ca
-}
-
-// QueryStatusof queries the statusof edge of a Carstatus.
-func (c *CarstatusClient) QueryStatusof(ca *Carstatus) *AmbulanceQuery {
-	query := &AmbulanceQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := ca.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(carstatus.Table, carstatus.FieldID, id),
-			sqlgraph.To(ambulance.Table, ambulance.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, carstatus.StatusofTable, carstatus.StatusofColumn),
-		)
-		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *CarstatusClient) Hooks() []Hook {
-	return c.hooks.Carstatus
-}
-
 // DeliverClient is a client for the Deliver schema.
 type DeliverClient struct {
 	config
@@ -1363,6 +1257,22 @@ func (c *InspectionResultClient) QueryCarinspections(ir *InspectionResult) *CarI
 			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, id),
 			sqlgraph.To(carinspection.Table, carinspection.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, inspectionresult.CarinspectionsTable, inspectionresult.CarinspectionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ir.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStatusof queries the statusof edge of a InspectionResult.
+func (c *InspectionResultClient) QueryStatusof(ir *InspectionResult) *AmbulanceQuery {
+	query := &AmbulanceQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ir.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, id),
+			sqlgraph.To(ambulance.Table, ambulance.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, inspectionresult.StatusofTable, inspectionresult.StatusofColumn),
 		)
 		fromV = sqlgraph.Neighbors(ir.driver.Dialect(), step)
 		return fromV, nil
