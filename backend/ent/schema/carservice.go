@@ -25,7 +25,7 @@ func (Carservice) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("userid",User.Type).
 			Ref("userid").Unique(),
-		edge.From("disid",Distances.Type).
+		edge.From("disid",Distance.Type).
 			Ref("disid").Unique(),
 		edge.From("urgentid",Urgent.Type).
 			Ref("urgentid").Unique(),
