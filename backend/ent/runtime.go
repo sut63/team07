@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
+	"github.com/team07/app/ent/repairing"
 	"github.com/team07/app/ent/schema"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
@@ -24,12 +25,12 @@ func init() {
 	ambulanceDescRegisterat := ambulanceFields[1].Descriptor()
 	// ambulance.DefaultRegisterat holds the default value on creation for the registerat field.
 	ambulance.DefaultRegisterat = ambulanceDescRegisterat.Default.(func() time.Time)
-	distancesFields := schema.Distances{}.Fields()
-	_ = distancesFields
-	// distancesDescDistances is the schema descriptor for Distances field.
-	distancesDescDistances := distancesFields[0].Descriptor()
-	// distances.DistancesValidator is a validator for the "Distances" field. It is called by the builders before save.
-	distances.DistancesValidator = distancesDescDistances.Validators[0].(func(string) error)
+	distanceFields := schema.Distance{}.Fields()
+	_ = distanceFields
+	// distanceDescDistance is the schema descriptor for Distance field.
+	distanceDescDistance := distanceFields[0].Descriptor()
+	// distance.DistanceValidator is a validator for the "Distance" field. It is called by the builders before save.
+	distance.DistanceValidator = distanceDescDistance.Validators[0].(func(string) error)
 	inspectionresultFields := schema.InspectionResult{}.Fields()
 	_ = inspectionresultFields
 	// inspectionresultDescResultName is the schema descriptor for result_name field.
@@ -42,6 +43,12 @@ func init() {
 	jobpositionDescPositionName := jobpositionFields[0].Descriptor()
 	// jobposition.PositionNameValidator is a validator for the "position_name" field. It is called by the builders before save.
 	jobposition.PositionNameValidator = jobpositionDescPositionName.Validators[0].(func(string) error)
+	repairingFields := schema.Repairing{}.Fields()
+	_ = repairingFields
+	// repairingDescRepairpart is the schema descriptor for repairpart field.
+	repairingDescRepairpart := repairingFields[0].Descriptor()
+	// repairing.RepairpartValidator is a validator for the "repairpart" field. It is called by the builders before save.
+	repairing.RepairpartValidator = repairingDescRepairpart.Validators[0].(func(string) error)
 	urgentFields := schema.Urgent{}.Fields()
 	_ = urgentFields
 	// urgentDescUrgent is the schema descriptor for urgent field.

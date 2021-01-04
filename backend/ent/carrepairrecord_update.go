@@ -5,12 +5,16 @@ package ent
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/repairing"
+	"github.com/team07/app/ent/user"
 )
 
 // CarRepairrecordUpdate is the builder for updating CarRepairrecord entities.
@@ -27,13 +31,95 @@ func (cru *CarRepairrecordUpdate) Where(ps ...predicate.CarRepairrecord) *CarRep
 	return cru
 }
 
+// SetDatetime sets the datetime field.
+func (cru *CarRepairrecordUpdate) SetDatetime(t time.Time) *CarRepairrecordUpdate {
+	cru.mutation.SetDatetime(t)
+	return cru
+}
+
+// SetKeeperID sets the keeper edge to Repairing by id.
+func (cru *CarRepairrecordUpdate) SetKeeperID(id int) *CarRepairrecordUpdate {
+	cru.mutation.SetKeeperID(id)
+	return cru
+}
+
+// SetNillableKeeperID sets the keeper edge to Repairing by id if the given value is not nil.
+func (cru *CarRepairrecordUpdate) SetNillableKeeperID(id *int) *CarRepairrecordUpdate {
+	if id != nil {
+		cru = cru.SetKeeperID(*id)
+	}
+	return cru
+}
+
+// SetKeeper sets the keeper edge to Repairing.
+func (cru *CarRepairrecordUpdate) SetKeeper(r *Repairing) *CarRepairrecordUpdate {
+	return cru.SetKeeperID(r.ID)
+}
+
+// SetUserID sets the user edge to User by id.
+func (cru *CarRepairrecordUpdate) SetUserID(id int) *CarRepairrecordUpdate {
+	cru.mutation.SetUserID(id)
+	return cru
+}
+
+// SetNillableUserID sets the user edge to User by id if the given value is not nil.
+func (cru *CarRepairrecordUpdate) SetNillableUserID(id *int) *CarRepairrecordUpdate {
+	if id != nil {
+		cru = cru.SetUserID(*id)
+	}
+	return cru
+}
+
+// SetUser sets the user edge to User.
+func (cru *CarRepairrecordUpdate) SetUser(u *User) *CarRepairrecordUpdate {
+	return cru.SetUserID(u.ID)
+}
+
+// SetCarinspectionID sets the carinspection edge to CarInspection by id.
+func (cru *CarRepairrecordUpdate) SetCarinspectionID(id int) *CarRepairrecordUpdate {
+	cru.mutation.SetCarinspectionID(id)
+	return cru
+}
+
+// SetNillableCarinspectionID sets the carinspection edge to CarInspection by id if the given value is not nil.
+func (cru *CarRepairrecordUpdate) SetNillableCarinspectionID(id *int) *CarRepairrecordUpdate {
+	if id != nil {
+		cru = cru.SetCarinspectionID(*id)
+	}
+	return cru
+}
+
+// SetCarinspection sets the carinspection edge to CarInspection.
+func (cru *CarRepairrecordUpdate) SetCarinspection(c *CarInspection) *CarRepairrecordUpdate {
+	return cru.SetCarinspectionID(c.ID)
+}
+
 // Mutation returns the CarRepairrecordMutation object of the builder.
 func (cru *CarRepairrecordUpdate) Mutation() *CarRepairrecordMutation {
 	return cru.mutation
 }
 
+// ClearKeeper clears the keeper edge to Repairing.
+func (cru *CarRepairrecordUpdate) ClearKeeper() *CarRepairrecordUpdate {
+	cru.mutation.ClearKeeper()
+	return cru
+}
+
+// ClearUser clears the user edge to User.
+func (cru *CarRepairrecordUpdate) ClearUser() *CarRepairrecordUpdate {
+	cru.mutation.ClearUser()
+	return cru
+}
+
+// ClearCarinspection clears the carinspection edge to CarInspection.
+func (cru *CarRepairrecordUpdate) ClearCarinspection() *CarRepairrecordUpdate {
+	cru.mutation.ClearCarinspection()
+	return cru
+}
+
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (cru *CarRepairrecordUpdate) Save(ctx context.Context) (int, error) {
+
 	var (
 		err      error
 		affected int
@@ -101,6 +187,118 @@ func (cru *CarRepairrecordUpdate) sqlSave(ctx context.Context) (n int, err error
 			}
 		}
 	}
+	if value, ok := cru.mutation.Datetime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carrepairrecord.FieldDatetime,
+		})
+	}
+	if cru.mutation.KeeperCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.KeeperTable,
+			Columns: []string{carrepairrecord.KeeperColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: repairing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cru.mutation.KeeperIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.KeeperTable,
+			Columns: []string{carrepairrecord.KeeperColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: repairing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cru.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.UserTable,
+			Columns: []string{carrepairrecord.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cru.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.UserTable,
+			Columns: []string{carrepairrecord.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cru.mutation.CarinspectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.CarinspectionTable,
+			Columns: []string{carrepairrecord.CarinspectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cru.mutation.CarinspectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.CarinspectionTable,
+			Columns: []string{carrepairrecord.CarinspectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{carrepairrecord.Label}
@@ -119,13 +317,95 @@ type CarRepairrecordUpdateOne struct {
 	mutation *CarRepairrecordMutation
 }
 
+// SetDatetime sets the datetime field.
+func (cruo *CarRepairrecordUpdateOne) SetDatetime(t time.Time) *CarRepairrecordUpdateOne {
+	cruo.mutation.SetDatetime(t)
+	return cruo
+}
+
+// SetKeeperID sets the keeper edge to Repairing by id.
+func (cruo *CarRepairrecordUpdateOne) SetKeeperID(id int) *CarRepairrecordUpdateOne {
+	cruo.mutation.SetKeeperID(id)
+	return cruo
+}
+
+// SetNillableKeeperID sets the keeper edge to Repairing by id if the given value is not nil.
+func (cruo *CarRepairrecordUpdateOne) SetNillableKeeperID(id *int) *CarRepairrecordUpdateOne {
+	if id != nil {
+		cruo = cruo.SetKeeperID(*id)
+	}
+	return cruo
+}
+
+// SetKeeper sets the keeper edge to Repairing.
+func (cruo *CarRepairrecordUpdateOne) SetKeeper(r *Repairing) *CarRepairrecordUpdateOne {
+	return cruo.SetKeeperID(r.ID)
+}
+
+// SetUserID sets the user edge to User by id.
+func (cruo *CarRepairrecordUpdateOne) SetUserID(id int) *CarRepairrecordUpdateOne {
+	cruo.mutation.SetUserID(id)
+	return cruo
+}
+
+// SetNillableUserID sets the user edge to User by id if the given value is not nil.
+func (cruo *CarRepairrecordUpdateOne) SetNillableUserID(id *int) *CarRepairrecordUpdateOne {
+	if id != nil {
+		cruo = cruo.SetUserID(*id)
+	}
+	return cruo
+}
+
+// SetUser sets the user edge to User.
+func (cruo *CarRepairrecordUpdateOne) SetUser(u *User) *CarRepairrecordUpdateOne {
+	return cruo.SetUserID(u.ID)
+}
+
+// SetCarinspectionID sets the carinspection edge to CarInspection by id.
+func (cruo *CarRepairrecordUpdateOne) SetCarinspectionID(id int) *CarRepairrecordUpdateOne {
+	cruo.mutation.SetCarinspectionID(id)
+	return cruo
+}
+
+// SetNillableCarinspectionID sets the carinspection edge to CarInspection by id if the given value is not nil.
+func (cruo *CarRepairrecordUpdateOne) SetNillableCarinspectionID(id *int) *CarRepairrecordUpdateOne {
+	if id != nil {
+		cruo = cruo.SetCarinspectionID(*id)
+	}
+	return cruo
+}
+
+// SetCarinspection sets the carinspection edge to CarInspection.
+func (cruo *CarRepairrecordUpdateOne) SetCarinspection(c *CarInspection) *CarRepairrecordUpdateOne {
+	return cruo.SetCarinspectionID(c.ID)
+}
+
 // Mutation returns the CarRepairrecordMutation object of the builder.
 func (cruo *CarRepairrecordUpdateOne) Mutation() *CarRepairrecordMutation {
 	return cruo.mutation
 }
 
+// ClearKeeper clears the keeper edge to Repairing.
+func (cruo *CarRepairrecordUpdateOne) ClearKeeper() *CarRepairrecordUpdateOne {
+	cruo.mutation.ClearKeeper()
+	return cruo
+}
+
+// ClearUser clears the user edge to User.
+func (cruo *CarRepairrecordUpdateOne) ClearUser() *CarRepairrecordUpdateOne {
+	cruo.mutation.ClearUser()
+	return cruo
+}
+
+// ClearCarinspection clears the carinspection edge to CarInspection.
+func (cruo *CarRepairrecordUpdateOne) ClearCarinspection() *CarRepairrecordUpdateOne {
+	cruo.mutation.ClearCarinspection()
+	return cruo
+}
+
 // Save executes the query and returns the updated entity.
 func (cruo *CarRepairrecordUpdateOne) Save(ctx context.Context) (*CarRepairrecord, error) {
+
 	var (
 		err  error
 		node *CarRepairrecord
@@ -191,6 +471,118 @@ func (cruo *CarRepairrecordUpdateOne) sqlSave(ctx context.Context) (cr *CarRepai
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing CarRepairrecord.ID for update")}
 	}
 	_spec.Node.ID.Value = id
+	if value, ok := cruo.mutation.Datetime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carrepairrecord.FieldDatetime,
+		})
+	}
+	if cruo.mutation.KeeperCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.KeeperTable,
+			Columns: []string{carrepairrecord.KeeperColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: repairing.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cruo.mutation.KeeperIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.KeeperTable,
+			Columns: []string{carrepairrecord.KeeperColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: repairing.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cruo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.UserTable,
+			Columns: []string{carrepairrecord.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cruo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.UserTable,
+			Columns: []string{carrepairrecord.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cruo.mutation.CarinspectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.CarinspectionTable,
+			Columns: []string{carrepairrecord.CarinspectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cruo.mutation.CarinspectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carrepairrecord.CarinspectionTable,
+			Columns: []string{carrepairrecord.CarinspectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	cr = &CarRepairrecord{config: cruo.config}
 	_spec.Assign = cr.assignValues
 	_spec.ScanValues = cr.scanValues()

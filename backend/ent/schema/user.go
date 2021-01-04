@@ -33,7 +33,10 @@ func (User) Edges() []ent.Edge {
 			
 		//To CarInspection	
 		edge.To("carinspections",CarInspection.Type).
-		    StorageKey(edge.Column("user_id")),
+			StorageKey(edge.Column("user_id")),
+		//To CarRepairrecord
+		edge.To("carrepairrecords", CarRepairrecord.Type).
+			StorageKey(edge.Column("user_id")),
 		    
 	}
 }

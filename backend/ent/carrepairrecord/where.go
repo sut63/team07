@@ -3,7 +3,10 @@
 package carrepairrecord
 
 import (
+	"time"
+
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -87,6 +90,173 @@ func IDLT(id int) predicate.CarRepairrecord {
 func IDLTE(id int) predicate.CarRepairrecord {
 	return predicate.CarRepairrecord(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Datetime applies equality check predicate on the "datetime" field. It's identical to DatetimeEQ.
+func Datetime(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeEQ applies the EQ predicate on the "datetime" field.
+func DatetimeEQ(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeNEQ applies the NEQ predicate on the "datetime" field.
+func DatetimeNEQ(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeIn applies the In predicate on the "datetime" field.
+func DatetimeIn(vs ...time.Time) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldDatetime), v...))
+	})
+}
+
+// DatetimeNotIn applies the NotIn predicate on the "datetime" field.
+func DatetimeNotIn(vs ...time.Time) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldDatetime), v...))
+	})
+}
+
+// DatetimeGT applies the GT predicate on the "datetime" field.
+func DatetimeGT(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeGTE applies the GTE predicate on the "datetime" field.
+func DatetimeGTE(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeLT applies the LT predicate on the "datetime" field.
+func DatetimeLT(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldDatetime), v))
+	})
+}
+
+// DatetimeLTE applies the LTE predicate on the "datetime" field.
+func DatetimeLTE(v time.Time) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldDatetime), v))
+	})
+}
+
+// HasKeeper applies the HasEdge predicate on the "keeper" edge.
+func HasKeeper() predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(KeeperTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, KeeperTable, KeeperColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasKeeperWith applies the HasEdge predicate on the "keeper" edge with a given conditions (other predicates).
+func HasKeeperWith(preds ...predicate.Repairing) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(KeeperInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, KeeperTable, KeeperColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCarinspection applies the HasEdge predicate on the "carinspection" edge.
+func HasCarinspection() predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarinspectionTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, CarinspectionTable, CarinspectionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCarinspectionWith applies the HasEdge predicate on the "carinspection" edge with a given conditions (other predicates).
+func HasCarinspectionWith(preds ...predicate.CarInspection) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarinspectionInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, CarinspectionTable, CarinspectionColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

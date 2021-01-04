@@ -39,9 +39,11 @@ type CarInspectionEdges struct {
 	Ambulance *Ambulance
 	// Inspectionresult holds the value of the inspectionresult edge.
 	Inspectionresult *InspectionResult
+	// Carrepairrecords holds the value of the carrepairrecords edge.
+	Carrepairrecords []*CarRepairrecord
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 }
 
 // UserOrErr returns the User value or an error if the edge
@@ -84,6 +86,15 @@ func (e CarInspectionEdges) InspectionresultOrErr() (*InspectionResult, error) {
 		return e.Inspectionresult, nil
 	}
 	return nil, &NotLoadedError{edge: "inspectionresult"}
+}
+
+// CarrepairrecordsOrErr returns the Carrepairrecords value or an error if the edge
+// was not loaded in eager-loading.
+func (e CarInspectionEdges) CarrepairrecordsOrErr() ([]*CarRepairrecord, error) {
+	if e.loadedTypes[3] {
+		return e.Carrepairrecords, nil
+	}
+	return nil, &NotLoadedError{edge: "carrepairrecords"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -163,6 +174,11 @@ func (ci *CarInspection) QueryAmbulance() *AmbulanceQuery {
 // QueryInspectionresult queries the inspectionresult edge of the CarInspection.
 func (ci *CarInspection) QueryInspectionresult() *InspectionResultQuery {
 	return (&CarInspectionClient{config: ci.config}).QueryInspectionresult(ci)
+}
+
+// QueryCarrepairrecords queries the carrepairrecords edge of the CarInspection.
+func (ci *CarInspection) QueryCarrepairrecords() *CarRepairrecordQuery {
+	return (&CarInspectionClient{config: ci.config}).QueryCarrepairrecords(ci)
 }
 
 // Update returns a builder for updating this CarInspection.

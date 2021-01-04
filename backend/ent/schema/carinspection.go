@@ -31,5 +31,8 @@ func (CarInspection) Edges() []ent.Edge {
 		edge.From("inspectionresult", InspectionResult.Type).
 			Ref("carinspections").
 			Unique(),
+		//To CarRepairrecord
+		edge.To("carrepairrecords", CarRepairrecord.Type).
+			StorageKey(edge.Column("carinspection_id")),
 	}
 }

@@ -38,9 +38,11 @@ type UserEdges struct {
 	Userid []*Carservice
 	// Carinspections holds the value of the carinspections edge.
 	Carinspections []*CarInspection
+	// Carrepairrecords holds the value of the carrepairrecords edge.
+	Carrepairrecords []*CarRepairrecord
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
 // JobpositionOrErr returns the Jobposition value or an error if the edge
@@ -82,6 +84,15 @@ func (e UserEdges) CarinspectionsOrErr() ([]*CarInspection, error) {
 		return e.Carinspections, nil
 	}
 	return nil, &NotLoadedError{edge: "carinspections"}
+}
+
+// CarrepairrecordsOrErr returns the Carrepairrecords value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) CarrepairrecordsOrErr() ([]*CarRepairrecord, error) {
+	if e.loadedTypes[4] {
+		return e.Carrepairrecords, nil
+	}
+	return nil, &NotLoadedError{edge: "carrepairrecords"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -158,6 +169,11 @@ func (u *User) QueryUserid() *CarserviceQuery {
 // QueryCarinspections queries the carinspections edge of the User.
 func (u *User) QueryCarinspections() *CarInspectionQuery {
 	return (&UserClient{config: u.config}).QueryCarinspections(u)
+}
+
+// QueryCarrepairrecords queries the carrepairrecords edge of the User.
+func (u *User) QueryCarrepairrecords() *CarRepairrecordQuery {
+	return (&UserClient{config: u.config}).QueryCarrepairrecords(u)
 }
 
 // Update returns a builder for updating this User.

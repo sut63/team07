@@ -11,7 +11,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
 )
@@ -60,13 +60,13 @@ func (cc *CarserviceCreate) SetUserid(u *User) *CarserviceCreate {
 	return cc.SetUseridID(u.ID)
 }
 
-// SetDisidID sets the disid edge to Distances by id.
+// SetDisidID sets the disid edge to Distance by id.
 func (cc *CarserviceCreate) SetDisidID(id int) *CarserviceCreate {
 	cc.mutation.SetDisidID(id)
 	return cc
 }
 
-// SetNillableDisidID sets the disid edge to Distances by id if the given value is not nil.
+// SetNillableDisidID sets the disid edge to Distance by id if the given value is not nil.
 func (cc *CarserviceCreate) SetNillableDisidID(id *int) *CarserviceCreate {
 	if id != nil {
 		cc = cc.SetDisidID(*id)
@@ -74,8 +74,8 @@ func (cc *CarserviceCreate) SetNillableDisidID(id *int) *CarserviceCreate {
 	return cc
 }
 
-// SetDisid sets the disid edge to Distances.
-func (cc *CarserviceCreate) SetDisid(d *Distances) *CarserviceCreate {
+// SetDisid sets the disid edge to Distance.
+func (cc *CarserviceCreate) SetDisid(d *Distance) *CarserviceCreate {
 	return cc.SetDisidID(d.ID)
 }
 
@@ -227,7 +227,7 @@ func (cc *CarserviceCreate) createSpec() (*Carservice, *sqlgraph.CreateSpec) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: distances.FieldID,
+					Column: distance.FieldID,
 				},
 			},
 		}

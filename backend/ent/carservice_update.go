@@ -11,7 +11,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
@@ -68,13 +68,13 @@ func (cu *CarserviceUpdate) SetUserid(u *User) *CarserviceUpdate {
 	return cu.SetUseridID(u.ID)
 }
 
-// SetDisidID sets the disid edge to Distances by id.
+// SetDisidID sets the disid edge to Distance by id.
 func (cu *CarserviceUpdate) SetDisidID(id int) *CarserviceUpdate {
 	cu.mutation.SetDisidID(id)
 	return cu
 }
 
-// SetNillableDisidID sets the disid edge to Distances by id if the given value is not nil.
+// SetNillableDisidID sets the disid edge to Distance by id if the given value is not nil.
 func (cu *CarserviceUpdate) SetNillableDisidID(id *int) *CarserviceUpdate {
 	if id != nil {
 		cu = cu.SetDisidID(*id)
@@ -82,8 +82,8 @@ func (cu *CarserviceUpdate) SetNillableDisidID(id *int) *CarserviceUpdate {
 	return cu
 }
 
-// SetDisid sets the disid edge to Distances.
-func (cu *CarserviceUpdate) SetDisid(d *Distances) *CarserviceUpdate {
+// SetDisid sets the disid edge to Distance.
+func (cu *CarserviceUpdate) SetDisid(d *Distance) *CarserviceUpdate {
 	return cu.SetDisidID(d.ID)
 }
 
@@ -117,7 +117,7 @@ func (cu *CarserviceUpdate) ClearUserid() *CarserviceUpdate {
 	return cu
 }
 
-// ClearDisid clears the disid edge to Distances.
+// ClearDisid clears the disid edge to Distance.
 func (cu *CarserviceUpdate) ClearDisid() *CarserviceUpdate {
 	cu.mutation.ClearDisid()
 	return cu
@@ -265,7 +265,7 @@ func (cu *CarserviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: distances.FieldID,
+					Column: distance.FieldID,
 				},
 			},
 		}
@@ -281,7 +281,7 @@ func (cu *CarserviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: distances.FieldID,
+					Column: distance.FieldID,
 				},
 			},
 		}
@@ -380,13 +380,13 @@ func (cuo *CarserviceUpdateOne) SetUserid(u *User) *CarserviceUpdateOne {
 	return cuo.SetUseridID(u.ID)
 }
 
-// SetDisidID sets the disid edge to Distances by id.
+// SetDisidID sets the disid edge to Distance by id.
 func (cuo *CarserviceUpdateOne) SetDisidID(id int) *CarserviceUpdateOne {
 	cuo.mutation.SetDisidID(id)
 	return cuo
 }
 
-// SetNillableDisidID sets the disid edge to Distances by id if the given value is not nil.
+// SetNillableDisidID sets the disid edge to Distance by id if the given value is not nil.
 func (cuo *CarserviceUpdateOne) SetNillableDisidID(id *int) *CarserviceUpdateOne {
 	if id != nil {
 		cuo = cuo.SetDisidID(*id)
@@ -394,8 +394,8 @@ func (cuo *CarserviceUpdateOne) SetNillableDisidID(id *int) *CarserviceUpdateOne
 	return cuo
 }
 
-// SetDisid sets the disid edge to Distances.
-func (cuo *CarserviceUpdateOne) SetDisid(d *Distances) *CarserviceUpdateOne {
+// SetDisid sets the disid edge to Distance.
+func (cuo *CarserviceUpdateOne) SetDisid(d *Distance) *CarserviceUpdateOne {
 	return cuo.SetDisidID(d.ID)
 }
 
@@ -429,7 +429,7 @@ func (cuo *CarserviceUpdateOne) ClearUserid() *CarserviceUpdateOne {
 	return cuo
 }
 
-// ClearDisid clears the disid edge to Distances.
+// ClearDisid clears the disid edge to Distance.
 func (cuo *CarserviceUpdateOne) ClearDisid() *CarserviceUpdateOne {
 	cuo.mutation.ClearDisid()
 	return cuo
@@ -575,7 +575,7 @@ func (cuo *CarserviceUpdateOne) sqlSave(ctx context.Context) (c *Carservice, err
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: distances.FieldID,
+					Column: distance.FieldID,
 				},
 			},
 		}
@@ -591,7 +591,7 @@ func (cuo *CarserviceUpdateOne) sqlSave(ctx context.Context) (c *Carservice, err
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: distances.FieldID,
+					Column: distance.FieldID,
 				},
 			},
 		}

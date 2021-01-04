@@ -453,7 +453,7 @@ func HasDisid() predicate.Carservice {
 }
 
 // HasDisidWith applies the HasEdge predicate on the "disid" edge with a given conditions (other predicates).
-func HasDisidWith(preds ...predicate.Distances) predicate.Carservice {
+func HasDisidWith(preds ...predicate.Distance) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),

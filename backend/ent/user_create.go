@@ -11,6 +11,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/user"
@@ -103,6 +104,21 @@ func (uc *UserCreate) AddCarinspections(c ...*CarInspection) *UserCreate {
 		ids[i] = c[i].ID
 	}
 	return uc.AddCarinspectionIDs(ids...)
+}
+
+// AddCarrepairrecordIDs adds the carrepairrecords edge to CarRepairrecord by ids.
+func (uc *UserCreate) AddCarrepairrecordIDs(ids ...int) *UserCreate {
+	uc.mutation.AddCarrepairrecordIDs(ids...)
+	return uc
+}
+
+// AddCarrepairrecords adds the carrepairrecords edges to CarRepairrecord.
+func (uc *UserCreate) AddCarrepairrecords(c ...*CarRepairrecord) *UserCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uc.AddCarrepairrecordIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -288,6 +304,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.CarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarrepairrecordsTable,
+			Columns: []string{user.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
 				},
 			},
 		}
