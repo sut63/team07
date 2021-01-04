@@ -14,6 +14,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
@@ -29,11 +30,12 @@ type UserQuery struct {
 	unique     []string
 	predicates []predicate.User
 	// eager-loading edges.
-	withJobposition    *JobPositionQuery
-	withUserof         *AmbulanceQuery
-	withUserid         *CarserviceQuery
-	withCarinspections *CarInspectionQuery
-	withFKs            bool
+	withJobposition      *JobPositionQuery
+	withUserof           *AmbulanceQuery
+	withUserid           *CarserviceQuery
+	withCarinspections   *CarInspectionQuery
+	withCarrepairrecords *CarRepairrecordQuery
+	withFKs              bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -128,6 +130,24 @@ func (uq *UserQuery) QueryCarinspections() *CarInspectionQuery {
 			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
 			sqlgraph.To(carinspection.Table, carinspection.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CarinspectionsTable, user.CarinspectionsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCarrepairrecords chains the current query on the carrepairrecords edge.
+func (uq *UserQuery) QueryCarrepairrecords() *CarRepairrecordQuery {
+	query := &CarRepairrecordQuery{config: uq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
+			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CarrepairrecordsTable, user.CarrepairrecordsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -358,6 +378,17 @@ func (uq *UserQuery) WithCarinspections(opts ...func(*CarInspectionQuery)) *User
 	return uq
 }
 
+//  WithCarrepairrecords tells the query-builder to eager-loads the nodes that are connected to
+// the "carrepairrecords" edge. The optional arguments used to configure the query builder of the edge.
+func (uq *UserQuery) WithCarrepairrecords(opts ...func(*CarRepairrecordQuery)) *UserQuery {
+	query := &CarRepairrecordQuery{config: uq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withCarrepairrecords = query
+	return uq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -425,11 +456,12 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [5]bool{
 			uq.withJobposition != nil,
 			uq.withUserof != nil,
 			uq.withUserid != nil,
 			uq.withCarinspections != nil,
+			uq.withCarrepairrecords != nil,
 		}
 	)
 	if uq.withJobposition != nil {
@@ -568,6 +600,34 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Carinspections = append(node.Edges.Carinspections, n)
+		}
+	}
+
+	if query := uq.withCarrepairrecords; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*User)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.CarRepairrecord(func(s *sql.Selector) {
+			s.Where(sql.InValues(user.CarrepairrecordsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.user_id
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "user_id" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Carrepairrecords = append(node.Edges.Carrepairrecords, n)
 		}
 	}
 

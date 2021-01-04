@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -13,6 +14,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
@@ -30,6 +32,7 @@ type CarInspectionQuery struct {
 	withUser             *UserQuery
 	withAmbulance        *AmbulanceQuery
 	withInspectionresult *InspectionResultQuery
+	withCarrepairrecords *CarRepairrecordQuery
 	withFKs              bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -107,6 +110,24 @@ func (ciq *CarInspectionQuery) QueryInspectionresult() *InspectionResultQuery {
 			sqlgraph.From(carinspection.Table, carinspection.FieldID, ciq.sqlQuery()),
 			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, carinspection.InspectionresultTable, carinspection.InspectionresultColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ciq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCarrepairrecords chains the current query on the carrepairrecords edge.
+func (ciq *CarInspectionQuery) QueryCarrepairrecords() *CarRepairrecordQuery {
+	query := &CarRepairrecordQuery{config: ciq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ciq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carinspection.Table, carinspection.FieldID, ciq.sqlQuery()),
+			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, carinspection.CarrepairrecordsTable, carinspection.CarrepairrecordsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(ciq.driver.Dialect(), step)
 		return fromU, nil
@@ -326,6 +347,17 @@ func (ciq *CarInspectionQuery) WithInspectionresult(opts ...func(*InspectionResu
 	return ciq
 }
 
+//  WithCarrepairrecords tells the query-builder to eager-loads the nodes that are connected to
+// the "carrepairrecords" edge. The optional arguments used to configure the query builder of the edge.
+func (ciq *CarInspectionQuery) WithCarrepairrecords(opts ...func(*CarRepairrecordQuery)) *CarInspectionQuery {
+	query := &CarRepairrecordQuery{config: ciq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ciq.withCarrepairrecords = query
+	return ciq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -393,10 +425,11 @@ func (ciq *CarInspectionQuery) sqlAll(ctx context.Context) ([]*CarInspection, er
 		nodes       = []*CarInspection{}
 		withFKs     = ciq.withFKs
 		_spec       = ciq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			ciq.withUser != nil,
 			ciq.withAmbulance != nil,
 			ciq.withInspectionresult != nil,
+			ciq.withCarrepairrecords != nil,
 		}
 	)
 	if ciq.withUser != nil || ciq.withAmbulance != nil || ciq.withInspectionresult != nil {
@@ -501,6 +534,34 @@ func (ciq *CarInspectionQuery) sqlAll(ctx context.Context) ([]*CarInspection, er
 			for i := range nodes {
 				nodes[i].Edges.Inspectionresult = n
 			}
+		}
+	}
+
+	if query := ciq.withCarrepairrecords; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*CarInspection)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.CarRepairrecord(func(s *sql.Selector) {
+			s.Where(sql.InValues(carinspection.CarrepairrecordsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.carinspection_id
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "carinspection_id" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "carinspection_id" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Carrepairrecords = append(node.Edges.Carrepairrecords, n)
 		}
 	}
 

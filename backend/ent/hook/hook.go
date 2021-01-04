@@ -113,15 +113,15 @@ func (f DeliverFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return f(ctx, mv)
 }
 
-// The DistancesFunc type is an adapter to allow the use of ordinary
-// function as Distances mutator.
-type DistancesFunc func(context.Context, *ent.DistancesMutation) (ent.Value, error)
+// The DistanceFunc type is an adapter to allow the use of ordinary
+// function as Distance mutator.
+type DistanceFunc func(context.Context, *ent.DistanceMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f DistancesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.DistancesMutation)
+func (f DistanceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.DistanceMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DistancesMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DistanceMutation", m)
 	}
 	return f(ctx, mv)
 }
@@ -174,6 +174,19 @@ func (f PurposeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	mv, ok := m.(*ent.PurposeMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PurposeMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The RepairingFunc type is an adapter to allow the use of ordinary
+// function as Repairing mutator.
+type RepairingFunc func(context.Context, *ent.RepairingMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RepairingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.RepairingMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RepairingMutation", m)
 	}
 	return f(ctx, mv)
 }

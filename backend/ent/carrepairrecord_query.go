@@ -11,8 +11,11 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/repairing"
+	"github.com/team07/app/ent/user"
 )
 
 // CarRepairrecordQuery is the builder for querying CarRepairrecord entities.
@@ -23,6 +26,11 @@ type CarRepairrecordQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.CarRepairrecord
+	// eager-loading edges.
+	withKeeper        *RepairingQuery
+	withUser          *UserQuery
+	withCarinspection *CarInspectionQuery
+	withFKs           bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -50,6 +58,60 @@ func (crq *CarRepairrecordQuery) Offset(offset int) *CarRepairrecordQuery {
 func (crq *CarRepairrecordQuery) Order(o ...OrderFunc) *CarRepairrecordQuery {
 	crq.order = append(crq.order, o...)
 	return crq
+}
+
+// QueryKeeper chains the current query on the keeper edge.
+func (crq *CarRepairrecordQuery) QueryKeeper() *RepairingQuery {
+	query := &RepairingQuery{config: crq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := crq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carrepairrecord.Table, carrepairrecord.FieldID, crq.sqlQuery()),
+			sqlgraph.To(repairing.Table, repairing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carrepairrecord.KeeperTable, carrepairrecord.KeeperColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(crq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryUser chains the current query on the user edge.
+func (crq *CarRepairrecordQuery) QueryUser() *UserQuery {
+	query := &UserQuery{config: crq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := crq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carrepairrecord.Table, carrepairrecord.FieldID, crq.sqlQuery()),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carrepairrecord.UserTable, carrepairrecord.UserColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(crq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCarinspection chains the current query on the carinspection edge.
+func (crq *CarRepairrecordQuery) QueryCarinspection() *CarInspectionQuery {
+	query := &CarInspectionQuery{config: crq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := crq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carrepairrecord.Table, carrepairrecord.FieldID, crq.sqlQuery()),
+			sqlgraph.To(carinspection.Table, carinspection.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carrepairrecord.CarinspectionTable, carrepairrecord.CarinspectionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(crq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first CarRepairrecord entity in the query. Returns *NotFoundError when no carrepairrecord was found.
@@ -231,8 +293,54 @@ func (crq *CarRepairrecordQuery) Clone() *CarRepairrecordQuery {
 	}
 }
 
+//  WithKeeper tells the query-builder to eager-loads the nodes that are connected to
+// the "keeper" edge. The optional arguments used to configure the query builder of the edge.
+func (crq *CarRepairrecordQuery) WithKeeper(opts ...func(*RepairingQuery)) *CarRepairrecordQuery {
+	query := &RepairingQuery{config: crq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	crq.withKeeper = query
+	return crq
+}
+
+//  WithUser tells the query-builder to eager-loads the nodes that are connected to
+// the "user" edge. The optional arguments used to configure the query builder of the edge.
+func (crq *CarRepairrecordQuery) WithUser(opts ...func(*UserQuery)) *CarRepairrecordQuery {
+	query := &UserQuery{config: crq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	crq.withUser = query
+	return crq
+}
+
+//  WithCarinspection tells the query-builder to eager-loads the nodes that are connected to
+// the "carinspection" edge. The optional arguments used to configure the query builder of the edge.
+func (crq *CarRepairrecordQuery) WithCarinspection(opts ...func(*CarInspectionQuery)) *CarRepairrecordQuery {
+	query := &CarInspectionQuery{config: crq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	crq.withCarinspection = query
+	return crq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Datetime time.Time `json:"datetime,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.CarRepairrecord.Query().
+//		GroupBy(carrepairrecord.FieldDatetime).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (crq *CarRepairrecordQuery) GroupBy(field string, fields ...string) *CarRepairrecordGroupBy {
 	group := &CarRepairrecordGroupBy{config: crq.config}
 	group.fields = append([]string{field}, fields...)
@@ -246,6 +354,17 @@ func (crq *CarRepairrecordQuery) GroupBy(field string, fields ...string) *CarRep
 }
 
 // Select one or more fields from the given query.
+//
+// Example:
+//
+//	var v []struct {
+//		Datetime time.Time `json:"datetime,omitempty"`
+//	}
+//
+//	client.CarRepairrecord.Query().
+//		Select(carrepairrecord.FieldDatetime).
+//		Scan(ctx, &v)
+//
 func (crq *CarRepairrecordQuery) Select(field string, fields ...string) *CarRepairrecordSelect {
 	selector := &CarRepairrecordSelect{config: crq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -271,13 +390,28 @@ func (crq *CarRepairrecordQuery) prepareQuery(ctx context.Context) error {
 
 func (crq *CarRepairrecordQuery) sqlAll(ctx context.Context) ([]*CarRepairrecord, error) {
 	var (
-		nodes = []*CarRepairrecord{}
-		_spec = crq.querySpec()
+		nodes       = []*CarRepairrecord{}
+		withFKs     = crq.withFKs
+		_spec       = crq.querySpec()
+		loadedTypes = [3]bool{
+			crq.withKeeper != nil,
+			crq.withUser != nil,
+			crq.withCarinspection != nil,
+		}
 	)
+	if crq.withKeeper != nil || crq.withUser != nil || crq.withCarinspection != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, carrepairrecord.ForeignKeys...)
+	}
 	_spec.ScanValues = func() []interface{} {
 		node := &CarRepairrecord{config: crq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -285,6 +419,7 @@ func (crq *CarRepairrecordQuery) sqlAll(ctx context.Context) ([]*CarRepairrecord
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, crq.driver, _spec); err != nil {
@@ -293,6 +428,82 @@ func (crq *CarRepairrecordQuery) sqlAll(ctx context.Context) ([]*CarRepairrecord
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := crq.withKeeper; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*CarRepairrecord)
+		for i := range nodes {
+			if fk := nodes[i].repairing_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(repairing.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "repairing_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Keeper = n
+			}
+		}
+	}
+
+	if query := crq.withUser; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*CarRepairrecord)
+		for i := range nodes {
+			if fk := nodes[i].user_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(user.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.User = n
+			}
+		}
+	}
+
+	if query := crq.withCarinspection; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*CarRepairrecord)
+		for i := range nodes {
+			if fk := nodes[i].carinspection_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(carinspection.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "carinspection_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Carinspection = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

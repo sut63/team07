@@ -12,7 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/carservice"
-	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
@@ -28,7 +28,7 @@ type CarserviceQuery struct {
 	predicates []predicate.Carservice
 	// eager-loading edges.
 	withUserid   *UserQuery
-	withDisid    *DistancesQuery
+	withDisid    *DistanceQuery
 	withUrgentid *UrgentQuery
 	withFKs      bool
 	// intermediate query (i.e. traversal path).
@@ -79,15 +79,15 @@ func (cq *CarserviceQuery) QueryUserid() *UserQuery {
 }
 
 // QueryDisid chains the current query on the disid edge.
-func (cq *CarserviceQuery) QueryDisid() *DistancesQuery {
-	query := &DistancesQuery{config: cq.config}
+func (cq *CarserviceQuery) QueryDisid() *DistanceQuery {
+	query := &DistanceQuery{config: cq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := cq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(carservice.Table, carservice.FieldID, cq.sqlQuery()),
-			sqlgraph.To(distances.Table, distances.FieldID),
+			sqlgraph.To(distance.Table, distance.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, carservice.DisidTable, carservice.DisidColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
@@ -306,8 +306,8 @@ func (cq *CarserviceQuery) WithUserid(opts ...func(*UserQuery)) *CarserviceQuery
 
 //  WithDisid tells the query-builder to eager-loads the nodes that are connected to
 // the "disid" edge. The optional arguments used to configure the query builder of the edge.
-func (cq *CarserviceQuery) WithDisid(opts ...func(*DistancesQuery)) *CarserviceQuery {
-	query := &DistancesQuery{config: cq.config}
+func (cq *CarserviceQuery) WithDisid(opts ...func(*DistanceQuery)) *CarserviceQuery {
+	query := &DistanceQuery{config: cq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -458,12 +458,12 @@ func (cq *CarserviceQuery) sqlAll(ctx context.Context) ([]*Carservice, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Carservice)
 		for i := range nodes {
-			if fk := nodes[i].distances_disid; fk != nil {
+			if fk := nodes[i].distance_disid; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
 		}
-		query.Where(distances.IDIn(ids...))
+		query.Where(distance.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
@@ -471,7 +471,7 @@ func (cq *CarserviceQuery) sqlAll(ctx context.Context) ([]*Carservice, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "distances_disid" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "distance_disid" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.Disid = n

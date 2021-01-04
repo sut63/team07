@@ -17,11 +17,12 @@ import (
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/deliver"
-	"github.com/team07/app/ent/distances"
+	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/purpose"
+	"github.com/team07/app/ent/repairing"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
 
@@ -51,8 +52,8 @@ type Client struct {
 	Carservice *CarserviceClient
 	// Deliver is the client for interacting with the Deliver builders.
 	Deliver *DeliverClient
-	// Distances is the client for interacting with the Distances builders.
-	Distances *DistancesClient
+	// Distance is the client for interacting with the Distance builders.
+	Distance *DistanceClient
 	// InspectionResult is the client for interacting with the InspectionResult builders.
 	InspectionResult *InspectionResultClient
 	// Insurance is the client for interacting with the Insurance builders.
@@ -61,6 +62,8 @@ type Client struct {
 	JobPosition *JobPositionClient
 	// Purpose is the client for interacting with the Purpose builders.
 	Purpose *PurposeClient
+	// Repairing is the client for interacting with the Repairing builders.
+	Repairing *RepairingClient
 	// Urgent is the client for interacting with the Urgent builders.
 	Urgent *UrgentClient
 	// User is the client for interacting with the User builders.
@@ -86,11 +89,12 @@ func (c *Client) init() {
 	c.Carregister = NewCarregisterClient(c.config)
 	c.Carservice = NewCarserviceClient(c.config)
 	c.Deliver = NewDeliverClient(c.config)
-	c.Distances = NewDistancesClient(c.config)
+	c.Distance = NewDistanceClient(c.config)
 	c.InspectionResult = NewInspectionResultClient(c.config)
 	c.Insurance = NewInsuranceClient(c.config)
 	c.JobPosition = NewJobPositionClient(c.config)
 	c.Purpose = NewPurposeClient(c.config)
+	c.Repairing = NewRepairingClient(c.config)
 	c.Urgent = NewUrgentClient(c.config)
 	c.User = NewUserClient(c.config)
 }
@@ -133,11 +137,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Carregister:      NewCarregisterClient(cfg),
 		Carservice:       NewCarserviceClient(cfg),
 		Deliver:          NewDeliverClient(cfg),
-		Distances:        NewDistancesClient(cfg),
+		Distance:         NewDistanceClient(cfg),
 		InspectionResult: NewInspectionResultClient(cfg),
 		Insurance:        NewInsuranceClient(cfg),
 		JobPosition:      NewJobPositionClient(cfg),
 		Purpose:          NewPurposeClient(cfg),
+		Repairing:        NewRepairingClient(cfg),
 		Urgent:           NewUrgentClient(cfg),
 		User:             NewUserClient(cfg),
 	}, nil
@@ -163,11 +168,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Carregister:      NewCarregisterClient(cfg),
 		Carservice:       NewCarserviceClient(cfg),
 		Deliver:          NewDeliverClient(cfg),
-		Distances:        NewDistancesClient(cfg),
+		Distance:         NewDistanceClient(cfg),
 		InspectionResult: NewInspectionResultClient(cfg),
 		Insurance:        NewInsuranceClient(cfg),
 		JobPosition:      NewJobPositionClient(cfg),
 		Purpose:          NewPurposeClient(cfg),
+		Repairing:        NewRepairingClient(cfg),
 		Urgent:           NewUrgentClient(cfg),
 		User:             NewUserClient(cfg),
 	}, nil
@@ -206,11 +212,12 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Carregister.Use(hooks...)
 	c.Carservice.Use(hooks...)
 	c.Deliver.Use(hooks...)
-	c.Distances.Use(hooks...)
+	c.Distance.Use(hooks...)
 	c.InspectionResult.Use(hooks...)
 	c.Insurance.Use(hooks...)
 	c.JobPosition.Use(hooks...)
 	c.Purpose.Use(hooks...)
+	c.Repairing.Use(hooks...)
 	c.Urgent.Use(hooks...)
 	c.User.Use(hooks...)
 }
@@ -587,6 +594,22 @@ func (c *CarInspectionClient) QueryInspectionresult(ci *CarInspection) *Inspecti
 	return query
 }
 
+// QueryCarrepairrecords queries the carrepairrecords edge of a CarInspection.
+func (c *CarInspectionClient) QueryCarrepairrecords(ci *CarInspection) *CarRepairrecordQuery {
+	query := &CarRepairrecordQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ci.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carinspection.Table, carinspection.FieldID, id),
+			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, carinspection.CarrepairrecordsTable, carinspection.CarrepairrecordsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ci.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CarInspectionClient) Hooks() []Hook {
 	return c.hooks.CarInspection
@@ -668,6 +691,54 @@ func (c *CarRepairrecordClient) GetX(ctx context.Context, id int) *CarRepairreco
 		panic(err)
 	}
 	return cr
+}
+
+// QueryKeeper queries the keeper edge of a CarRepairrecord.
+func (c *CarRepairrecordClient) QueryKeeper(cr *CarRepairrecord) *RepairingQuery {
+	query := &RepairingQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := cr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carrepairrecord.Table, carrepairrecord.FieldID, id),
+			sqlgraph.To(repairing.Table, repairing.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carrepairrecord.KeeperTable, carrepairrecord.KeeperColumn),
+		)
+		fromV = sqlgraph.Neighbors(cr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryUser queries the user edge of a CarRepairrecord.
+func (c *CarRepairrecordClient) QueryUser(cr *CarRepairrecord) *UserQuery {
+	query := &UserQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := cr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carrepairrecord.Table, carrepairrecord.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carrepairrecord.UserTable, carrepairrecord.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(cr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCarinspection queries the carinspection edge of a CarRepairrecord.
+func (c *CarRepairrecordClient) QueryCarinspection(cr *CarRepairrecord) *CarInspectionQuery {
+	query := &CarInspectionQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := cr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carrepairrecord.Table, carrepairrecord.FieldID, id),
+			sqlgraph.To(carinspection.Table, carinspection.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carrepairrecord.CarinspectionTable, carrepairrecord.CarinspectionColumn),
+		)
+		fromV = sqlgraph.Neighbors(cr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -952,13 +1023,13 @@ func (c *CarserviceClient) QueryUserid(ca *Carservice) *UserQuery {
 }
 
 // QueryDisid queries the disid edge of a Carservice.
-func (c *CarserviceClient) QueryDisid(ca *Carservice) *DistancesQuery {
-	query := &DistancesQuery{config: c.config}
+func (c *CarserviceClient) QueryDisid(ca *Carservice) *DistanceQuery {
+	query := &DistanceQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := ca.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(carservice.Table, carservice.FieldID, id),
-			sqlgraph.To(distances.Table, distances.FieldID),
+			sqlgraph.To(distance.Table, distance.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, carservice.DisidTable, carservice.DisidColumn),
 		)
 		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
@@ -1071,77 +1142,77 @@ func (c *DeliverClient) Hooks() []Hook {
 	return c.hooks.Deliver
 }
 
-// DistancesClient is a client for the Distances schema.
-type DistancesClient struct {
+// DistanceClient is a client for the Distance schema.
+type DistanceClient struct {
 	config
 }
 
-// NewDistancesClient returns a client for the Distances from the given config.
-func NewDistancesClient(c config) *DistancesClient {
-	return &DistancesClient{config: c}
+// NewDistanceClient returns a client for the Distance from the given config.
+func NewDistanceClient(c config) *DistanceClient {
+	return &DistanceClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `distances.Hooks(f(g(h())))`.
-func (c *DistancesClient) Use(hooks ...Hook) {
-	c.hooks.Distances = append(c.hooks.Distances, hooks...)
+// A call to `Use(f, g, h)` equals to `distance.Hooks(f(g(h())))`.
+func (c *DistanceClient) Use(hooks ...Hook) {
+	c.hooks.Distance = append(c.hooks.Distance, hooks...)
 }
 
-// Create returns a create builder for Distances.
-func (c *DistancesClient) Create() *DistancesCreate {
-	mutation := newDistancesMutation(c.config, OpCreate)
-	return &DistancesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for Distance.
+func (c *DistanceClient) Create() *DistanceCreate {
+	mutation := newDistanceMutation(c.config, OpCreate)
+	return &DistanceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Update returns an update builder for Distances.
-func (c *DistancesClient) Update() *DistancesUpdate {
-	mutation := newDistancesMutation(c.config, OpUpdate)
-	return &DistancesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Distance.
+func (c *DistanceClient) Update() *DistanceUpdate {
+	mutation := newDistanceMutation(c.config, OpUpdate)
+	return &DistanceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *DistancesClient) UpdateOne(d *Distances) *DistancesUpdateOne {
-	mutation := newDistancesMutation(c.config, OpUpdateOne, withDistances(d))
-	return &DistancesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *DistanceClient) UpdateOne(d *Distance) *DistanceUpdateOne {
+	mutation := newDistanceMutation(c.config, OpUpdateOne, withDistance(d))
+	return &DistanceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *DistancesClient) UpdateOneID(id int) *DistancesUpdateOne {
-	mutation := newDistancesMutation(c.config, OpUpdateOne, withDistancesID(id))
-	return &DistancesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *DistanceClient) UpdateOneID(id int) *DistanceUpdateOne {
+	mutation := newDistanceMutation(c.config, OpUpdateOne, withDistanceID(id))
+	return &DistanceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Distances.
-func (c *DistancesClient) Delete() *DistancesDelete {
-	mutation := newDistancesMutation(c.config, OpDelete)
-	return &DistancesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Distance.
+func (c *DistanceClient) Delete() *DistanceDelete {
+	mutation := newDistanceMutation(c.config, OpDelete)
+	return &DistanceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *DistancesClient) DeleteOne(d *Distances) *DistancesDeleteOne {
+func (c *DistanceClient) DeleteOne(d *Distance) *DistanceDeleteOne {
 	return c.DeleteOneID(d.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *DistancesClient) DeleteOneID(id int) *DistancesDeleteOne {
-	builder := c.Delete().Where(distances.ID(id))
+func (c *DistanceClient) DeleteOneID(id int) *DistanceDeleteOne {
+	builder := c.Delete().Where(distance.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &DistancesDeleteOne{builder}
+	return &DistanceDeleteOne{builder}
 }
 
-// Create returns a query builder for Distances.
-func (c *DistancesClient) Query() *DistancesQuery {
-	return &DistancesQuery{config: c.config}
+// Create returns a query builder for Distance.
+func (c *DistanceClient) Query() *DistanceQuery {
+	return &DistanceQuery{config: c.config}
 }
 
-// Get returns a Distances entity by its id.
-func (c *DistancesClient) Get(ctx context.Context, id int) (*Distances, error) {
-	return c.Query().Where(distances.ID(id)).Only(ctx)
+// Get returns a Distance entity by its id.
+func (c *DistanceClient) Get(ctx context.Context, id int) (*Distance, error) {
+	return c.Query().Where(distance.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *DistancesClient) GetX(ctx context.Context, id int) *Distances {
+func (c *DistanceClient) GetX(ctx context.Context, id int) *Distance {
 	d, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -1149,15 +1220,15 @@ func (c *DistancesClient) GetX(ctx context.Context, id int) *Distances {
 	return d
 }
 
-// QueryDisid queries the disid edge of a Distances.
-func (c *DistancesClient) QueryDisid(d *Distances) *CarserviceQuery {
+// QueryDisid queries the disid edge of a Distance.
+func (c *DistanceClient) QueryDisid(d *Distance) *CarserviceQuery {
 	query := &CarserviceQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := d.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(distances.Table, distances.FieldID, id),
+			sqlgraph.From(distance.Table, distance.FieldID, id),
 			sqlgraph.To(carservice.Table, carservice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, distances.DisidTable, distances.DisidColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, distance.DisidTable, distance.DisidColumn),
 		)
 		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
@@ -1166,8 +1237,8 @@ func (c *DistancesClient) QueryDisid(d *Distances) *CarserviceQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *DistancesClient) Hooks() []Hook {
-	return c.hooks.Distances
+func (c *DistanceClient) Hooks() []Hook {
+	return c.hooks.Distance
 }
 
 // InspectionResultClient is a client for the InspectionResult schema.
@@ -1566,6 +1637,105 @@ func (c *PurposeClient) Hooks() []Hook {
 	return c.hooks.Purpose
 }
 
+// RepairingClient is a client for the Repairing schema.
+type RepairingClient struct {
+	config
+}
+
+// NewRepairingClient returns a client for the Repairing from the given config.
+func NewRepairingClient(c config) *RepairingClient {
+	return &RepairingClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `repairing.Hooks(f(g(h())))`.
+func (c *RepairingClient) Use(hooks ...Hook) {
+	c.hooks.Repairing = append(c.hooks.Repairing, hooks...)
+}
+
+// Create returns a create builder for Repairing.
+func (c *RepairingClient) Create() *RepairingCreate {
+	mutation := newRepairingMutation(c.config, OpCreate)
+	return &RepairingCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Repairing.
+func (c *RepairingClient) Update() *RepairingUpdate {
+	mutation := newRepairingMutation(c.config, OpUpdate)
+	return &RepairingUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RepairingClient) UpdateOne(r *Repairing) *RepairingUpdateOne {
+	mutation := newRepairingMutation(c.config, OpUpdateOne, withRepairing(r))
+	return &RepairingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RepairingClient) UpdateOneID(id int) *RepairingUpdateOne {
+	mutation := newRepairingMutation(c.config, OpUpdateOne, withRepairingID(id))
+	return &RepairingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Repairing.
+func (c *RepairingClient) Delete() *RepairingDelete {
+	mutation := newRepairingMutation(c.config, OpDelete)
+	return &RepairingDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *RepairingClient) DeleteOne(r *Repairing) *RepairingDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *RepairingClient) DeleteOneID(id int) *RepairingDeleteOne {
+	builder := c.Delete().Where(repairing.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RepairingDeleteOne{builder}
+}
+
+// Create returns a query builder for Repairing.
+func (c *RepairingClient) Query() *RepairingQuery {
+	return &RepairingQuery{config: c.config}
+}
+
+// Get returns a Repairing entity by its id.
+func (c *RepairingClient) Get(ctx context.Context, id int) (*Repairing, error) {
+	return c.Query().Where(repairing.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RepairingClient) GetX(ctx context.Context, id int) *Repairing {
+	r, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return r
+}
+
+// QueryRepairs queries the repairs edge of a Repairing.
+func (c *RepairingClient) QueryRepairs(r *Repairing) *CarRepairrecordQuery {
+	query := &CarRepairrecordQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(repairing.Table, repairing.FieldID, id),
+			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, repairing.RepairsTable, repairing.RepairsColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *RepairingClient) Hooks() []Hook {
+	return c.hooks.Repairing
+}
+
 // UrgentClient is a client for the Urgent schema.
 type UrgentClient struct {
 	config
@@ -1800,6 +1970,22 @@ func (c *UserClient) QueryCarinspections(u *User) *CarInspectionQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(carinspection.Table, carinspection.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CarinspectionsTable, user.CarinspectionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCarrepairrecords queries the carrepairrecords edge of a User.
+func (c *UserClient) QueryCarrepairrecords(u *User) *CarRepairrecordQuery {
+	query := &CarRepairrecordQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CarrepairrecordsTable, user.CarrepairrecordsColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

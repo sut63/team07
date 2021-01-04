@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
@@ -100,6 +101,21 @@ func (ciu *CarInspectionUpdate) SetInspectionresult(i *InspectionResult) *CarIns
 	return ciu.SetInspectionresultID(i.ID)
 }
 
+// AddCarrepairrecordIDs adds the carrepairrecords edge to CarRepairrecord by ids.
+func (ciu *CarInspectionUpdate) AddCarrepairrecordIDs(ids ...int) *CarInspectionUpdate {
+	ciu.mutation.AddCarrepairrecordIDs(ids...)
+	return ciu
+}
+
+// AddCarrepairrecords adds the carrepairrecords edges to CarRepairrecord.
+func (ciu *CarInspectionUpdate) AddCarrepairrecords(c ...*CarRepairrecord) *CarInspectionUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ciu.AddCarrepairrecordIDs(ids...)
+}
+
 // Mutation returns the CarInspectionMutation object of the builder.
 func (ciu *CarInspectionUpdate) Mutation() *CarInspectionMutation {
 	return ciu.mutation
@@ -121,6 +137,21 @@ func (ciu *CarInspectionUpdate) ClearAmbulance() *CarInspectionUpdate {
 func (ciu *CarInspectionUpdate) ClearInspectionresult() *CarInspectionUpdate {
 	ciu.mutation.ClearInspectionresult()
 	return ciu
+}
+
+// RemoveCarrepairrecordIDs removes the carrepairrecords edge to CarRepairrecord by ids.
+func (ciu *CarInspectionUpdate) RemoveCarrepairrecordIDs(ids ...int) *CarInspectionUpdate {
+	ciu.mutation.RemoveCarrepairrecordIDs(ids...)
+	return ciu
+}
+
+// RemoveCarrepairrecords removes carrepairrecords edges to CarRepairrecord.
+func (ciu *CarInspectionUpdate) RemoveCarrepairrecords(c ...*CarRepairrecord) *CarInspectionUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ciu.RemoveCarrepairrecordIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -312,6 +343,44 @@ func (ciu *CarInspectionUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := ciu.mutation.RemovedCarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   carinspection.CarrepairrecordsTable,
+			Columns: []string{carinspection.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ciu.mutation.CarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   carinspection.CarrepairrecordsTable,
+			Columns: []string{carinspection.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ciu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{carinspection.Label}
@@ -399,6 +468,21 @@ func (ciuo *CarInspectionUpdateOne) SetInspectionresult(i *InspectionResult) *Ca
 	return ciuo.SetInspectionresultID(i.ID)
 }
 
+// AddCarrepairrecordIDs adds the carrepairrecords edge to CarRepairrecord by ids.
+func (ciuo *CarInspectionUpdateOne) AddCarrepairrecordIDs(ids ...int) *CarInspectionUpdateOne {
+	ciuo.mutation.AddCarrepairrecordIDs(ids...)
+	return ciuo
+}
+
+// AddCarrepairrecords adds the carrepairrecords edges to CarRepairrecord.
+func (ciuo *CarInspectionUpdateOne) AddCarrepairrecords(c ...*CarRepairrecord) *CarInspectionUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ciuo.AddCarrepairrecordIDs(ids...)
+}
+
 // Mutation returns the CarInspectionMutation object of the builder.
 func (ciuo *CarInspectionUpdateOne) Mutation() *CarInspectionMutation {
 	return ciuo.mutation
@@ -420,6 +504,21 @@ func (ciuo *CarInspectionUpdateOne) ClearAmbulance() *CarInspectionUpdateOne {
 func (ciuo *CarInspectionUpdateOne) ClearInspectionresult() *CarInspectionUpdateOne {
 	ciuo.mutation.ClearInspectionresult()
 	return ciuo
+}
+
+// RemoveCarrepairrecordIDs removes the carrepairrecords edge to CarRepairrecord by ids.
+func (ciuo *CarInspectionUpdateOne) RemoveCarrepairrecordIDs(ids ...int) *CarInspectionUpdateOne {
+	ciuo.mutation.RemoveCarrepairrecordIDs(ids...)
+	return ciuo
+}
+
+// RemoveCarrepairrecords removes carrepairrecords edges to CarRepairrecord.
+func (ciuo *CarInspectionUpdateOne) RemoveCarrepairrecords(c ...*CarRepairrecord) *CarInspectionUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return ciuo.RemoveCarrepairrecordIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -601,6 +700,44 @@ func (ciuo *CarInspectionUpdateOne) sqlSave(ctx context.Context) (ci *CarInspect
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: inspectionresult.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := ciuo.mutation.RemovedCarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   carinspection.CarrepairrecordsTable,
+			Columns: []string{carinspection.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ciuo.mutation.CarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   carinspection.CarrepairrecordsTable,
+			Columns: []string{carinspection.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
 				},
 			},
 		}

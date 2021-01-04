@@ -18,6 +18,8 @@ const (
 	EdgeAmbulance = "ambulance"
 	// EdgeInspectionresult holds the string denoting the inspectionresult edge name in mutations.
 	EdgeInspectionresult = "inspectionresult"
+	// EdgeCarrepairrecords holds the string denoting the carrepairrecords edge name in mutations.
+	EdgeCarrepairrecords = "carrepairrecords"
 
 	// Table holds the table name of the carinspection in the database.
 	Table = "car_inspections"
@@ -42,6 +44,13 @@ const (
 	InspectionresultInverseTable = "inspection_results"
 	// InspectionresultColumn is the table column denoting the inspectionresult relation/edge.
 	InspectionresultColumn = "inspectionresult_id"
+	// CarrepairrecordsTable is the table the holds the carrepairrecords relation/edge.
+	CarrepairrecordsTable = "car_repairrecords"
+	// CarrepairrecordsInverseTable is the table name for the CarRepairrecord entity.
+	// It exists in this package in order to avoid circular dependency with the "carrepairrecord" package.
+	CarrepairrecordsInverseTable = "car_repairrecords"
+	// CarrepairrecordsColumn is the table column denoting the carrepairrecords relation/edge.
+	CarrepairrecordsColumn = "carinspection_id"
 )
 
 // Columns holds all SQL columns for carinspection fields.

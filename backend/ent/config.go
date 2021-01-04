@@ -32,11 +32,12 @@ type hooks struct {
 	Carregister      []ent.Hook
 	Carservice       []ent.Hook
 	Deliver          []ent.Hook
-	Distances        []ent.Hook
+	Distance         []ent.Hook
 	InspectionResult []ent.Hook
 	Insurance        []ent.Hook
 	JobPosition      []ent.Hook
 	Purpose          []ent.Hook
+	Repairing        []ent.Hook
 	Urgent           []ent.Hook
 	User             []ent.Hook
 }

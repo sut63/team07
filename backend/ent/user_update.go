@@ -11,6 +11,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
@@ -113,6 +114,21 @@ func (uu *UserUpdate) AddCarinspections(c ...*CarInspection) *UserUpdate {
 	return uu.AddCarinspectionIDs(ids...)
 }
 
+// AddCarrepairrecordIDs adds the carrepairrecords edge to CarRepairrecord by ids.
+func (uu *UserUpdate) AddCarrepairrecordIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddCarrepairrecordIDs(ids...)
+	return uu
+}
+
+// AddCarrepairrecords adds the carrepairrecords edges to CarRepairrecord.
+func (uu *UserUpdate) AddCarrepairrecords(c ...*CarRepairrecord) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.AddCarrepairrecordIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -167,6 +183,21 @@ func (uu *UserUpdate) RemoveCarinspections(c ...*CarInspection) *UserUpdate {
 		ids[i] = c[i].ID
 	}
 	return uu.RemoveCarinspectionIDs(ids...)
+}
+
+// RemoveCarrepairrecordIDs removes the carrepairrecords edge to CarRepairrecord by ids.
+func (uu *UserUpdate) RemoveCarrepairrecordIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveCarrepairrecordIDs(ids...)
+	return uu
+}
+
+// RemoveCarrepairrecords removes carrepairrecords edges to CarRepairrecord.
+func (uu *UserUpdate) RemoveCarrepairrecords(c ...*CarRepairrecord) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.RemoveCarrepairrecordIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -424,6 +455,44 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := uu.mutation.RemovedCarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarrepairrecordsTable,
+			Columns: []string{user.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.CarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarrepairrecordsTable,
+			Columns: []string{user.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -524,6 +593,21 @@ func (uuo *UserUpdateOne) AddCarinspections(c ...*CarInspection) *UserUpdateOne 
 	return uuo.AddCarinspectionIDs(ids...)
 }
 
+// AddCarrepairrecordIDs adds the carrepairrecords edge to CarRepairrecord by ids.
+func (uuo *UserUpdateOne) AddCarrepairrecordIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddCarrepairrecordIDs(ids...)
+	return uuo
+}
+
+// AddCarrepairrecords adds the carrepairrecords edges to CarRepairrecord.
+func (uuo *UserUpdateOne) AddCarrepairrecords(c ...*CarRepairrecord) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.AddCarrepairrecordIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
@@ -578,6 +662,21 @@ func (uuo *UserUpdateOne) RemoveCarinspections(c ...*CarInspection) *UserUpdateO
 		ids[i] = c[i].ID
 	}
 	return uuo.RemoveCarinspectionIDs(ids...)
+}
+
+// RemoveCarrepairrecordIDs removes the carrepairrecords edge to CarRepairrecord by ids.
+func (uuo *UserUpdateOne) RemoveCarrepairrecordIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveCarrepairrecordIDs(ids...)
+	return uuo
+}
+
+// RemoveCarrepairrecords removes carrepairrecords edges to CarRepairrecord.
+func (uuo *UserUpdateOne) RemoveCarrepairrecords(c ...*CarRepairrecord) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.RemoveCarrepairrecordIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -825,6 +924,44 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uuo.mutation.RemovedCarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarrepairrecordsTable,
+			Columns: []string{user.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.CarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarrepairrecordsTable,
+			Columns: []string{user.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
 				},
 			},
 		}

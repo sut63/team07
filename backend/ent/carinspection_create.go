@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/user"
 )
@@ -90,6 +91,21 @@ func (cic *CarInspectionCreate) SetNillableInspectionresultID(id *int) *CarInspe
 // SetInspectionresult sets the inspectionresult edge to InspectionResult.
 func (cic *CarInspectionCreate) SetInspectionresult(i *InspectionResult) *CarInspectionCreate {
 	return cic.SetInspectionresultID(i.ID)
+}
+
+// AddCarrepairrecordIDs adds the carrepairrecords edge to CarRepairrecord by ids.
+func (cic *CarInspectionCreate) AddCarrepairrecordIDs(ids ...int) *CarInspectionCreate {
+	cic.mutation.AddCarrepairrecordIDs(ids...)
+	return cic
+}
+
+// AddCarrepairrecords adds the carrepairrecords edges to CarRepairrecord.
+func (cic *CarInspectionCreate) AddCarrepairrecords(c ...*CarRepairrecord) *CarInspectionCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return cic.AddCarrepairrecordIDs(ids...)
 }
 
 // Mutation returns the CarInspectionMutation object of the builder.
@@ -230,6 +246,25 @@ func (cic *CarInspectionCreate) createSpec() (*CarInspection, *sqlgraph.CreateSp
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: inspectionresult.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cic.mutation.CarrepairrecordsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   carinspection.CarrepairrecordsTable,
+			Columns: []string{carinspection.CarrepairrecordsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carrepairrecord.FieldID,
 				},
 			},
 		}

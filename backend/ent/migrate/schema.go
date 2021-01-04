@@ -106,13 +106,39 @@ var (
 	// CarRepairrecordsColumns holds the columns for the "car_repairrecords" table.
 	CarRepairrecordsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "datetime", Type: field.TypeTime},
+		{Name: "carinspection_id", Type: field.TypeInt, Nullable: true},
+		{Name: "repairing_id", Type: field.TypeInt, Nullable: true},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// CarRepairrecordsTable holds the schema information for the "car_repairrecords" table.
 	CarRepairrecordsTable = &schema.Table{
-		Name:        "car_repairrecords",
-		Columns:     CarRepairrecordsColumns,
-		PrimaryKey:  []*schema.Column{CarRepairrecordsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
+		Name:       "car_repairrecords",
+		Columns:    CarRepairrecordsColumns,
+		PrimaryKey: []*schema.Column{CarRepairrecordsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "car_repairrecords_car_inspections_carrepairrecords",
+				Columns: []*schema.Column{CarRepairrecordsColumns[2]},
+
+				RefColumns: []*schema.Column{CarInspectionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "car_repairrecords_repairings_repairs",
+				Columns: []*schema.Column{CarRepairrecordsColumns[3]},
+
+				RefColumns: []*schema.Column{RepairingsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "car_repairrecords_users_carrepairrecords",
+				Columns: []*schema.Column{CarRepairrecordsColumns[4]},
+
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// CarbrandsColumns holds the columns for the "carbrands" table.
 	CarbrandsColumns = []*schema.Column{
@@ -143,7 +169,7 @@ var (
 		{Name: "customer", Type: field.TypeString},
 		{Name: "location", Type: field.TypeString},
 		{Name: "datetime", Type: field.TypeTime},
-		{Name: "distances_disid", Type: field.TypeInt, Nullable: true},
+		{Name: "distance_disid", Type: field.TypeInt, Nullable: true},
 		{Name: "urgent_urgentid", Type: field.TypeInt, Nullable: true},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -190,7 +216,7 @@ var (
 	// DistancesColumns holds the columns for the "distances" table.
 	DistancesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "distances", Type: field.TypeString},
+		{Name: "distance", Type: field.TypeString},
 	}
 	// DistancesTable holds the schema information for the "distances" table.
 	DistancesTable = &schema.Table{
@@ -247,6 +273,18 @@ var (
 		PrimaryKey:  []*schema.Column{PurposesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
+	// RepairingsColumns holds the columns for the "repairings" table.
+	RepairingsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "repairpart", Type: field.TypeString, Unique: true},
+	}
+	// RepairingsTable holds the schema information for the "repairings" table.
+	RepairingsTable = &schema.Table{
+		Name:        "repairings",
+		Columns:     RepairingsColumns,
+		PrimaryKey:  []*schema.Column{RepairingsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// UrgentsColumns holds the columns for the "urgents" table.
 	UrgentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -297,6 +335,7 @@ var (
 		InsurancesTable,
 		JobPositionsTable,
 		PurposesTable,
+		RepairingsTable,
 		UrgentsTable,
 		UsersTable,
 	}
@@ -310,6 +349,9 @@ func init() {
 	CarInspectionsTable.ForeignKeys[0].RefTable = AmbulancesTable
 	CarInspectionsTable.ForeignKeys[1].RefTable = InspectionResultsTable
 	CarInspectionsTable.ForeignKeys[2].RefTable = UsersTable
+	CarRepairrecordsTable.ForeignKeys[0].RefTable = CarInspectionsTable
+	CarRepairrecordsTable.ForeignKeys[1].RefTable = RepairingsTable
+	CarRepairrecordsTable.ForeignKeys[2].RefTable = UsersTable
 	CarservicesTable.ForeignKeys[0].RefTable = DistancesTable
 	CarservicesTable.ForeignKeys[1].RefTable = UrgentsTable
 	CarservicesTable.ForeignKeys[2].RefTable = UsersTable

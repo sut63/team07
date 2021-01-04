@@ -32,11 +32,11 @@ const (
 	UseridColumn = "user_id"
 	// DisidTable is the table the holds the disid relation/edge.
 	DisidTable = "carservices"
-	// DisidInverseTable is the table name for the Distances entity.
-	// It exists in this package in order to avoid circular dependency with the "distances" package.
+	// DisidInverseTable is the table name for the Distance entity.
+	// It exists in this package in order to avoid circular dependency with the "distance" package.
 	DisidInverseTable = "distances"
 	// DisidColumn is the table column denoting the disid relation/edge.
-	DisidColumn = "distances_disid"
+	DisidColumn = "distance_disid"
 	// UrgentidTable is the table the holds the urgentid relation/edge.
 	UrgentidTable = "carservices"
 	// UrgentidInverseTable is the table name for the Urgent entity.
@@ -56,7 +56,7 @@ var Columns = []string{
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Carservice type.
 var ForeignKeys = []string{
-	"distances_disid",
+	"distance_disid",
 	"urgent_urgentid",
 	"user_id",
 }
