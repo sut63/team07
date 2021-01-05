@@ -3,7 +3,10 @@
 package carcheckinout
 
 import (
+	"time"
+
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -87,6 +90,374 @@ func IDLT(id int) predicate.CarCheckInOut {
 func IDLTE(id int) predicate.CarCheckInOut {
 	return predicate.CarCheckInOut(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Note applies equality check predicate on the "note" field. It's identical to NoteEQ.
+func Note(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNote), v))
+	})
+}
+
+// CheckIn applies equality check predicate on the "checkIn" field. It's identical to CheckInEQ.
+func CheckIn(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckOut applies equality check predicate on the "checkOut" field. It's identical to CheckOutEQ.
+func CheckOut(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCheckOut), v))
+	})
+}
+
+// NoteEQ applies the EQ predicate on the "note" field.
+func NoteEQ(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldNote), v))
+	})
+}
+
+// NoteNEQ applies the NEQ predicate on the "note" field.
+func NoteNEQ(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldNote), v))
+	})
+}
+
+// NoteIn applies the In predicate on the "note" field.
+func NoteIn(vs ...string) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldNote), v...))
+	})
+}
+
+// NoteNotIn applies the NotIn predicate on the "note" field.
+func NoteNotIn(vs ...string) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldNote), v...))
+	})
+}
+
+// NoteGT applies the GT predicate on the "note" field.
+func NoteGT(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldNote), v))
+	})
+}
+
+// NoteGTE applies the GTE predicate on the "note" field.
+func NoteGTE(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldNote), v))
+	})
+}
+
+// NoteLT applies the LT predicate on the "note" field.
+func NoteLT(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldNote), v))
+	})
+}
+
+// NoteLTE applies the LTE predicate on the "note" field.
+func NoteLTE(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldNote), v))
+	})
+}
+
+// NoteContains applies the Contains predicate on the "note" field.
+func NoteContains(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldNote), v))
+	})
+}
+
+// NoteHasPrefix applies the HasPrefix predicate on the "note" field.
+func NoteHasPrefix(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldNote), v))
+	})
+}
+
+// NoteHasSuffix applies the HasSuffix predicate on the "note" field.
+func NoteHasSuffix(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldNote), v))
+	})
+}
+
+// NoteEqualFold applies the EqualFold predicate on the "note" field.
+func NoteEqualFold(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldNote), v))
+	})
+}
+
+// NoteContainsFold applies the ContainsFold predicate on the "note" field.
+func NoteContainsFold(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldNote), v))
+	})
+}
+
+// CheckInEQ applies the EQ predicate on the "checkIn" field.
+func CheckInEQ(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckInNEQ applies the NEQ predicate on the "checkIn" field.
+func CheckInNEQ(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckInIn applies the In predicate on the "checkIn" field.
+func CheckInIn(vs ...time.Time) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCheckIn), v...))
+	})
+}
+
+// CheckInNotIn applies the NotIn predicate on the "checkIn" field.
+func CheckInNotIn(vs ...time.Time) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCheckIn), v...))
+	})
+}
+
+// CheckInGT applies the GT predicate on the "checkIn" field.
+func CheckInGT(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckInGTE applies the GTE predicate on the "checkIn" field.
+func CheckInGTE(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckInLT applies the LT predicate on the "checkIn" field.
+func CheckInLT(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckInLTE applies the LTE predicate on the "checkIn" field.
+func CheckInLTE(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCheckIn), v))
+	})
+}
+
+// CheckOutEQ applies the EQ predicate on the "checkOut" field.
+func CheckOutEQ(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCheckOut), v))
+	})
+}
+
+// CheckOutNEQ applies the NEQ predicate on the "checkOut" field.
+func CheckOutNEQ(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCheckOut), v))
+	})
+}
+
+// CheckOutIn applies the In predicate on the "checkOut" field.
+func CheckOutIn(vs ...time.Time) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCheckOut), v...))
+	})
+}
+
+// CheckOutNotIn applies the NotIn predicate on the "checkOut" field.
+func CheckOutNotIn(vs ...time.Time) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCheckOut), v...))
+	})
+}
+
+// CheckOutGT applies the GT predicate on the "checkOut" field.
+func CheckOutGT(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCheckOut), v))
+	})
+}
+
+// CheckOutGTE applies the GTE predicate on the "checkOut" field.
+func CheckOutGTE(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCheckOut), v))
+	})
+}
+
+// CheckOutLT applies the LT predicate on the "checkOut" field.
+func CheckOutLT(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCheckOut), v))
+	})
+}
+
+// CheckOutLTE applies the LTE predicate on the "checkOut" field.
+func CheckOutLTE(v time.Time) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCheckOut), v))
+	})
+}
+
+// HasAmbulance applies the HasEdge predicate on the "ambulance" edge.
+func HasAmbulance() predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AmbulanceTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, AmbulanceTable, AmbulanceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAmbulanceWith applies the HasEdge predicate on the "ambulance" edge with a given conditions (other predicates).
+func HasAmbulanceWith(preds ...predicate.Ambulance) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AmbulanceInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, AmbulanceTable, AmbulanceColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasName applies the HasEdge predicate on the "name" edge.
+func HasName() predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(NameTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, NameTable, NameColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasNameWith applies the HasEdge predicate on the "name" edge with a given conditions (other predicates).
+func HasNameWith(preds ...predicate.User) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(NameInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, NameTable, NameColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPurpose applies the HasEdge predicate on the "purpose" edge.
+func HasPurpose() predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PurposeTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, PurposeTable, PurposeColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPurposeWith applies the HasEdge predicate on the "purpose" edge with a given conditions (other predicates).
+func HasPurposeWith(preds ...predicate.Purpose) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PurposeInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, PurposeTable, PurposeColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

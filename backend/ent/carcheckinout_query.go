@@ -11,8 +11,11 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/purpose"
+	"github.com/team07/app/ent/user"
 )
 
 // CarCheckInOutQuery is the builder for querying CarCheckInOut entities.
@@ -23,6 +26,11 @@ type CarCheckInOutQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.CarCheckInOut
+	// eager-loading edges.
+	withAmbulance *AmbulanceQuery
+	withName      *UserQuery
+	withPurpose   *PurposeQuery
+	withFKs       bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -50,6 +58,60 @@ func (ccioq *CarCheckInOutQuery) Offset(offset int) *CarCheckInOutQuery {
 func (ccioq *CarCheckInOutQuery) Order(o ...OrderFunc) *CarCheckInOutQuery {
 	ccioq.order = append(ccioq.order, o...)
 	return ccioq
+}
+
+// QueryAmbulance chains the current query on the ambulance edge.
+func (ccioq *CarCheckInOutQuery) QueryAmbulance() *AmbulanceQuery {
+	query := &AmbulanceQuery{config: ccioq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ccioq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carcheckinout.Table, carcheckinout.FieldID, ccioq.sqlQuery()),
+			sqlgraph.To(ambulance.Table, ambulance.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carcheckinout.AmbulanceTable, carcheckinout.AmbulanceColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ccioq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryName chains the current query on the name edge.
+func (ccioq *CarCheckInOutQuery) QueryName() *UserQuery {
+	query := &UserQuery{config: ccioq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ccioq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carcheckinout.Table, carcheckinout.FieldID, ccioq.sqlQuery()),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carcheckinout.NameTable, carcheckinout.NameColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ccioq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPurpose chains the current query on the purpose edge.
+func (ccioq *CarCheckInOutQuery) QueryPurpose() *PurposeQuery {
+	query := &PurposeQuery{config: ccioq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ccioq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carcheckinout.Table, carcheckinout.FieldID, ccioq.sqlQuery()),
+			sqlgraph.To(purpose.Table, purpose.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carcheckinout.PurposeTable, carcheckinout.PurposeColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(ccioq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first CarCheckInOut entity in the query. Returns *NotFoundError when no carcheckinout was found.
@@ -231,8 +293,54 @@ func (ccioq *CarCheckInOutQuery) Clone() *CarCheckInOutQuery {
 	}
 }
 
+//  WithAmbulance tells the query-builder to eager-loads the nodes that are connected to
+// the "ambulance" edge. The optional arguments used to configure the query builder of the edge.
+func (ccioq *CarCheckInOutQuery) WithAmbulance(opts ...func(*AmbulanceQuery)) *CarCheckInOutQuery {
+	query := &AmbulanceQuery{config: ccioq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ccioq.withAmbulance = query
+	return ccioq
+}
+
+//  WithName tells the query-builder to eager-loads the nodes that are connected to
+// the "name" edge. The optional arguments used to configure the query builder of the edge.
+func (ccioq *CarCheckInOutQuery) WithName(opts ...func(*UserQuery)) *CarCheckInOutQuery {
+	query := &UserQuery{config: ccioq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ccioq.withName = query
+	return ccioq
+}
+
+//  WithPurpose tells the query-builder to eager-loads the nodes that are connected to
+// the "purpose" edge. The optional arguments used to configure the query builder of the edge.
+func (ccioq *CarCheckInOutQuery) WithPurpose(opts ...func(*PurposeQuery)) *CarCheckInOutQuery {
+	query := &PurposeQuery{config: ccioq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	ccioq.withPurpose = query
+	return ccioq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Note string `json:"note,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.CarCheckInOut.Query().
+//		GroupBy(carcheckinout.FieldNote).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (ccioq *CarCheckInOutQuery) GroupBy(field string, fields ...string) *CarCheckInOutGroupBy {
 	group := &CarCheckInOutGroupBy{config: ccioq.config}
 	group.fields = append([]string{field}, fields...)
@@ -246,6 +354,17 @@ func (ccioq *CarCheckInOutQuery) GroupBy(field string, fields ...string) *CarChe
 }
 
 // Select one or more fields from the given query.
+//
+// Example:
+//
+//	var v []struct {
+//		Note string `json:"note,omitempty"`
+//	}
+//
+//	client.CarCheckInOut.Query().
+//		Select(carcheckinout.FieldNote).
+//		Scan(ctx, &v)
+//
 func (ccioq *CarCheckInOutQuery) Select(field string, fields ...string) *CarCheckInOutSelect {
 	selector := &CarCheckInOutSelect{config: ccioq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -271,13 +390,28 @@ func (ccioq *CarCheckInOutQuery) prepareQuery(ctx context.Context) error {
 
 func (ccioq *CarCheckInOutQuery) sqlAll(ctx context.Context) ([]*CarCheckInOut, error) {
 	var (
-		nodes = []*CarCheckInOut{}
-		_spec = ccioq.querySpec()
+		nodes       = []*CarCheckInOut{}
+		withFKs     = ccioq.withFKs
+		_spec       = ccioq.querySpec()
+		loadedTypes = [3]bool{
+			ccioq.withAmbulance != nil,
+			ccioq.withName != nil,
+			ccioq.withPurpose != nil,
+		}
 	)
+	if ccioq.withAmbulance != nil || ccioq.withName != nil || ccioq.withPurpose != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, carcheckinout.ForeignKeys...)
+	}
 	_spec.ScanValues = func() []interface{} {
 		node := &CarCheckInOut{config: ccioq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -285,6 +419,7 @@ func (ccioq *CarCheckInOutQuery) sqlAll(ctx context.Context) ([]*CarCheckInOut, 
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, ccioq.driver, _spec); err != nil {
@@ -293,6 +428,82 @@ func (ccioq *CarCheckInOutQuery) sqlAll(ctx context.Context) ([]*CarCheckInOut, 
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := ccioq.withAmbulance; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*CarCheckInOut)
+		for i := range nodes {
+			if fk := nodes[i].ambulance; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(ambulance.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "ambulance" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Ambulance = n
+			}
+		}
+	}
+
+	if query := ccioq.withName; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*CarCheckInOut)
+		for i := range nodes {
+			if fk := nodes[i].name; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(user.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "name" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Name = n
+			}
+		}
+	}
+
+	if query := ccioq.withPurpose; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*CarCheckInOut)
+		for i := range nodes {
+			if fk := nodes[i].purpose_carcheckinout; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(purpose.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "purpose_carcheckinout" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Purpose = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

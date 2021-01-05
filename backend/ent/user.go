@@ -40,9 +40,11 @@ type UserEdges struct {
 	Carinspections []*CarInspection
 	// Carrepairrecords holds the value of the carrepairrecords edge.
 	Carrepairrecords []*CarRepairrecord
+	// Carcheckinout holds the value of the carcheckinout edge.
+	Carcheckinout []*CarCheckInOut
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [6]bool
 }
 
 // JobpositionOrErr returns the Jobposition value or an error if the edge
@@ -93,6 +95,15 @@ func (e UserEdges) CarrepairrecordsOrErr() ([]*CarRepairrecord, error) {
 		return e.Carrepairrecords, nil
 	}
 	return nil, &NotLoadedError{edge: "carrepairrecords"}
+}
+
+// CarcheckinoutOrErr returns the Carcheckinout value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) CarcheckinoutOrErr() ([]*CarCheckInOut, error) {
+	if e.loadedTypes[5] {
+		return e.Carcheckinout, nil
+	}
+	return nil, &NotLoadedError{edge: "carcheckinout"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -174,6 +185,11 @@ func (u *User) QueryCarinspections() *CarInspectionQuery {
 // QueryCarrepairrecords queries the carrepairrecords edge of the User.
 func (u *User) QueryCarrepairrecords() *CarRepairrecordQuery {
 	return (&UserClient{config: u.config}).QueryCarrepairrecords(u)
+}
+
+// QueryCarcheckinout queries the carcheckinout edge of the User.
+func (u *User) QueryCarcheckinout() *CarCheckInOutQuery {
+	return (&UserClient{config: u.config}).QueryCarcheckinout(u)
 }
 
 // Update returns a builder for updating this User.

@@ -24,6 +24,8 @@ const (
 	EdgeCarinspections = "carinspections"
 	// EdgeCarrepairrecords holds the string denoting the carrepairrecords edge name in mutations.
 	EdgeCarrepairrecords = "carrepairrecords"
+	// EdgeCarcheckinout holds the string denoting the carcheckinout edge name in mutations.
+	EdgeCarcheckinout = "carcheckinout"
 
 	// Table holds the table name of the user in the database.
 	Table = "users"
@@ -62,6 +64,13 @@ const (
 	CarrepairrecordsInverseTable = "car_repairrecords"
 	// CarrepairrecordsColumn is the table column denoting the carrepairrecords relation/edge.
 	CarrepairrecordsColumn = "user_id"
+	// CarcheckinoutTable is the table the holds the carcheckinout relation/edge.
+	CarcheckinoutTable = "car_check_in_outs"
+	// CarcheckinoutInverseTable is the table name for the CarCheckInOut entity.
+	// It exists in this package in order to avoid circular dependency with the "carcheckinout" package.
+	CarcheckinoutInverseTable = "car_check_in_outs"
+	// CarcheckinoutColumn is the table column denoting the carcheckinout relation/edge.
+	CarcheckinoutColumn = "name"
 )
 
 // Columns holds all SQL columns for user fields.

@@ -57,13 +57,41 @@ var (
 	// CarCheckInOutsColumns holds the columns for the "car_check_in_outs" table.
 	CarCheckInOutsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "note", Type: field.TypeString},
+		{Name: "check_in", Type: field.TypeTime},
+		{Name: "check_out", Type: field.TypeTime},
+		{Name: "ambulance", Type: field.TypeInt, Nullable: true},
+		{Name: "purpose_carcheckinout", Type: field.TypeInt, Nullable: true},
+		{Name: "name", Type: field.TypeInt, Nullable: true},
 	}
 	// CarCheckInOutsTable holds the schema information for the "car_check_in_outs" table.
 	CarCheckInOutsTable = &schema.Table{
-		Name:        "car_check_in_outs",
-		Columns:     CarCheckInOutsColumns,
-		PrimaryKey:  []*schema.Column{CarCheckInOutsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
+		Name:       "car_check_in_outs",
+		Columns:    CarCheckInOutsColumns,
+		PrimaryKey: []*schema.Column{CarCheckInOutsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "car_check_in_outs_ambulances_carcheckinout",
+				Columns: []*schema.Column{CarCheckInOutsColumns[4]},
+
+				RefColumns: []*schema.Column{AmbulancesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "car_check_in_outs_purposes_carcheckinout",
+				Columns: []*schema.Column{CarCheckInOutsColumns[5]},
+
+				RefColumns: []*schema.Column{PurposesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "car_check_in_outs_users_carcheckinout",
+				Columns: []*schema.Column{CarCheckInOutsColumns[6]},
+
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// CarInspectionsColumns holds the columns for the "car_inspections" table.
 	CarInspectionsColumns = []*schema.Column{
@@ -275,6 +303,7 @@ var (
 	// PurposesColumns holds the columns for the "purposes" table.
 	PurposesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "objective", Type: field.TypeString, Unique: true},
 	}
 	// PurposesTable holds the schema information for the "purposes" table.
 	PurposesTable = &schema.Table{
@@ -356,6 +385,9 @@ func init() {
 	AmbulancesTable.ForeignKeys[1].RefTable = InspectionResultsTable
 	AmbulancesTable.ForeignKeys[2].RefTable = InsurancesTable
 	AmbulancesTable.ForeignKeys[3].RefTable = UsersTable
+	CarCheckInOutsTable.ForeignKeys[0].RefTable = AmbulancesTable
+	CarCheckInOutsTable.ForeignKeys[1].RefTable = PurposesTable
+	CarCheckInOutsTable.ForeignKeys[2].RefTable = UsersTable
 	CarInspectionsTable.ForeignKeys[0].RefTable = AmbulancesTable
 	CarInspectionsTable.ForeignKeys[1].RefTable = InspectionResultsTable
 	CarInspectionsTable.ForeignKeys[2].RefTable = UsersTable

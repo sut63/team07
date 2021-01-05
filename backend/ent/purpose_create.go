@@ -4,10 +4,12 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/purpose"
 )
 
@@ -18,6 +20,27 @@ type PurposeCreate struct {
 	hooks    []Hook
 }
 
+// SetObjective sets the objective field.
+func (pc *PurposeCreate) SetObjective(s string) *PurposeCreate {
+	pc.mutation.SetObjective(s)
+	return pc
+}
+
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (pc *PurposeCreate) AddCarcheckinoutIDs(ids ...int) *PurposeCreate {
+	pc.mutation.AddCarcheckinoutIDs(ids...)
+	return pc
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (pc *PurposeCreate) AddCarcheckinout(c ...*CarCheckInOut) *PurposeCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return pc.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the PurposeMutation object of the builder.
 func (pc *PurposeCreate) Mutation() *PurposeMutation {
 	return pc.mutation
@@ -25,6 +48,9 @@ func (pc *PurposeCreate) Mutation() *PurposeMutation {
 
 // Save creates the Purpose in the database.
 func (pc *PurposeCreate) Save(ctx context.Context) (*Purpose, error) {
+	if _, ok := pc.mutation.Objective(); !ok {
+		return nil, &ValidationError{Name: "objective", err: errors.New("ent: missing required field \"objective\"")}
+	}
 	var (
 		err  error
 		node *Purpose
@@ -85,5 +111,32 @@ func (pc *PurposeCreate) createSpec() (*Purpose, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := pc.mutation.Objective(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: purpose.FieldObjective,
+		})
+		pu.Objective = value
+	}
+	if nodes := pc.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   purpose.CarcheckinoutTable,
+			Columns: []string{purpose.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return pu, _spec
 }

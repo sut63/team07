@@ -9,6 +9,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/purpose"
 )
@@ -27,13 +28,50 @@ func (pu *PurposeUpdate) Where(ps ...predicate.Purpose) *PurposeUpdate {
 	return pu
 }
 
+// SetObjective sets the objective field.
+func (pu *PurposeUpdate) SetObjective(s string) *PurposeUpdate {
+	pu.mutation.SetObjective(s)
+	return pu
+}
+
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (pu *PurposeUpdate) AddCarcheckinoutIDs(ids ...int) *PurposeUpdate {
+	pu.mutation.AddCarcheckinoutIDs(ids...)
+	return pu
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (pu *PurposeUpdate) AddCarcheckinout(c ...*CarCheckInOut) *PurposeUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return pu.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the PurposeMutation object of the builder.
 func (pu *PurposeUpdate) Mutation() *PurposeMutation {
 	return pu.mutation
 }
 
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (pu *PurposeUpdate) RemoveCarcheckinoutIDs(ids ...int) *PurposeUpdate {
+	pu.mutation.RemoveCarcheckinoutIDs(ids...)
+	return pu
+}
+
+// RemoveCarcheckinout removes carcheckinout edges to CarCheckInOut.
+func (pu *PurposeUpdate) RemoveCarcheckinout(c ...*CarCheckInOut) *PurposeUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return pu.RemoveCarcheckinoutIDs(ids...)
+}
+
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (pu *PurposeUpdate) Save(ctx context.Context) (int, error) {
+
 	var (
 		err      error
 		affected int
@@ -101,6 +139,51 @@ func (pu *PurposeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := pu.mutation.Objective(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: purpose.FieldObjective,
+		})
+	}
+	if nodes := pu.mutation.RemovedCarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   purpose.CarcheckinoutTable,
+			Columns: []string{purpose.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   purpose.CarcheckinoutTable,
+			Columns: []string{purpose.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{purpose.Label}
@@ -119,13 +202,50 @@ type PurposeUpdateOne struct {
 	mutation *PurposeMutation
 }
 
+// SetObjective sets the objective field.
+func (puo *PurposeUpdateOne) SetObjective(s string) *PurposeUpdateOne {
+	puo.mutation.SetObjective(s)
+	return puo
+}
+
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (puo *PurposeUpdateOne) AddCarcheckinoutIDs(ids ...int) *PurposeUpdateOne {
+	puo.mutation.AddCarcheckinoutIDs(ids...)
+	return puo
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (puo *PurposeUpdateOne) AddCarcheckinout(c ...*CarCheckInOut) *PurposeUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return puo.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the PurposeMutation object of the builder.
 func (puo *PurposeUpdateOne) Mutation() *PurposeMutation {
 	return puo.mutation
 }
 
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (puo *PurposeUpdateOne) RemoveCarcheckinoutIDs(ids ...int) *PurposeUpdateOne {
+	puo.mutation.RemoveCarcheckinoutIDs(ids...)
+	return puo
+}
+
+// RemoveCarcheckinout removes carcheckinout edges to CarCheckInOut.
+func (puo *PurposeUpdateOne) RemoveCarcheckinout(c ...*CarCheckInOut) *PurposeUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return puo.RemoveCarcheckinoutIDs(ids...)
+}
+
 // Save executes the query and returns the updated entity.
 func (puo *PurposeUpdateOne) Save(ctx context.Context) (*Purpose, error) {
+
 	var (
 		err  error
 		node *Purpose
@@ -191,6 +311,51 @@ func (puo *PurposeUpdateOne) sqlSave(ctx context.Context) (pu *Purpose, err erro
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Purpose.ID for update")}
 	}
 	_spec.Node.ID.Value = id
+	if value, ok := puo.mutation.Objective(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: purpose.FieldObjective,
+		})
+	}
+	if nodes := puo.mutation.RemovedCarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   purpose.CarcheckinoutTable,
+			Columns: []string{purpose.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   purpose.CarcheckinoutTable,
+			Columns: []string{purpose.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	pu = &Purpose{config: puo.config}
 	_spec.Assign = pu.assignValues
 	_spec.ScanValues = pu.scanValues()

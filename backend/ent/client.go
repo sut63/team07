@@ -380,6 +380,22 @@ func (c *AmbulanceClient) QueryCarinspections(a *Ambulance) *CarInspectionQuery 
 	return query
 }
 
+// QueryCarcheckinout queries the carcheckinout edge of a Ambulance.
+func (c *AmbulanceClient) QueryCarcheckinout(a *Ambulance) *CarCheckInOutQuery {
+	query := &CarCheckInOutQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(ambulance.Table, ambulance.FieldID, id),
+			sqlgraph.To(carcheckinout.Table, carcheckinout.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ambulance.CarcheckinoutTable, ambulance.CarcheckinoutColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *AmbulanceClient) Hooks() []Hook {
 	return c.hooks.Ambulance
@@ -461,6 +477,54 @@ func (c *CarCheckInOutClient) GetX(ctx context.Context, id int) *CarCheckInOut {
 		panic(err)
 	}
 	return ccio
+}
+
+// QueryAmbulance queries the ambulance edge of a CarCheckInOut.
+func (c *CarCheckInOutClient) QueryAmbulance(ccio *CarCheckInOut) *AmbulanceQuery {
+	query := &AmbulanceQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ccio.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carcheckinout.Table, carcheckinout.FieldID, id),
+			sqlgraph.To(ambulance.Table, ambulance.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carcheckinout.AmbulanceTable, carcheckinout.AmbulanceColumn),
+		)
+		fromV = sqlgraph.Neighbors(ccio.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryName queries the name edge of a CarCheckInOut.
+func (c *CarCheckInOutClient) QueryName(ccio *CarCheckInOut) *UserQuery {
+	query := &UserQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ccio.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carcheckinout.Table, carcheckinout.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carcheckinout.NameTable, carcheckinout.NameColumn),
+		)
+		fromV = sqlgraph.Neighbors(ccio.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPurpose queries the purpose edge of a CarCheckInOut.
+func (c *CarCheckInOutClient) QueryPurpose(ccio *CarCheckInOut) *PurposeQuery {
+	query := &PurposeQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ccio.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(carcheckinout.Table, carcheckinout.FieldID, id),
+			sqlgraph.To(purpose.Table, purpose.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, carcheckinout.PurposeTable, carcheckinout.PurposeColumn),
+		)
+		fromV = sqlgraph.Neighbors(ccio.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -1664,6 +1728,22 @@ func (c *PurposeClient) GetX(ctx context.Context, id int) *Purpose {
 	return pu
 }
 
+// QueryCarcheckinout queries the carcheckinout edge of a Purpose.
+func (c *PurposeClient) QueryCarcheckinout(pu *Purpose) *CarCheckInOutQuery {
+	query := &CarCheckInOutQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := pu.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(purpose.Table, purpose.FieldID, id),
+			sqlgraph.To(carcheckinout.Table, carcheckinout.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, purpose.CarcheckinoutTable, purpose.CarcheckinoutColumn),
+		)
+		fromV = sqlgraph.Neighbors(pu.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *PurposeClient) Hooks() []Hook {
 	return c.hooks.Purpose
@@ -2018,6 +2098,22 @@ func (c *UserClient) QueryCarrepairrecords(u *User) *CarRepairrecordQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CarrepairrecordsTable, user.CarrepairrecordsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCarcheckinout queries the carcheckinout edge of a User.
+func (c *UserClient) QueryCarcheckinout(u *User) *CarCheckInOutQuery {
+	query := &CarCheckInOutQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(carcheckinout.Table, carcheckinout.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CarcheckinoutTable, user.CarcheckinoutColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

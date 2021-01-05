@@ -10,6 +10,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
@@ -129,6 +130,21 @@ func (uu *UserUpdate) AddCarrepairrecords(c ...*CarRepairrecord) *UserUpdate {
 	return uu.AddCarrepairrecordIDs(ids...)
 }
 
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (uu *UserUpdate) AddCarcheckinoutIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddCarcheckinoutIDs(ids...)
+	return uu
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (uu *UserUpdate) AddCarcheckinout(c ...*CarCheckInOut) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -198,6 +214,21 @@ func (uu *UserUpdate) RemoveCarrepairrecords(c ...*CarRepairrecord) *UserUpdate 
 		ids[i] = c[i].ID
 	}
 	return uu.RemoveCarrepairrecordIDs(ids...)
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (uu *UserUpdate) RemoveCarcheckinoutIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveCarcheckinoutIDs(ids...)
+	return uu
+}
+
+// RemoveCarcheckinout removes carcheckinout edges to CarCheckInOut.
+func (uu *UserUpdate) RemoveCarcheckinout(c ...*CarCheckInOut) *UserUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uu.RemoveCarcheckinoutIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -493,6 +524,44 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := uu.mutation.RemovedCarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarcheckinoutTable,
+			Columns: []string{user.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarcheckinoutTable,
+			Columns: []string{user.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -608,6 +677,21 @@ func (uuo *UserUpdateOne) AddCarrepairrecords(c ...*CarRepairrecord) *UserUpdate
 	return uuo.AddCarrepairrecordIDs(ids...)
 }
 
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (uuo *UserUpdateOne) AddCarcheckinoutIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddCarcheckinoutIDs(ids...)
+	return uuo
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (uuo *UserUpdateOne) AddCarcheckinout(c ...*CarCheckInOut) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
@@ -677,6 +761,21 @@ func (uuo *UserUpdateOne) RemoveCarrepairrecords(c ...*CarRepairrecord) *UserUpd
 		ids[i] = c[i].ID
 	}
 	return uuo.RemoveCarrepairrecordIDs(ids...)
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (uuo *UserUpdateOne) RemoveCarcheckinoutIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveCarcheckinoutIDs(ids...)
+	return uuo
+}
+
+// RemoveCarcheckinout removes carcheckinout edges to CarCheckInOut.
+func (uuo *UserUpdateOne) RemoveCarcheckinout(c ...*CarCheckInOut) *UserUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return uuo.RemoveCarcheckinoutIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -962,6 +1061,44 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carrepairrecord.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uuo.mutation.RemovedCarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarcheckinoutTable,
+			Columns: []string{user.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CarcheckinoutTable,
+			Columns: []string{user.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
 				},
 			},
 		}

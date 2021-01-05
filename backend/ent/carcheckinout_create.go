@@ -4,11 +4,16 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carcheckinout"
+	"github.com/team07/app/ent/purpose"
+	"github.com/team07/app/ent/user"
 )
 
 // CarCheckInOutCreate is the builder for creating a CarCheckInOut entity.
@@ -18,6 +23,89 @@ type CarCheckInOutCreate struct {
 	hooks    []Hook
 }
 
+// SetNote sets the note field.
+func (ccioc *CarCheckInOutCreate) SetNote(s string) *CarCheckInOutCreate {
+	ccioc.mutation.SetNote(s)
+	return ccioc
+}
+
+// SetCheckIn sets the checkIn field.
+func (ccioc *CarCheckInOutCreate) SetCheckIn(t time.Time) *CarCheckInOutCreate {
+	ccioc.mutation.SetCheckIn(t)
+	return ccioc
+}
+
+// SetNillableCheckIn sets the checkIn field if the given value is not nil.
+func (ccioc *CarCheckInOutCreate) SetNillableCheckIn(t *time.Time) *CarCheckInOutCreate {
+	if t != nil {
+		ccioc.SetCheckIn(*t)
+	}
+	return ccioc
+}
+
+// SetCheckOut sets the checkOut field.
+func (ccioc *CarCheckInOutCreate) SetCheckOut(t time.Time) *CarCheckInOutCreate {
+	ccioc.mutation.SetCheckOut(t)
+	return ccioc
+}
+
+// SetAmbulanceID sets the ambulance edge to Ambulance by id.
+func (ccioc *CarCheckInOutCreate) SetAmbulanceID(id int) *CarCheckInOutCreate {
+	ccioc.mutation.SetAmbulanceID(id)
+	return ccioc
+}
+
+// SetNillableAmbulanceID sets the ambulance edge to Ambulance by id if the given value is not nil.
+func (ccioc *CarCheckInOutCreate) SetNillableAmbulanceID(id *int) *CarCheckInOutCreate {
+	if id != nil {
+		ccioc = ccioc.SetAmbulanceID(*id)
+	}
+	return ccioc
+}
+
+// SetAmbulance sets the ambulance edge to Ambulance.
+func (ccioc *CarCheckInOutCreate) SetAmbulance(a *Ambulance) *CarCheckInOutCreate {
+	return ccioc.SetAmbulanceID(a.ID)
+}
+
+// SetNameID sets the name edge to User by id.
+func (ccioc *CarCheckInOutCreate) SetNameID(id int) *CarCheckInOutCreate {
+	ccioc.mutation.SetNameID(id)
+	return ccioc
+}
+
+// SetNillableNameID sets the name edge to User by id if the given value is not nil.
+func (ccioc *CarCheckInOutCreate) SetNillableNameID(id *int) *CarCheckInOutCreate {
+	if id != nil {
+		ccioc = ccioc.SetNameID(*id)
+	}
+	return ccioc
+}
+
+// SetName sets the name edge to User.
+func (ccioc *CarCheckInOutCreate) SetName(u *User) *CarCheckInOutCreate {
+	return ccioc.SetNameID(u.ID)
+}
+
+// SetPurposeID sets the purpose edge to Purpose by id.
+func (ccioc *CarCheckInOutCreate) SetPurposeID(id int) *CarCheckInOutCreate {
+	ccioc.mutation.SetPurposeID(id)
+	return ccioc
+}
+
+// SetNillablePurposeID sets the purpose edge to Purpose by id if the given value is not nil.
+func (ccioc *CarCheckInOutCreate) SetNillablePurposeID(id *int) *CarCheckInOutCreate {
+	if id != nil {
+		ccioc = ccioc.SetPurposeID(*id)
+	}
+	return ccioc
+}
+
+// SetPurpose sets the purpose edge to Purpose.
+func (ccioc *CarCheckInOutCreate) SetPurpose(p *Purpose) *CarCheckInOutCreate {
+	return ccioc.SetPurposeID(p.ID)
+}
+
 // Mutation returns the CarCheckInOutMutation object of the builder.
 func (ccioc *CarCheckInOutCreate) Mutation() *CarCheckInOutMutation {
 	return ccioc.mutation
@@ -25,6 +113,16 @@ func (ccioc *CarCheckInOutCreate) Mutation() *CarCheckInOutMutation {
 
 // Save creates the CarCheckInOut in the database.
 func (ccioc *CarCheckInOutCreate) Save(ctx context.Context) (*CarCheckInOut, error) {
+	if _, ok := ccioc.mutation.Note(); !ok {
+		return nil, &ValidationError{Name: "note", err: errors.New("ent: missing required field \"note\"")}
+	}
+	if _, ok := ccioc.mutation.CheckIn(); !ok {
+		v := carcheckinout.DefaultCheckIn()
+		ccioc.mutation.SetCheckIn(v)
+	}
+	if _, ok := ccioc.mutation.CheckOut(); !ok {
+		return nil, &ValidationError{Name: "checkOut", err: errors.New("ent: missing required field \"checkOut\"")}
+	}
 	var (
 		err  error
 		node *CarCheckInOut
@@ -85,5 +183,86 @@ func (ccioc *CarCheckInOutCreate) createSpec() (*CarCheckInOut, *sqlgraph.Create
 			},
 		}
 	)
+	if value, ok := ccioc.mutation.Note(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carcheckinout.FieldNote,
+		})
+		ccio.Note = value
+	}
+	if value, ok := ccioc.mutation.CheckIn(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carcheckinout.FieldCheckIn,
+		})
+		ccio.CheckIn = value
+	}
+	if value, ok := ccioc.mutation.CheckOut(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: carcheckinout.FieldCheckOut,
+		})
+		ccio.CheckOut = value
+	}
+	if nodes := ccioc.mutation.AmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carcheckinout.AmbulanceTable,
+			Columns: []string{carcheckinout.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ccioc.mutation.NameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carcheckinout.NameTable,
+			Columns: []string{carcheckinout.NameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ccioc.mutation.PurposeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   carcheckinout.PurposeTable,
+			Columns: []string{carcheckinout.PurposeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: purpose.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return ccio, _spec
 }

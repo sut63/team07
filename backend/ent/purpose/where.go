@@ -4,6 +4,7 @@ package purpose
 
 import (
 	"github.com/facebookincubator/ent/dialect/sql"
+	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -87,6 +88,152 @@ func IDLT(id int) predicate.Purpose {
 func IDLTE(id int) predicate.Purpose {
 	return predicate.Purpose(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// Objective applies equality check predicate on the "objective" field. It's identical to ObjectiveEQ.
+func Objective(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveEQ applies the EQ predicate on the "objective" field.
+func ObjectiveEQ(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveNEQ applies the NEQ predicate on the "objective" field.
+func ObjectiveNEQ(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveIn applies the In predicate on the "objective" field.
+func ObjectiveIn(vs ...string) predicate.Purpose {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Purpose(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldObjective), v...))
+	})
+}
+
+// ObjectiveNotIn applies the NotIn predicate on the "objective" field.
+func ObjectiveNotIn(vs ...string) predicate.Purpose {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Purpose(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldObjective), v...))
+	})
+}
+
+// ObjectiveGT applies the GT predicate on the "objective" field.
+func ObjectiveGT(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveGTE applies the GTE predicate on the "objective" field.
+func ObjectiveGTE(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveLT applies the LT predicate on the "objective" field.
+func ObjectiveLT(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveLTE applies the LTE predicate on the "objective" field.
+func ObjectiveLTE(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveContains applies the Contains predicate on the "objective" field.
+func ObjectiveContains(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveHasPrefix applies the HasPrefix predicate on the "objective" field.
+func ObjectiveHasPrefix(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveHasSuffix applies the HasSuffix predicate on the "objective" field.
+func ObjectiveHasSuffix(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveEqualFold applies the EqualFold predicate on the "objective" field.
+func ObjectiveEqualFold(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldObjective), v))
+	})
+}
+
+// ObjectiveContainsFold applies the ContainsFold predicate on the "objective" field.
+func ObjectiveContainsFold(v string) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldObjective), v))
+	})
+}
+
+// HasCarcheckinout applies the HasEdge predicate on the "carcheckinout" edge.
+func HasCarcheckinout() predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarcheckinoutTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CarcheckinoutTable, CarcheckinoutColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCarcheckinoutWith applies the HasEdge predicate on the "carcheckinout" edge with a given conditions (other predicates).
+func HasCarcheckinoutWith(preds ...predicate.CarCheckInOut) predicate.Purpose {
+	return predicate.Purpose(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarcheckinoutInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CarcheckinoutTable, CarcheckinoutColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

@@ -45,9 +45,11 @@ type AmbulanceEdges struct {
 	Hasuser *User
 	// Carinspections holds the value of the carinspections edge.
 	Carinspections []*CarInspection
+	// Carcheckinout holds the value of the carcheckinout edge.
+	Carcheckinout []*CarCheckInOut
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [6]bool
 }
 
 // HasbrandOrErr returns the Hasbrand value or an error if the edge
@@ -113,6 +115,15 @@ func (e AmbulanceEdges) CarinspectionsOrErr() ([]*CarInspection, error) {
 		return e.Carinspections, nil
 	}
 	return nil, &NotLoadedError{edge: "carinspections"}
+}
+
+// CarcheckinoutOrErr returns the Carcheckinout value or an error if the edge
+// was not loaded in eager-loading.
+func (e AmbulanceEdges) CarcheckinoutOrErr() ([]*CarCheckInOut, error) {
+	if e.loadedTypes[5] {
+		return e.Carcheckinout, nil
+	}
+	return nil, &NotLoadedError{edge: "carcheckinout"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -209,6 +220,11 @@ func (a *Ambulance) QueryHasuser() *UserQuery {
 // QueryCarinspections queries the carinspections edge of the Ambulance.
 func (a *Ambulance) QueryCarinspections() *CarInspectionQuery {
 	return (&AmbulanceClient{config: a.config}).QueryCarinspections(a)
+}
+
+// QueryCarcheckinout queries the carcheckinout edge of the Ambulance.
+func (a *Ambulance) QueryCarcheckinout() *CarCheckInOutQuery {
+	return (&AmbulanceClient{config: a.config}).QueryCarcheckinout(a)
 }
 
 // Update returns a builder for updating this Ambulance.
