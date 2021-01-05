@@ -229,13 +229,22 @@ var (
 	InspectionResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "result_name", Type: field.TypeString, Unique: true},
+		{Name: "jobposition_id", Type: field.TypeInt, Nullable: true},
 	}
 	// InspectionResultsTable holds the schema information for the "inspection_results" table.
 	InspectionResultsTable = &schema.Table{
-		Name:        "inspection_results",
-		Columns:     InspectionResultsColumns,
-		PrimaryKey:  []*schema.Column{InspectionResultsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{},
+		Name:       "inspection_results",
+		Columns:    InspectionResultsColumns,
+		PrimaryKey: []*schema.Column{InspectionResultsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "inspection_results_job_positions_inspectionresults",
+				Columns: []*schema.Column{InspectionResultsColumns[2]},
+
+				RefColumns: []*schema.Column{JobPositionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// InsurancesColumns holds the columns for the "insurances" table.
 	InsurancesColumns = []*schema.Column{
@@ -355,5 +364,6 @@ func init() {
 	CarservicesTable.ForeignKeys[0].RefTable = DistancesTable
 	CarservicesTable.ForeignKeys[1].RefTable = UrgentsTable
 	CarservicesTable.ForeignKeys[2].RefTable = UsersTable
+	InspectionResultsTable.ForeignKeys[0].RefTable = JobPositionsTable
 	UsersTable.ForeignKeys[0].RefTable = JobPositionsTable
 }

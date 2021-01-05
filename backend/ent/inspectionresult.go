@@ -8,6 +8,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/jobposition"
 )
 
 // InspectionResult is the model entity for the InspectionResult schema.
@@ -19,7 +20,8 @@ type InspectionResult struct {
 	ResultName string `json:"result_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the InspectionResultQuery when eager-loading is set.
-	Edges InspectionResultEdges `json:"edges"`
+	Edges          InspectionResultEdges `json:"edges"`
+	jobposition_id *int
 }
 
 // InspectionResultEdges holds the relations/edges for other nodes in the graph.
@@ -28,9 +30,11 @@ type InspectionResultEdges struct {
 	Carinspections []*CarInspection
 	// Statusof holds the value of the statusof edge.
 	Statusof []*Ambulance
+	// Jobposition holds the value of the jobposition edge.
+	Jobposition *JobPosition
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // CarinspectionsOrErr returns the Carinspections value or an error if the edge
@@ -51,11 +55,32 @@ func (e InspectionResultEdges) StatusofOrErr() ([]*Ambulance, error) {
 	return nil, &NotLoadedError{edge: "statusof"}
 }
 
+// JobpositionOrErr returns the Jobposition value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e InspectionResultEdges) JobpositionOrErr() (*JobPosition, error) {
+	if e.loadedTypes[2] {
+		if e.Jobposition == nil {
+			// The edge jobposition was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: jobposition.Label}
+		}
+		return e.Jobposition, nil
+	}
+	return nil, &NotLoadedError{edge: "jobposition"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*InspectionResult) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // result_name
+	}
+}
+
+// fkValues returns the types for scanning foreign-keys values from sql.Rows.
+func (*InspectionResult) fkValues() []interface{} {
+	return []interface{}{
+		&sql.NullInt64{}, // jobposition_id
 	}
 }
 
@@ -76,6 +101,15 @@ func (ir *InspectionResult) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		ir.ResultName = value.String
 	}
+	values = values[1:]
+	if len(values) == len(inspectionresult.ForeignKeys) {
+		if value, ok := values[0].(*sql.NullInt64); !ok {
+			return fmt.Errorf("unexpected type %T for edge-field jobposition_id", value)
+		} else if value.Valid {
+			ir.jobposition_id = new(int)
+			*ir.jobposition_id = int(value.Int64)
+		}
+	}
 	return nil
 }
 
@@ -87,6 +121,11 @@ func (ir *InspectionResult) QueryCarinspections() *CarInspectionQuery {
 // QueryStatusof queries the statusof edge of the InspectionResult.
 func (ir *InspectionResult) QueryStatusof() *AmbulanceQuery {
 	return (&InspectionResultClient{config: ir.config}).QueryStatusof(ir)
+}
+
+// QueryJobposition queries the jobposition edge of the InspectionResult.
+func (ir *InspectionResult) QueryJobposition() *JobPositionQuery {
+	return (&InspectionResultClient{config: ir.config}).QueryJobposition(ir)
 }
 
 // Update returns a builder for updating this InspectionResult.

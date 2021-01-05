@@ -12,6 +12,7 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/jobposition"
 )
 
 // InspectionResultCreate is the builder for creating a InspectionResult entity.
@@ -55,6 +56,25 @@ func (irc *InspectionResultCreate) AddStatusof(a ...*Ambulance) *InspectionResul
 		ids[i] = a[i].ID
 	}
 	return irc.AddStatusofIDs(ids...)
+}
+
+// SetJobpositionID sets the jobposition edge to JobPosition by id.
+func (irc *InspectionResultCreate) SetJobpositionID(id int) *InspectionResultCreate {
+	irc.mutation.SetJobpositionID(id)
+	return irc
+}
+
+// SetNillableJobpositionID sets the jobposition edge to JobPosition by id if the given value is not nil.
+func (irc *InspectionResultCreate) SetNillableJobpositionID(id *int) *InspectionResultCreate {
+	if id != nil {
+		irc = irc.SetJobpositionID(*id)
+	}
+	return irc
+}
+
+// SetJobposition sets the jobposition edge to JobPosition.
+func (irc *InspectionResultCreate) SetJobposition(j *JobPosition) *InspectionResultCreate {
+	return irc.SetJobpositionID(j.ID)
 }
 
 // Mutation returns the InspectionResultMutation object of the builder.
@@ -170,6 +190,25 @@ func (irc *InspectionResultCreate) createSpec() (*InspectionResult, *sqlgraph.Cr
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := irc.mutation.JobpositionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   inspectionresult.JobpositionTable,
+			Columns: []string{inspectionresult.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
 				},
 			},
 		}

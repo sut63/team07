@@ -12,6 +12,8 @@ const (
 
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
+	// EdgeInspectionresults holds the string denoting the inspectionresults edge name in mutations.
+	EdgeInspectionresults = "inspectionresults"
 
 	// Table holds the table name of the jobposition in the database.
 	Table = "job_positions"
@@ -22,6 +24,13 @@ const (
 	UsersInverseTable = "users"
 	// UsersColumn is the table column denoting the users relation/edge.
 	UsersColumn = "jobposition_id"
+	// InspectionresultsTable is the table the holds the inspectionresults relation/edge.
+	InspectionresultsTable = "inspection_results"
+	// InspectionresultsInverseTable is the table name for the InspectionResult entity.
+	// It exists in this package in order to avoid circular dependency with the "inspectionresult" package.
+	InspectionresultsInverseTable = "inspection_results"
+	// InspectionresultsColumn is the table column denoting the inspectionresults relation/edge.
+	InspectionresultsColumn = "jobposition_id"
 )
 
 // Columns holds all SQL columns for jobposition fields.

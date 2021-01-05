@@ -9,6 +9,7 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/user"
 )
@@ -39,6 +40,21 @@ func (jpc *JobPositionCreate) AddUsers(u ...*User) *JobPositionCreate {
 		ids[i] = u[i].ID
 	}
 	return jpc.AddUserIDs(ids...)
+}
+
+// AddInspectionresultIDs adds the inspectionresults edge to InspectionResult by ids.
+func (jpc *JobPositionCreate) AddInspectionresultIDs(ids ...int) *JobPositionCreate {
+	jpc.mutation.AddInspectionresultIDs(ids...)
+	return jpc
+}
+
+// AddInspectionresults adds the inspectionresults edges to InspectionResult.
+func (jpc *JobPositionCreate) AddInspectionresults(i ...*InspectionResult) *JobPositionCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return jpc.AddInspectionresultIDs(ids...)
 }
 
 // Mutation returns the JobPositionMutation object of the builder.
@@ -135,6 +151,25 @@ func (jpc *JobPositionCreate) createSpec() (*JobPosition, *sqlgraph.CreateSpec) 
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := jpc.mutation.InspectionresultsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   jobposition.InspectionresultsTable,
+			Columns: []string{jobposition.InspectionresultsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}

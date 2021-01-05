@@ -39,7 +39,8 @@ type InspectionResults struct {
 }
 
 type InspectionResult struct {
-	resultname string
+	resultname    string
+	jobpositionID int
 }
 
 // @title SUT SA Example API
@@ -101,7 +102,7 @@ func main() {
 	controllers.NewInspectionResultController(v1, client)
 
 	//ลงข้อมูล User
-	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
+	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
 	for _, jp := range jobpositions {
 		client.JobPosition.
 			Create().
@@ -140,11 +141,33 @@ func main() {
 			Save(context.Background())
 	}
 
-	inspectionresults := []string{"พร้อมปฏิบัติหน้าที่", "ส่งซ่อมแซม", "ไม่ได้รับการตรวจสภาพ", "รอส่งตรวจสภาพรถ", "ส่งตรวจสภาพรถ", "ปลดประจำการ"}
-	for _, ir := range inspectionresults {
+	inspectionresults := InspectionResults{
+		InspectionResult: []InspectionResult{
+			InspectionResult{"พร้อมปฏิบัติหน้าที่", 1},
+			InspectionResult{"ส่งซ่อมแซม", 1},
+			InspectionResult{"ไม่ได้รับการตรวจสภาพ", 1},
+			InspectionResult{"รอส่งตรวจสภาพรถ", 2},
+			InspectionResult{"ส่งตรวจสภาพรถ", 2},
+			InspectionResult{"ปลดประจำการ", 2},
+			InspectionResult{"พร้อมใช้งาน", 2},
+		},
+	}
+
+	for _, ir := range inspectionresults.InspectionResult {
+		jp, err := client.JobPosition.
+			Query().
+			Where(jobposition.IDEQ(int(ir.jobpositionID))).
+			Only(context.Background())
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
 		client.InspectionResult.
 			Create().
-			SetResultName(ir).
+			SetResultName(ir.resultname).
+			SetJobposition(jp).
 			Save(context.Background())
 	}
 

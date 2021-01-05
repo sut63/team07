@@ -237,6 +237,34 @@ func HasUsersWith(preds ...predicate.User) predicate.JobPosition {
 	})
 }
 
+// HasInspectionresults applies the HasEdge predicate on the "inspectionresults" edge.
+func HasInspectionresults() predicate.JobPosition {
+	return predicate.JobPosition(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(InspectionresultsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, InspectionresultsTable, InspectionresultsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasInspectionresultsWith applies the HasEdge predicate on the "inspectionresults" edge with a given conditions (other predicates).
+func HasInspectionresultsWith(preds ...predicate.InspectionResult) predicate.JobPosition {
+	return predicate.JobPosition(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(InspectionresultsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, InspectionresultsTable, InspectionresultsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.JobPosition) predicate.JobPosition {
 	return predicate.JobPosition(func(s *sql.Selector) {

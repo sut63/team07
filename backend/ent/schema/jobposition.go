@@ -22,5 +22,6 @@ func (JobPosition) Fields() []ent.Field {
 func (JobPosition) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("users",User.Type).StorageKey(edge.Column("jobposition_id")),
+		edge.To("inspectionresults",InspectionResult.Type).StorageKey(edge.Column("jobposition_id")),
 	}
 }

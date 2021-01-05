@@ -38,6 +38,7 @@ func (ctl *InspectionResultController) GetInspectionResult(c *gin.Context) {
 
 	ir, err := ctl.client.InspectionResult.
 		Query().
+		WithJobposition().
 		Where(inspectionresult.IDEQ(int(id))).
 		Only(context.Background())
 	if err != nil {
@@ -62,6 +63,7 @@ func (ctl *InspectionResultController) GetInspectionResult(c *gin.Context) {
 func (ctl *InspectionResultController) ListInspectionResult(c *gin.Context) {
 	iresults, err := ctl.client.InspectionResult.
 		Query().
+		WithJobposition().
 		All(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})

@@ -25,5 +25,9 @@ func (InspectionResult) Edges() []ent.Edge {
 			StorageKey(edge.Column("inspectionresult_id")),
 		edge.To("statusof", Ambulance.Type).
 			StorageKey(edge.Column("carstatus_id")),
+
+		edge.From("jobposition", JobPosition.Type).
+			Ref("inspectionresults").
+			Unique(),
 	}
 }
