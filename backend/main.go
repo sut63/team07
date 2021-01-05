@@ -98,6 +98,7 @@ func main() {
 
 	v1 := router.Group("/api/v1")
 	controllers.NewUserController(v1, client)
+	controllers.NewInspectionResultController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
