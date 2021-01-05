@@ -16,6 +16,7 @@ func (Carservice) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("customer"),
 		field.String("location"),
+		field.String("reason"),
 		field.Time("Datetime"),
 	}
 }
