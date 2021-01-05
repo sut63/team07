@@ -33,14 +33,14 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/users": {
+        "/ambulances": {
             "get": {
-                "description": "list user entities",
+                "description": "list ambulance entities",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "List user entities",
-                "operationId": "list-user",
+                "summary": "List ambulance entities",
+                "operationId": "list-ambulance",
                 "parameters": [
                     {
                         "type": "integer",
@@ -61,7 +61,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ent.User"
+                                "$ref": "#/definitions/ent.Ambulance"
                             }
                         }
                     },
@@ -80,23 +80,23 @@ var doc = `{
                 }
             },
             "post": {
-                "description": "Create user",
+                "description": "Create ambulance",
                 "consumes": [
                     "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Create user",
-                "operationId": "create-user",
+                "summary": "Create ambulance",
+                "operationId": "create-ambulance",
                 "parameters": [
                     {
-                        "description": "User entity",
-                        "name": "user",
+                        "description": "Ambulance entity",
+                        "name": "ambulance",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ent.User"
+                            "$ref": "#/definitions/controllers.Ambulance"
                         }
                     }
                 ],
@@ -104,7 +104,654 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.User"
+                            "$ref": "#/definitions/ent.Ambulance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/ambulances/{id}": {
+            "get": {
+                "description": "get ambulance by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a ambulance entity by ID",
+                "operationId": "get-ambulance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Ambulance ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Ambulance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get Ambulance by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a Ambulance entity by ID",
+                "operationId": "delete-Ambulance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Ambulance ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/carbrands": {
+            "get": {
+                "description": "list carbrand entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List carbrand entities",
+                "operationId": "list-carbrand",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Carbrand"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/carbrands/{id}": {
+            "get": {
+                "description": "get carbrand by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carbrand entity by ID",
+                "operationId": "get-carbrand",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Carbrand ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Carbrand"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get carbrand by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a carbrand entity by ID",
+                "operationId": "delete-carbrand",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Carbrand ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/carinspections": {
+            "get": {
+                "description": "list carinspection entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List carinspection entities",
+                "operationId": "list-carinspection",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.CarInspection"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create carinspection",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create carinspection",
+                "operationId": "create-carinspection",
+                "parameters": [
+                    {
+                        "description": "CarInspection entity",
+                        "name": "carinspection",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.CarInspection"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.CarInspection"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/carinspections/{id}": {
+            "get": {
+                "description": "get carinspection by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carinspection entity by ID",
+                "operationId": "get-carinspection",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CarInspection ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.CarInspection"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get carinspection by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a carinspection entity by ID",
+                "operationId": "delete-carinspection",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CarInspection ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/inspectionresults": {
+            "get": {
+                "description": "list inspectionresult entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List inspectionresult entities",
+                "operationId": "list-inspectionresult",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.InspectionResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/inspectionresults/{id}": {
+            "get": {
+                "description": "get inspectionresult by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a inspectionresult entity by ID",
+                "operationId": "get-inspectionresult",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "InspectionResult ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.InspectionResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get inspectionresult by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a inspectionresult entity by ID",
+                "operationId": "delete-inspectionresult",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "InspectionResult ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/insurances": {
+            "get": {
+                "description": "list insurance entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List insurance entities",
+                "operationId": "list-insurance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Insurance"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/insurances/{id}": {
+            "get": {
+                "description": "get insurance by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a insurance entity by ID",
+                "operationId": "get-insurance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Insurance ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Insurance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get insurance by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a insurance entity by ID",
+                "operationId": "delete-insurance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Insurance ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "list user entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List user entities",
+                "operationId": "list-user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.User"
+                            }
                         }
                     },
                     "400": {
@@ -166,55 +813,6 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "update user by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Update a user entity by ID",
-                "operationId": "update-user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "User entity",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ent.User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.User"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "description": "get user by ID",
                 "produces": [
@@ -261,12 +859,468 @@ var doc = `{
         }
     },
     "definitions": {
+        "controllers.Ambulance": {
+            "type": "object",
+            "properties": {
+                "carbrandID": {
+                    "type": "integer"
+                },
+                "carstatusID": {
+                    "type": "integer"
+                },
+                "datetime": {
+                    "type": "string"
+                },
+                "insuranceID": {
+                    "type": "integer"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controllers.CarInspection": {
+            "type": "object",
+            "properties": {
+                "ambulanceID": {
+                    "type": "integer"
+                },
+                "datetime": {
+                    "type": "string"
+                },
+                "inspectionResultID": {
+                    "type": "integer"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.Ambulance": {
+            "type": "object",
+            "properties": {
+                "carregistration": {
+                    "description": "Carregistration holds the value of the \"carregistration\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the AmbulanceQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.AmbulanceEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "registerat": {
+                    "description": "Registerat holds the value of the \"registerat\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.AmbulanceEdges": {
+            "type": "object",
+            "properties": {
+                "carinspections": {
+                    "description": "Carinspections holds the value of the carinspections edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.CarInspection"
+                    }
+                },
+                "hasbrand": {
+                    "description": "Hasbrand holds the value of the hasbrand edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Carbrand"
+                },
+                "hasinsurance": {
+                    "description": "Hasinsurance holds the value of the hasinsurance edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Insurance"
+                },
+                "hasstatus": {
+                    "description": "Hasstatus holds the value of the hasstatus edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.InspectionResult"
+                },
+                "hasuser": {
+                    "description": "Hasuser holds the value of the hasuser edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.User"
+                }
+            }
+        },
+        "ent.CarInspection": {
+            "type": "object",
+            "properties": {
+                "datetime": {
+                    "description": "Datetime holds the value of the \"datetime\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the CarInspectionQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.CarInspectionEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "note": {
+                    "description": "Note holds the value of the \"note\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.CarInspectionEdges": {
+            "type": "object",
+            "properties": {
+                "ambulance": {
+                    "description": "Ambulance holds the value of the ambulance edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Ambulance"
+                },
+                "carrepairrecords": {
+                    "description": "Carrepairrecords holds the value of the carrepairrecords edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.CarRepairrecord"
+                    }
+                },
+                "inspectionresult": {
+                    "description": "Inspectionresult holds the value of the inspectionresult edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.InspectionResult"
+                },
+                "user": {
+                    "description": "User holds the value of the user edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.User"
+                }
+            }
+        },
+        "ent.CarRepairrecord": {
+            "type": "object",
+            "properties": {
+                "datetime": {
+                    "description": "Datetime holds the value of the \"datetime\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the CarRepairrecordQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.CarRepairrecordEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.CarRepairrecordEdges": {
+            "type": "object",
+            "properties": {
+                "carinspection": {
+                    "description": "Carinspection holds the value of the carinspection edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.CarInspection"
+                },
+                "keeper": {
+                    "description": "Keeper holds the value of the keeper edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Repairing"
+                },
+                "user": {
+                    "description": "User holds the value of the user edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.User"
+                }
+            }
+        },
+        "ent.Carbrand": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "description": "Brand holds the value of the \"brand\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the CarbrandQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.CarbrandEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.CarbrandEdges": {
+            "type": "object",
+            "properties": {
+                "brandof": {
+                    "description": "Brandof holds the value of the brandof edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Ambulance"
+                    }
+                }
+            }
+        },
+        "ent.Carservice": {
+            "type": "object",
+            "properties": {
+                "Datetime": {
+                    "description": "Datetime holds the value of the \"Datetime\" field.",
+                    "type": "string"
+                },
+                "customer": {
+                    "description": "Customer holds the value of the \"customer\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the CarserviceQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.CarserviceEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "location": {
+                    "description": "Location holds the value of the \"location\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.CarserviceEdges": {
+            "type": "object",
+            "properties": {
+                "disid": {
+                    "description": "Disid holds the value of the disid edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Distance"
+                },
+                "urgentid": {
+                    "description": "Urgentid holds the value of the urgentid edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Urgent"
+                },
+                "userid": {
+                    "description": "Userid holds the value of the userid edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.User"
+                }
+            }
+        },
+        "ent.Distance": {
+            "type": "object",
+            "properties": {
+                "Distance": {
+                    "description": "Distance holds the value of the \"Distance\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the DistanceQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.DistanceEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.DistanceEdges": {
+            "type": "object",
+            "properties": {
+                "disid": {
+                    "description": "Disid holds the value of the disid edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Carservice"
+                    }
+                }
+            }
+        },
+        "ent.InspectionResult": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the InspectionResultQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.InspectionResultEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "result_name": {
+                    "description": "ResultName holds the value of the \"result_name\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.InspectionResultEdges": {
+            "type": "object",
+            "properties": {
+                "carinspections": {
+                    "description": "Carinspections holds the value of the carinspections edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.CarInspection"
+                    }
+                },
+                "statusof": {
+                    "description": "Statusof holds the value of the statusof edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Ambulance"
+                    }
+                }
+            }
+        },
+        "ent.Insurance": {
+            "type": "object",
+            "properties": {
+                "classofinsurance": {
+                    "description": "Classofinsurance holds the value of the \"classofinsurance\" field.",
+                    "type": "string"
+                },
+                "company": {
+                    "description": "Company holds the value of the \"company\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the InsuranceQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.InsuranceEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.InsuranceEdges": {
+            "type": "object",
+            "properties": {
+                "insuranceof": {
+                    "description": "Insuranceof holds the value of the insuranceof edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Ambulance"
+                    }
+                }
+            }
+        },
+        "ent.JobPosition": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the JobPositionQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.JobPositionEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "position_name": {
+                    "description": "PositionName holds the value of the \"position_name\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.JobPositionEdges": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "description": "Users holds the value of the users edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.User"
+                    }
+                }
+            }
+        },
+        "ent.Repairing": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the RepairingQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.RepairingEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "repairpart": {
+                    "description": "Repairpart holds the value of the \"repairpart\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.RepairingEdges": {
+            "type": "object",
+            "properties": {
+                "repairs": {
+                    "description": "Repairs holds the value of the repairs edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.CarRepairrecord"
+                    }
+                }
+            }
+        },
+        "ent.Urgent": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the UrgentQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.UrgentEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                },
+                "urgent": {
+                    "description": "Urgent holds the value of the \"urgent\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.UrgentEdges": {
+            "type": "object",
+            "properties": {
+                "urgentid": {
+                    "description": "Urgentid holds the value of the urgentid edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Carservice"
+                    }
+                }
+            }
+        },
         "ent.User": {
             "type": "object",
             "properties": {
-                "age": {
-                    "description": "Age holds the value of the \"age\" field.",
-                    "type": "integer"
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the UserQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.UserEdges"
+                },
+                "email": {
+                    "description": "Email holds the value of the \"email\" field.",
+                    "type": "string"
                 },
                 "id": {
                     "description": "ID of the ent.",
@@ -275,6 +1329,48 @@ var doc = `{
                 "name": {
                     "description": "Name holds the value of the \"name\" field.",
                     "type": "string"
+                },
+                "password": {
+                    "description": "Password holds the value of the \"password\" field.",
+                    "type": "string"
+                }
+            }
+        },
+        "ent.UserEdges": {
+            "type": "object",
+            "properties": {
+                "carinspections": {
+                    "description": "Carinspections holds the value of the carinspections edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.CarInspection"
+                    }
+                },
+                "carrepairrecords": {
+                    "description": "Carrepairrecords holds the value of the carrepairrecords edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.CarRepairrecord"
+                    }
+                },
+                "jobposition": {
+                    "description": "Jobposition holds the value of the jobposition edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.JobPosition"
+                },
+                "userid": {
+                    "description": "Userid holds the value of the userid edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Carservice"
+                    }
+                },
+                "userof": {
+                    "description": "Userof holds the value of the userof edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Ambulance"
+                    }
                 }
             }
         },

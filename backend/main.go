@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/gin-contrib/cors"
@@ -11,6 +12,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/team07/app/controllers"
 	"github.com/team07/app/ent"
+	"github.com/team07/app/ent/jobposition"
 )
 
 type Users struct {
@@ -18,8 +20,26 @@ type Users struct {
 }
 
 type User struct {
-	Name  string
-	Email string
+	name          string
+	email         string
+	password      string
+	jobpositionID int
+}
+
+type JobPositions struct {
+	JobPosition []JobPosition
+}
+
+type JobPosition struct {
+	name string
+}
+
+type InspectionResults struct {
+	InspectionResult []InspectionResult
+}
+
+type InspectionResult struct {
+	resultname string
 }
 
 // @title SUT SA Example API
@@ -78,6 +98,54 @@ func main() {
 
 	v1 := router.Group("/api/v1")
 	controllers.NewUserController(v1, client)
+
+	//ลงข้อมูล User
+	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
+	for _, jp := range jobpositions {
+		client.JobPosition.
+			Create().
+			SetPositionName(jp).
+			Save(context.Background())
+	}
+
+	users := Users{
+		User: []User{
+			User{"พี่โต", "to@email.com", "1234", 1},
+			User{"พี่หลาม", "lam@email.com", "1234", 1},
+			User{"อัลฟ่าน", "alfan@email.com", "1234", 2},
+			User{"ใจเกเร", "jaikere@email.com", "1234", 3},
+			User{"แดงกีต้าร์", "dang@email.com", "1234", 3},
+			User{"อินเดีย", "india@email.com", "1234", 4},
+		},
+	}
+
+	for _, u := range users.User {
+		jp, err := client.JobPosition.
+			Query().
+			Where(jobposition.IDEQ(int(u.jobpositionID))).
+			Only(context.Background())
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		client.User.
+			Create().
+			SetName(u.name).
+			SetEmail(u.email).
+			SetPassword(u.password).
+			SetJobposition(jp).
+			Save(context.Background())
+	}
+
+	inspectionresults := []string{"พร้อมปฏิบัติหน้าที่", "ส่งซ่อมแซม", "ไม่ได้รับการตรวจสภาพ", "รอส่งตรวจสภาพรถ", "ส่งตรวจสภาพรถ", "ปลดประจำการ"}
+	for _, ir := range inspectionresults {
+		client.InspectionResult.
+			Create().
+			SetResultName(ir).
+			Save(context.Background())
+	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
