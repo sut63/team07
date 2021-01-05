@@ -9,6 +9,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
@@ -49,6 +50,21 @@ func (jpu *JobPositionUpdate) AddUsers(u ...*User) *JobPositionUpdate {
 	return jpu.AddUserIDs(ids...)
 }
 
+// AddInspectionresultIDs adds the inspectionresults edge to InspectionResult by ids.
+func (jpu *JobPositionUpdate) AddInspectionresultIDs(ids ...int) *JobPositionUpdate {
+	jpu.mutation.AddInspectionresultIDs(ids...)
+	return jpu
+}
+
+// AddInspectionresults adds the inspectionresults edges to InspectionResult.
+func (jpu *JobPositionUpdate) AddInspectionresults(i ...*InspectionResult) *JobPositionUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return jpu.AddInspectionresultIDs(ids...)
+}
+
 // Mutation returns the JobPositionMutation object of the builder.
 func (jpu *JobPositionUpdate) Mutation() *JobPositionMutation {
 	return jpu.mutation
@@ -67,6 +83,21 @@ func (jpu *JobPositionUpdate) RemoveUsers(u ...*User) *JobPositionUpdate {
 		ids[i] = u[i].ID
 	}
 	return jpu.RemoveUserIDs(ids...)
+}
+
+// RemoveInspectionresultIDs removes the inspectionresults edge to InspectionResult by ids.
+func (jpu *JobPositionUpdate) RemoveInspectionresultIDs(ids ...int) *JobPositionUpdate {
+	jpu.mutation.RemoveInspectionresultIDs(ids...)
+	return jpu
+}
+
+// RemoveInspectionresults removes inspectionresults edges to InspectionResult.
+func (jpu *JobPositionUpdate) RemoveInspectionresults(i ...*InspectionResult) *JobPositionUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return jpu.RemoveInspectionresultIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -189,6 +220,44 @@ func (jpu *JobPositionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := jpu.mutation.RemovedInspectionresultsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   jobposition.InspectionresultsTable,
+			Columns: []string{jobposition.InspectionresultsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: inspectionresult.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := jpu.mutation.InspectionresultsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   jobposition.InspectionresultsTable,
+			Columns: []string{jobposition.InspectionresultsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: inspectionresult.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, jpu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{jobposition.Label}
@@ -228,6 +297,21 @@ func (jpuo *JobPositionUpdateOne) AddUsers(u ...*User) *JobPositionUpdateOne {
 	return jpuo.AddUserIDs(ids...)
 }
 
+// AddInspectionresultIDs adds the inspectionresults edge to InspectionResult by ids.
+func (jpuo *JobPositionUpdateOne) AddInspectionresultIDs(ids ...int) *JobPositionUpdateOne {
+	jpuo.mutation.AddInspectionresultIDs(ids...)
+	return jpuo
+}
+
+// AddInspectionresults adds the inspectionresults edges to InspectionResult.
+func (jpuo *JobPositionUpdateOne) AddInspectionresults(i ...*InspectionResult) *JobPositionUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return jpuo.AddInspectionresultIDs(ids...)
+}
+
 // Mutation returns the JobPositionMutation object of the builder.
 func (jpuo *JobPositionUpdateOne) Mutation() *JobPositionMutation {
 	return jpuo.mutation
@@ -246,6 +330,21 @@ func (jpuo *JobPositionUpdateOne) RemoveUsers(u ...*User) *JobPositionUpdateOne 
 		ids[i] = u[i].ID
 	}
 	return jpuo.RemoveUserIDs(ids...)
+}
+
+// RemoveInspectionresultIDs removes the inspectionresults edge to InspectionResult by ids.
+func (jpuo *JobPositionUpdateOne) RemoveInspectionresultIDs(ids ...int) *JobPositionUpdateOne {
+	jpuo.mutation.RemoveInspectionresultIDs(ids...)
+	return jpuo
+}
+
+// RemoveInspectionresults removes inspectionresults edges to InspectionResult.
+func (jpuo *JobPositionUpdateOne) RemoveInspectionresults(i ...*InspectionResult) *JobPositionUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return jpuo.RemoveInspectionresultIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -358,6 +457,44 @@ func (jpuo *JobPositionUpdateOne) sqlSave(ctx context.Context) (jp *JobPosition,
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := jpuo.mutation.RemovedInspectionresultsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   jobposition.InspectionresultsTable,
+			Columns: []string{jobposition.InspectionresultsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: inspectionresult.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := jpuo.mutation.InspectionresultsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   jobposition.InspectionresultsTable,
+			Columns: []string{jobposition.InspectionresultsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: inspectionresult.FieldID,
 				},
 			},
 		}

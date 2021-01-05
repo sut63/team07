@@ -14,6 +14,8 @@ const (
 	EdgeCarinspections = "carinspections"
 	// EdgeStatusof holds the string denoting the statusof edge name in mutations.
 	EdgeStatusof = "statusof"
+	// EdgeJobposition holds the string denoting the jobposition edge name in mutations.
+	EdgeJobposition = "jobposition"
 
 	// Table holds the table name of the inspectionresult in the database.
 	Table = "inspection_results"
@@ -31,12 +33,24 @@ const (
 	StatusofInverseTable = "ambulances"
 	// StatusofColumn is the table column denoting the statusof relation/edge.
 	StatusofColumn = "carstatus_id"
+	// JobpositionTable is the table the holds the jobposition relation/edge.
+	JobpositionTable = "inspection_results"
+	// JobpositionInverseTable is the table name for the JobPosition entity.
+	// It exists in this package in order to avoid circular dependency with the "jobposition" package.
+	JobpositionInverseTable = "job_positions"
+	// JobpositionColumn is the table column denoting the jobposition relation/edge.
+	JobpositionColumn = "jobposition_id"
 )
 
 // Columns holds all SQL columns for inspectionresult fields.
 var Columns = []string{
 	FieldID,
 	FieldResultName,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the InspectionResult type.
+var ForeignKeys = []string{
+	"jobposition_id",
 }
 
 var (

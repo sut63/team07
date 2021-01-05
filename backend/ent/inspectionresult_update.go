@@ -12,6 +12,7 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -65,6 +66,25 @@ func (iru *InspectionResultUpdate) AddStatusof(a ...*Ambulance) *InspectionResul
 	return iru.AddStatusofIDs(ids...)
 }
 
+// SetJobpositionID sets the jobposition edge to JobPosition by id.
+func (iru *InspectionResultUpdate) SetJobpositionID(id int) *InspectionResultUpdate {
+	iru.mutation.SetJobpositionID(id)
+	return iru
+}
+
+// SetNillableJobpositionID sets the jobposition edge to JobPosition by id if the given value is not nil.
+func (iru *InspectionResultUpdate) SetNillableJobpositionID(id *int) *InspectionResultUpdate {
+	if id != nil {
+		iru = iru.SetJobpositionID(*id)
+	}
+	return iru
+}
+
+// SetJobposition sets the jobposition edge to JobPosition.
+func (iru *InspectionResultUpdate) SetJobposition(j *JobPosition) *InspectionResultUpdate {
+	return iru.SetJobpositionID(j.ID)
+}
+
 // Mutation returns the InspectionResultMutation object of the builder.
 func (iru *InspectionResultUpdate) Mutation() *InspectionResultMutation {
 	return iru.mutation
@@ -98,6 +118,12 @@ func (iru *InspectionResultUpdate) RemoveStatusof(a ...*Ambulance) *InspectionRe
 		ids[i] = a[i].ID
 	}
 	return iru.RemoveStatusofIDs(ids...)
+}
+
+// ClearJobposition clears the jobposition edge to JobPosition.
+func (iru *InspectionResultUpdate) ClearJobposition() *InspectionResultUpdate {
+	iru.mutation.ClearJobposition()
+	return iru
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -258,6 +284,41 @@ func (iru *InspectionResultUpdate) sqlSave(ctx context.Context) (n int, err erro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if iru.mutation.JobpositionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   inspectionresult.JobpositionTable,
+			Columns: []string{inspectionresult.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iru.mutation.JobpositionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   inspectionresult.JobpositionTable,
+			Columns: []string{inspectionresult.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{inspectionresult.Label}
@@ -312,6 +373,25 @@ func (iruo *InspectionResultUpdateOne) AddStatusof(a ...*Ambulance) *InspectionR
 	return iruo.AddStatusofIDs(ids...)
 }
 
+// SetJobpositionID sets the jobposition edge to JobPosition by id.
+func (iruo *InspectionResultUpdateOne) SetJobpositionID(id int) *InspectionResultUpdateOne {
+	iruo.mutation.SetJobpositionID(id)
+	return iruo
+}
+
+// SetNillableJobpositionID sets the jobposition edge to JobPosition by id if the given value is not nil.
+func (iruo *InspectionResultUpdateOne) SetNillableJobpositionID(id *int) *InspectionResultUpdateOne {
+	if id != nil {
+		iruo = iruo.SetJobpositionID(*id)
+	}
+	return iruo
+}
+
+// SetJobposition sets the jobposition edge to JobPosition.
+func (iruo *InspectionResultUpdateOne) SetJobposition(j *JobPosition) *InspectionResultUpdateOne {
+	return iruo.SetJobpositionID(j.ID)
+}
+
 // Mutation returns the InspectionResultMutation object of the builder.
 func (iruo *InspectionResultUpdateOne) Mutation() *InspectionResultMutation {
 	return iruo.mutation
@@ -345,6 +425,12 @@ func (iruo *InspectionResultUpdateOne) RemoveStatusof(a ...*Ambulance) *Inspecti
 		ids[i] = a[i].ID
 	}
 	return iruo.RemoveStatusofIDs(ids...)
+}
+
+// ClearJobposition clears the jobposition edge to JobPosition.
+func (iruo *InspectionResultUpdateOne) ClearJobposition() *InspectionResultUpdateOne {
+	iruo.mutation.ClearJobposition()
+	return iruo
 }
 
 // Save executes the query and returns the updated entity.
@@ -495,6 +581,41 @@ func (iruo *InspectionResultUpdateOne) sqlSave(ctx context.Context) (ir *Inspect
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: ambulance.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iruo.mutation.JobpositionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   inspectionresult.JobpositionTable,
+			Columns: []string{inspectionresult.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iruo.mutation.JobpositionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   inspectionresult.JobpositionTable,
+			Columns: []string{inspectionresult.JobpositionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: jobposition.FieldID,
 				},
 			},
 		}

@@ -1351,6 +1351,22 @@ func (c *InspectionResultClient) QueryStatusof(ir *InspectionResult) *AmbulanceQ
 	return query
 }
 
+// QueryJobposition queries the jobposition edge of a InspectionResult.
+func (c *InspectionResultClient) QueryJobposition(ir *InspectionResult) *JobPositionQuery {
+	query := &JobPositionQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := ir.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, id),
+			sqlgraph.To(jobposition.Table, jobposition.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, inspectionresult.JobpositionTable, inspectionresult.JobpositionColumn),
+		)
+		fromV = sqlgraph.Neighbors(ir.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *InspectionResultClient) Hooks() []Hook {
 	return c.hooks.InspectionResult
@@ -1542,6 +1558,22 @@ func (c *JobPositionClient) QueryUsers(jp *JobPosition) *UserQuery {
 			sqlgraph.From(jobposition.Table, jobposition.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, jobposition.UsersTable, jobposition.UsersColumn),
+		)
+		fromV = sqlgraph.Neighbors(jp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryInspectionresults queries the inspectionresults edge of a JobPosition.
+func (c *JobPositionClient) QueryInspectionresults(jp *JobPosition) *InspectionResultQuery {
+	query := &InspectionResultQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := jp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(jobposition.Table, jobposition.FieldID, id),
+			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, jobposition.InspectionresultsTable, jobposition.InspectionresultsColumn),
 		)
 		fromV = sqlgraph.Neighbors(jp.driver.Dialect(), step)
 		return fromV, nil

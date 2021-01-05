@@ -3819,6 +3819,8 @@ type InspectionResultMutation struct {
 	removedcarinspections map[int]struct{}
 	statusof              map[int]struct{}
 	removedstatusof       map[int]struct{}
+	jobposition           *int
+	clearedjobposition    bool
 	done                  bool
 	oldValue              func(context.Context) (*InspectionResult, error)
 }
@@ -4023,6 +4025,45 @@ func (m *InspectionResultMutation) ResetStatusof() {
 	m.removedstatusof = nil
 }
 
+// SetJobpositionID sets the jobposition edge to JobPosition by id.
+func (m *InspectionResultMutation) SetJobpositionID(id int) {
+	m.jobposition = &id
+}
+
+// ClearJobposition clears the jobposition edge to JobPosition.
+func (m *InspectionResultMutation) ClearJobposition() {
+	m.clearedjobposition = true
+}
+
+// JobpositionCleared returns if the edge jobposition was cleared.
+func (m *InspectionResultMutation) JobpositionCleared() bool {
+	return m.clearedjobposition
+}
+
+// JobpositionID returns the jobposition id in the mutation.
+func (m *InspectionResultMutation) JobpositionID() (id int, exists bool) {
+	if m.jobposition != nil {
+		return *m.jobposition, true
+	}
+	return
+}
+
+// JobpositionIDs returns the jobposition ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// JobpositionID instead. It exists only for internal usage by the builders.
+func (m *InspectionResultMutation) JobpositionIDs() (ids []int) {
+	if id := m.jobposition; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetJobposition reset all changes of the "jobposition" edge.
+func (m *InspectionResultMutation) ResetJobposition() {
+	m.jobposition = nil
+	m.clearedjobposition = false
+}
+
 // Op returns the operation name.
 func (m *InspectionResultMutation) Op() Op {
 	return m.op
@@ -4138,12 +4179,15 @@ func (m *InspectionResultMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *InspectionResultMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.carinspections != nil {
 		edges = append(edges, inspectionresult.EdgeCarinspections)
 	}
 	if m.statusof != nil {
 		edges = append(edges, inspectionresult.EdgeStatusof)
+	}
+	if m.jobposition != nil {
+		edges = append(edges, inspectionresult.EdgeJobposition)
 	}
 	return edges
 }
@@ -4164,6 +4208,10 @@ func (m *InspectionResultMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case inspectionresult.EdgeJobposition:
+		if id := m.jobposition; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
@@ -4171,7 +4219,7 @@ func (m *InspectionResultMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *InspectionResultMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.removedcarinspections != nil {
 		edges = append(edges, inspectionresult.EdgeCarinspections)
 	}
@@ -4204,7 +4252,10 @@ func (m *InspectionResultMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *InspectionResultMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
+	if m.clearedjobposition {
+		edges = append(edges, inspectionresult.EdgeJobposition)
+	}
 	return edges
 }
 
@@ -4212,6 +4263,8 @@ func (m *InspectionResultMutation) ClearedEdges() []string {
 // cleared in this mutation.
 func (m *InspectionResultMutation) EdgeCleared(name string) bool {
 	switch name {
+	case inspectionresult.EdgeJobposition:
+		return m.clearedjobposition
 	}
 	return false
 }
@@ -4220,6 +4273,9 @@ func (m *InspectionResultMutation) EdgeCleared(name string) bool {
 // error if the edge name is not defined in the schema.
 func (m *InspectionResultMutation) ClearEdge(name string) error {
 	switch name {
+	case inspectionresult.EdgeJobposition:
+		m.ClearJobposition()
+		return nil
 	}
 	return fmt.Errorf("unknown InspectionResult unique edge %s", name)
 }
@@ -4234,6 +4290,9 @@ func (m *InspectionResultMutation) ResetEdge(name string) error {
 		return nil
 	case inspectionresult.EdgeStatusof:
 		m.ResetStatusof()
+		return nil
+	case inspectionresult.EdgeJobposition:
+		m.ResetJobposition()
 		return nil
 	}
 	return fmt.Errorf("unknown InspectionResult edge %s", name)
@@ -4666,15 +4725,17 @@ func (m *InsuranceMutation) ResetEdge(name string) error {
 // nodes in the graph.
 type JobPositionMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	position_name *string
-	clearedFields map[string]struct{}
-	users         map[int]struct{}
-	removedusers  map[int]struct{}
-	done          bool
-	oldValue      func(context.Context) (*JobPosition, error)
+	op                       Op
+	typ                      string
+	id                       *int
+	position_name            *string
+	clearedFields            map[string]struct{}
+	users                    map[int]struct{}
+	removedusers             map[int]struct{}
+	inspectionresults        map[int]struct{}
+	removedinspectionresults map[int]struct{}
+	done                     bool
+	oldValue                 func(context.Context) (*JobPosition, error)
 }
 
 var _ ent.Mutation = (*JobPositionMutation)(nil)
@@ -4835,6 +4896,48 @@ func (m *JobPositionMutation) ResetUsers() {
 	m.removedusers = nil
 }
 
+// AddInspectionresultIDs adds the inspectionresults edge to InspectionResult by ids.
+func (m *JobPositionMutation) AddInspectionresultIDs(ids ...int) {
+	if m.inspectionresults == nil {
+		m.inspectionresults = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.inspectionresults[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveInspectionresultIDs removes the inspectionresults edge to InspectionResult by ids.
+func (m *JobPositionMutation) RemoveInspectionresultIDs(ids ...int) {
+	if m.removedinspectionresults == nil {
+		m.removedinspectionresults = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedinspectionresults[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedInspectionresults returns the removed ids of inspectionresults.
+func (m *JobPositionMutation) RemovedInspectionresultsIDs() (ids []int) {
+	for id := range m.removedinspectionresults {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// InspectionresultsIDs returns the inspectionresults ids in the mutation.
+func (m *JobPositionMutation) InspectionresultsIDs() (ids []int) {
+	for id := range m.inspectionresults {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetInspectionresults reset all changes of the "inspectionresults" edge.
+func (m *JobPositionMutation) ResetInspectionresults() {
+	m.inspectionresults = nil
+	m.removedinspectionresults = nil
+}
+
 // Op returns the operation name.
 func (m *JobPositionMutation) Op() Op {
 	return m.op
@@ -4950,9 +5053,12 @@ func (m *JobPositionMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *JobPositionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.users != nil {
 		edges = append(edges, jobposition.EdgeUsers)
+	}
+	if m.inspectionresults != nil {
+		edges = append(edges, jobposition.EdgeInspectionresults)
 	}
 	return edges
 }
@@ -4967,6 +5073,12 @@ func (m *JobPositionMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case jobposition.EdgeInspectionresults:
+		ids := make([]ent.Value, 0, len(m.inspectionresults))
+		for id := range m.inspectionresults {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -4974,9 +5086,12 @@ func (m *JobPositionMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *JobPositionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedusers != nil {
 		edges = append(edges, jobposition.EdgeUsers)
+	}
+	if m.removedinspectionresults != nil {
+		edges = append(edges, jobposition.EdgeInspectionresults)
 	}
 	return edges
 }
@@ -4991,6 +5106,12 @@ func (m *JobPositionMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case jobposition.EdgeInspectionresults:
+		ids := make([]ent.Value, 0, len(m.removedinspectionresults))
+		for id := range m.removedinspectionresults {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -4998,7 +5119,7 @@ func (m *JobPositionMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *JobPositionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -5025,6 +5146,9 @@ func (m *JobPositionMutation) ResetEdge(name string) error {
 	switch name {
 	case jobposition.EdgeUsers:
 		m.ResetUsers()
+		return nil
+	case jobposition.EdgeInspectionresults:
+		m.ResetInspectionresults()
 		return nil
 	}
 	return fmt.Errorf("unknown JobPosition edge %s", name)

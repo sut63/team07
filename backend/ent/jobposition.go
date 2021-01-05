@@ -26,9 +26,11 @@ type JobPosition struct {
 type JobPositionEdges struct {
 	// Users holds the value of the users edge.
 	Users []*User
+	// Inspectionresults holds the value of the inspectionresults edge.
+	Inspectionresults []*InspectionResult
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // UsersOrErr returns the Users value or an error if the edge
@@ -38,6 +40,15 @@ func (e JobPositionEdges) UsersOrErr() ([]*User, error) {
 		return e.Users, nil
 	}
 	return nil, &NotLoadedError{edge: "users"}
+}
+
+// InspectionresultsOrErr returns the Inspectionresults value or an error if the edge
+// was not loaded in eager-loading.
+func (e JobPositionEdges) InspectionresultsOrErr() ([]*InspectionResult, error) {
+	if e.loadedTypes[1] {
+		return e.Inspectionresults, nil
+	}
+	return nil, &NotLoadedError{edge: "inspectionresults"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -71,6 +82,11 @@ func (jp *JobPosition) assignValues(values ...interface{}) error {
 // QueryUsers queries the users edge of the JobPosition.
 func (jp *JobPosition) QueryUsers() *UserQuery {
 	return (&JobPositionClient{config: jp.config}).QueryUsers(jp)
+}
+
+// QueryInspectionresults queries the inspectionresults edge of the JobPosition.
+func (jp *JobPosition) QueryInspectionresults() *InspectionResultQuery {
+	return (&JobPositionClient{config: jp.config}).QueryInspectionresults(jp)
 }
 
 // Update returns a builder for updating this JobPosition.

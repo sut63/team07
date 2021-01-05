@@ -15,6 +15,7 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
 )
 
@@ -29,6 +30,8 @@ type InspectionResultQuery struct {
 	// eager-loading edges.
 	withCarinspections *CarInspectionQuery
 	withStatusof       *AmbulanceQuery
+	withJobposition    *JobPositionQuery
+	withFKs            bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -87,6 +90,24 @@ func (irq *InspectionResultQuery) QueryStatusof() *AmbulanceQuery {
 			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, irq.sqlQuery()),
 			sqlgraph.To(ambulance.Table, ambulance.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, inspectionresult.StatusofTable, inspectionresult.StatusofColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(irq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryJobposition chains the current query on the jobposition edge.
+func (irq *InspectionResultQuery) QueryJobposition() *JobPositionQuery {
+	query := &JobPositionQuery{config: irq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := irq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(inspectionresult.Table, inspectionresult.FieldID, irq.sqlQuery()),
+			sqlgraph.To(jobposition.Table, jobposition.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, inspectionresult.JobpositionTable, inspectionresult.JobpositionColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(irq.driver.Dialect(), step)
 		return fromU, nil
@@ -295,6 +316,17 @@ func (irq *InspectionResultQuery) WithStatusof(opts ...func(*AmbulanceQuery)) *I
 	return irq
 }
 
+//  WithJobposition tells the query-builder to eager-loads the nodes that are connected to
+// the "jobposition" edge. The optional arguments used to configure the query builder of the edge.
+func (irq *InspectionResultQuery) WithJobposition(opts ...func(*JobPositionQuery)) *InspectionResultQuery {
+	query := &JobPositionQuery{config: irq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	irq.withJobposition = query
+	return irq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -360,16 +392,27 @@ func (irq *InspectionResultQuery) prepareQuery(ctx context.Context) error {
 func (irq *InspectionResultQuery) sqlAll(ctx context.Context) ([]*InspectionResult, error) {
 	var (
 		nodes       = []*InspectionResult{}
+		withFKs     = irq.withFKs
 		_spec       = irq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			irq.withCarinspections != nil,
 			irq.withStatusof != nil,
+			irq.withJobposition != nil,
 		}
 	)
+	if irq.withJobposition != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, inspectionresult.ForeignKeys...)
+	}
 	_spec.ScanValues = func() []interface{} {
 		node := &InspectionResult{config: irq.config}
 		nodes = append(nodes, node)
 		values := node.scanValues()
+		if withFKs {
+			values = append(values, node.fkValues()...)
+		}
 		return values
 	}
 	_spec.Assign = func(values ...interface{}) error {
@@ -440,6 +483,31 @@ func (irq *InspectionResultQuery) sqlAll(ctx context.Context) ([]*InspectionResu
 				return nil, fmt.Errorf(`unexpected foreign-key "carstatus_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Statusof = append(node.Edges.Statusof, n)
+		}
+	}
+
+	if query := irq.withJobposition; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*InspectionResult)
+		for i := range nodes {
+			if fk := nodes[i].jobposition_id; fk != nil {
+				ids = append(ids, *fk)
+				nodeids[*fk] = append(nodeids[*fk], nodes[i])
+			}
+		}
+		query.Where(jobposition.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "jobposition_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Jobposition = n
+			}
 		}
 	}
 

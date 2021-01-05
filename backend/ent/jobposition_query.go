@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/user"
@@ -26,7 +27,8 @@ type JobPositionQuery struct {
 	unique     []string
 	predicates []predicate.JobPosition
 	// eager-loading edges.
-	withUsers *UserQuery
+	withUsers             *UserQuery
+	withInspectionresults *InspectionResultQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -67,6 +69,24 @@ func (jpq *JobPositionQuery) QueryUsers() *UserQuery {
 			sqlgraph.From(jobposition.Table, jobposition.FieldID, jpq.sqlQuery()),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, jobposition.UsersTable, jobposition.UsersColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(jpq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryInspectionresults chains the current query on the inspectionresults edge.
+func (jpq *JobPositionQuery) QueryInspectionresults() *InspectionResultQuery {
+	query := &InspectionResultQuery{config: jpq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := jpq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(jobposition.Table, jobposition.FieldID, jpq.sqlQuery()),
+			sqlgraph.To(inspectionresult.Table, inspectionresult.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, jobposition.InspectionresultsTable, jobposition.InspectionresultsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(jpq.driver.Dialect(), step)
 		return fromU, nil
@@ -264,6 +284,17 @@ func (jpq *JobPositionQuery) WithUsers(opts ...func(*UserQuery)) *JobPositionQue
 	return jpq
 }
 
+//  WithInspectionresults tells the query-builder to eager-loads the nodes that are connected to
+// the "inspectionresults" edge. The optional arguments used to configure the query builder of the edge.
+func (jpq *JobPositionQuery) WithInspectionresults(opts ...func(*InspectionResultQuery)) *JobPositionQuery {
+	query := &InspectionResultQuery{config: jpq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	jpq.withInspectionresults = query
+	return jpq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -330,8 +361,9 @@ func (jpq *JobPositionQuery) sqlAll(ctx context.Context) ([]*JobPosition, error)
 	var (
 		nodes       = []*JobPosition{}
 		_spec       = jpq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			jpq.withUsers != nil,
+			jpq.withInspectionresults != nil,
 		}
 	)
 	_spec.ScanValues = func() []interface{} {
@@ -380,6 +412,34 @@ func (jpq *JobPositionQuery) sqlAll(ctx context.Context) ([]*JobPosition, error)
 				return nil, fmt.Errorf(`unexpected foreign-key "jobposition_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Users = append(node.Edges.Users, n)
+		}
+	}
+
+	if query := jpq.withInspectionresults; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*JobPosition)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.InspectionResult(func(s *sql.Selector) {
+			s.Where(sql.InValues(jobposition.InspectionresultsColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.jobposition_id
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "jobposition_id" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "jobposition_id" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Inspectionresults = append(node.Edges.Inspectionresults, n)
 		}
 	}
 
