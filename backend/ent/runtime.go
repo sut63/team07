@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
@@ -25,6 +26,12 @@ func init() {
 	ambulanceDescRegisterat := ambulanceFields[1].Descriptor()
 	// ambulance.DefaultRegisterat holds the default value on creation for the registerat field.
 	ambulance.DefaultRegisterat = ambulanceDescRegisterat.Default.(func() time.Time)
+	carcheckinoutFields := schema.CarCheckInOut{}.Fields()
+	_ = carcheckinoutFields
+	// carcheckinoutDescCheckIn is the schema descriptor for checkIn field.
+	carcheckinoutDescCheckIn := carcheckinoutFields[1].Descriptor()
+	// carcheckinout.DefaultCheckIn holds the default value on creation for the checkIn field.
+	carcheckinout.DefaultCheckIn = carcheckinoutDescCheckIn.Default.(func() time.Time)
 	distanceFields := schema.Distance{}.Fields()
 	_ = distanceFields
 	// distanceDescDistance is the schema descriptor for Distance field.

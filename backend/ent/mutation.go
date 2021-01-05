@@ -10,6 +10,7 @@ import (
 
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carbrand"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
@@ -17,6 +18,7 @@ import (
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/jobposition"
+	"github.com/team07/app/ent/purpose"
 	"github.com/team07/app/ent/repairing"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
@@ -71,6 +73,8 @@ type AmbulanceMutation struct {
 	clearedhasuser        bool
 	carinspections        map[int]struct{}
 	removedcarinspections map[int]struct{}
+	carcheckinout         map[int]struct{}
+	removedcarcheckinout  map[int]struct{}
 	done                  bool
 	oldValue              func(context.Context) (*Ambulance, error)
 }
@@ -426,6 +430,48 @@ func (m *AmbulanceMutation) ResetCarinspections() {
 	m.removedcarinspections = nil
 }
 
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (m *AmbulanceMutation) AddCarcheckinoutIDs(ids ...int) {
+	if m.carcheckinout == nil {
+		m.carcheckinout = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.carcheckinout[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (m *AmbulanceMutation) RemoveCarcheckinoutIDs(ids ...int) {
+	if m.removedcarcheckinout == nil {
+		m.removedcarcheckinout = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedcarcheckinout[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCarcheckinout returns the removed ids of carcheckinout.
+func (m *AmbulanceMutation) RemovedCarcheckinoutIDs() (ids []int) {
+	for id := range m.removedcarcheckinout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CarcheckinoutIDs returns the carcheckinout ids in the mutation.
+func (m *AmbulanceMutation) CarcheckinoutIDs() (ids []int) {
+	for id := range m.carcheckinout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCarcheckinout reset all changes of the "carcheckinout" edge.
+func (m *AmbulanceMutation) ResetCarcheckinout() {
+	m.carcheckinout = nil
+	m.removedcarcheckinout = nil
+}
+
 // Op returns the operation name.
 func (m *AmbulanceMutation) Op() Op {
 	return m.op
@@ -558,7 +604,7 @@ func (m *AmbulanceMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *AmbulanceMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.hasbrand != nil {
 		edges = append(edges, ambulance.EdgeHasbrand)
 	}
@@ -573,6 +619,9 @@ func (m *AmbulanceMutation) AddedEdges() []string {
 	}
 	if m.carinspections != nil {
 		edges = append(edges, ambulance.EdgeCarinspections)
+	}
+	if m.carcheckinout != nil {
+		edges = append(edges, ambulance.EdgeCarcheckinout)
 	}
 	return edges
 }
@@ -603,6 +652,12 @@ func (m *AmbulanceMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case ambulance.EdgeCarcheckinout:
+		ids := make([]ent.Value, 0, len(m.carcheckinout))
+		for id := range m.carcheckinout {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -610,9 +665,12 @@ func (m *AmbulanceMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *AmbulanceMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.removedcarinspections != nil {
 		edges = append(edges, ambulance.EdgeCarinspections)
+	}
+	if m.removedcarcheckinout != nil {
+		edges = append(edges, ambulance.EdgeCarcheckinout)
 	}
 	return edges
 }
@@ -627,6 +685,12 @@ func (m *AmbulanceMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case ambulance.EdgeCarcheckinout:
+		ids := make([]ent.Value, 0, len(m.removedcarcheckinout))
+		for id := range m.removedcarcheckinout {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -634,7 +698,7 @@ func (m *AmbulanceMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *AmbulanceMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.clearedhasbrand {
 		edges = append(edges, ambulance.EdgeHasbrand)
 	}
@@ -706,6 +770,9 @@ func (m *AmbulanceMutation) ResetEdge(name string) error {
 	case ambulance.EdgeCarinspections:
 		m.ResetCarinspections()
 		return nil
+	case ambulance.EdgeCarcheckinout:
+		m.ResetCarcheckinout()
+		return nil
 	}
 	return fmt.Errorf("unknown Ambulance edge %s", name)
 }
@@ -714,12 +781,21 @@ func (m *AmbulanceMutation) ResetEdge(name string) error {
 // nodes in the graph.
 type CarCheckInOutMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*CarCheckInOut, error)
+	op               Op
+	typ              string
+	id               *int
+	note             *string
+	checkIn          *time.Time
+	checkOut         *time.Time
+	clearedFields    map[string]struct{}
+	ambulance        *int
+	clearedambulance bool
+	name             *int
+	clearedname      bool
+	purpose          *int
+	clearedpurpose   bool
+	done             bool
+	oldValue         func(context.Context) (*CarCheckInOut, error)
 }
 
 var _ ent.Mutation = (*CarCheckInOutMutation)(nil)
@@ -801,6 +877,234 @@ func (m *CarCheckInOutMutation) ID() (id int, exists bool) {
 	return *m.id, true
 }
 
+// SetNote sets the note field.
+func (m *CarCheckInOutMutation) SetNote(s string) {
+	m.note = &s
+}
+
+// Note returns the note value in the mutation.
+func (m *CarCheckInOutMutation) Note() (r string, exists bool) {
+	v := m.note
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNote returns the old note value of the CarCheckInOut.
+// If the CarCheckInOut object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarCheckInOutMutation) OldNote(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldNote is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldNote requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNote: %w", err)
+	}
+	return oldValue.Note, nil
+}
+
+// ResetNote reset all changes of the "note" field.
+func (m *CarCheckInOutMutation) ResetNote() {
+	m.note = nil
+}
+
+// SetCheckIn sets the checkIn field.
+func (m *CarCheckInOutMutation) SetCheckIn(t time.Time) {
+	m.checkIn = &t
+}
+
+// CheckIn returns the checkIn value in the mutation.
+func (m *CarCheckInOutMutation) CheckIn() (r time.Time, exists bool) {
+	v := m.checkIn
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCheckIn returns the old checkIn value of the CarCheckInOut.
+// If the CarCheckInOut object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarCheckInOutMutation) OldCheckIn(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCheckIn is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCheckIn requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCheckIn: %w", err)
+	}
+	return oldValue.CheckIn, nil
+}
+
+// ResetCheckIn reset all changes of the "checkIn" field.
+func (m *CarCheckInOutMutation) ResetCheckIn() {
+	m.checkIn = nil
+}
+
+// SetCheckOut sets the checkOut field.
+func (m *CarCheckInOutMutation) SetCheckOut(t time.Time) {
+	m.checkOut = &t
+}
+
+// CheckOut returns the checkOut value in the mutation.
+func (m *CarCheckInOutMutation) CheckOut() (r time.Time, exists bool) {
+	v := m.checkOut
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCheckOut returns the old checkOut value of the CarCheckInOut.
+// If the CarCheckInOut object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarCheckInOutMutation) OldCheckOut(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldCheckOut is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldCheckOut requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCheckOut: %w", err)
+	}
+	return oldValue.CheckOut, nil
+}
+
+// ResetCheckOut reset all changes of the "checkOut" field.
+func (m *CarCheckInOutMutation) ResetCheckOut() {
+	m.checkOut = nil
+}
+
+// SetAmbulanceID sets the ambulance edge to Ambulance by id.
+func (m *CarCheckInOutMutation) SetAmbulanceID(id int) {
+	m.ambulance = &id
+}
+
+// ClearAmbulance clears the ambulance edge to Ambulance.
+func (m *CarCheckInOutMutation) ClearAmbulance() {
+	m.clearedambulance = true
+}
+
+// AmbulanceCleared returns if the edge ambulance was cleared.
+func (m *CarCheckInOutMutation) AmbulanceCleared() bool {
+	return m.clearedambulance
+}
+
+// AmbulanceID returns the ambulance id in the mutation.
+func (m *CarCheckInOutMutation) AmbulanceID() (id int, exists bool) {
+	if m.ambulance != nil {
+		return *m.ambulance, true
+	}
+	return
+}
+
+// AmbulanceIDs returns the ambulance ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// AmbulanceID instead. It exists only for internal usage by the builders.
+func (m *CarCheckInOutMutation) AmbulanceIDs() (ids []int) {
+	if id := m.ambulance; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAmbulance reset all changes of the "ambulance" edge.
+func (m *CarCheckInOutMutation) ResetAmbulance() {
+	m.ambulance = nil
+	m.clearedambulance = false
+}
+
+// SetNameID sets the name edge to User by id.
+func (m *CarCheckInOutMutation) SetNameID(id int) {
+	m.name = &id
+}
+
+// ClearName clears the name edge to User.
+func (m *CarCheckInOutMutation) ClearName() {
+	m.clearedname = true
+}
+
+// NameCleared returns if the edge name was cleared.
+func (m *CarCheckInOutMutation) NameCleared() bool {
+	return m.clearedname
+}
+
+// NameID returns the name id in the mutation.
+func (m *CarCheckInOutMutation) NameID() (id int, exists bool) {
+	if m.name != nil {
+		return *m.name, true
+	}
+	return
+}
+
+// NameIDs returns the name ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// NameID instead. It exists only for internal usage by the builders.
+func (m *CarCheckInOutMutation) NameIDs() (ids []int) {
+	if id := m.name; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetName reset all changes of the "name" edge.
+func (m *CarCheckInOutMutation) ResetName() {
+	m.name = nil
+	m.clearedname = false
+}
+
+// SetPurposeID sets the purpose edge to Purpose by id.
+func (m *CarCheckInOutMutation) SetPurposeID(id int) {
+	m.purpose = &id
+}
+
+// ClearPurpose clears the purpose edge to Purpose.
+func (m *CarCheckInOutMutation) ClearPurpose() {
+	m.clearedpurpose = true
+}
+
+// PurposeCleared returns if the edge purpose was cleared.
+func (m *CarCheckInOutMutation) PurposeCleared() bool {
+	return m.clearedpurpose
+}
+
+// PurposeID returns the purpose id in the mutation.
+func (m *CarCheckInOutMutation) PurposeID() (id int, exists bool) {
+	if m.purpose != nil {
+		return *m.purpose, true
+	}
+	return
+}
+
+// PurposeIDs returns the purpose ids in the mutation.
+// Note that ids always returns len(ids) <= 1 for unique edges, and you should use
+// PurposeID instead. It exists only for internal usage by the builders.
+func (m *CarCheckInOutMutation) PurposeIDs() (ids []int) {
+	if id := m.purpose; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetPurpose reset all changes of the "purpose" edge.
+func (m *CarCheckInOutMutation) ResetPurpose() {
+	m.purpose = nil
+	m.clearedpurpose = false
+}
+
 // Op returns the operation name.
 func (m *CarCheckInOutMutation) Op() Op {
 	return m.op
@@ -815,7 +1119,16 @@ func (m *CarCheckInOutMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *CarCheckInOutMutation) Fields() []string {
-	fields := make([]string, 0, 0)
+	fields := make([]string, 0, 3)
+	if m.note != nil {
+		fields = append(fields, carcheckinout.FieldNote)
+	}
+	if m.checkIn != nil {
+		fields = append(fields, carcheckinout.FieldCheckIn)
+	}
+	if m.checkOut != nil {
+		fields = append(fields, carcheckinout.FieldCheckOut)
+	}
 	return fields
 }
 
@@ -823,6 +1136,14 @@ func (m *CarCheckInOutMutation) Fields() []string {
 // The second boolean value indicates that this field was
 // not set, or was not define in the schema.
 func (m *CarCheckInOutMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case carcheckinout.FieldNote:
+		return m.Note()
+	case carcheckinout.FieldCheckIn:
+		return m.CheckIn()
+	case carcheckinout.FieldCheckOut:
+		return m.CheckOut()
+	}
 	return nil, false
 }
 
@@ -830,6 +1151,14 @@ func (m *CarCheckInOutMutation) Field(name string) (ent.Value, bool) {
 // An error is returned if the mutation operation is not UpdateOne,
 // or the query to the database was failed.
 func (m *CarCheckInOutMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case carcheckinout.FieldNote:
+		return m.OldNote(ctx)
+	case carcheckinout.FieldCheckIn:
+		return m.OldCheckIn(ctx)
+	case carcheckinout.FieldCheckOut:
+		return m.OldCheckOut(ctx)
+	}
 	return nil, fmt.Errorf("unknown CarCheckInOut field %s", name)
 }
 
@@ -838,6 +1167,27 @@ func (m *CarCheckInOutMutation) OldField(ctx context.Context, name string) (ent.
 // type mismatch the field type.
 func (m *CarCheckInOutMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case carcheckinout.FieldNote:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNote(v)
+		return nil
+	case carcheckinout.FieldCheckIn:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCheckIn(v)
+		return nil
+	case carcheckinout.FieldCheckOut:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCheckOut(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CarCheckInOut field %s", name)
 }
@@ -859,6 +1209,8 @@ func (m *CarCheckInOutMutation) AddedField(name string) (ent.Value, bool) {
 // error if the field is not defined in the schema, or if the
 // type mismatch the field type.
 func (m *CarCheckInOutMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown CarCheckInOut numeric field %s", name)
 }
 
@@ -885,51 +1237,115 @@ func (m *CarCheckInOutMutation) ClearField(name string) error {
 // given field name. It returns an error if the field is not
 // defined in the schema.
 func (m *CarCheckInOutMutation) ResetField(name string) error {
+	switch name {
+	case carcheckinout.FieldNote:
+		m.ResetNote()
+		return nil
+	case carcheckinout.FieldCheckIn:
+		m.ResetCheckIn()
+		return nil
+	case carcheckinout.FieldCheckOut:
+		m.ResetCheckOut()
+		return nil
+	}
 	return fmt.Errorf("unknown CarCheckInOut field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *CarCheckInOutMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 3)
+	if m.ambulance != nil {
+		edges = append(edges, carcheckinout.EdgeAmbulance)
+	}
+	if m.name != nil {
+		edges = append(edges, carcheckinout.EdgeName)
+	}
+	if m.purpose != nil {
+		edges = append(edges, carcheckinout.EdgePurpose)
+	}
 	return edges
 }
 
 // AddedIDs returns all ids (to other nodes) that were added for
 // the given edge name.
 func (m *CarCheckInOutMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case carcheckinout.EdgeAmbulance:
+		if id := m.ambulance; id != nil {
+			return []ent.Value{*id}
+		}
+	case carcheckinout.EdgeName:
+		if id := m.name; id != nil {
+			return []ent.Value{*id}
+		}
+	case carcheckinout.EdgePurpose:
+		if id := m.purpose; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *CarCheckInOutMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
 // RemovedIDs returns all ids (to other nodes) that were removed for
 // the given edge name.
 func (m *CarCheckInOutMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *CarCheckInOutMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 3)
+	if m.clearedambulance {
+		edges = append(edges, carcheckinout.EdgeAmbulance)
+	}
+	if m.clearedname {
+		edges = append(edges, carcheckinout.EdgeName)
+	}
+	if m.clearedpurpose {
+		edges = append(edges, carcheckinout.EdgePurpose)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean indicates if this edge was
 // cleared in this mutation.
 func (m *CarCheckInOutMutation) EdgeCleared(name string) bool {
+	switch name {
+	case carcheckinout.EdgeAmbulance:
+		return m.clearedambulance
+	case carcheckinout.EdgeName:
+		return m.clearedname
+	case carcheckinout.EdgePurpose:
+		return m.clearedpurpose
+	}
 	return false
 }
 
 // ClearEdge clears the value for the given name. It returns an
 // error if the edge name is not defined in the schema.
 func (m *CarCheckInOutMutation) ClearEdge(name string) error {
+	switch name {
+	case carcheckinout.EdgeAmbulance:
+		m.ClearAmbulance()
+		return nil
+	case carcheckinout.EdgeName:
+		m.ClearName()
+		return nil
+	case carcheckinout.EdgePurpose:
+		m.ClearPurpose()
+		return nil
+	}
 	return fmt.Errorf("unknown CarCheckInOut unique edge %s", name)
 }
 
@@ -937,6 +1353,17 @@ func (m *CarCheckInOutMutation) ClearEdge(name string) error {
 // given edge name. It returns an error if the edge is not
 // defined in the schema.
 func (m *CarCheckInOutMutation) ResetEdge(name string) error {
+	switch name {
+	case carcheckinout.EdgeAmbulance:
+		m.ResetAmbulance()
+		return nil
+	case carcheckinout.EdgeName:
+		m.ResetName()
+		return nil
+	case carcheckinout.EdgePurpose:
+		m.ResetPurpose()
+		return nil
+	}
 	return fmt.Errorf("unknown CarCheckInOut edge %s", name)
 }
 
@@ -5213,12 +5640,15 @@ func (m *JobPositionMutation) ResetEdge(name string) error {
 // nodes in the graph.
 type PurposeMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Purpose, error)
+	op                   Op
+	typ                  string
+	id                   *int
+	objective            *string
+	clearedFields        map[string]struct{}
+	carcheckinout        map[int]struct{}
+	removedcarcheckinout map[int]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*Purpose, error)
 }
 
 var _ ent.Mutation = (*PurposeMutation)(nil)
@@ -5300,6 +5730,85 @@ func (m *PurposeMutation) ID() (id int, exists bool) {
 	return *m.id, true
 }
 
+// SetObjective sets the objective field.
+func (m *PurposeMutation) SetObjective(s string) {
+	m.objective = &s
+}
+
+// Objective returns the objective value in the mutation.
+func (m *PurposeMutation) Objective() (r string, exists bool) {
+	v := m.objective
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldObjective returns the old objective value of the Purpose.
+// If the Purpose object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *PurposeMutation) OldObjective(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldObjective is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldObjective requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldObjective: %w", err)
+	}
+	return oldValue.Objective, nil
+}
+
+// ResetObjective reset all changes of the "objective" field.
+func (m *PurposeMutation) ResetObjective() {
+	m.objective = nil
+}
+
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (m *PurposeMutation) AddCarcheckinoutIDs(ids ...int) {
+	if m.carcheckinout == nil {
+		m.carcheckinout = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.carcheckinout[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (m *PurposeMutation) RemoveCarcheckinoutIDs(ids ...int) {
+	if m.removedcarcheckinout == nil {
+		m.removedcarcheckinout = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedcarcheckinout[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCarcheckinout returns the removed ids of carcheckinout.
+func (m *PurposeMutation) RemovedCarcheckinoutIDs() (ids []int) {
+	for id := range m.removedcarcheckinout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CarcheckinoutIDs returns the carcheckinout ids in the mutation.
+func (m *PurposeMutation) CarcheckinoutIDs() (ids []int) {
+	for id := range m.carcheckinout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCarcheckinout reset all changes of the "carcheckinout" edge.
+func (m *PurposeMutation) ResetCarcheckinout() {
+	m.carcheckinout = nil
+	m.removedcarcheckinout = nil
+}
+
 // Op returns the operation name.
 func (m *PurposeMutation) Op() Op {
 	return m.op
@@ -5314,7 +5823,10 @@ func (m *PurposeMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *PurposeMutation) Fields() []string {
-	fields := make([]string, 0, 0)
+	fields := make([]string, 0, 1)
+	if m.objective != nil {
+		fields = append(fields, purpose.FieldObjective)
+	}
 	return fields
 }
 
@@ -5322,6 +5834,10 @@ func (m *PurposeMutation) Fields() []string {
 // The second boolean value indicates that this field was
 // not set, or was not define in the schema.
 func (m *PurposeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case purpose.FieldObjective:
+		return m.Objective()
+	}
 	return nil, false
 }
 
@@ -5329,6 +5845,10 @@ func (m *PurposeMutation) Field(name string) (ent.Value, bool) {
 // An error is returned if the mutation operation is not UpdateOne,
 // or the query to the database was failed.
 func (m *PurposeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case purpose.FieldObjective:
+		return m.OldObjective(ctx)
+	}
 	return nil, fmt.Errorf("unknown Purpose field %s", name)
 }
 
@@ -5337,6 +5857,13 @@ func (m *PurposeMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type mismatch the field type.
 func (m *PurposeMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case purpose.FieldObjective:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetObjective(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Purpose field %s", name)
 }
@@ -5358,6 +5885,8 @@ func (m *PurposeMutation) AddedField(name string) (ent.Value, bool) {
 // error if the field is not defined in the schema, or if the
 // type mismatch the field type.
 func (m *PurposeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Purpose numeric field %s", name)
 }
 
@@ -5384,51 +5913,82 @@ func (m *PurposeMutation) ClearField(name string) error {
 // given field name. It returns an error if the field is not
 // defined in the schema.
 func (m *PurposeMutation) ResetField(name string) error {
+	switch name {
+	case purpose.FieldObjective:
+		m.ResetObjective()
+		return nil
+	}
 	return fmt.Errorf("unknown Purpose field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *PurposeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.carcheckinout != nil {
+		edges = append(edges, purpose.EdgeCarcheckinout)
+	}
 	return edges
 }
 
 // AddedIDs returns all ids (to other nodes) that were added for
 // the given edge name.
 func (m *PurposeMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case purpose.EdgeCarcheckinout:
+		ids := make([]ent.Value, 0, len(m.carcheckinout))
+		for id := range m.carcheckinout {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *PurposeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedcarcheckinout != nil {
+		edges = append(edges, purpose.EdgeCarcheckinout)
+	}
 	return edges
 }
 
 // RemovedIDs returns all ids (to other nodes) that were removed for
 // the given edge name.
 func (m *PurposeMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case purpose.EdgeCarcheckinout:
+		ids := make([]ent.Value, 0, len(m.removedcarcheckinout))
+		for id := range m.removedcarcheckinout {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *PurposeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
 // EdgeCleared returns a boolean indicates if this edge was
 // cleared in this mutation.
 func (m *PurposeMutation) EdgeCleared(name string) bool {
+	switch name {
+	}
 	return false
 }
 
 // ClearEdge clears the value for the given name. It returns an
 // error if the edge name is not defined in the schema.
 func (m *PurposeMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Purpose unique edge %s", name)
 }
 
@@ -5436,6 +5996,11 @@ func (m *PurposeMutation) ClearEdge(name string) error {
 // given edge name. It returns an error if the edge is not
 // defined in the schema.
 func (m *PurposeMutation) ResetEdge(name string) error {
+	switch name {
+	case purpose.EdgeCarcheckinout:
+		m.ResetCarcheckinout()
+		return nil
+	}
 	return fmt.Errorf("unknown Purpose edge %s", name)
 }
 
@@ -6196,6 +6761,8 @@ type UserMutation struct {
 	removedcarinspections   map[int]struct{}
 	carrepairrecords        map[int]struct{}
 	removedcarrepairrecords map[int]struct{}
+	carcheckinout           map[int]struct{}
+	removedcarcheckinout    map[int]struct{}
 	done                    bool
 	oldValue                func(context.Context) (*User, error)
 }
@@ -6597,6 +7164,48 @@ func (m *UserMutation) ResetCarrepairrecords() {
 	m.removedcarrepairrecords = nil
 }
 
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (m *UserMutation) AddCarcheckinoutIDs(ids ...int) {
+	if m.carcheckinout == nil {
+		m.carcheckinout = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.carcheckinout[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (m *UserMutation) RemoveCarcheckinoutIDs(ids ...int) {
+	if m.removedcarcheckinout == nil {
+		m.removedcarcheckinout = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedcarcheckinout[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCarcheckinout returns the removed ids of carcheckinout.
+func (m *UserMutation) RemovedCarcheckinoutIDs() (ids []int) {
+	for id := range m.removedcarcheckinout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CarcheckinoutIDs returns the carcheckinout ids in the mutation.
+func (m *UserMutation) CarcheckinoutIDs() (ids []int) {
+	for id := range m.carcheckinout {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCarcheckinout reset all changes of the "carcheckinout" edge.
+func (m *UserMutation) ResetCarcheckinout() {
+	m.carcheckinout = nil
+	m.removedcarcheckinout = nil
+}
+
 // Op returns the operation name.
 func (m *UserMutation) Op() Op {
 	return m.op
@@ -6746,7 +7355,7 @@ func (m *UserMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this
 // mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.jobposition != nil {
 		edges = append(edges, user.EdgeJobposition)
 	}
@@ -6761,6 +7370,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.carrepairrecords != nil {
 		edges = append(edges, user.EdgeCarrepairrecords)
+	}
+	if m.carcheckinout != nil {
+		edges = append(edges, user.EdgeCarcheckinout)
 	}
 	return edges
 }
@@ -6797,6 +7409,12 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeCarcheckinout:
+		ids := make([]ent.Value, 0, len(m.carcheckinout))
+		for id := range m.carcheckinout {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -6804,7 +7422,7 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this
 // mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.removeduserof != nil {
 		edges = append(edges, user.EdgeUserof)
 	}
@@ -6816,6 +7434,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedcarrepairrecords != nil {
 		edges = append(edges, user.EdgeCarrepairrecords)
+	}
+	if m.removedcarcheckinout != nil {
+		edges = append(edges, user.EdgeCarcheckinout)
 	}
 	return edges
 }
@@ -6848,6 +7469,12 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeCarcheckinout:
+		ids := make([]ent.Value, 0, len(m.removedcarcheckinout))
+		for id := range m.removedcarcheckinout {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
@@ -6855,7 +7482,7 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this
 // mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.clearedjobposition {
 		edges = append(edges, user.EdgeJobposition)
 	}
@@ -6902,6 +7529,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeCarrepairrecords:
 		m.ResetCarrepairrecords()
+		return nil
+	case user.EdgeCarcheckinout:
+		m.ResetCarcheckinout()
 		return nil
 	}
 	return fmt.Errorf("unknown User edge %s", name)

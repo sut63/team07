@@ -12,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carbrand"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
@@ -144,6 +145,21 @@ func (au *AmbulanceUpdate) AddCarinspections(c ...*CarInspection) *AmbulanceUpda
 	return au.AddCarinspectionIDs(ids...)
 }
 
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (au *AmbulanceUpdate) AddCarcheckinoutIDs(ids ...int) *AmbulanceUpdate {
+	au.mutation.AddCarcheckinoutIDs(ids...)
+	return au
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (au *AmbulanceUpdate) AddCarcheckinout(c ...*CarCheckInOut) *AmbulanceUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return au.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the AmbulanceMutation object of the builder.
 func (au *AmbulanceUpdate) Mutation() *AmbulanceMutation {
 	return au.mutation
@@ -186,6 +202,21 @@ func (au *AmbulanceUpdate) RemoveCarinspections(c ...*CarInspection) *AmbulanceU
 		ids[i] = c[i].ID
 	}
 	return au.RemoveCarinspectionIDs(ids...)
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (au *AmbulanceUpdate) RemoveCarcheckinoutIDs(ids ...int) *AmbulanceUpdate {
+	au.mutation.RemoveCarcheckinoutIDs(ids...)
+	return au
+}
+
+// RemoveCarcheckinout removes carcheckinout edges to CarCheckInOut.
+func (au *AmbulanceUpdate) RemoveCarcheckinout(c ...*CarCheckInOut) *AmbulanceUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return au.RemoveCarcheckinoutIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -450,6 +481,44 @@ func (au *AmbulanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := au.mutation.RemovedCarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.CarcheckinoutTable,
+			Columns: []string{ambulance.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.CarcheckinoutTable,
+			Columns: []string{ambulance.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{ambulance.Label}
@@ -579,6 +648,21 @@ func (auo *AmbulanceUpdateOne) AddCarinspections(c ...*CarInspection) *Ambulance
 	return auo.AddCarinspectionIDs(ids...)
 }
 
+// AddCarcheckinoutIDs adds the carcheckinout edge to CarCheckInOut by ids.
+func (auo *AmbulanceUpdateOne) AddCarcheckinoutIDs(ids ...int) *AmbulanceUpdateOne {
+	auo.mutation.AddCarcheckinoutIDs(ids...)
+	return auo
+}
+
+// AddCarcheckinout adds the carcheckinout edges to CarCheckInOut.
+func (auo *AmbulanceUpdateOne) AddCarcheckinout(c ...*CarCheckInOut) *AmbulanceUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return auo.AddCarcheckinoutIDs(ids...)
+}
+
 // Mutation returns the AmbulanceMutation object of the builder.
 func (auo *AmbulanceUpdateOne) Mutation() *AmbulanceMutation {
 	return auo.mutation
@@ -621,6 +705,21 @@ func (auo *AmbulanceUpdateOne) RemoveCarinspections(c ...*CarInspection) *Ambula
 		ids[i] = c[i].ID
 	}
 	return auo.RemoveCarinspectionIDs(ids...)
+}
+
+// RemoveCarcheckinoutIDs removes the carcheckinout edge to CarCheckInOut by ids.
+func (auo *AmbulanceUpdateOne) RemoveCarcheckinoutIDs(ids ...int) *AmbulanceUpdateOne {
+	auo.mutation.RemoveCarcheckinoutIDs(ids...)
+	return auo
+}
+
+// RemoveCarcheckinout removes carcheckinout edges to CarCheckInOut.
+func (auo *AmbulanceUpdateOne) RemoveCarcheckinout(c ...*CarCheckInOut) *AmbulanceUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return auo.RemoveCarcheckinoutIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -875,6 +974,44 @@ func (auo *AmbulanceUpdateOne) sqlSave(ctx context.Context) (a *Ambulance, err e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carinspection.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := auo.mutation.RemovedCarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.CarcheckinoutTable,
+			Columns: []string{ambulance.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.CarcheckinoutIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.CarcheckinoutTable,
+			Columns: []string{ambulance.CarcheckinoutColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: carcheckinout.FieldID,
 				},
 			},
 		}

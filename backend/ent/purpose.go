@@ -12,15 +12,39 @@ import (
 
 // Purpose is the model entity for the Purpose schema.
 type Purpose struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Objective holds the value of the "objective" field.
+	Objective string `json:"objective,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PurposeQuery when eager-loading is set.
+	Edges PurposeEdges `json:"edges"`
+}
+
+// PurposeEdges holds the relations/edges for other nodes in the graph.
+type PurposeEdges struct {
+	// Carcheckinout holds the value of the carcheckinout edge.
+	Carcheckinout []*CarCheckInOut
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// CarcheckinoutOrErr returns the Carcheckinout value or an error if the edge
+// was not loaded in eager-loading.
+func (e PurposeEdges) CarcheckinoutOrErr() ([]*CarCheckInOut, error) {
+	if e.loadedTypes[0] {
+		return e.Carcheckinout, nil
+	}
+	return nil, &NotLoadedError{edge: "carcheckinout"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Purpose) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // id
+		&sql.NullInt64{},  // id
+		&sql.NullString{}, // objective
 	}
 }
 
@@ -36,7 +60,17 @@ func (pu *Purpose) assignValues(values ...interface{}) error {
 	}
 	pu.ID = int(value.Int64)
 	values = values[1:]
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field objective", values[0])
+	} else if value.Valid {
+		pu.Objective = value.String
+	}
 	return nil
+}
+
+// QueryCarcheckinout queries the carcheckinout edge of the Purpose.
+func (pu *Purpose) QueryCarcheckinout() *CarCheckInOutQuery {
+	return (&PurposeClient{config: pu.config}).QueryCarcheckinout(pu)
 }
 
 // Update returns a builder for updating this Purpose.
@@ -62,6 +96,8 @@ func (pu *Purpose) String() string {
 	var builder strings.Builder
 	builder.WriteString("Purpose(")
 	builder.WriteString(fmt.Sprintf("id=%v", pu.ID))
+	builder.WriteString(", objective=")
+	builder.WriteString(pu.Objective)
 	builder.WriteByte(')')
 	return builder.String()
 }

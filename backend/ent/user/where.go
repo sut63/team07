@@ -585,6 +585,34 @@ func HasCarrepairrecordsWith(preds ...predicate.CarRepairrecord) predicate.User 
 	})
 }
 
+// HasCarcheckinout applies the HasEdge predicate on the "carcheckinout" edge.
+func HasCarcheckinout() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarcheckinoutTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CarcheckinoutTable, CarcheckinoutColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCarcheckinoutWith applies the HasEdge predicate on the "carcheckinout" edge with a given conditions (other predicates).
+func HasCarcheckinoutWith(preds ...predicate.CarCheckInOut) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(CarcheckinoutInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CarcheckinoutTable, CarcheckinoutColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {

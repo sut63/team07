@@ -13,6 +13,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
@@ -35,6 +36,7 @@ type UserQuery struct {
 	withUserid           *CarserviceQuery
 	withCarinspections   *CarInspectionQuery
 	withCarrepairrecords *CarRepairrecordQuery
+	withCarcheckinout    *CarCheckInOutQuery
 	withFKs              bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -148,6 +150,24 @@ func (uq *UserQuery) QueryCarrepairrecords() *CarRepairrecordQuery {
 			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
 			sqlgraph.To(carrepairrecord.Table, carrepairrecord.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CarrepairrecordsTable, user.CarrepairrecordsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCarcheckinout chains the current query on the carcheckinout edge.
+func (uq *UserQuery) QueryCarcheckinout() *CarCheckInOutQuery {
+	query := &CarCheckInOutQuery{config: uq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, uq.sqlQuery()),
+			sqlgraph.To(carcheckinout.Table, carcheckinout.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CarcheckinoutTable, user.CarcheckinoutColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -389,6 +409,17 @@ func (uq *UserQuery) WithCarrepairrecords(opts ...func(*CarRepairrecordQuery)) *
 	return uq
 }
 
+//  WithCarcheckinout tells the query-builder to eager-loads the nodes that are connected to
+// the "carcheckinout" edge. The optional arguments used to configure the query builder of the edge.
+func (uq *UserQuery) WithCarcheckinout(opts ...func(*CarCheckInOutQuery)) *UserQuery {
+	query := &CarCheckInOutQuery{config: uq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withCarcheckinout = query
+	return uq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -456,12 +487,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [5]bool{
+		loadedTypes = [6]bool{
 			uq.withJobposition != nil,
 			uq.withUserof != nil,
 			uq.withUserid != nil,
 			uq.withCarinspections != nil,
 			uq.withCarrepairrecords != nil,
+			uq.withCarcheckinout != nil,
 		}
 	)
 	if uq.withJobposition != nil {
@@ -628,6 +660,34 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Carrepairrecords = append(node.Edges.Carrepairrecords, n)
+		}
+	}
+
+	if query := uq.withCarcheckinout; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*User)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.CarCheckInOut(func(s *sql.Selector) {
+			s.Where(sql.InValues(user.CarcheckinoutColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.name
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "name" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "name" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Carcheckinout = append(node.Edges.Carcheckinout, n)
 		}
 	}
 

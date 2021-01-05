@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -11,6 +12,7 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
+	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/predicate"
 	"github.com/team07/app/ent/purpose"
 )
@@ -23,6 +25,8 @@ type PurposeQuery struct {
 	order      []OrderFunc
 	unique     []string
 	predicates []predicate.Purpose
+	// eager-loading edges.
+	withCarcheckinout *CarCheckInOutQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -50,6 +54,24 @@ func (pq *PurposeQuery) Offset(offset int) *PurposeQuery {
 func (pq *PurposeQuery) Order(o ...OrderFunc) *PurposeQuery {
 	pq.order = append(pq.order, o...)
 	return pq
+}
+
+// QueryCarcheckinout chains the current query on the carcheckinout edge.
+func (pq *PurposeQuery) QueryCarcheckinout() *CarCheckInOutQuery {
+	query := &CarCheckInOutQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(purpose.Table, purpose.FieldID, pq.sqlQuery()),
+			sqlgraph.To(carcheckinout.Table, carcheckinout.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, purpose.CarcheckinoutTable, purpose.CarcheckinoutColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Purpose entity in the query. Returns *NotFoundError when no purpose was found.
@@ -231,8 +253,32 @@ func (pq *PurposeQuery) Clone() *PurposeQuery {
 	}
 }
 
+//  WithCarcheckinout tells the query-builder to eager-loads the nodes that are connected to
+// the "carcheckinout" edge. The optional arguments used to configure the query builder of the edge.
+func (pq *PurposeQuery) WithCarcheckinout(opts ...func(*CarCheckInOutQuery)) *PurposeQuery {
+	query := &CarCheckInOutQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withCarcheckinout = query
+	return pq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Objective string `json:"objective,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Purpose.Query().
+//		GroupBy(purpose.FieldObjective).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (pq *PurposeQuery) GroupBy(field string, fields ...string) *PurposeGroupBy {
 	group := &PurposeGroupBy{config: pq.config}
 	group.fields = append([]string{field}, fields...)
@@ -246,6 +292,17 @@ func (pq *PurposeQuery) GroupBy(field string, fields ...string) *PurposeGroupBy 
 }
 
 // Select one or more fields from the given query.
+//
+// Example:
+//
+//	var v []struct {
+//		Objective string `json:"objective,omitempty"`
+//	}
+//
+//	client.Purpose.Query().
+//		Select(purpose.FieldObjective).
+//		Scan(ctx, &v)
+//
 func (pq *PurposeQuery) Select(field string, fields ...string) *PurposeSelect {
 	selector := &PurposeSelect{config: pq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -271,8 +328,11 @@ func (pq *PurposeQuery) prepareQuery(ctx context.Context) error {
 
 func (pq *PurposeQuery) sqlAll(ctx context.Context) ([]*Purpose, error) {
 	var (
-		nodes = []*Purpose{}
-		_spec = pq.querySpec()
+		nodes       = []*Purpose{}
+		_spec       = pq.querySpec()
+		loadedTypes = [1]bool{
+			pq.withCarcheckinout != nil,
+		}
 	)
 	_spec.ScanValues = func() []interface{} {
 		node := &Purpose{config: pq.config}
@@ -285,6 +345,7 @@ func (pq *PurposeQuery) sqlAll(ctx context.Context) ([]*Purpose, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(values...)
 	}
 	if err := sqlgraph.QueryNodes(ctx, pq.driver, _spec); err != nil {
@@ -293,6 +354,35 @@ func (pq *PurposeQuery) sqlAll(ctx context.Context) ([]*Purpose, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := pq.withCarcheckinout; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Purpose)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.CarCheckInOut(func(s *sql.Selector) {
+			s.Where(sql.InValues(purpose.CarcheckinoutColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.purpose_carcheckinout
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "purpose_carcheckinout" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "purpose_carcheckinout" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Carcheckinout = append(node.Edges.Carcheckinout, n)
+		}
+	}
+
 	return nodes, nil
 }
 

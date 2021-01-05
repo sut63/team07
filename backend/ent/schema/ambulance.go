@@ -42,5 +42,8 @@ func (Ambulance) Edges() []ent.Edge {
 		//To CarInspection
 		edge.To("carinspections", CarInspection.Type).
 			StorageKey(edge.Column("ambulance_id")),
+		//To CarCheckInOut
+		edge.To("carcheckinout", CarCheckInOut.Type).
+			StorageKey(edge.Column("ambulance")),
 	}
 }

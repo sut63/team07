@@ -37,6 +37,8 @@ func (User) Edges() []ent.Edge {
 		//To CarRepairrecord
 		edge.To("carrepairrecords", CarRepairrecord.Type).
 			StorageKey(edge.Column("user_id")),
-		    
+		//To CarCheckInOut
+		edge.To("carcheckinout", CarCheckInOut.Type).
+			StorageKey(edge.Column("name")),
 	}
 }
