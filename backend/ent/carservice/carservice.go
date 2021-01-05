@@ -11,6 +11,8 @@ const (
 	FieldCustomer = "customer"
 	// FieldLocation holds the string denoting the location field in the database.
 	FieldLocation = "location"
+	// FieldInformation holds the string denoting the information field in the database.
+	FieldInformation = "information"
 	// FieldDatetime holds the string denoting the datetime field in the database.
 	FieldDatetime = "datetime"
 
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldID,
 	FieldCustomer,
 	FieldLocation,
+	FieldInformation,
 	FieldDatetime,
 }
 

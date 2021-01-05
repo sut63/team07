@@ -107,6 +107,13 @@ func Location(v string) predicate.Carservice {
 	})
 }
 
+// Information applies equality check predicate on the "information" field. It's identical to InformationEQ.
+func Information(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldInformation), v))
+	})
+}
+
 // Datetime applies equality check predicate on the "Datetime" field. It's identical to DatetimeEQ.
 func Datetime(v time.Time) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
@@ -333,6 +340,117 @@ func LocationEqualFold(v string) predicate.Carservice {
 func LocationContainsFold(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldLocation), v))
+	})
+}
+
+// InformationEQ applies the EQ predicate on the "information" field.
+func InformationEQ(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldInformation), v))
+	})
+}
+
+// InformationNEQ applies the NEQ predicate on the "information" field.
+func InformationNEQ(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldInformation), v))
+	})
+}
+
+// InformationIn applies the In predicate on the "information" field.
+func InformationIn(vs ...string) predicate.Carservice {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Carservice(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldInformation), v...))
+	})
+}
+
+// InformationNotIn applies the NotIn predicate on the "information" field.
+func InformationNotIn(vs ...string) predicate.Carservice {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Carservice(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldInformation), v...))
+	})
+}
+
+// InformationGT applies the GT predicate on the "information" field.
+func InformationGT(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldInformation), v))
+	})
+}
+
+// InformationGTE applies the GTE predicate on the "information" field.
+func InformationGTE(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldInformation), v))
+	})
+}
+
+// InformationLT applies the LT predicate on the "information" field.
+func InformationLT(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldInformation), v))
+	})
+}
+
+// InformationLTE applies the LTE predicate on the "information" field.
+func InformationLTE(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldInformation), v))
+	})
+}
+
+// InformationContains applies the Contains predicate on the "information" field.
+func InformationContains(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldInformation), v))
+	})
+}
+
+// InformationHasPrefix applies the HasPrefix predicate on the "information" field.
+func InformationHasPrefix(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldInformation), v))
+	})
+}
+
+// InformationHasSuffix applies the HasSuffix predicate on the "information" field.
+func InformationHasSuffix(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldInformation), v))
+	})
+}
+
+// InformationEqualFold applies the EqualFold predicate on the "information" field.
+func InformationEqualFold(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldInformation), v))
+	})
+}
+
+// InformationContainsFold applies the ContainsFold predicate on the "information" field.
+func InformationContainsFold(v string) predicate.Carservice {
+	return predicate.Carservice(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldInformation), v))
 	})
 }
 
