@@ -312,6 +312,18 @@ var (
 		PrimaryKey:  []*schema.Column{PurposesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
 	}
+	// ReceivesColumns holds the columns for the "receives" table.
+	ReceivesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "sendname", Type: field.TypeString},
+	}
+	// ReceivesTable holds the schema information for the "receives" table.
+	ReceivesTable = &schema.Table{
+		Name:        "receives",
+		Columns:     ReceivesColumns,
+		PrimaryKey:  []*schema.Column{ReceivesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// RepairingsColumns holds the columns for the "repairings" table.
 	RepairingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -323,6 +335,62 @@ var (
 		Columns:     RepairingsColumns,
 		PrimaryKey:  []*schema.Column{RepairingsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// SendsColumns holds the columns for the "sends" table.
+	SendsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "sendname", Type: field.TypeString},
+	}
+	// SendsTable holds the schema information for the "sends" table.
+	SendsTable = &schema.Table{
+		Name:        "sends",
+		Columns:     SendsColumns,
+		PrimaryKey:  []*schema.Column{SendsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
+	// TransportsColumns holds the columns for the "transports" table.
+	TransportsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "ambulance", Type: field.TypeInt, Nullable: true},
+		{Name: "receiveid", Type: field.TypeInt, Nullable: true},
+		{Name: "sendid", Type: field.TypeInt, Nullable: true},
+		{Name: "user", Type: field.TypeInt, Nullable: true},
+	}
+	// TransportsTable holds the schema information for the "transports" table.
+	TransportsTable = &schema.Table{
+		Name:       "transports",
+		Columns:    TransportsColumns,
+		PrimaryKey: []*schema.Column{TransportsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:  "transports_ambulances_ambulance",
+				Columns: []*schema.Column{TransportsColumns[1]},
+
+				RefColumns: []*schema.Column{AmbulancesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "transports_receives_receiveid",
+				Columns: []*schema.Column{TransportsColumns[2]},
+
+				RefColumns: []*schema.Column{ReceivesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "transports_sends_sendid",
+				Columns: []*schema.Column{TransportsColumns[3]},
+
+				RefColumns: []*schema.Column{SendsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:  "transports_users_user",
+				Columns: []*schema.Column{TransportsColumns[4]},
+
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// UrgentsColumns holds the columns for the "urgents" table.
 	UrgentsColumns = []*schema.Column{
@@ -374,7 +442,10 @@ var (
 		InsurancesTable,
 		JobPositionsTable,
 		PurposesTable,
+		ReceivesTable,
 		RepairingsTable,
+		SendsTable,
+		TransportsTable,
 		UrgentsTable,
 		UsersTable,
 	}
@@ -398,5 +469,9 @@ func init() {
 	CarservicesTable.ForeignKeys[1].RefTable = UrgentsTable
 	CarservicesTable.ForeignKeys[2].RefTable = UsersTable
 	InspectionResultsTable.ForeignKeys[0].RefTable = JobPositionsTable
+	TransportsTable.ForeignKeys[0].RefTable = AmbulancesTable
+	TransportsTable.ForeignKeys[1].RefTable = ReceivesTable
+	TransportsTable.ForeignKeys[2].RefTable = SendsTable
+	TransportsTable.ForeignKeys[3].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = JobPositionsTable
 }

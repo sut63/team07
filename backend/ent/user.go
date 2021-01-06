@@ -42,9 +42,11 @@ type UserEdges struct {
 	Carrepairrecords []*CarRepairrecord
 	// Carcheckinout holds the value of the carcheckinout edge.
 	Carcheckinout []*CarCheckInOut
+	// User holds the value of the user edge.
+	User []*Transport
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
+	loadedTypes [7]bool
 }
 
 // JobpositionOrErr returns the Jobposition value or an error if the edge
@@ -104,6 +106,15 @@ func (e UserEdges) CarcheckinoutOrErr() ([]*CarCheckInOut, error) {
 		return e.Carcheckinout, nil
 	}
 	return nil, &NotLoadedError{edge: "carcheckinout"}
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) UserOrErr() ([]*Transport, error) {
+	if e.loadedTypes[6] {
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -190,6 +201,11 @@ func (u *User) QueryCarrepairrecords() *CarRepairrecordQuery {
 // QueryCarcheckinout queries the carcheckinout edge of the User.
 func (u *User) QueryCarcheckinout() *CarCheckInOutQuery {
 	return (&UserClient{config: u.config}).QueryCarcheckinout(u)
+}
+
+// QueryUser queries the user edge of the User.
+func (u *User) QueryUser() *TransportQuery {
+	return (&UserClient{config: u.config}).QueryUser(u)
 }
 
 // Update returns a builder for updating this User.

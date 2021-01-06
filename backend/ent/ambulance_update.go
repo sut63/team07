@@ -17,6 +17,7 @@ import (
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
 
@@ -160,6 +161,21 @@ func (au *AmbulanceUpdate) AddCarcheckinout(c ...*CarCheckInOut) *AmbulanceUpdat
 	return au.AddCarcheckinoutIDs(ids...)
 }
 
+// AddAmbulanceIDs adds the ambulance edge to Transport by ids.
+func (au *AmbulanceUpdate) AddAmbulanceIDs(ids ...int) *AmbulanceUpdate {
+	au.mutation.AddAmbulanceIDs(ids...)
+	return au
+}
+
+// AddAmbulance adds the ambulance edges to Transport.
+func (au *AmbulanceUpdate) AddAmbulance(t ...*Transport) *AmbulanceUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return au.AddAmbulanceIDs(ids...)
+}
+
 // Mutation returns the AmbulanceMutation object of the builder.
 func (au *AmbulanceUpdate) Mutation() *AmbulanceMutation {
 	return au.mutation
@@ -217,6 +233,21 @@ func (au *AmbulanceUpdate) RemoveCarcheckinout(c ...*CarCheckInOut) *AmbulanceUp
 		ids[i] = c[i].ID
 	}
 	return au.RemoveCarcheckinoutIDs(ids...)
+}
+
+// RemoveAmbulanceIDs removes the ambulance edge to Transport by ids.
+func (au *AmbulanceUpdate) RemoveAmbulanceIDs(ids ...int) *AmbulanceUpdate {
+	au.mutation.RemoveAmbulanceIDs(ids...)
+	return au
+}
+
+// RemoveAmbulance removes ambulance edges to Transport.
+func (au *AmbulanceUpdate) RemoveAmbulance(t ...*Transport) *AmbulanceUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return au.RemoveAmbulanceIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -519,6 +550,44 @@ func (au *AmbulanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := au.mutation.RemovedAmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.AmbulanceTable,
+			Columns: []string{ambulance.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.AmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.AmbulanceTable,
+			Columns: []string{ambulance.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{ambulance.Label}
@@ -663,6 +732,21 @@ func (auo *AmbulanceUpdateOne) AddCarcheckinout(c ...*CarCheckInOut) *AmbulanceU
 	return auo.AddCarcheckinoutIDs(ids...)
 }
 
+// AddAmbulanceIDs adds the ambulance edge to Transport by ids.
+func (auo *AmbulanceUpdateOne) AddAmbulanceIDs(ids ...int) *AmbulanceUpdateOne {
+	auo.mutation.AddAmbulanceIDs(ids...)
+	return auo
+}
+
+// AddAmbulance adds the ambulance edges to Transport.
+func (auo *AmbulanceUpdateOne) AddAmbulance(t ...*Transport) *AmbulanceUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return auo.AddAmbulanceIDs(ids...)
+}
+
 // Mutation returns the AmbulanceMutation object of the builder.
 func (auo *AmbulanceUpdateOne) Mutation() *AmbulanceMutation {
 	return auo.mutation
@@ -720,6 +804,21 @@ func (auo *AmbulanceUpdateOne) RemoveCarcheckinout(c ...*CarCheckInOut) *Ambulan
 		ids[i] = c[i].ID
 	}
 	return auo.RemoveCarcheckinoutIDs(ids...)
+}
+
+// RemoveAmbulanceIDs removes the ambulance edge to Transport by ids.
+func (auo *AmbulanceUpdateOne) RemoveAmbulanceIDs(ids ...int) *AmbulanceUpdateOne {
+	auo.mutation.RemoveAmbulanceIDs(ids...)
+	return auo
+}
+
+// RemoveAmbulance removes ambulance edges to Transport.
+func (auo *AmbulanceUpdateOne) RemoveAmbulance(t ...*Transport) *AmbulanceUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return auo.RemoveAmbulanceIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -1012,6 +1111,44 @@ func (auo *AmbulanceUpdateOne) sqlSave(ctx context.Context) (a *Ambulance, err e
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := auo.mutation.RemovedAmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.AmbulanceTable,
+			Columns: []string{ambulance.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.AmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.AmbulanceTable,
+			Columns: []string{ambulance.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
 				},
 			},
 		}

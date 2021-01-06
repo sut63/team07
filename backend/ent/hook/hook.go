@@ -178,6 +178,19 @@ func (f PurposeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return f(ctx, mv)
 }
 
+// The ReceiveFunc type is an adapter to allow the use of ordinary
+// function as Receive mutator.
+type ReceiveFunc func(context.Context, *ent.ReceiveMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ReceiveFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ReceiveMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ReceiveMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The RepairingFunc type is an adapter to allow the use of ordinary
 // function as Repairing mutator.
 type RepairingFunc func(context.Context, *ent.RepairingMutation) (ent.Value, error)
@@ -187,6 +200,32 @@ func (f RepairingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	mv, ok := m.(*ent.RepairingMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RepairingMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The SendFunc type is an adapter to allow the use of ordinary
+// function as Send mutator.
+type SendFunc func(context.Context, *ent.SendMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SendFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SendMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SendMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The TransportFunc type is an adapter to allow the use of ordinary
+// function as Transport mutator.
+type TransportFunc func(context.Context, *ent.TransportMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TransportFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.TransportMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TransportMutation", m)
 	}
 	return f(ctx, mv)
 }

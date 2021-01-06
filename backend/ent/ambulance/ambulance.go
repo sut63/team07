@@ -28,6 +28,8 @@ const (
 	EdgeCarinspections = "carinspections"
 	// EdgeCarcheckinout holds the string denoting the carcheckinout edge name in mutations.
 	EdgeCarcheckinout = "carcheckinout"
+	// EdgeAmbulance holds the string denoting the ambulance edge name in mutations.
+	EdgeAmbulance = "ambulance"
 
 	// Table holds the table name of the ambulance in the database.
 	Table = "ambulances"
@@ -73,6 +75,13 @@ const (
 	CarcheckinoutInverseTable = "car_check_in_outs"
 	// CarcheckinoutColumn is the table column denoting the carcheckinout relation/edge.
 	CarcheckinoutColumn = "ambulance"
+	// AmbulanceTable is the table the holds the ambulance relation/edge.
+	AmbulanceTable = "transports"
+	// AmbulanceInverseTable is the table name for the Transport entity.
+	// It exists in this package in order to avoid circular dependency with the "transport" package.
+	AmbulanceInverseTable = "transports"
+	// AmbulanceColumn is the table column denoting the ambulance relation/edge.
+	AmbulanceColumn = "ambulance"
 )
 
 // Columns holds all SQL columns for ambulance fields.

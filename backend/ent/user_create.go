@@ -15,6 +15,7 @@ import (
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/jobposition"
+	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
 
@@ -135,6 +136,21 @@ func (uc *UserCreate) AddCarcheckinout(c ...*CarCheckInOut) *UserCreate {
 		ids[i] = c[i].ID
 	}
 	return uc.AddCarcheckinoutIDs(ids...)
+}
+
+// AddUserIDs adds the user edge to Transport by ids.
+func (uc *UserCreate) AddUserIDs(ids ...int) *UserCreate {
+	uc.mutation.AddUserIDs(ids...)
+	return uc
+}
+
+// AddUser adds the user edges to Transport.
+func (uc *UserCreate) AddUser(t ...*Transport) *UserCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uc.AddUserIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -358,6 +374,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserTable,
+			Columns: []string{user.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
 				},
 			},
 		}
