@@ -43,6 +43,14 @@ type InspectionResult struct {
 	jobpositionID int
 }
 
+type Purposes struct {
+	Purpose []Purpose
+}
+
+type Purpose struct {
+	objective string
+}
+
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -168,6 +176,22 @@ func main() {
 			Create().
 			SetResultName(ir.resultname).
 			SetJobposition(jp).
+			Save(context.Background())
+	}
+
+	// Set Purposes Data
+	purposes := Purposes{
+		Purpose: []Purpose{
+			Purpose{"รับแจ้งอุบัติเหตุ"},
+			Purpose{"ขนส่งย้ายผู้ป่วย"},
+			Purpose{"อื่นๆ"},
+		},
+	}
+
+	for _, pp := range purposes.Purpose {
+		client.Purpose.
+			Create().
+			SetStatus(st.Purpose).
 			Save(context.Background())
 	}
 
