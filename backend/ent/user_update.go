@@ -16,6 +16,7 @@ import (
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
 
@@ -145,6 +146,21 @@ func (uu *UserUpdate) AddCarcheckinout(c ...*CarCheckInOut) *UserUpdate {
 	return uu.AddCarcheckinoutIDs(ids...)
 }
 
+// AddUserIDs adds the user edge to Transport by ids.
+func (uu *UserUpdate) AddUserIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddUserIDs(ids...)
+	return uu
+}
+
+// AddUser adds the user edges to Transport.
+func (uu *UserUpdate) AddUser(t ...*Transport) *UserUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uu.AddUserIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -229,6 +245,21 @@ func (uu *UserUpdate) RemoveCarcheckinout(c ...*CarCheckInOut) *UserUpdate {
 		ids[i] = c[i].ID
 	}
 	return uu.RemoveCarcheckinoutIDs(ids...)
+}
+
+// RemoveUserIDs removes the user edge to Transport by ids.
+func (uu *UserUpdate) RemoveUserIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveUserIDs(ids...)
+	return uu
+}
+
+// RemoveUser removes user edges to Transport.
+func (uu *UserUpdate) RemoveUser(t ...*Transport) *UserUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uu.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
@@ -562,6 +593,44 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if nodes := uu.mutation.RemovedUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserTable,
+			Columns: []string{user.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserTable,
+			Columns: []string{user.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -692,6 +761,21 @@ func (uuo *UserUpdateOne) AddCarcheckinout(c ...*CarCheckInOut) *UserUpdateOne {
 	return uuo.AddCarcheckinoutIDs(ids...)
 }
 
+// AddUserIDs adds the user edge to Transport by ids.
+func (uuo *UserUpdateOne) AddUserIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddUserIDs(ids...)
+	return uuo
+}
+
+// AddUser adds the user edges to Transport.
+func (uuo *UserUpdateOne) AddUser(t ...*Transport) *UserUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uuo.AddUserIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
@@ -776,6 +860,21 @@ func (uuo *UserUpdateOne) RemoveCarcheckinout(c ...*CarCheckInOut) *UserUpdateOn
 		ids[i] = c[i].ID
 	}
 	return uuo.RemoveCarcheckinoutIDs(ids...)
+}
+
+// RemoveUserIDs removes the user edge to Transport by ids.
+func (uuo *UserUpdateOne) RemoveUserIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveUserIDs(ids...)
+	return uuo
+}
+
+// RemoveUser removes user edges to Transport.
+func (uuo *UserUpdateOne) RemoveUser(t ...*Transport) *UserUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uuo.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the updated entity.
@@ -1099,6 +1198,44 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if nodes := uuo.mutation.RemovedUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserTable,
+			Columns: []string{user.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserTable,
+			Columns: []string{user.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
 				},
 			},
 		}

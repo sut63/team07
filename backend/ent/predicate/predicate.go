@@ -45,8 +45,17 @@ type JobPosition func(*sql.Selector)
 // Purpose is the predicate function for purpose builders.
 type Purpose func(*sql.Selector)
 
+// Receive is the predicate function for receive builders.
+type Receive func(*sql.Selector)
+
 // Repairing is the predicate function for repairing builders.
 type Repairing func(*sql.Selector)
+
+// Send is the predicate function for send builders.
+type Send func(*sql.Selector)
+
+// Transport is the predicate function for transport builders.
+type Transport func(*sql.Selector)
 
 // Urgent is the predicate function for urgent builders.
 type Urgent func(*sql.Selector)

@@ -19,6 +19,7 @@ import (
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/predicate"
+	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
 
@@ -37,6 +38,7 @@ type AmbulanceQuery struct {
 	withHasuser        *UserQuery
 	withCarinspections *CarInspectionQuery
 	withCarcheckinout  *CarCheckInOutQuery
+	withAmbulance      *TransportQuery
 	withFKs            bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -168,6 +170,24 @@ func (aq *AmbulanceQuery) QueryCarcheckinout() *CarCheckInOutQuery {
 			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
 			sqlgraph.To(carcheckinout.Table, carcheckinout.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, ambulance.CarcheckinoutTable, ambulance.CarcheckinoutColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAmbulance chains the current query on the ambulance edge.
+func (aq *AmbulanceQuery) QueryAmbulance() *TransportQuery {
+	query := &TransportQuery{config: aq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(ambulance.Table, ambulance.FieldID, aq.sqlQuery()),
+			sqlgraph.To(transport.Table, transport.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ambulance.AmbulanceTable, ambulance.AmbulanceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -420,6 +440,17 @@ func (aq *AmbulanceQuery) WithCarcheckinout(opts ...func(*CarCheckInOutQuery)) *
 	return aq
 }
 
+//  WithAmbulance tells the query-builder to eager-loads the nodes that are connected to
+// the "ambulance" edge. The optional arguments used to configure the query builder of the edge.
+func (aq *AmbulanceQuery) WithAmbulance(opts ...func(*TransportQuery)) *AmbulanceQuery {
+	query := &TransportQuery{config: aq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withAmbulance = query
+	return aq
+}
+
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -487,13 +518,14 @@ func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 		nodes       = []*Ambulance{}
 		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
-		loadedTypes = [6]bool{
+		loadedTypes = [7]bool{
 			aq.withHasbrand != nil,
 			aq.withHasinsurance != nil,
 			aq.withHasstatus != nil,
 			aq.withHasuser != nil,
 			aq.withCarinspections != nil,
 			aq.withCarcheckinout != nil,
+			aq.withAmbulance != nil,
 		}
 	)
 	if aq.withHasbrand != nil || aq.withHasinsurance != nil || aq.withHasstatus != nil || aq.withHasuser != nil {
@@ -679,6 +711,34 @@ func (aq *AmbulanceQuery) sqlAll(ctx context.Context) ([]*Ambulance, error) {
 				return nil, fmt.Errorf(`unexpected foreign-key "ambulance" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Carcheckinout = append(node.Edges.Carcheckinout, n)
+		}
+	}
+
+	if query := aq.withAmbulance; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Ambulance)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+		}
+		query.withFKs = true
+		query.Where(predicate.Transport(func(s *sql.Selector) {
+			s.Where(sql.InValues(ambulance.AmbulanceColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.ambulance
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "ambulance" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "ambulance" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Ambulance = append(node.Edges.Ambulance, n)
 		}
 	}
 

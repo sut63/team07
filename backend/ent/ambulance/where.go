@@ -462,6 +462,34 @@ func HasCarcheckinoutWith(preds ...predicate.CarCheckInOut) predicate.Ambulance 
 	})
 }
 
+// HasAmbulance applies the HasEdge predicate on the "ambulance" edge.
+func HasAmbulance() predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AmbulanceTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AmbulanceTable, AmbulanceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAmbulanceWith applies the HasEdge predicate on the "ambulance" edge with a given conditions (other predicates).
+func HasAmbulanceWith(preds ...predicate.Transport) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AmbulanceInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AmbulanceTable, AmbulanceColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups list of predicates with the AND operator between them.
 func And(predicates ...predicate.Ambulance) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {

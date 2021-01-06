@@ -16,6 +16,7 @@ import (
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
+	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
 
@@ -150,6 +151,21 @@ func (ac *AmbulanceCreate) AddCarcheckinout(c ...*CarCheckInOut) *AmbulanceCreat
 		ids[i] = c[i].ID
 	}
 	return ac.AddCarcheckinoutIDs(ids...)
+}
+
+// AddAmbulanceIDs adds the ambulance edge to Transport by ids.
+func (ac *AmbulanceCreate) AddAmbulanceIDs(ids ...int) *AmbulanceCreate {
+	ac.mutation.AddAmbulanceIDs(ids...)
+	return ac
+}
+
+// AddAmbulance adds the ambulance edges to Transport.
+func (ac *AmbulanceCreate) AddAmbulance(t ...*Transport) *AmbulanceCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return ac.AddAmbulanceIDs(ids...)
 }
 
 // Mutation returns the AmbulanceMutation object of the builder.
@@ -348,6 +364,25 @@ func (ac *AmbulanceCreate) createSpec() (*Ambulance, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: carcheckinout.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.AmbulanceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   ambulance.AmbulanceTable,
+			Columns: []string{ambulance.AmbulanceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: transport.FieldID,
 				},
 			},
 		}

@@ -40,5 +40,7 @@ func (User) Edges() []ent.Edge {
 		//To CarCheckInOut
 		edge.To("carcheckinout", CarCheckInOut.Type).
 			StorageKey(edge.Column("name")),
+		edge.To("user",Transport.Type).
+			StorageKey(edge.Column("user")),
 	}
 }

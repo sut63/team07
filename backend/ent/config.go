@@ -37,7 +37,10 @@ type hooks struct {
 	Insurance        []ent.Hook
 	JobPosition      []ent.Hook
 	Purpose          []ent.Hook
+	Receive          []ent.Hook
 	Repairing        []ent.Hook
+	Send             []ent.Hook
+	Transport        []ent.Hook
 	Urgent           []ent.Hook
 	User             []ent.Hook
 }
