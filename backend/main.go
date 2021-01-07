@@ -51,6 +51,22 @@ type Purpose struct {
 	objective string
 }
 
+type Urgents struct {
+	Urgent []Urgent
+}
+
+type Urgent struct {
+	Urgent string
+}
+
+type Distances struct {
+	Distance []Distance
+}
+
+type Distance struct {
+	Distance string
+}
+
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -108,6 +124,8 @@ func main() {
 	v1 := router.Group("/api/v1")
 	controllers.NewUserController(v1, client)
 	controllers.NewInspectionResultController(v1, client)
+	controllers.NewUrgentController(v1, client)
+	controllers.NewDistanceController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
@@ -194,6 +212,42 @@ func main() {
 			SetStatus(st.Purpose).
 			Save(context.Background())
 	}
+
+	// Set Urgent Data
+	Urgent := Urgents{
+		Urgent : []Urgent{
+			Urgent{"ด่วนพิเศษ"},
+			Urgent{"ด่วนมาก"},
+			Urgent{"ด่วน"},
+			Urgent{"ปกติ"},
+		},
+	}
+
+	for _, ug := range Urgents.Urgent {
+		client.Urgent.
+			Create().
+			SetUrgent(ug.Urgent).
+			Save(context.Background())
+	}
+
+	// Set Distance Data
+	Distance := Distances{
+		Distance : []Distance{
+			Distance{"น้อยกว่า 1 กิโลเมตร"},
+			Distance{"1-5 กิโลเมตร"},
+			Distance{"6-10 กิโลเมตร"},
+			Distance{"11-15 กิโลเมตร"},
+			Distance{"มากกว่า 15 กิโลเมตร"},
+		},
+	}
+
+	for _, dist := range Distances.Distance {
+		client.Distance.
+			Create().
+			SetDistance(dist.Distance).
+			Save(context.Background())
+	}
+
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
