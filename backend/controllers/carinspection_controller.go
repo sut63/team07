@@ -8,10 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/team07/app/ent"
-	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/user"
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/inspectionresult"
+	"github.com/team07/app/ent/user"
 )
 
 // CarInspectionController defines the struct for the carinspection controller
@@ -22,11 +22,11 @@ type CarInspectionController struct {
 
 // CarInspection defines the struct for the carinspection
 type CarInspection struct {
-	InspectionResultID 	int
-	UserID     			int
-	AmbulanceID  		int
-	Datetime  			string
-	Note  				string
+	InspectionResultID int
+	UserID             int
+	AmbulanceID        int
+	Datetime           string
+	Note               string
 }
 
 // CreateCarInspection handles POST requests for adding carinspection entities
@@ -216,6 +216,7 @@ func (ctl *CarInspectionController) register() {
 	cis.GET("", ctl.ListCarInspection)
 
 	// CRUD
+	cis.POST("", ctl.CreateCarInspection)
 	cis.GET(":id", ctl.GetCarInspection)
 	cis.DELETE(":id", ctl.DeleteCarInspection)
 }
