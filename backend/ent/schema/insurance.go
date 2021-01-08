@@ -13,8 +13,7 @@ type Insurance struct {
 // Fields of the Insurance.
 func (Insurance) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("classofinsurance"),
-		field.String("company"),
+		field.String("company").Unique(),
 	}
 }
 
@@ -23,5 +22,6 @@ func (Insurance) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("insuranceof",Ambulance.Type).
 		   StorageKey(edge.Column("insurance_id")),
+		
 	}
 }

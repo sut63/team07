@@ -20,12 +20,6 @@ type InsuranceCreate struct {
 	hooks    []Hook
 }
 
-// SetClassofinsurance sets the classofinsurance field.
-func (ic *InsuranceCreate) SetClassofinsurance(s string) *InsuranceCreate {
-	ic.mutation.SetClassofinsurance(s)
-	return ic
-}
-
 // SetCompany sets the company field.
 func (ic *InsuranceCreate) SetCompany(s string) *InsuranceCreate {
 	ic.mutation.SetCompany(s)
@@ -54,9 +48,6 @@ func (ic *InsuranceCreate) Mutation() *InsuranceMutation {
 
 // Save creates the Insurance in the database.
 func (ic *InsuranceCreate) Save(ctx context.Context) (*Insurance, error) {
-	if _, ok := ic.mutation.Classofinsurance(); !ok {
-		return nil, &ValidationError{Name: "classofinsurance", err: errors.New("ent: missing required field \"classofinsurance\"")}
-	}
 	if _, ok := ic.mutation.Company(); !ok {
 		return nil, &ValidationError{Name: "company", err: errors.New("ent: missing required field \"company\"")}
 	}
@@ -120,14 +111,6 @@ func (ic *InsuranceCreate) createSpec() (*Insurance, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := ic.mutation.Classofinsurance(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: insurance.FieldClassofinsurance,
-		})
-		i.Classofinsurance = value
-	}
 	if value, ok := ic.mutation.Company(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,

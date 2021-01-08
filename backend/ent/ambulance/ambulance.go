@@ -100,6 +100,8 @@ var ForeignKeys = []string{
 }
 
 var (
+	// CarregistrationValidator is a validator for the "carregistration" field. It is called by the builders before save.
+	CarregistrationValidator func(string) error
 	// DefaultRegisterat holds the default value on creation for the registerat field.
 	DefaultRegisterat func() time.Time
 )

@@ -15,8 +15,6 @@ type Insurance struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Classofinsurance holds the value of the "classofinsurance" field.
-	Classofinsurance string `json:"classofinsurance,omitempty"`
 	// Company holds the value of the "company" field.
 	Company string `json:"company,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -46,7 +44,6 @@ func (e InsuranceEdges) InsuranceofOrErr() ([]*Ambulance, error) {
 func (*Insurance) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
-		&sql.NullString{}, // classofinsurance
 		&sql.NullString{}, // company
 	}
 }
@@ -64,12 +61,7 @@ func (i *Insurance) assignValues(values ...interface{}) error {
 	i.ID = int(value.Int64)
 	values = values[1:]
 	if value, ok := values[0].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field classofinsurance", values[0])
-	} else if value.Valid {
-		i.Classofinsurance = value.String
-	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field company", values[1])
+		return fmt.Errorf("unexpected type %T for field company", values[0])
 	} else if value.Valid {
 		i.Company = value.String
 	}
@@ -104,8 +96,6 @@ func (i *Insurance) String() string {
 	var builder strings.Builder
 	builder.WriteString("Insurance(")
 	builder.WriteString(fmt.Sprintf("id=%v", i.ID))
-	builder.WriteString(", classofinsurance=")
-	builder.WriteString(i.Classofinsurance)
 	builder.WriteString(", company=")
 	builder.WriteString(i.Company)
 	builder.WriteByte(')')

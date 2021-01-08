@@ -28,12 +28,6 @@ func (iu *InsuranceUpdate) Where(ps ...predicate.Insurance) *InsuranceUpdate {
 	return iu
 }
 
-// SetClassofinsurance sets the classofinsurance field.
-func (iu *InsuranceUpdate) SetClassofinsurance(s string) *InsuranceUpdate {
-	iu.mutation.SetClassofinsurance(s)
-	return iu
-}
-
 // SetCompany sets the company field.
 func (iu *InsuranceUpdate) SetCompany(s string) *InsuranceUpdate {
 	iu.mutation.SetCompany(s)
@@ -145,13 +139,6 @@ func (iu *InsuranceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := iu.mutation.Classofinsurance(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: insurance.FieldClassofinsurance,
-		})
-	}
 	if value, ok := iu.mutation.Company(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -213,12 +200,6 @@ type InsuranceUpdateOne struct {
 	config
 	hooks    []Hook
 	mutation *InsuranceMutation
-}
-
-// SetClassofinsurance sets the classofinsurance field.
-func (iuo *InsuranceUpdateOne) SetClassofinsurance(s string) *InsuranceUpdateOne {
-	iuo.mutation.SetClassofinsurance(s)
-	return iuo
 }
 
 // SetCompany sets the company field.
@@ -330,13 +311,6 @@ func (iuo *InsuranceUpdateOne) sqlSave(ctx context.Context) (i *Insurance, err e
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Insurance.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := iuo.mutation.Classofinsurance(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: insurance.FieldClassofinsurance,
-		})
-	}
 	if value, ok := iuo.mutation.Company(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,

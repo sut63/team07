@@ -4858,7 +4858,6 @@ type InsuranceMutation struct {
 	op                 Op
 	typ                string
 	id                 *int
-	classofinsurance   *string
 	company            *string
 	clearedFields      map[string]struct{}
 	insuranceof        map[int]struct{}
@@ -4944,43 +4943,6 @@ func (m *InsuranceMutation) ID() (id int, exists bool) {
 		return
 	}
 	return *m.id, true
-}
-
-// SetClassofinsurance sets the classofinsurance field.
-func (m *InsuranceMutation) SetClassofinsurance(s string) {
-	m.classofinsurance = &s
-}
-
-// Classofinsurance returns the classofinsurance value in the mutation.
-func (m *InsuranceMutation) Classofinsurance() (r string, exists bool) {
-	v := m.classofinsurance
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldClassofinsurance returns the old classofinsurance value of the Insurance.
-// If the Insurance object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *InsuranceMutation) OldClassofinsurance(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldClassofinsurance is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldClassofinsurance requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldClassofinsurance: %w", err)
-	}
-	return oldValue.Classofinsurance, nil
-}
-
-// ResetClassofinsurance reset all changes of the "classofinsurance" field.
-func (m *InsuranceMutation) ResetClassofinsurance() {
-	m.classofinsurance = nil
 }
 
 // SetCompany sets the company field.
@@ -5076,10 +5038,7 @@ func (m *InsuranceMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *InsuranceMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.classofinsurance != nil {
-		fields = append(fields, insurance.FieldClassofinsurance)
-	}
+	fields := make([]string, 0, 1)
 	if m.company != nil {
 		fields = append(fields, insurance.FieldCompany)
 	}
@@ -5091,8 +5050,6 @@ func (m *InsuranceMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *InsuranceMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case insurance.FieldClassofinsurance:
-		return m.Classofinsurance()
 	case insurance.FieldCompany:
 		return m.Company()
 	}
@@ -5104,8 +5061,6 @@ func (m *InsuranceMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *InsuranceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case insurance.FieldClassofinsurance:
-		return m.OldClassofinsurance(ctx)
 	case insurance.FieldCompany:
 		return m.OldCompany(ctx)
 	}
@@ -5117,13 +5072,6 @@ func (m *InsuranceMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type mismatch the field type.
 func (m *InsuranceMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case insurance.FieldClassofinsurance:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetClassofinsurance(v)
-		return nil
 	case insurance.FieldCompany:
 		v, ok := value.(string)
 		if !ok {
@@ -5181,9 +5129,6 @@ func (m *InsuranceMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *InsuranceMutation) ResetField(name string) error {
 	switch name {
-	case insurance.FieldClassofinsurance:
-		m.ResetClassofinsurance()
-		return nil
 	case insurance.FieldCompany:
 		m.ResetCompany()
 		return nil

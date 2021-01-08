@@ -17,7 +17,7 @@ type Ambulance struct {
 func (Ambulance) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("carregistration").
-			Unique(),
+			Unique().NotEmpty(),
 		field.Time("registerat").
 			Default(time.Now),
 	}

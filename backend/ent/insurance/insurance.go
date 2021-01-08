@@ -7,8 +7,6 @@ const (
 	Label = "insurance"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldClassofinsurance holds the string denoting the classofinsurance field in the database.
-	FieldClassofinsurance = "classofinsurance"
 	// FieldCompany holds the string denoting the company field in the database.
 	FieldCompany = "company"
 
@@ -29,6 +27,5 @@ const (
 // Columns holds all SQL columns for insurance fields.
 var Columns = []string{
 	FieldID,
-	FieldClassofinsurance,
 	FieldCompany,
 }

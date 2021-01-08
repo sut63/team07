@@ -13,6 +13,7 @@ import (
 	"github.com/team07/app/controllers"
 	"github.com/team07/app/ent"
 	"github.com/team07/app/ent/jobposition"
+	
 )
 
 type Users struct {
@@ -75,12 +76,20 @@ type Carbrand struct{
     brand string
 }
 
+type Classinsurances struct{
+	Classinsurance []Classinsurance
+}
+
+type Classinsurance struct{
+	class string
+	company int
+}
+
 type Insurances struct{
 	Insurance []Insurance
 }
 
 type Insurance struct{
-	class string
 	company string
 }
 
@@ -145,6 +154,7 @@ func main() {
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
+	
 
 	v1 := router.Group("/api/v1")
 	controllers.NewUserController(v1, client)
@@ -293,22 +303,19 @@ func main() {
 			SetBrand(brands.brand).
 			Save(context.Background())
 	}
-	// set Insurances Data
+	// Set Insurance Data
 	insurances := Insurances{
-		Insurance : []Insurance{
-			Insurance{"ประกันชั้น1","company1"},
-			Insurance{"ประกันชั้น2","company1"},
-			Insurance{"ประกันชั้น3","company2"},
-			Insurance{"ประกันชั้น2+","company3"},
-			Insurance{"ประกันชั้น2+","company1"},
+		Insurance: []Insurance{
+			Insurance{"บริษัท1"},
+			Insurance{"บริษัท2"},
+			Insurance{"บริษัท3"},
 		},
 	}
 
-	for _, insu := range insurances.Insurance {
+	for _, class := range insurances.Insurance {
 		client.Insurance.
 			Create().
-			SetClassofinsurance(insu.class).
-			SetCompany(insu.company).
+			SetCompany(class.company).
 			Save(context.Background())
 	}
 

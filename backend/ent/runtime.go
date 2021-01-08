@@ -22,6 +22,10 @@ import (
 func init() {
 	ambulanceFields := schema.Ambulance{}.Fields()
 	_ = ambulanceFields
+	// ambulanceDescCarregistration is the schema descriptor for carregistration field.
+	ambulanceDescCarregistration := ambulanceFields[0].Descriptor()
+	// ambulance.CarregistrationValidator is a validator for the "carregistration" field. It is called by the builders before save.
+	ambulance.CarregistrationValidator = ambulanceDescCarregistration.Validators[0].(func(string) error)
 	// ambulanceDescRegisterat is the schema descriptor for registerat field.
 	ambulanceDescRegisterat := ambulanceFields[1].Descriptor()
 	// ambulance.DefaultRegisterat holds the default value on creation for the registerat field.

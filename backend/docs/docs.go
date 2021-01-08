@@ -974,16 +974,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get carservice by ID",
+                "description": "get urgent by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a carservice entity by ID",
-                "operationId": "get-carservice",
+                "summary": "Get a urgent entity by ID",
+                "operationId": "get-urgent",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Carservice ID",
+                        "description": "Urgent ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -993,7 +993,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Carservice"
+                            "$ref": "#/definitions/ent.Urgent"
                         }
                     },
                     "400": {
@@ -1037,6 +1037,84 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/classinsurances": {
+            "get": {
+                "description": "list classinsurance entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List classinsurance entities",
+                "operationId": "list-classinsurance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Classinsurance"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/classinsurances/{id}": {
+            "get": {
+                "description": "get classinsurance by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a classinsurance entity by ID",
+                "operationId": "get-classinsurance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Classinsurance ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Classinsurance"
                         }
                     },
                     "400": {
@@ -2338,6 +2416,34 @@ var doc = `{
                 }
             }
         },
+        "ent.Classinsurance": {
+            "type": "object",
+            "properties": {
+                "classofinsurance": {
+                    "description": "Classofinsurance holds the value of the \"classofinsurance\" field.",
+                    "type": "string"
+                },
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ClassinsuranceQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.ClassinsuranceEdges"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.ClassinsuranceEdges": {
+            "type": "object",
+            "properties": {
+                "hasinsurance": {
+                    "description": "Hasinsurance holds the value of the hasinsurance edge.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.Insurance"
+                }
+            }
+        },
         "ent.Distance": {
             "type": "object",
             "properties": {
@@ -2413,10 +2519,6 @@ var doc = `{
         "ent.Insurance": {
             "type": "object",
             "properties": {
-                "classofinsurance": {
-                    "description": "Classofinsurance holds the value of the \"classofinsurance\" field.",
-                    "type": "string"
-                },
                 "company": {
                     "description": "Company holds the value of the \"company\" field.",
                     "type": "string"
@@ -2435,6 +2537,13 @@ var doc = `{
         "ent.InsuranceEdges": {
             "type": "object",
             "properties": {
+                "insurance": {
+                    "description": "Insurance holds the value of the insurance edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Classinsurance"
+                    }
+                },
                 "insuranceof": {
                     "description": "Insuranceof holds the value of the insuranceof edge.",
                     "type": "array",

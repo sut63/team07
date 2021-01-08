@@ -294,6 +294,28 @@ definitions:
         description: Userid holds the value of the userid edge.
         type: object
     type: object
+  ent.Classinsurance:
+    properties:
+      classofinsurance:
+        description: Classofinsurance holds the value of the "classofinsurance" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.ClassinsuranceEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ClassinsuranceQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.ClassinsuranceEdges:
+    properties:
+      hasinsurance:
+        $ref: '#/definitions/ent.Insurance'
+        description: Hasinsurance holds the value of the hasinsurance edge.
+        type: object
+    type: object
   ent.Distance:
     properties:
       Distance:
@@ -351,9 +373,6 @@ definitions:
     type: object
   ent.Insurance:
     properties:
-      classofinsurance:
-        description: Classofinsurance holds the value of the "classofinsurance" field.
-        type: string
       company:
         description: Company holds the value of the "company" field.
         type: string
@@ -369,6 +388,11 @@ definitions:
     type: object
   ent.InsuranceEdges:
     properties:
+      insurance:
+        description: Insurance holds the value of the insurance edge.
+        items:
+          $ref: '#/definitions/ent.Classinsurance'
+        type: array
       insuranceof:
         description: Insuranceof holds the value of the insuranceof edge.
         items:
@@ -1282,10 +1306,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get carservice by ID
-      operationId: get-carservice
+      description: get urgent by ID
+      operationId: get-urgent
       parameters:
-      - description: Carservice ID
+      - description: Urgent ID
         in: path
         name: id
         required: true
@@ -1296,7 +1320,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Carservice'
+            $ref: '#/definitions/ent.Urgent'
         "400":
           description: Bad Request
           schema:
@@ -1309,7 +1333,59 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a carservice entity by ID
+      summary: Get a urgent entity by ID
+  /classinsurances:
+    get:
+      description: list classinsurance entities
+      operationId: list-classinsurance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Classinsurance'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List classinsurance entities
+  /classinsurances/{id}:
+    get:
+      description: get classinsurance by ID
+      operationId: get-classinsurance
+      parameters:
+      - description: Classinsurance ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Classinsurance'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a classinsurance entity by ID
   /distances:
     get:
       description: list distance entities

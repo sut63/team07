@@ -178,6 +178,11 @@ func (ac *AmbulanceCreate) Save(ctx context.Context) (*Ambulance, error) {
 	if _, ok := ac.mutation.Carregistration(); !ok {
 		return nil, &ValidationError{Name: "carregistration", err: errors.New("ent: missing required field \"carregistration\"")}
 	}
+	if v, ok := ac.mutation.Carregistration(); ok {
+		if err := ambulance.CarregistrationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "carregistration", err: fmt.Errorf("ent: validator failed for field \"carregistration\": %w", err)}
+		}
+	}
 	if _, ok := ac.mutation.Registerat(); !ok {
 		v := ambulance.DefaultRegisterat()
 		ac.mutation.SetRegisterat(v)

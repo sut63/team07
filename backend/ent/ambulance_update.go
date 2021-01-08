@@ -252,6 +252,11 @@ func (au *AmbulanceUpdate) RemoveAmbulance(t ...*Transport) *AmbulanceUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (au *AmbulanceUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := au.mutation.Carregistration(); ok {
+		if err := ambulance.CarregistrationValidator(v); err != nil {
+			return 0, &ValidationError{Name: "carregistration", err: fmt.Errorf("ent: validator failed for field \"carregistration\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -823,6 +828,11 @@ func (auo *AmbulanceUpdateOne) RemoveAmbulance(t ...*Transport) *AmbulanceUpdate
 
 // Save executes the query and returns the updated entity.
 func (auo *AmbulanceUpdateOne) Save(ctx context.Context) (*Ambulance, error) {
+	if v, ok := auo.mutation.Carregistration(); ok {
+		if err := ambulance.CarregistrationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "carregistration", err: fmt.Errorf("ent: validator failed for field \"carregistration\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
