@@ -84,6 +84,13 @@ type Insurance struct{
 	company string
 }
 
+type Repairings struct {
+	Repairing []Repairing
+}
+
+type Repairing struct {
+	Repairpart string
+}
 
 // @title SUT SA Example API
 // @version 1.0
@@ -129,7 +136,7 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
-	client, err := ent.Open("sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	client, err := ent.Open("sqlite3", "file:ent.db?cache=shared&_fk=1")
 	if err != nil {
 		log.Fatalf("fail to open sqlite3: %v", err)
 	}
@@ -219,7 +226,7 @@ func main() {
 	}
   
 	// Set Purposes Data
-	purposes := Purposes{
+	Purposes := Purposes{
 		Purpose: []Purpose{
 			Purpose{"รับแจ้งอุบัติเหตุ"},
 			Purpose{"ขนส่งย้ายผู้ป่วย"},
@@ -227,15 +234,15 @@ func main() {
 		},
 	}
 
-	for _, pp := range purposes.Purpose {
+	for _, pp := range Purposes.Purpose {
 		client.Purpose.
 			Create().
-			SetStatus(st.Purpose).
+			SetObjective(pp.objective).
 			Save(context.Background())
 	}
 
 	// Set Urgent Data
-	Urgent := Urgents{
+	Urgents := Urgents{
 		Urgent : []Urgent{
 			Urgent{"ด่วนพิเศษ"},
 			Urgent{"ด่วนมาก"},
@@ -252,7 +259,7 @@ func main() {
 	}
 
 	// Set Distance Data
-	Distance := Distances{
+	Distances := Distances{
 		Distance : []Distance{
 			Distance{"น้อยกว่า 1 กิโลเมตร"},
 			Distance{"1-5 กิโลเมตร"},
@@ -304,7 +311,16 @@ func main() {
 			Save(context.Background())
 	}
 
+	// set Repairing Data
+	repairings := []string{"ช่วงล่าง","ระบบเครื่องยนต์","ระบบส่งกำลัง","ไฟฟ้าเครื่องยนต์","ไฟฟ้าตัวถัง"}
+	for _, r := range repairings {
+		client.Repairing.
+			Create().
+			SetRepairpart(r).
+			Save(context.Background())
+	}
 
+	
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
 }
