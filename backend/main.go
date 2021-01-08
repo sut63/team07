@@ -67,6 +67,24 @@ type Distance struct {
 	Distance string
 }
 
+type Carbrands struct{
+	Carbrand []Carbrand
+}
+
+type Carbrand struct{
+    brand string
+}
+
+type Insurances struct{
+	Insurance []Insurance
+}
+
+type Insurance struct{
+	class string
+	company string
+}
+
+
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -126,6 +144,9 @@ func main() {
 	controllers.NewInspectionResultController(v1, client)
 	controllers.NewUrgentController(v1, client)
 	controllers.NewDistanceController(v1, client)
+	controllers.NewCarbrandController(v1, client)
+	controllers.NewInsuranceController(v1, client)
+	controllers.NewAmbulanceController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
@@ -196,7 +217,7 @@ func main() {
 			SetJobposition(jp).
 			Save(context.Background())
 	}
-
+  
 	// Set Purposes Data
 	purposes := Purposes{
 		Purpose: []Purpose{
@@ -245,6 +266,41 @@ func main() {
 		client.Distance.
 			Create().
 			SetDistance(dist.Distance).
+			Save(context.Background())
+	}
+
+	// Set Carbrands Data
+	carbrands := Carbrands{
+		Carbrand: []Carbrand{
+			Carbrand{"Nissan"},
+			Carbrand{"Mustang"},
+			Carbrand{"Hyundai"},
+			Carbrand{"Toyota"},
+		},
+	}
+
+	for _, brands := range carbrands.Carbrand {
+		client.Carbrand.
+			Create().
+			SetBrand(brands.brand).
+			Save(context.Background())
+	}
+	// set Insurances Data
+	insurances := Insurances{
+		Insurance : []Insurance{
+			Insurance{"ประกันชั้น1","company1"},
+			Insurance{"ประกันชั้น2","company1"},
+			Insurance{"ประกันชั้น3","company2"},
+			Insurance{"ประกันชั้น2+","company3"},
+			Insurance{"ประกันชั้น2+","company1"},
+		},
+	}
+
+	for _, insu := range insurances.Insurance {
+		client.Insurance.
+			Create().
+			SetClassofinsurance(insu.class).
+			SetCompany(insu.company).
 			Save(context.Background())
 	}
 
