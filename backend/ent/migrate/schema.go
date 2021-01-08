@@ -278,8 +278,8 @@ var (
 	// InsurancesColumns holds the columns for the "insurances" table.
 	InsurancesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "classofinsurance", Type: field.TypeString, Unique: true},
-		{Name: "company", Type: field.TypeString, Unique: true},
+		{Name: "classofinsurance", Type: field.TypeString},
+		{Name: "company", Type: field.TypeString},
 	}
 	// InsurancesTable holds the schema information for the "insurances" table.
 	InsurancesTable = &schema.Table{

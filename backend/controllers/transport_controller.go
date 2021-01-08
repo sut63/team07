@@ -92,10 +92,10 @@ func (ctl *TransportController) CreateTransport(c *gin.Context) {
 		return
 	}
 
-	ts, err := ctl.client.Ambulance.
+	ts, err := ctl.client.Transport.
 		Create().
-		SetSend(s).
-		SetReceive(r).
+		SetSendid(s).
+		SetReceiveid(r).
 		SetUser(u).
 		SetAmbulance(ambulance).
 		Save(context.Background())
@@ -131,8 +131,8 @@ func (ctl *TransportController) GetTransport(c *gin.Context) {
 
 	ts, err := ctl.client.Transport.
 		Query().
-		WithSend().
-		WithReceive().
+		WithSendid().
+		WithReceiveid().
 		WithAmbulance().
 		WithUser().
 		Where(transport.IDEQ(int(id))).
@@ -159,8 +159,8 @@ func (ctl *TransportController) GetTransport(c *gin.Context) {
 func (ctl *TransportController) ListTransport(c *gin.Context) {
 	transports, err := ctl.client.Transport.
 		Query().
-		WithSend().
-		WithReceive().
+		WithSendid().
+		WithReceiveid().
 		WithAmbulance().
 		WithUser().
 		All(context.Background())
@@ -223,7 +223,7 @@ func (ctl *TransportController) register() {
 
 	// CRUD
 	transports.GET(":id", ctl.GetTransport)
-	transport.POST("",ctl.CreateTransport)
+	//transport.POST("",ctl.CreateTransport)
 	transports.DELETE(":id", ctl.DeleteTransport)
 }
 

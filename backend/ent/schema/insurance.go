@@ -13,10 +13,8 @@ type Insurance struct {
 // Fields of the Insurance.
 func (Insurance) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("classofinsurance").
-		Unique(),
-		field.String("company").
-		Unique(),
+		field.String("classofinsurance"),
+		field.String("company"),
 	}
 }
 
