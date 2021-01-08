@@ -11,7 +11,7 @@ type Distance struct {
 // Fields of the Distances.
 func (Distance) Fields() []ent.Field {
  return []ent.Field{
- field.String("Distance").NotEmpty(),
+ field.String("Distance").NotEmpty().Unique(),
  }
 }
 // Edges of the Distances.
