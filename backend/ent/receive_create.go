@@ -20,9 +20,9 @@ type ReceiveCreate struct {
 	hooks    []Hook
 }
 
-// SetSendname sets the sendname field.
-func (rc *ReceiveCreate) SetSendname(s string) *ReceiveCreate {
-	rc.mutation.SetSendname(s)
+// SetReceivename sets the receivename field.
+func (rc *ReceiveCreate) SetReceivename(s string) *ReceiveCreate {
+	rc.mutation.SetReceivename(s)
 	return rc
 }
 
@@ -48,8 +48,8 @@ func (rc *ReceiveCreate) Mutation() *ReceiveMutation {
 
 // Save creates the Receive in the database.
 func (rc *ReceiveCreate) Save(ctx context.Context) (*Receive, error) {
-	if _, ok := rc.mutation.Sendname(); !ok {
-		return nil, &ValidationError{Name: "sendname", err: errors.New("ent: missing required field \"sendname\"")}
+	if _, ok := rc.mutation.Receivename(); !ok {
+		return nil, &ValidationError{Name: "receivename", err: errors.New("ent: missing required field \"receivename\"")}
 	}
 	var (
 		err  error
@@ -111,13 +111,13 @@ func (rc *ReceiveCreate) createSpec() (*Receive, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := rc.mutation.Sendname(); ok {
+	if value, ok := rc.mutation.Receivename(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: receive.FieldSendname,
+			Column: receive.FieldReceivename,
 		})
-		r.Sendname = value
+		r.Receivename = value
 	}
 	if nodes := rc.mutation.ReceiveidIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
