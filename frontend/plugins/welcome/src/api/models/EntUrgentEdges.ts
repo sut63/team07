@@ -44,7 +44,7 @@ export function EntUrgentEdgesFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'urgentid': !exists(json, 'Urgentid') ? undefined : ((json['Urgentid'] as Array<any>).map(EntCarserviceFromJSON)),
+        'urgentid': !exists(json, 'urgentid') ? undefined : ((json['urgentid'] as Array<any>).map(EntCarserviceFromJSON)),
     };
 }
 

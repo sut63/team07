@@ -44,7 +44,7 @@ export function EntSendEdgesFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'sendid': !exists(json, 'Sendid') ? undefined : ((json['Sendid'] as Array<any>).map(EntTransportFromJSON)),
+        'sendid': !exists(json, 'sendid') ? undefined : ((json['sendid'] as Array<any>).map(EntTransportFromJSON)),
     };
 }
 

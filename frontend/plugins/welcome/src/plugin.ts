@@ -1,5 +1,5 @@
 import { createPlugin } from '@backstage/core';
-import WelcomePage from './components/WelcomePage';
+import WelcomePage from './components/Transport';
 import Ambulance from './components/Ambulancecreate';
 import Ambulancetable from './components/listambulance';
 import Mainambulance from './components/Ambulancemain';
@@ -9,6 +9,7 @@ import Carservicecreate from './components/Carservicecreate';
 import Carservicemain from './components/Carservicemain';
 import Carcheckinout from './components/Carcheckinoutmain'
 import CreateCarcheckinout from './components/Carcheckinoutcreate'
+//import CreateTransport from './components/Transport'
 
 export const plugin = createPlugin({
   id: 'welcome',
@@ -22,5 +23,6 @@ export const plugin = createPlugin({
     router.registerRoute('/carservicecreate', Carservicecreate);
     router.registerRoute('/carcheckinout', Carcheckinout);
     router.registerRoute('/createcarcheckinout', CreateCarcheckinout);
+    //router.registerRoute('/createtransport', CreateTransport);
   },
 });

@@ -111,10 +111,10 @@ type Repairing struct {
 	Repairpart string
 }
 type Sends struct {
-	Send string
+	Send []Sends
 }
 type Receives struct {
-	Receive string
+	Receive []Receives
 }
 
 // @title SUT SA Example API
@@ -183,6 +183,9 @@ func main() {
 	controllers.NewCarserviceController(v1, client)
 	controllers.NewPurposeController(v1, client)
 	controllers.NewCarCheckInOutController(v1, client)
+	controllers.NewTransportController(v1, client)
+	controllers.NewSendController(v1, client)
+	controllers.NewReceiveController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}

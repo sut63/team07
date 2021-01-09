@@ -64,9 +64,9 @@ export function EntCarRepairrecordEdgesFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'carinspection': !exists(json, 'Carinspection') ? undefined : EntCarInspectionFromJSON(json['Carinspection']),
-        'keeper': !exists(json, 'Keeper') ? undefined : EntRepairingFromJSON(json['Keeper']),
-        'user': !exists(json, 'User') ? undefined : EntUserFromJSON(json['User']),
+        'carinspection': !exists(json, 'carinspection') ? undefined : EntCarInspectionFromJSON(json['carinspection']),
+        'keeper': !exists(json, 'keeper') ? undefined : EntRepairingFromJSON(json['keeper']),
+        'user': !exists(json, 'user') ? undefined : EntUserFromJSON(json['user']),
     };
 }
 
