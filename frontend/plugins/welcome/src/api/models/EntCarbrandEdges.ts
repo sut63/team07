@@ -44,7 +44,7 @@ export function EntCarbrandEdgesFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'brandof': !exists(json, 'Brandof') ? undefined : ((json['Brandof'] as Array<any>).map(EntAmbulanceFromJSON)),
+        'brandof': !exists(json, 'brandof') ? undefined : ((json['brandof'] as Array<any>).map(EntAmbulanceFromJSON)),
     };
 }
 

@@ -64,9 +64,9 @@ export function EntInspectionResultEdgesFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
-        'carinspections': !exists(json, 'Carinspections') ? undefined : ((json['Carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
-        'jobposition': !exists(json, 'Jobposition') ? undefined : EntJobPositionFromJSON(json['Jobposition']),
-        'statusof': !exists(json, 'Statusof') ? undefined : ((json['Statusof'] as Array<any>).map(EntAmbulanceFromJSON)),
+        'carinspections': !exists(json, 'carinspections') ? undefined : ((json['carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
+        'jobposition': !exists(json, 'jobposition') ? undefined : EntJobPositionFromJSON(json['jobposition']),
+        'statusof': !exists(json, 'statusof') ? undefined : ((json['statusof'] as Array<any>).map(EntAmbulanceFromJSON)),
     };
 }
 
