@@ -15,6 +15,21 @@ definitions:
       userID:
         type: integer
     type: object
+  controllers.CarCheckInOut:
+    properties:
+      ambulance:
+        type: integer
+      checkin:
+        type: string
+      checkout:
+        type: string
+      name:
+        type: integer
+      note:
+        type: string
+      purpose:
+        type: integer
+    type: object
   controllers.CarInspection:
     properties:
       ambulanceID:
@@ -25,6 +40,39 @@ definitions:
         type: integer
       note:
         type: string
+      userID:
+        type: integer
+    type: object
+  controllers.CarRepairrecord:
+    properties:
+      carInspectionID:
+        type: integer
+      datetime:
+        type: string
+      repairingID:
+        type: integer
+      userID:
+        type: integer
+    type: object
+  controllers.Carservice:
+    properties:
+      datetime:
+        type: string
+      distanceID:
+        type: integer
+      urgentID:
+        type: integer
+      userID:
+        type: integer
+    type: object
+  controllers.Transport:
+    properties:
+      ambulanceID:
+        type: integer
+      receiveID:
+        type: integer
+      sendID:
+        type: integer
       userID:
         type: integer
     type: object
@@ -48,6 +96,16 @@ definitions:
     type: object
   ent.AmbulanceEdges:
     properties:
+      ambulance:
+        description: Ambulance holds the value of the ambulance edge.
+        items:
+          $ref: '#/definitions/ent.Transport'
+        type: array
+      carcheckinout:
+        description: Carcheckinout holds the value of the carcheckinout edge.
+        items:
+          $ref: '#/definitions/ent.CarCheckInOut'
+        type: array
       carinspections:
         description: Carinspections holds the value of the carinspections edge.
         items:
@@ -68,6 +126,42 @@ definitions:
       hasuser:
         $ref: '#/definitions/ent.User'
         description: Hasuser holds the value of the hasuser edge.
+        type: object
+    type: object
+  ent.CarCheckInOut:
+    properties:
+      checkIn:
+        description: CheckIn holds the value of the "checkIn" field.
+        type: string
+      checkOut:
+        description: CheckOut holds the value of the "checkOut" field.
+        type: string
+      edges:
+        $ref: '#/definitions/ent.CarCheckInOutEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the CarCheckInOutQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      note:
+        description: Note holds the value of the "note" field.
+        type: string
+    type: object
+  ent.CarCheckInOutEdges:
+    properties:
+      ambulance:
+        $ref: '#/definitions/ent.Ambulance'
+        description: Ambulance holds the value of the ambulance edge.
+        type: object
+      name:
+        $ref: '#/definitions/ent.User'
+        description: Name holds the value of the name edge.
+        type: object
+      purpose:
+        $ref: '#/definitions/ent.Purpose'
+        description: Purpose holds the value of the purpose edge.
         type: object
     type: object
   ent.CarInspection:
@@ -178,6 +272,9 @@ definitions:
       id:
         description: ID of the ent.
         type: integer
+      information:
+        description: Information holds the value of the "information" field.
+        type: string
       location:
         description: Location holds the value of the "location" field.
         type: string
@@ -242,6 +339,10 @@ definitions:
         items:
           $ref: '#/definitions/ent.CarInspection'
         type: array
+      jobposition:
+        $ref: '#/definitions/ent.JobPosition'
+        description: Jobposition holds the value of the jobposition edge.
+        type: object
       statusof:
         description: Statusof holds the value of the statusof edge.
         items:
@@ -291,10 +392,61 @@ definitions:
     type: object
   ent.JobPositionEdges:
     properties:
+      inspectionresults:
+        description: Inspectionresults holds the value of the inspectionresults edge.
+        items:
+          $ref: '#/definitions/ent.InspectionResult'
+        type: array
       users:
         description: Users holds the value of the users edge.
         items:
           $ref: '#/definitions/ent.User'
+        type: array
+    type: object
+  ent.Purpose:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.PurposeEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the PurposeQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      objective:
+        description: Objective holds the value of the "objective" field.
+        type: string
+    type: object
+  ent.PurposeEdges:
+    properties:
+      carcheckinout:
+        description: Carcheckinout holds the value of the carcheckinout edge.
+        items:
+          $ref: '#/definitions/ent.CarCheckInOut'
+        type: array
+    type: object
+  ent.Receive:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.ReceiveEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the ReceiveQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      sendname:
+        description: Sendname holds the value of the "sendname" field.
+        type: string
+    type: object
+  ent.ReceiveEdges:
+    properties:
+      receiveid:
+        description: Receiveid holds the value of the receiveid edge.
+        items:
+          $ref: '#/definitions/ent.Transport'
         type: array
     type: object
   ent.Repairing:
@@ -319,6 +471,60 @@ definitions:
         items:
           $ref: '#/definitions/ent.CarRepairrecord'
         type: array
+    type: object
+  ent.Send:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.SendEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the SendQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+      sendname:
+        description: Sendname holds the value of the "sendname" field.
+        type: string
+    type: object
+  ent.SendEdges:
+    properties:
+      sendid:
+        description: Sendid holds the value of the sendid edge.
+        items:
+          $ref: '#/definitions/ent.Transport'
+        type: array
+    type: object
+  ent.Transport:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.TransportEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the TransportQuery when eager-loading is set.
+        type: object
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.TransportEdges:
+    properties:
+      ambulance:
+        $ref: '#/definitions/ent.Ambulance'
+        description: Ambulance holds the value of the ambulance edge.
+        type: object
+      receiveid:
+        $ref: '#/definitions/ent.Receive'
+        description: Receiveid holds the value of the receiveid edge.
+        type: object
+      sendid:
+        $ref: '#/definitions/ent.Send'
+        description: Sendid holds the value of the sendid edge.
+        type: object
+      user:
+        $ref: '#/definitions/ent.User'
+        description: User holds the value of the user edge.
+        type: object
     type: object
   ent.Urgent:
     properties:
@@ -366,6 +572,11 @@ definitions:
     type: object
   ent.UserEdges:
     properties:
+      carcheckinout:
+        description: Carcheckinout holds the value of the carcheckinout edge.
+        items:
+          $ref: '#/definitions/ent.CarCheckInOut'
+        type: array
       carinspections:
         description: Carinspections holds the value of the carinspections edge.
         items:
@@ -380,6 +591,11 @@ definitions:
         $ref: '#/definitions/ent.JobPosition'
         description: Jobposition holds the value of the jobposition edge.
         type: object
+      user:
+        description: User holds the value of the user edge.
+        items:
+          $ref: '#/definitions/ent.Transport'
+        type: array
       userid:
         description: Userid holds the value of the userid edge.
         items:
@@ -607,6 +823,157 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a carbrand entity by ID
+  /carcheckinouts:
+    get:
+      description: list carcheckinout entities
+      operationId: list-carcheckinout
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.CarCheckInOut'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List carcheckinout entities
+    post:
+      consumes:
+      - application/json
+      description: Create carcheckinout
+      operationId: create-carcheckinout
+      parameters:
+      - description: CarCheckInOut entity
+        in: body
+        name: carcheckinout
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CarCheckInOut'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.CarCheckInOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create carcheckinout
+  /carcheckinouts/{id}:
+    delete:
+      description: get carcheckinout by ID
+      operationId: delete-carcheckinout
+      parameters:
+      - description: CarCheckInOut ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a carcheckinout entity by ID
+    get:
+      description: get carcheckinout by ID
+      operationId: get-carcheckinout
+      parameters:
+      - description: CarCheckInOut ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.CarCheckInOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a carcheckinout entity by ID
+    put:
+      consumes:
+      - application/json
+      description: update carcheckinout by ID
+      operationId: update-carcheckinout
+      parameters:
+      - description: CarCheckInOut ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: CarCheckInOut entity
+        in: body
+        name: carcheckinout
+        required: true
+        schema:
+          $ref: '#/definitions/ent.CarCheckInOut'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.CarCheckInOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Update a carcheckinout entity by ID
   /carinspections:
     get:
       description: list carinspection entities
@@ -716,6 +1083,294 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a carinspection entity by ID
+  /carrepairrecords:
+    get:
+      description: list carrepairrecord entities
+      operationId: list-carrepairrecord
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.CarRepairrecord'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List carrepairrecord entities
+    post:
+      consumes:
+      - application/json
+      description: Create carrepairrecord
+      operationId: create-carrepairrecord
+      parameters:
+      - description: CarRepairrecord entity
+        in: body
+        name: carrepairrecord
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CarRepairrecord'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.CarRepairrecord'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create carrepairrecord
+  /carrepairrecords/{id}:
+    delete:
+      description: get carrepairrecord by ID
+      operationId: delete-carrepairrecord
+      parameters:
+      - description: CarRepairrecord ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a carrepairrecord entity by ID
+    get:
+      description: get carrepairrecord by ID
+      operationId: get-carrepairrecord
+      parameters:
+      - description: CarRepairrecord ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.CarRepairrecord'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a carrepairrecord entity by ID
+  /carservices:
+    get:
+      description: list carservice entities
+      operationId: list-carservice
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Carservice'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List carservice entities
+    post:
+      consumes:
+      - application/json
+      description: Create carservice
+      operationId: create-carservice
+      parameters:
+      - description: Carservice entity
+        in: body
+        name: carservice
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Carservice'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Carservice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create carservice
+  /carservices/{id}:
+    delete:
+      description: get Carservice by ID
+      operationId: delete-Carservice
+      parameters:
+      - description: Carservice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a Carservice entity by ID
+    get:
+      description: get carservice by ID
+      operationId: get-carservice
+      parameters:
+      - description: Carservice ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Carservice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a carservice entity by ID
+  /distances:
+    get:
+      description: list distance entities
+      operationId: list-distance
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Distance'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List distance entities
+  /distances/{id}:
+    get:
+      description: get distance by ID
+      operationId: get-distance
+      parameters:
+      - description: Distance ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Distance'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a distance entity by ID
   /inspectionresults:
     get:
       description: list inspectionresult entities
@@ -878,6 +1533,288 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a insurance entity by ID
+  /purposes:
+    get:
+      description: list purpose entities
+      operationId: list-purpose
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Purpose'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List purpose entities
+  /purposes/{id}:
+    delete:
+      description: get purpose by ID
+      operationId: delete-purpose
+      parameters:
+      - description: Purpose ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a purpose entity by ID
+    get:
+      description: get purpose by ID
+      operationId: get-purpose
+      parameters:
+      - description: Purpose ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Purpose'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a purpose entity by ID
+  /repairings:
+    get:
+      description: list repairing entities
+      operationId: list-repairing
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Repairing'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List Repairing entities
+  /repairings/{id}:
+    get:
+      description: get repairing by ID
+      operationId: get-repairing
+      parameters:
+      - description: Repairing ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Repairing'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a repairing entity by ID
+  /transports:
+    get:
+      description: list transport entities
+      operationId: list-transport
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Transport'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List transport entities
+    post:
+      consumes:
+      - application/json
+      description: Create transport
+      operationId: create-transport
+      parameters:
+      - description: Transport entity
+        in: body
+        name: transport
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Transport'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Transport'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Create transport
+  /transports/{id}:
+    delete:
+      description: get transport by ID
+      operationId: delete-transport
+      parameters:
+      - description: Transport ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a transport entity by ID
+    get:
+      description: get transport by ID
+      operationId: get-transport
+      parameters:
+      - description: Transport ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Transport'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a transport entity by ID
+  /urgents:
+    get:
+      description: list urgent entities
+      operationId: list-urgent
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Urgent'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List urgent entities
   /users:
     get:
       description: list user entities

@@ -51,6 +51,54 @@ type Purpose struct {
 	objective string
 }
 
+type Urgents struct {
+	Urgent []Urgent
+}
+
+type Urgent struct {
+	Urgent string
+}
+
+type Distances struct {
+	Distance []Distance
+}
+
+type Distance struct {
+	Distance string
+}
+
+type Carbrands struct{
+	Carbrand []Carbrand
+}
+
+type Carbrand struct{
+    brand string
+}
+
+type Insurances struct{
+	Insurance []Insurance
+}
+
+type Insurance struct{
+	class string
+	company string
+}
+
+type Repairings struct {
+	Repairing []Repairing
+}
+
+type Repairing struct {
+	Repairpart string
+}
+type Receive struct {
+	receive string
+}
+type Send struct {
+	send string
+}
+
+
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -95,7 +143,7 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
-	client, err := ent.Open("sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	client, err := ent.Open("sqlite3", "file:ent.db?cache=shared&_fk=1")
 	if err != nil {
 		log.Fatalf("fail to open sqlite3: %v", err)
 	}
@@ -108,6 +156,11 @@ func main() {
 	v1 := router.Group("/api/v1")
 	controllers.NewUserController(v1, client)
 	controllers.NewInspectionResultController(v1, client)
+	controllers.NewUrgentController(v1, client)
+	controllers.NewDistanceController(v1, client)
+	controllers.NewCarbrandController(v1, client)
+	controllers.NewInsuranceController(v1, client)
+	controllers.NewAmbulanceController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
@@ -178,9 +231,9 @@ func main() {
 			SetJobposition(jp).
 			Save(context.Background())
 	}
-
+  
 	// Set Purposes Data
-	purposes := Purposes{
+	Purposes := Purposes{
 		Purpose: []Purpose{
 			Purpose{"รับแจ้งอุบัติเหตุ"},
 			Purpose{"ขนส่งย้ายผู้ป่วย"},
@@ -188,13 +241,109 @@ func main() {
 		},
 	}
 
-	for _, pp := range purposes.Purpose {
+	for _, pp := range Purposes.Purpose {
 		client.Purpose.
 			Create().
-			SetStatus(st.Purpose).
+			SetObjective(pp.objective).
 			Save(context.Background())
 	}
 
+	// Set Urgent Data
+	Urgents := Urgents{
+		Urgent : []Urgent{
+			Urgent{"ด่วนพิเศษ"},
+			Urgent{"ด่วนมาก"},
+			Urgent{"ด่วน"},
+			Urgent{"ปกติ"},
+		},
+	}
+
+	for _, ug := range Urgents.Urgent {
+		client.Urgent.
+			Create().
+			SetUrgent(ug.Urgent).
+			Save(context.Background())
+	}
+
+	// Set Distance Data
+	Distances := Distances{
+		Distance : []Distance{
+			Distance{"น้อยกว่า 1 กิโลเมตร"},
+			Distance{"1-5 กิโลเมตร"},
+			Distance{"6-10 กิโลเมตร"},
+			Distance{"11-15 กิโลเมตร"},
+			Distance{"มากกว่า 15 กิโลเมตร"},
+		},
+	}
+
+	for _, dist := range Distances.Distance {
+		client.Distance.
+			Create().
+			SetDistance(dist.Distance).
+			Save(context.Background())
+	}
+
+	// Set Carbrands Data
+	carbrands := Carbrands{
+		Carbrand: []Carbrand{
+			Carbrand{"Nissan"},
+			Carbrand{"Mustang"},
+			Carbrand{"Hyundai"},
+			Carbrand{"Toyota"},
+		},
+	}
+
+	for _, brands := range carbrands.Carbrand {
+		client.Carbrand.
+			Create().
+			SetBrand(brands.brand).
+			Save(context.Background())
+	}
+	// set Insurances Data
+	insurances := Insurances{
+		Insurance : []Insurance{
+			Insurance{"ประกันชั้น1","company1"},
+			Insurance{"ประกันชั้น2","company1"},
+			Insurance{"ประกันชั้น3","company2"},
+			Insurance{"ประกันชั้น2+","company3"},
+			Insurance{"ประกันชั้น2+","company1"},
+		},
+	}
+
+	for _, insu := range insurances.Insurance {
+		client.Insurance.
+			Create().
+			SetClassofinsurance(insu.class).
+			SetCompany(insu.company).
+			Save(context.Background())
+	}
+	// set Send Data
+	send := []string{"โรงพยาบาลสุรนารี","โรงพยาบาลนครราชสีมา","โรงพยาบาลทหาร","โรงพยาบาล CPE"}
+	for _, se := range send {
+		client.Repairing.
+			Create().
+			SetSend(se).
+			Save(context.Background())
+	}
+	// set Recieve Data
+	receive := []string{"โรงพยาบาลสุรนารี","โรงพยาบาลนครราชสีไป","โรงพยาบาลทหาร","โรงพยาบาล CPE"}
+	for _, re := range receive {
+		client.Repairing.
+			Create().
+			SetSend(re).
+			Save(context.Background())
+	}
+
+	// set Repairing Data
+	repairings := []string{"ช่วงล่าง","ระบบเครื่องยนต์","ระบบส่งกำลัง","ไฟฟ้าเครื่องยนต์","ไฟฟ้าตัวถัง"}
+	for _, r := range repairings {
+		client.Repairing.
+			Create().
+			SetRepairpart(r).
+			Save(context.Background())
+	}
+
+	
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
 }

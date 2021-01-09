@@ -245,7 +245,7 @@ var (
 	// DistancesColumns holds the columns for the "distances" table.
 	DistancesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "distance", Type: field.TypeString},
+		{Name: "distance", Type: field.TypeString, Unique: true},
 	}
 	// DistancesTable holds the schema information for the "distances" table.
 	DistancesTable = &schema.Table{
@@ -278,8 +278,8 @@ var (
 	// InsurancesColumns holds the columns for the "insurances" table.
 	InsurancesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "classofinsurance", Type: field.TypeString, Unique: true},
-		{Name: "company", Type: field.TypeString, Unique: true},
+		{Name: "classofinsurance", Type: field.TypeString},
+		{Name: "company", Type: field.TypeString},
 	}
 	// InsurancesTable holds the schema information for the "insurances" table.
 	InsurancesTable = &schema.Table{
@@ -395,7 +395,7 @@ var (
 	// UrgentsColumns holds the columns for the "urgents" table.
 	UrgentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "urgent", Type: field.TypeString},
+		{Name: "urgent", Type: field.TypeString, Unique: true},
 	}
 	// UrgentsTable holds the schema information for the "urgents" table.
 	UrgentsTable = &schema.Table{

@@ -11,7 +11,7 @@ type Urgent struct {
 // Fields of the Urgent.
 func (Urgent) Fields() []ent.Field {
  return []ent.Field{
- field.String("urgent").NotEmpty(),
+ field.String("urgent").NotEmpty().Unique(),
  }
 }
 // Edges of the Urgent.
