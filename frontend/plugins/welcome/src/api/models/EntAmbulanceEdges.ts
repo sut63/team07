@@ -104,13 +104,13 @@ export function EntAmbulanceEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'ambulance': !exists(json, 'ambulance') ? undefined : ((json['ambulance'] as Array<any>).map(EntTransportFromJSON)),
-        'carcheckinout': !exists(json, 'carcheckinout') ? undefined : ((json['carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
-        'carinspections': !exists(json, 'carinspections') ? undefined : ((json['carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
-        'Hasbrand': !exists(json, 'Hasbrand') ? undefined : EntCarbrandFromJSON(json['Hasbrand']),
-        'Hasinsurance': !exists(json, 'Hasinsurance') ? undefined : EntInsuranceFromJSON(json['Hasinsurance']),
-        'Hasstatus': !exists(json, 'Hasstatus') ? undefined : EntInspectionResultFromJSON(json['Hasstatus']),
-        'Hasuser': !exists(json, 'Hasuser') ? undefined : EntUserFromJSON(json['Hasuser']),
+        'ambulance': !exists(json, 'Ambulance') ? undefined : ((json['Ambulance'] as Array<any>).map(EntTransportFromJSON)),
+        'carcheckinout': !exists(json, 'Carcheckinout') ? undefined : ((json['Carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
+        'carinspections': !exists(json, 'Carinspections') ? undefined : ((json['Carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
+        'hasbrand': !exists(json, 'Hasbrand') ? undefined : EntCarbrandFromJSON(json['Hasbrand']),
+        'hasinsurance': !exists(json, 'Hasinsurance') ? undefined : EntInsuranceFromJSON(json['Hasinsurance']),
+        'hasstatus': !exists(json, 'Hasstatus') ? undefined : EntInspectionResultFromJSON(json['Hasstatus']),
+        'hasuser': !exists(json, 'Hasuser') ? undefined : EntUserFromJSON(json['Hasuser']),
     };
 }
 

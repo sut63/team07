@@ -16,8 +16,6 @@ export * from './EntCarbrand';
 export * from './EntCarbrandEdges';
 export * from './EntCarservice';
 export * from './EntCarserviceEdges';
-export * from './EntClassinsurance';
-export * from './EntClassinsuranceEdges';
 export * from './EntDistance';
 export * from './EntDistanceEdges';
 export * from './EntInspectionResult';

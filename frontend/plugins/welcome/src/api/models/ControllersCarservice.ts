@@ -24,6 +24,12 @@ export interface ControllersCarservice {
      * @type {string}
      * @memberof ControllersCarservice
      */
+    customer?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersCarservice
+     */
     datetime?: string;
     /**
      * 
@@ -31,6 +37,18 @@ export interface ControllersCarservice {
      * @memberof ControllersCarservice
      */
     distanceID?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersCarservice
+     */
+    information?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersCarservice
+     */
+    location?: string;
     /**
      * 
      * @type {number}
@@ -55,8 +73,11 @@ export function ControllersCarserviceFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
+        'customer': !exists(json, 'customer') ? undefined : json['customer'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'distanceID': !exists(json, 'distanceID') ? undefined : json['distanceID'],
+        'information': !exists(json, 'information') ? undefined : json['information'],
+        'location': !exists(json, 'location') ? undefined : json['location'],
         'urgentID': !exists(json, 'urgentID') ? undefined : json['urgentID'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
     };
@@ -71,8 +92,11 @@ export function ControllersCarserviceToJSON(value?: ControllersCarservice | null
     }
     return {
         
+        'customer': value.customer,
         'datetime': value.datetime,
         'distanceID': value.distanceID,
+        'information': value.information,
+        'location': value.location,
         'urgentID': value.urgentID,
         'userID': value.userID,
     };

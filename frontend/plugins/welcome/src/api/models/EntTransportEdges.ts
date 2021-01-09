@@ -74,10 +74,10 @@ export function EntTransportEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'ambulance': !exists(json, 'ambulance') ? undefined : EntAmbulanceFromJSON(json['ambulance']),
-        'receiveid': !exists(json, 'receiveid') ? undefined : EntReceiveFromJSON(json['receiveid']),
-        'sendid': !exists(json, 'sendid') ? undefined : EntSendFromJSON(json['sendid']),
-        'user': !exists(json, 'user') ? undefined : EntUserFromJSON(json['user']),
+        'ambulance': !exists(json, 'Ambulance') ? undefined : EntAmbulanceFromJSON(json['Ambulance']),
+        'receiveid': !exists(json, 'Receiveid') ? undefined : EntReceiveFromJSON(json['Receiveid']),
+        'sendid': !exists(json, 'Sendid') ? undefined : EntSendFromJSON(json['Sendid']),
+        'user': !exists(json, 'User') ? undefined : EntUserFromJSON(json['User']),
     };
 }
 

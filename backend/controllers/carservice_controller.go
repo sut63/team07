@@ -25,9 +25,9 @@ type Carservice struct {
 	DistanceID int
 	UrgentID   int 
 	UserID     int
-	customer  string
-	location  string
-	information  string 
+	Customer  string
+	Location  string
+	Information  string 
 	Datetime  string
 }
 
@@ -95,9 +95,9 @@ func (ctl *CarserviceController) CreateCarservice(c *gin.Context) {
 		SetUrgentid(ug).
 		SetDisid(di).
 		SetDatetime(times).
-		SetCustomer(obj.customer).
-		SetLocation(obj.location).
-		SetInformation(obj.information).
+		SetCustomer(obj.Customer).
+		SetLocation(obj.Location).
+		SetInformation(obj.Information).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{

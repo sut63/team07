@@ -51,9 +51,6 @@ import {
     EntCarservice,
     EntCarserviceFromJSON,
     EntCarserviceToJSON,
-    EntClassinsurance,
-    EntClassinsuranceFromJSON,
-    EntClassinsuranceToJSON,
     EntDistance,
     EntDistanceFromJSON,
     EntDistanceToJSON,
@@ -66,9 +63,15 @@ import {
     EntPurpose,
     EntPurposeFromJSON,
     EntPurposeToJSON,
+    EntReceive,
+    EntReceiveFromJSON,
+    EntReceiveToJSON,
     EntRepairing,
     EntRepairingFromJSON,
     EntRepairingToJSON,
+    EntSend,
+    EntSendFromJSON,
+    EntSendToJSON,
     EntTransport,
     EntTransportFromJSON,
     EntTransportToJSON,
@@ -140,6 +143,14 @@ export interface DeletePurposeRequest {
     id: number;
 }
 
+export interface DeleteReceiveRequest {
+    id: number;
+}
+
+export interface DeleteSendRequest {
+    id: number;
+}
+
 export interface DeleteTransportRequest {
     id: number;
 }
@@ -168,10 +179,6 @@ export interface GetCarrepairrecordRequest {
     id: number;
 }
 
-export interface GetClassinsuranceRequest {
-    id: number;
-}
-
 export interface GetDistanceRequest {
     id: number;
 }
@@ -188,7 +195,15 @@ export interface GetPurposeRequest {
     id: number;
 }
 
+export interface GetReceiveRequest {
+    id: number;
+}
+
 export interface GetRepairingRequest {
+    id: number;
+}
+
+export interface GetSendRequest {
     id: number;
 }
 
@@ -743,6 +758,70 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get receive by ID
+     * Delete a receive entity by ID
+     */
+    async deleteReceiveRaw(requestParameters: DeleteReceiveRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling deleteReceive.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/receives/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * get receive by ID
+     * Delete a receive entity by ID
+     */
+    async deleteReceive(requestParameters: DeleteReceiveRequest): Promise<object> {
+        const response = await this.deleteReceiveRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get send by ID
+     * Delete a send entity by ID
+     */
+    async deleteSendRaw(requestParameters: DeleteSendRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling deleteSend.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/sends/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * get send by ID
+     * Delete a send entity by ID
+     */
+    async deleteSend(requestParameters: DeleteSendRequest): Promise<object> {
+        const response = await this.deleteSendRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get transport by ID
      * Delete a transport entity by ID
      */
@@ -967,38 +1046,6 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * get classinsurance by ID
-     * Get a classinsurance entity by ID
-     */
-    async getClassinsuranceRaw(requestParameters: GetClassinsuranceRequest): Promise<runtime.ApiResponse<EntClassinsurance>> {
-        if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getClassinsurance.');
-        }
-
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/classinsurances/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EntClassinsuranceFromJSON(jsonValue));
-    }
-
-    /**
-     * get classinsurance by ID
-     * Get a classinsurance entity by ID
-     */
-    async getClassinsurance(requestParameters: GetClassinsuranceRequest): Promise<EntClassinsurance> {
-        const response = await this.getClassinsuranceRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
      * get distance by ID
      * Get a distance entity by ID
      */
@@ -1127,6 +1174,38 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get receive by ID
+     * Get a receive entity by ID
+     */
+    async getReceiveRaw(requestParameters: GetReceiveRequest): Promise<runtime.ApiResponse<EntReceive>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getReceive.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/receives/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntReceiveFromJSON(jsonValue));
+    }
+
+    /**
+     * get receive by ID
+     * Get a receive entity by ID
+     */
+    async getReceive(requestParameters: GetReceiveRequest): Promise<EntReceive> {
+        const response = await this.getReceiveRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get repairing by ID
      * Get a repairing entity by ID
      */
@@ -1155,6 +1234,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getRepairing(requestParameters: GetRepairingRequest): Promise<EntRepairing> {
         const response = await this.getRepairingRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get send by ID
+     * Get a send entity by ID
+     */
+    async getSendRaw(requestParameters: GetSendRequest): Promise<runtime.ApiResponse<EntSend>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getSend.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/sends/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntSendFromJSON(jsonValue));
+    }
+
+    /**
+     * get send by ID
+     * Get a send entity by ID
+     */
+    async getSend(requestParameters: GetSendRequest): Promise<EntSend> {
+        const response = await this.getSendRaw(requestParameters);
         return await response.value();
     }
 
@@ -1447,34 +1558,6 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * list classinsurance entities
-     * List classinsurance entities
-     */
-    async listClassinsuranceRaw(): Promise<runtime.ApiResponse<Array<EntClassinsurance>>> {
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/classinsurances`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EntClassinsuranceFromJSON));
-    }
-
-    /**
-     * list classinsurance entities
-     * List classinsurance entities
-     */
-    async listClassinsurance(): Promise<Array<EntClassinsurance>> {
-        const response = await this.listClassinsuranceRaw();
-        return await response.value();
-    }
-
-    /**
      * list distance entities
      * List distance entities
      */
@@ -1595,6 +1678,34 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * list receive entities
+     * List receive entities
+     */
+    async listReceiveRaw(): Promise<runtime.ApiResponse<Array<EntReceive>>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/receives`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EntReceiveFromJSON));
+    }
+
+    /**
+     * list receive entities
+     * List receive entities
+     */
+    async listReceive(): Promise<Array<EntReceive>> {
+        const response = await this.listReceiveRaw();
+        return await response.value();
+    }
+
+    /**
      * list repairing entities
      * List Repairing entities
      */
@@ -1627,6 +1738,34 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async listRepairing(requestParameters: ListRepairingRequest): Promise<Array<EntRepairing>> {
         const response = await this.listRepairingRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * list send entities
+     * List send entities
+     */
+    async listSendRaw(): Promise<runtime.ApiResponse<Array<EntSend>>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/sends`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EntSendFromJSON));
+    }
+
+    /**
+     * list send entities
+     * List send entities
+     */
+    async listSend(): Promise<Array<EntSend>> {
+        const response = await this.listSendRaw();
         return await response.value();
     }
 
