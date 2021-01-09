@@ -54,8 +54,8 @@ export function EntJobPositionEdgesFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'inspectionresults': !exists(json, 'inspectionresults') ? undefined : ((json['inspectionresults'] as Array<any>).map(EntInspectionResultFromJSON)),
-        'users': !exists(json, 'users') ? undefined : ((json['users'] as Array<any>).map(EntUserFromJSON)),
+        'inspectionresults': !exists(json, 'Inspectionresults') ? undefined : ((json['Inspectionresults'] as Array<any>).map(EntInspectionResultFromJSON)),
+        'users': !exists(json, 'Users') ? undefined : ((json['Users'] as Array<any>).map(EntUserFromJSON)),
     };
 }
 
