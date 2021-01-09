@@ -104,13 +104,13 @@ export function EntUserEdgesFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'carcheckinout': !exists(json, 'carcheckinout') ? undefined : ((json['carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
-        'carinspections': !exists(json, 'carinspections') ? undefined : ((json['carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
-        'carrepairrecords': !exists(json, 'carrepairrecords') ? undefined : ((json['carrepairrecords'] as Array<any>).map(EntCarRepairrecordFromJSON)),
-        'jobposition': !exists(json, 'jobposition') ? undefined : EntJobPositionFromJSON(json['jobposition']),
-        'user': !exists(json, 'user') ? undefined : ((json['user'] as Array<any>).map(EntTransportFromJSON)),
-        'userid': !exists(json, 'userid') ? undefined : ((json['userid'] as Array<any>).map(EntCarserviceFromJSON)),
-        'userof': !exists(json, 'userof') ? undefined : ((json['userof'] as Array<any>).map(EntAmbulanceFromJSON)),
+        'carcheckinout': !exists(json, 'Carcheckinout') ? undefined : ((json['Carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
+        'carinspections': !exists(json, 'Carinspections') ? undefined : ((json['Carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
+        'carrepairrecords': !exists(json, 'Carrepairrecords') ? undefined : ((json['Carrepairrecords'] as Array<any>).map(EntCarRepairrecordFromJSON)),
+        'jobposition': !exists(json, 'Jobposition') ? undefined : EntJobPositionFromJSON(json['Jobposition']),
+        'user': !exists(json, 'User') ? undefined : ((json['User'] as Array<any>).map(EntTransportFromJSON)),
+        'userid': !exists(json, 'Userid') ? undefined : ((json['Userid'] as Array<any>).map(EntCarserviceFromJSON)),
+        'userof': !exists(json, 'Userof') ? undefined : ((json['Userof'] as Array<any>).map(EntAmbulanceFromJSON)),
     };
 }
 

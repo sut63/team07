@@ -74,10 +74,10 @@ export function EntCarInspectionEdgesFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'ambulance': !exists(json, 'ambulance') ? undefined : EntAmbulanceFromJSON(json['ambulance']),
-        'carrepairrecords': !exists(json, 'carrepairrecords') ? undefined : ((json['carrepairrecords'] as Array<any>).map(EntCarRepairrecordFromJSON)),
-        'inspectionresult': !exists(json, 'inspectionresult') ? undefined : EntInspectionResultFromJSON(json['inspectionresult']),
-        'user': !exists(json, 'user') ? undefined : EntUserFromJSON(json['user']),
+        'ambulance': !exists(json, 'Ambulance') ? undefined : EntAmbulanceFromJSON(json['Ambulance']),
+        'carrepairrecords': !exists(json, 'Carrepairrecords') ? undefined : ((json['Carrepairrecords'] as Array<any>).map(EntCarRepairrecordFromJSON)),
+        'inspectionresult': !exists(json, 'Inspectionresult') ? undefined : EntInspectionResultFromJSON(json['Inspectionresult']),
+        'user': !exists(json, 'User') ? undefined : EntUserFromJSON(json['User']),
     };
 }
 
