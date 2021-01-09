@@ -91,6 +91,13 @@ type Repairings struct {
 type Repairing struct {
 	Repairpart string
 }
+type Receive struct {
+	receive string
+}
+type Send struct {
+	send string
+}
+
 
 // @title SUT SA Example API
 // @version 1.0
@@ -308,6 +315,22 @@ func main() {
 			Create().
 			SetClassofinsurance(insu.class).
 			SetCompany(insu.company).
+			Save(context.Background())
+	}
+	// set Send Data
+	send := []string{"โรงพยาบาลสุรนารี","โรงพยาบาลนครราชสีมา","โรงพยาบาลทหาร","โรงพยาบาล CPE"}
+	for _, se := range send {
+		client.Repairing.
+			Create().
+			SetSend(se).
+			Save(context.Background())
+	}
+	// set Recieve Data
+	receive := []string{"โรงพยาบาลสุรนารี","โรงพยาบาลนครราชสีไป","โรงพยาบาลทหาร","โรงพยาบาล CPE"}
+	for _, re := range receive {
+		client.Repairing.
+			Create().
+			SetSend(re).
 			Save(context.Background())
 	}
 
