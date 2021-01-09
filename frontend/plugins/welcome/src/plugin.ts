@@ -7,6 +7,8 @@ import CarInspectionPage from './components/CarInspectionPage';
 //import Carservicetable from './components/Carservicetable';
 import Carservicecreate from './components/Carservicecreate';
 import Carservicemain from './components/Carservicemain';
+import Carcheckinout from './components/Carcheckinoutmain'
+import CreateCarcheckinout from './components/Carcheckinoutcreate'
 
 export const plugin = createPlugin({
   id: 'welcome',
@@ -18,5 +20,7 @@ export const plugin = createPlugin({
     router.registerRoute('/carinspection', CarInspectionPage);
     router.registerRoute('/carservicemain', Carservicemain);
     router.registerRoute('/carservicecreate', Carservicecreate);
+    router.registerRoute('/carcheckinout', Carcheckinout);
+    router.registerRoute('/createcarcheckinout', CreateCarcheckinout);
   },
 });

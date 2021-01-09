@@ -249,8 +249,9 @@ func (ctl *CarCheckInOutController) UpdateCarCheckInOut(c *gin.Context) {
 		})
 		return
 	}
+	
 	obj.ID = int(id)
-	u, err := ctl.client.CarCheckInOut.
+	cio, err := ctl.client.CarCheckInOut.
 		UpdateOne(&obj).
 		Save(context.Background())
 	if err != nil {
@@ -258,7 +259,7 @@ func (ctl *CarCheckInOutController) UpdateCarCheckInOut(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, u)
+	c.JSON(200, cio)
 }
 
 // NewCarCheckInOutController creates and registers handles for the carcheckinout controller
