@@ -64,9 +64,9 @@ export function EntCarCheckInOutEdgesFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'ambulance': !exists(json, 'ambulance') ? undefined : EntAmbulanceFromJSON(json['ambulance']),
-        'name': !exists(json, 'name') ? undefined : EntUserFromJSON(json['name']),
-        'purpose': !exists(json, 'purpose') ? undefined : EntPurposeFromJSON(json['purpose']),
+        'ambulance': !exists(json, 'Ambulance') ? undefined : EntAmbulanceFromJSON(json['Ambulance']),
+        'name': !exists(json, 'Name') ? undefined : EntUserFromJSON(json['Name']),
+        'purpose': !exists(json, 'Purpose') ? undefined : EntPurposeFromJSON(json['Purpose']),
     };
 }
 

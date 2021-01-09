@@ -1045,84 +1045,6 @@
                 }
             }
         },
-        "/classinsurances": {
-            "get": {
-                "description": "list classinsurance entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List classinsurance entities",
-                "operationId": "list-classinsurance",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.Classinsurance"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/classinsurances/{id}": {
-            "get": {
-                "description": "get classinsurance by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a classinsurance entity by ID",
-                "operationId": "get-classinsurance",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Classinsurance ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.Classinsurance"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
         "/distances": {
             "get": {
                 "description": "list distance entities",
@@ -1578,6 +1500,127 @@
                 }
             }
         },
+        "/receives": {
+            "get": {
+                "description": "list receive entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List receive entities",
+                "operationId": "list-receive",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Receive"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/receives/{id}": {
+            "get": {
+                "description": "get receive by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a receive entity by ID",
+                "operationId": "get-receive",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Receive ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Receive"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get receive by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a receive entity by ID",
+                "operationId": "delete-receive",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Receive ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/repairings": {
             "get": {
                 "description": "list repairing entities",
@@ -1647,6 +1690,127 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ent.Repairing"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/sends": {
+            "get": {
+                "description": "list send entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List send entities",
+                "operationId": "list-send",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Send"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/sends/{id}": {
+            "get": {
+                "description": "get send by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a send entity by ID",
+                "operationId": "get-send",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Send ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Send"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get send by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a send entity by ID",
+                "operationId": "delete-send",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Send ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
                         }
                     },
                     "400": {
@@ -2089,11 +2253,20 @@
         "controllers.Carservice": {
             "type": "object",
             "properties": {
+                "customer": {
+                    "type": "string"
+                },
                 "datetime": {
                     "type": "string"
                 },
                 "distanceID": {
                     "type": "integer"
+                },
+                "information": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
                 },
                 "urgentID": {
                     "type": "integer"
@@ -2401,34 +2574,6 @@
                 }
             }
         },
-        "ent.Classinsurance": {
-            "type": "object",
-            "properties": {
-                "classofinsurance": {
-                    "description": "Classofinsurance holds the value of the \"classofinsurance\" field.",
-                    "type": "string"
-                },
-                "edges": {
-                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ClassinsuranceQuery when eager-loading is set.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.ClassinsuranceEdges"
-                },
-                "id": {
-                    "description": "ID of the ent.",
-                    "type": "integer"
-                }
-            }
-        },
-        "ent.ClassinsuranceEdges": {
-            "type": "object",
-            "properties": {
-                "hasinsurance": {
-                    "description": "Hasinsurance holds the value of the hasinsurance edge.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.Insurance"
-                }
-            }
-        },
         "ent.Distance": {
             "type": "object",
             "properties": {
@@ -2522,13 +2667,6 @@
         "ent.InsuranceEdges": {
             "type": "object",
             "properties": {
-                "insurance": {
-                    "description": "Insurance holds the value of the insurance edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.Classinsurance"
-                    }
-                },
                 "insuranceof": {
                     "description": "Insuranceof holds the value of the insuranceof edge.",
                     "type": "array",
@@ -2617,8 +2755,8 @@
                     "description": "ID of the ent.",
                     "type": "integer"
                 },
-                "sendname": {
-                    "description": "Sendname holds the value of the \"sendname\" field.",
+                "receivename": {
+                    "description": "Receivename holds the value of the \"receivename\" field.",
                     "type": "string"
                 }
             }

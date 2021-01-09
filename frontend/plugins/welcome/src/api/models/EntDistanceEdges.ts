@@ -44,7 +44,7 @@ export function EntDistanceEdgesFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'disid': !exists(json, 'disid') ? undefined : ((json['disid'] as Array<any>).map(EntCarserviceFromJSON)),
+        'disid': !exists(json, 'Disid') ? undefined : ((json['Disid'] as Array<any>).map(EntCarserviceFromJSON)),
     };
 }
 

@@ -44,7 +44,7 @@ export function EntPurposeEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'carcheckinout': !exists(json, 'carcheckinout') ? undefined : ((json['carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
+        'carcheckinout': !exists(json, 'Carcheckinout') ? undefined : ((json['Carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
     };
 }
 

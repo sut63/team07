@@ -39,11 +39,11 @@ export interface EntReceive {
      */
     id?: number;
     /**
-     * Sendname holds the value of the "sendname" field.
+     * Receivename holds the value of the "receivename" field.
      * @type {string}
      * @memberof EntReceive
      */
-    sendname?: string;
+    receivename?: string;
 }
 
 export function EntReceiveFromJSON(json: any): EntReceive {
@@ -58,7 +58,7 @@ export function EntReceiveFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'edges': !exists(json, 'edges') ? undefined : EntReceiveEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'sendname': !exists(json, 'sendname') ? undefined : json['sendname'],
+        'receivename': !exists(json, 'receivename') ? undefined : json['receivename'],
     };
 }
 
@@ -73,7 +73,7 @@ export function EntReceiveToJSON(value?: EntReceive | null): any {
         
         'edges': EntReceiveEdgesToJSON(value.edges),
         'id': value.id,
-        'sendname': value.sendname,
+        'receivename': value.receivename,
     };
 }
 

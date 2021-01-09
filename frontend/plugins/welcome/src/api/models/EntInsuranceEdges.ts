@@ -18,10 +18,6 @@ import {
     EntAmbulanceFromJSON,
     EntAmbulanceFromJSONTyped,
     EntAmbulanceToJSON,
-    EntClassinsurance,
-    EntClassinsuranceFromJSON,
-    EntClassinsuranceFromJSONTyped,
-    EntClassinsuranceToJSON,
 } from './';
 
 /**
@@ -30,12 +26,6 @@ import {
  * @interface EntInsuranceEdges
  */
 export interface EntInsuranceEdges {
-    /**
-     * Insurance holds the value of the insurance edge.
-     * @type {Array<EntClassinsurance>}
-     * @memberof EntInsuranceEdges
-     */
-    insurance?: Array<EntClassinsurance>;
     /**
      * Insuranceof holds the value of the insuranceof edge.
      * @type {Array<EntAmbulance>}
@@ -54,8 +44,7 @@ export function EntInsuranceEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'insurance': !exists(json, 'insurance') ? undefined : ((json['insurance'] as Array<any>).map(EntClassinsuranceFromJSON)),
-        'insuranceof': !exists(json, 'insuranceof') ? undefined : ((json['insuranceof'] as Array<any>).map(EntAmbulanceFromJSON)),
+        'insuranceof': !exists(json, 'Insuranceof') ? undefined : ((json['Insuranceof'] as Array<any>).map(EntAmbulanceFromJSON)),
     };
 }
 
@@ -68,7 +57,6 @@ export function EntInsuranceEdgesToJSON(value?: EntInsuranceEdges | null): any {
     }
     return {
         
-        'insurance': value.insurance === undefined ? undefined : ((value.insurance as Array<any>).map(EntClassinsuranceToJSON)),
         'insuranceof': value.insuranceof === undefined ? undefined : ((value.insuranceof as Array<any>).map(EntAmbulanceToJSON)),
     };
 }

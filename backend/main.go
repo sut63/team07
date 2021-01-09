@@ -13,7 +13,7 @@ import (
 	"github.com/team07/app/controllers"
 	"github.com/team07/app/ent"
 	"github.com/team07/app/ent/jobposition"
-	
+	_ "github.com/team07/app/docs"
 )
 
 type Users struct {
@@ -52,6 +52,16 @@ type Purpose struct {
 	objective string
 }
 
+type Carservices struct {
+	Carservice []Carservice
+}
+
+type Carservice struct {
+	customer    string
+	location    string
+	information string
+}
+
 type Urgents struct {
 	Urgent []Urgent
 }
@@ -68,28 +78,28 @@ type Distance struct {
 	Distance string
 }
 
-type Carbrands struct{
+type Carbrands struct {
 	Carbrand []Carbrand
 }
 
-type Carbrand struct{
-    brand string
+type Carbrand struct {
+	brand string
 }
 
-type Classinsurances struct{
+type Classinsurances struct {
 	Classinsurance []Classinsurance
 }
 
-type Classinsurance struct{
-	class string
+type Classinsurance struct {
+	class   string
 	company int
 }
 
-type Insurances struct{
+type Insurances struct {
 	Insurance []Insurance
 }
 
-type Insurance struct{
+type Insurance struct {
 	company string
 }
 
@@ -106,6 +116,7 @@ type Sends struct {
 type Receives struct {
 	Receive string
 }
+
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -159,7 +170,6 @@ func main() {
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
-	
 
 	v1 := router.Group("/api/v1")
 	controllers.NewUserController(v1, client)
@@ -170,6 +180,7 @@ func main() {
 	controllers.NewCarbrandController(v1, client)
 	controllers.NewInsuranceController(v1, client)
 	controllers.NewAmbulanceController(v1, client)
+	controllers.NewCarserviceController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
@@ -240,7 +251,7 @@ func main() {
 			SetJobposition(jp).
 			Save(context.Background())
 	}
-  
+
 	// Set Purposes Data
 	Purposes := Purposes{
 		Purpose: []Purpose{
@@ -259,7 +270,7 @@ func main() {
 
 	// Set Urgent Data
 	Urgents := Urgents{
-		Urgent : []Urgent{
+		Urgent: []Urgent{
 			Urgent{"ด่วนพิเศษ"},
 			Urgent{"ด่วนมาก"},
 			Urgent{"ด่วน"},
@@ -276,7 +287,7 @@ func main() {
 
 	// Set Distance Data
 	Distances := Distances{
-		Distance : []Distance{
+		Distance: []Distance{
 			Distance{"น้อยกว่า 1 กิโลเมตร"},
 			Distance{"1-5 กิโลเมตร"},
 			Distance{"6-10 กิโลเมตร"},
@@ -324,7 +335,7 @@ func main() {
 			Save(context.Background())
 	}
 	// Set Send Data
-		Sends := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารี","โรงพยาบาลนครราชสีมา","โรงพยาบาลอัลฟ่า","โรงพยาบาลก๋วยเตี๋ยวเป็ด"}
+	Sends := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารี", "โรงพยาบาลนครราชสีมา", "โรงพยาบาลอัลฟ่า", "โรงพยาบาลก๋วยเตี๋ยวเป็ด"}
 	for _, sn := range Sends {
 		client.Send.
 			Create().
@@ -332,7 +343,7 @@ func main() {
 			Save(context.Background())
 	}
 	// Set Receive Data
-		Receives := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารา","โรงพยาบาลนครราชสีไป","โรงพยาบาลอัลฟง","โรงพยาบาลก๋วยเตี๋ยวน้ำตก"}
+	Receives := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารา", "โรงพยาบาลนครราชสีไป", "โรงพยาบาลอัลฟง", "โรงพยาบาลก๋วยเตี๋ยวน้ำตก"}
 	for _, rc := range Receives {
 		client.Receive.
 			Create().
@@ -341,7 +352,7 @@ func main() {
 	}
 
 	// set Repairing Data
-	repairings := []string{"ช่วงล่าง","ระบบเครื่องยนต์","ระบบส่งกำลัง","ไฟฟ้าเครื่องยนต์","ไฟฟ้าตัวถัง"}
+	repairings := []string{"ช่วงล่าง", "ระบบเครื่องยนต์", "ระบบส่งกำลัง", "ไฟฟ้าเครื่องยนต์", "ไฟฟ้าตัวถัง"}
 	for _, r := range repairings {
 		client.Repairing.
 			Create().
@@ -349,7 +360,6 @@ func main() {
 			Save(context.Background())
 	}
 
-	
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
 }
