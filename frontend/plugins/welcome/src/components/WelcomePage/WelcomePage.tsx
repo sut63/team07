@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { Typography, Grid } from '@material-ui/core';
 import {
   Content,
@@ -63,7 +64,7 @@ const WelcomePage: FC<{}> = () => {
       <Content>
         <ContentHeader title="สมาชิกในกลุ่ม"></ContentHeader>
         <Grid container>
-          <CardTeam name={"นาย สมชาย ใจดี"} id={"B5012345"} system={"ระบบย่อย..."}></CardTeam>
+          <CardTeam name={"นาย สมชาย ใจดี"} id={"B5012345"} system={"go to list ambulance"}></CardTeam>
           <CardTeam name={"นาย สมชาย ใจดี"} id={"B5012345"} system={"ระบบย่อย..."}></CardTeam>
           <CardTeam name={"นาย สมชาย ใจดี"} id={"B5012345"} system={"ระบบย่อย..."}></CardTeam>
           <CardTeam name={"นาย สมชาย ใจดี"} id={"B5012345"} system={"ระบบย่อย..."}></CardTeam>

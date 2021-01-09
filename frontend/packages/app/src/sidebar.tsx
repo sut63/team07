@@ -1,8 +1,12 @@
 import React from 'react';
 import HomeIcon from '@material-ui/icons/Home';
-import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import YouTube from '@material-ui/icons/YouTube';
+import BuildIcon from '@material-ui/icons/Build';
 import SignOut from '@material-ui/icons/Settings';
+import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import AccessibleForwardIcon from '@material-ui/icons/AccessibleForward';
+import AirlineSeatFlatAngledIcon from '@material-ui/icons/AirlineSeatFlatAngled';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 
 import {
@@ -23,14 +27,34 @@ export const AppSidebar = () => (
     {/* <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
     <SidebarItem icon={CreateComponentIcon} to="welcome" text="Welcome" /> */}
     <SidebarItem
-      icon={YouTube}
-      to="playlist_video"
-      text="Playlist Video"
+      icon={AirportShuttleIcon}
+      to="Mainambulance"
+      text="รถเข็ญใหม่"
     />
     <SidebarItem
-      icon={CreateComponentIcon}
-      to="watch_video"
-      text="Watch Video"
+      icon={AssignmentIcon}
+      to="Carcheckinout"
+      text="รถเข้าออก"
+    />
+    <SidebarItem
+      icon={ShoppingCartIcon}
+      to="CarInspection"
+      text="ตรวจรถเข็ญ"
+    />
+    <SidebarItem
+      icon={AccessibleForwardIcon}
+      to="Carservicemain"
+      text="บริการรถเข็ญ"
+    />
+    <SidebarItem
+      icon={AirlineSeatFlatAngledIcon}
+      to="watch_video" //ใส่ตัวแปรของplugin
+      text="บีม"
+    />
+    <SidebarItem
+      icon={BuildIcon}
+      to="watch_video"  //ใส่ตัวแปรของplugin
+      text="ฟง"
     />
 
     {/* End global nav */}
