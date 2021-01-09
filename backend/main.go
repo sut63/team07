@@ -332,7 +332,7 @@ func main() {
 			Save(context.Background())
 	}
 	// Set Receive Data
-		Receives := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารา","โรงพยาบาลนครราชสีไป","โรงพยาบาลอัลฟง","โรงพยาบาลก๋วยเตี๋ยวไก่"}
+		Receives := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารา","โรงพยาบาลนครราชสีไป","โรงพยาบาลอัลฟง","โรงพยาบาลก๋วยเตี๋ยวน้ำตก"}
 	for _, rc := range Receives {
 		client.Receive.
 			Create().
