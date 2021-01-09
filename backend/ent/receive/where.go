@@ -91,29 +91,29 @@ func IDLTE(id int) predicate.Receive {
 	})
 }
 
-// Sendname applies equality check predicate on the "sendname" field. It's identical to SendnameEQ.
-func Sendname(v string) predicate.Receive {
+// Receivename applies equality check predicate on the "receivename" field. It's identical to ReceivenameEQ.
+func Receivename(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSendname), v))
+		s.Where(sql.EQ(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameEQ applies the EQ predicate on the "sendname" field.
-func SendnameEQ(v string) predicate.Receive {
+// ReceivenameEQ applies the EQ predicate on the "receivename" field.
+func ReceivenameEQ(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSendname), v))
+		s.Where(sql.EQ(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameNEQ applies the NEQ predicate on the "sendname" field.
-func SendnameNEQ(v string) predicate.Receive {
+// ReceivenameNEQ applies the NEQ predicate on the "receivename" field.
+func ReceivenameNEQ(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldSendname), v))
+		s.Where(sql.NEQ(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameIn applies the In predicate on the "sendname" field.
-func SendnameIn(vs ...string) predicate.Receive {
+// ReceivenameIn applies the In predicate on the "receivename" field.
+func ReceivenameIn(vs ...string) predicate.Receive {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -125,12 +125,12 @@ func SendnameIn(vs ...string) predicate.Receive {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldSendname), v...))
+		s.Where(sql.In(s.C(FieldReceivename), v...))
 	})
 }
 
-// SendnameNotIn applies the NotIn predicate on the "sendname" field.
-func SendnameNotIn(vs ...string) predicate.Receive {
+// ReceivenameNotIn applies the NotIn predicate on the "receivename" field.
+func ReceivenameNotIn(vs ...string) predicate.Receive {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -142,70 +142,70 @@ func SendnameNotIn(vs ...string) predicate.Receive {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldSendname), v...))
+		s.Where(sql.NotIn(s.C(FieldReceivename), v...))
 	})
 }
 
-// SendnameGT applies the GT predicate on the "sendname" field.
-func SendnameGT(v string) predicate.Receive {
+// ReceivenameGT applies the GT predicate on the "receivename" field.
+func ReceivenameGT(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldSendname), v))
+		s.Where(sql.GT(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameGTE applies the GTE predicate on the "sendname" field.
-func SendnameGTE(v string) predicate.Receive {
+// ReceivenameGTE applies the GTE predicate on the "receivename" field.
+func ReceivenameGTE(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldSendname), v))
+		s.Where(sql.GTE(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameLT applies the LT predicate on the "sendname" field.
-func SendnameLT(v string) predicate.Receive {
+// ReceivenameLT applies the LT predicate on the "receivename" field.
+func ReceivenameLT(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldSendname), v))
+		s.Where(sql.LT(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameLTE applies the LTE predicate on the "sendname" field.
-func SendnameLTE(v string) predicate.Receive {
+// ReceivenameLTE applies the LTE predicate on the "receivename" field.
+func ReceivenameLTE(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldSendname), v))
+		s.Where(sql.LTE(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameContains applies the Contains predicate on the "sendname" field.
-func SendnameContains(v string) predicate.Receive {
+// ReceivenameContains applies the Contains predicate on the "receivename" field.
+func ReceivenameContains(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldSendname), v))
+		s.Where(sql.Contains(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameHasPrefix applies the HasPrefix predicate on the "sendname" field.
-func SendnameHasPrefix(v string) predicate.Receive {
+// ReceivenameHasPrefix applies the HasPrefix predicate on the "receivename" field.
+func ReceivenameHasPrefix(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldSendname), v))
+		s.Where(sql.HasPrefix(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameHasSuffix applies the HasSuffix predicate on the "sendname" field.
-func SendnameHasSuffix(v string) predicate.Receive {
+// ReceivenameHasSuffix applies the HasSuffix predicate on the "receivename" field.
+func ReceivenameHasSuffix(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldSendname), v))
+		s.Where(sql.HasSuffix(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameEqualFold applies the EqualFold predicate on the "sendname" field.
-func SendnameEqualFold(v string) predicate.Receive {
+// ReceivenameEqualFold applies the EqualFold predicate on the "receivename" field.
+func ReceivenameEqualFold(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldSendname), v))
+		s.Where(sql.EqualFold(s.C(FieldReceivename), v))
 	})
 }
 
-// SendnameContainsFold applies the ContainsFold predicate on the "sendname" field.
-func SendnameContainsFold(v string) predicate.Receive {
+// ReceivenameContainsFold applies the ContainsFold predicate on the "receivename" field.
+func ReceivenameContainsFold(v string) predicate.Receive {
 	return predicate.Receive(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldSendname), v))
+		s.Where(sql.ContainsFold(s.C(FieldReceivename), v))
 	})
 }
 

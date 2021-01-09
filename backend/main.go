@@ -100,7 +100,12 @@ type Repairings struct {
 type Repairing struct {
 	Repairpart string
 }
-
+type Sends struct {
+	Send string
+}
+type Receives struct {
+	Receive string
+}
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -316,6 +321,22 @@ func main() {
 		client.Insurance.
 			Create().
 			SetCompany(class.company).
+			Save(context.Background())
+	}
+	// Set Send Data
+		Sends := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารี","โรงพยาบาลนครราชสีมา","โรงพยาบาลอัลฟ่า","โรงพยาบาลก๋วยเตี๋ยวเป็ด"}
+	for _, sn := range Sends {
+		client.Send.
+			Create().
+			SetSendname(sn).
+			Save(context.Background())
+	}
+	// Set Receive Data
+		Receives := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารา","โรงพยาบาลนครราชสีไป","โรงพยาบาลอัลฟง","โรงพยาบาลก๋วยเตี๋ยวน้ำตก"}
+	for _, rc := range Receives {
+		client.Receive.
+			Create().
+			SetReceivename(rc).
 			Save(context.Background())
 	}
 

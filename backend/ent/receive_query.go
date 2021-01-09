@@ -270,12 +270,12 @@ func (rq *ReceiveQuery) WithReceiveid(opts ...func(*TransportQuery)) *ReceiveQue
 // Example:
 //
 //	var v []struct {
-//		Sendname string `json:"sendname,omitempty"`
+//		Receivename string `json:"receivename,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Receive.Query().
-//		GroupBy(receive.FieldSendname).
+//		GroupBy(receive.FieldReceivename).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -296,11 +296,11 @@ func (rq *ReceiveQuery) GroupBy(field string, fields ...string) *ReceiveGroupBy 
 // Example:
 //
 //	var v []struct {
-//		Sendname string `json:"sendname,omitempty"`
+//		Receivename string `json:"receivename,omitempty"`
 //	}
 //
 //	client.Receive.Query().
-//		Select(receive.FieldSendname).
+//		Select(receive.FieldReceivename).
 //		Scan(ctx, &v)
 //
 func (rq *ReceiveQuery) Select(field string, fields ...string) *ReceiveSelect {

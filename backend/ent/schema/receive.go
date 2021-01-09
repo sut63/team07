@@ -14,7 +14,7 @@ type Receive struct {
 // Fields of the Receive.
 func (Receive) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("sendname"),
+		field.String("receivename"),
 	}
 }
 

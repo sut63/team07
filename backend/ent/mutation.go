@@ -6027,7 +6027,7 @@ type ReceiveMutation struct {
 	op               Op
 	typ              string
 	id               *int
-	sendname         *string
+	receivename      *string
 	clearedFields    map[string]struct{}
 	receiveid        map[int]struct{}
 	removedreceiveid map[int]struct{}
@@ -6114,41 +6114,41 @@ func (m *ReceiveMutation) ID() (id int, exists bool) {
 	return *m.id, true
 }
 
-// SetSendname sets the sendname field.
-func (m *ReceiveMutation) SetSendname(s string) {
-	m.sendname = &s
+// SetReceivename sets the receivename field.
+func (m *ReceiveMutation) SetReceivename(s string) {
+	m.receivename = &s
 }
 
-// Sendname returns the sendname value in the mutation.
-func (m *ReceiveMutation) Sendname() (r string, exists bool) {
-	v := m.sendname
+// Receivename returns the receivename value in the mutation.
+func (m *ReceiveMutation) Receivename() (r string, exists bool) {
+	v := m.receivename
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSendname returns the old sendname value of the Receive.
+// OldReceivename returns the old receivename value of the Receive.
 // If the Receive object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ReceiveMutation) OldSendname(ctx context.Context) (v string, err error) {
+func (m *ReceiveMutation) OldReceivename(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldSendname is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldReceivename is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldSendname requires an ID field in the mutation")
+		return v, fmt.Errorf("OldReceivename requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSendname: %w", err)
+		return v, fmt.Errorf("querying old value for OldReceivename: %w", err)
 	}
-	return oldValue.Sendname, nil
+	return oldValue.Receivename, nil
 }
 
-// ResetSendname reset all changes of the "sendname" field.
-func (m *ReceiveMutation) ResetSendname() {
-	m.sendname = nil
+// ResetReceivename reset all changes of the "receivename" field.
+func (m *ReceiveMutation) ResetReceivename() {
+	m.receivename = nil
 }
 
 // AddReceiveidIDs adds the receiveid edge to Transport by ids.
@@ -6208,8 +6208,8 @@ func (m *ReceiveMutation) Type() string {
 // fields that were in/decremented, call AddedFields().
 func (m *ReceiveMutation) Fields() []string {
 	fields := make([]string, 0, 1)
-	if m.sendname != nil {
-		fields = append(fields, receive.FieldSendname)
+	if m.receivename != nil {
+		fields = append(fields, receive.FieldReceivename)
 	}
 	return fields
 }
@@ -6219,8 +6219,8 @@ func (m *ReceiveMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *ReceiveMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case receive.FieldSendname:
-		return m.Sendname()
+	case receive.FieldReceivename:
+		return m.Receivename()
 	}
 	return nil, false
 }
@@ -6230,8 +6230,8 @@ func (m *ReceiveMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *ReceiveMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case receive.FieldSendname:
-		return m.OldSendname(ctx)
+	case receive.FieldReceivename:
+		return m.OldReceivename(ctx)
 	}
 	return nil, fmt.Errorf("unknown Receive field %s", name)
 }
@@ -6241,12 +6241,12 @@ func (m *ReceiveMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type mismatch the field type.
 func (m *ReceiveMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case receive.FieldSendname:
+	case receive.FieldReceivename:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSendname(v)
+		m.SetReceivename(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Receive field %s", name)
@@ -6298,8 +6298,8 @@ func (m *ReceiveMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *ReceiveMutation) ResetField(name string) error {
 	switch name {
-	case receive.FieldSendname:
-		m.ResetSendname()
+	case receive.FieldReceivename:
+		m.ResetReceivename()
 		return nil
 	}
 	return fmt.Errorf("unknown Receive field %s", name)

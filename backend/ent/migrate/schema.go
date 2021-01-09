@@ -314,7 +314,7 @@ var (
 	// ReceivesColumns holds the columns for the "receives" table.
 	ReceivesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "sendname", Type: field.TypeString},
+		{Name: "receivename", Type: field.TypeString},
 	}
 	// ReceivesTable holds the schema information for the "receives" table.
 	ReceivesTable = &schema.Table{

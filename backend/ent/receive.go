@@ -15,8 +15,8 @@ type Receive struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Sendname holds the value of the "sendname" field.
-	Sendname string `json:"sendname,omitempty"`
+	// Receivename holds the value of the "receivename" field.
+	Receivename string `json:"receivename,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ReceiveQuery when eager-loading is set.
 	Edges ReceiveEdges `json:"edges"`
@@ -44,7 +44,7 @@ func (e ReceiveEdges) ReceiveidOrErr() ([]*Transport, error) {
 func (*Receive) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
-		&sql.NullString{}, // sendname
+		&sql.NullString{}, // receivename
 	}
 }
 
@@ -61,9 +61,9 @@ func (r *Receive) assignValues(values ...interface{}) error {
 	r.ID = int(value.Int64)
 	values = values[1:]
 	if value, ok := values[0].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field sendname", values[0])
+		return fmt.Errorf("unexpected type %T for field receivename", values[0])
 	} else if value.Valid {
-		r.Sendname = value.String
+		r.Receivename = value.String
 	}
 	return nil
 }
@@ -96,8 +96,8 @@ func (r *Receive) String() string {
 	var builder strings.Builder
 	builder.WriteString("Receive(")
 	builder.WriteString(fmt.Sprintf("id=%v", r.ID))
-	builder.WriteString(", sendname=")
-	builder.WriteString(r.Sendname)
+	builder.WriteString(", receivename=")
+	builder.WriteString(r.Receivename)
 	builder.WriteByte(')')
 	return builder.String()
 }

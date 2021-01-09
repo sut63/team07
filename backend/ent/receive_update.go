@@ -28,9 +28,9 @@ func (ru *ReceiveUpdate) Where(ps ...predicate.Receive) *ReceiveUpdate {
 	return ru
 }
 
-// SetSendname sets the sendname field.
-func (ru *ReceiveUpdate) SetSendname(s string) *ReceiveUpdate {
-	ru.mutation.SetSendname(s)
+// SetReceivename sets the receivename field.
+func (ru *ReceiveUpdate) SetReceivename(s string) *ReceiveUpdate {
+	ru.mutation.SetReceivename(s)
 	return ru
 }
 
@@ -139,11 +139,11 @@ func (ru *ReceiveUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := ru.mutation.Sendname(); ok {
+	if value, ok := ru.mutation.Receivename(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: receive.FieldSendname,
+			Column: receive.FieldReceivename,
 		})
 	}
 	if nodes := ru.mutation.RemovedReceiveidIDs(); len(nodes) > 0 {
@@ -202,9 +202,9 @@ type ReceiveUpdateOne struct {
 	mutation *ReceiveMutation
 }
 
-// SetSendname sets the sendname field.
-func (ruo *ReceiveUpdateOne) SetSendname(s string) *ReceiveUpdateOne {
-	ruo.mutation.SetSendname(s)
+// SetReceivename sets the receivename field.
+func (ruo *ReceiveUpdateOne) SetReceivename(s string) *ReceiveUpdateOne {
+	ruo.mutation.SetReceivename(s)
 	return ruo
 }
 
@@ -311,11 +311,11 @@ func (ruo *ReceiveUpdateOne) sqlSave(ctx context.Context) (r *Receive, err error
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Receive.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := ruo.mutation.Sendname(); ok {
+	if value, ok := ruo.mutation.Receivename(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: receive.FieldSendname,
+			Column: receive.FieldReceivename,
 		})
 	}
 	if nodes := ruo.mutation.RemovedReceiveidIDs(); len(nodes) > 0 {

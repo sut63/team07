@@ -7,8 +7,8 @@ const (
 	Label = "receive"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldSendname holds the string denoting the sendname field in the database.
-	FieldSendname = "sendname"
+	// FieldReceivename holds the string denoting the receivename field in the database.
+	FieldReceivename = "receivename"
 
 	// EdgeReceiveid holds the string denoting the receiveid edge name in mutations.
 	EdgeReceiveid = "receiveid"
@@ -27,5 +27,5 @@ const (
 // Columns holds all SQL columns for receive fields.
 var Columns = []string{
 	FieldID,
-	FieldSendname,
+	FieldReceivename,
 }
