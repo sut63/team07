@@ -223,7 +223,7 @@ func (ctl *TransportController) register() {
 
 	// CRUD
 	transports.GET(":id", ctl.GetTransport)
-	//transport.POST("",ctl.CreateTransport)
+	transports.POST("",ctl.CreateTransport)
 	transports.DELETE(":id", ctl.DeleteTransport)
 }
 

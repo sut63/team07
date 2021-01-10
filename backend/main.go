@@ -116,7 +116,6 @@ type Sends struct {
 type Receives struct {
 	Receive []Receives
 }
-
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563

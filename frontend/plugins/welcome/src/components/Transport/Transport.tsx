@@ -132,7 +132,7 @@ export default function Create() {
       ambulanceID: ambulanceid,
       userID: userid,
    };
-    console.log(ambulances);
+    console.log(transports);
     const res: any = await api.createTransport({ transport: transports });
     setStatus(true);
     if (res.id != '') {
@@ -141,9 +141,6 @@ export default function Create() {
     } else {
       setAlert(false);
     }
-    const timer = setTimeout(() => {
-      setStatus(false);
-    }, 1000);
   };
   
 
@@ -154,7 +151,7 @@ export default function Create() {
       //subtitle="Some quick intro and links."
       ></Header>
       <Content>
-        <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ">
+        <ContentHeader title="กรอกข้อมูลการส่งตัวผู้ป่วย">
           {status ? (
             <div>
               {alert ? (
@@ -274,7 +271,7 @@ export default function Create() {
               <Button
                 style={{ marginLeft: 20 }}
                 component={RouterLink}
-                to="/mainambulance"
+                to="/maindriver"
                 variant="contained"
               >
                 กลับ
