@@ -8,7 +8,6 @@ import {
   ContentHeader,
 } from '@backstage/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import { Alert } from '@material-ui/lab';
@@ -16,14 +15,13 @@ import { DefaultApi } from '../../api/apis';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
 import { EntSend } from '../../api/models/EntSend';
 import { EntReceive } from '../../api/models/EntReceive';
 import { EntUser } from '../../api/models/EntUser';
-
+import ComponanceTransportTable from '../TransportTable';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -286,7 +284,7 @@ export default function Create() {
           </form>
         </div>
         
-        
+        <ComponanceTransportTable></ComponanceTransportTable>
       </Content>
     </Page>
   );
