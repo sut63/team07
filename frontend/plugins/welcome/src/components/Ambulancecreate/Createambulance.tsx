@@ -107,6 +107,20 @@ export default function Create() {
         setCarstatuses(ins);
       };
       getCarstatuses();
+      const checkJobPosition = async () => {
+        const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+        setLoading(false);
+        if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+          localStorage.setItem("userdata",JSON.stringify(null));
+          localStorage.setItem("jobpositiondata",JSON.stringify(null));
+          history.pushState("","","./");
+          window.location.reload(false);        
+        }
+        else{
+            setUser(Number(localStorage.getItem("userdata")))
+        }
+      }
+    checkJobPosition();
  
   }, [loading]);
 
@@ -134,53 +148,53 @@ export default function Create() {
     setregistration(event.target.value as string);
   };
 
-  const CreateAmbulance = async () => {
-    const ambulances = {
+  const CreateAmbulance = async ()=>{
+    if ((registration != null) && (registration != "") && (date!= null) && (date != "") && (carbrandid != null) && (carstatusid != null) && (insuranceid != null) ) {
+    const ambulance ={
       carbrandID: carbrandid,
       carstatusID: carstatusid,
       insuranceID: insuranceid,
       userID: userid,
       registration: registration,
       datetime: date + ":00+07:00"
-
     };
-    console.log(ambulances);
-    const res: any = await api.createAmbulance({ ambulance: ambulances });
-    setStatus(true);
-    if (res.id != '') {
-      setAlert(true);
-      window.location.reload(false);
-    } else {
-      setAlert(false);
-    }
-    const timer = setTimeout(() => {
-      setStatus(false);
-    }, 1000);
-  };
-  
+    const res: any = await api.createAmbulance({ ambulance: ambulance });
+             setStatus(true);
+             if (res.id != '') {
+                 setAlert(true);
+                 window.location.reload(false);
+             }
+         }
+         else {
+             setStatus(true);
+             setAlert(false);
+         }
+         const timer = setTimeout(() => {
+             setStatus(false);
+         }, 1000);
+     };
 
   return (
  <Page theme={pageTheme.home}>
       <Header
         title={`${profile.givenName}`}
-      //subtitle="Some quick intro and links."
       ></Header>
       <Content>
-        <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ">
-          {status ? (
-            <div>
-              {alert ? (
-                <Alert severity="success">
-                  บันทึกสำเร็จ
-                </Alert>
-              ) : (
-                  <Alert severity="warning" style={{ marginTop: 20 }}>
-                    กรุณากรอกข้อมูลอีกครั้ง
-                  </Alert>
-                )}
-            </div>
-          ) : null}
-        </ContentHeader>
+      <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ">
+      {status ? (
+           <div>
+             {alert ? (
+               <Alert severity="success">
+                 เพิ่มบันทึกเรียบร้อย!
+               </Alert>
+             ) : (
+               <Alert severity="warning" style={{ marginTop: 20 }}>
+                 บันทึกไม่สำเร็จ!
+               </Alert>
+             )}
+           </div>
+         ) : null}
+                </ContentHeader>
         <div className={classes.root}>
           <form noValidate autoComplete="off">
           <div className={classes.paper}><strong>เลขทะเบียนรถ</strong></div>
@@ -248,19 +262,14 @@ export default function Create() {
                 className={classes.margin}
                 variant="outlined"
               >
-                <div className={classes.paper}><strong>เจ้าหน้าที่รถพยาบาล</strong></div>
-                <InputLabel id="user-label"></InputLabel>
-                <Select
-                  labelId="user-label"
-                  id="user"
-                  value={userid}
-                  onChange={UserthandleChange}
-                  style={{ width: 400 }}
-                >
-                  {users.map((item: EntUser) => (
-                  <MenuItem value={item.id}>{item.name}</MenuItem>
-                ))}
-                </Select>
+                <div className={classes.paper}><strong>ชื่อเจ้าหน้าที่รถพยาบาล</strong></div>
+                <TextField
+                                    id="user"
+                                    type="string"
+                                    size="medium"
+                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name} (${item.email})`)}
+                                    style={{ width: 400 }}
+                                />
               </FormControl>
             </div>
 
@@ -278,9 +287,9 @@ export default function Create() {
                 onChange={statushandleChange}
                 style={{ width: 400 }}
               >
-                  {carstatuses.filter(b=>b.id === userid).map(item =>(
-                <MenuItem value={item.id}>{item.resultName}</MenuItem>
-            ))}
+                  {carstatuses.filter((filter: any) => filter.edges.jobposition.positionName == "เจ้าหน้าที่รถพยาบาล").map((item: EntInspectionResult) => (
+                    <MenuItem value={item.id}>{item.resultName}</MenuItem>
+                   ))}
               </Select>
             </FormControl>
             </div>
@@ -326,3 +335,4 @@ export default function Create() {
     </Page>
   );
 }
+

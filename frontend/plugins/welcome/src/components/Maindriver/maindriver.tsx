@@ -43,7 +43,7 @@ const HeaderCustom = {
         aria-label="vertical contained primary button group"
         variant="text"
       >
-          <Link component={RouterLink} to="/Mainambulance">
+          <Link component={RouterLink} to="/createambulance">
         <Button><h1>ลงทะเบียนรถพยาบาล</h1></Button>
         </Link>
         <Link component={RouterLink} to="/Carcheckinout">
