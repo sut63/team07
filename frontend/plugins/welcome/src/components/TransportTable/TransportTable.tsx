@@ -10,8 +10,6 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { DefaultApi } from '../../api/apis';
 
-import moment from 'moment';
-
 import { EntTransport } from '../../api/models/EntTransport';
  
 const useStyles = makeStyles({
@@ -59,12 +57,12 @@ export default function ComponentsTable() {
              <TableCell align="center">{item.id}</TableCell>
              <TableCell align="center">{item.edges.user.name}</TableCell>
              <TableCell align="center">{item.edges.ambulance.carregistration}</TableCell>
-             <TableCell align="center">{item.edges.send.sendname}</TableCell>
-             <TableCell align="center">{item.edges.receive.receivename}</TableCell>
+             <TableCell align="center">{item.edges?.sendid?.sendname}</TableCell>
+             <TableCell align="center">{item.edges?.receiveid?.receivename}</TableCell>
              <TableCell align="center">
                <Button
                  onClick={() => {
-                    deleteTransports(item.id);
+                   
                  }}
                  style={{ marginLeft: 10 , backgroundColor: "#140087" }}
                  variant="contained"
