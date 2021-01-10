@@ -186,6 +186,7 @@ func main() {
 	controllers.NewTransportController(v1, client)
 	controllers.NewSendController(v1, client)
 	controllers.NewReceiveController(v1, client)
+	controllers.NewRepairingController(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}
@@ -204,6 +205,7 @@ func main() {
 			User{"ใจเกเร", "jaikere@email.com", "1234", 3},
 			User{"แดงกีต้าร์", "dang@email.com", "1234", 3},
 			User{"อินเดีย", "india@email.com", "1234", 4},
+			User{"อัลฟวง", "ulfuang@email.com", "1234", 4},
 		},
 	}
 

@@ -12,6 +12,7 @@ import CreateCarcheckinout from './components/Carcheckinoutcreate'
 //import CreateTransport from './components/Transport'
 import LoginPage from './components/LoginPage'
 import MainDriverPage from './components/Maindriver'
+import CreateCarrepairrecord from './components/Carrepairrecordmain'
 
 export const plugin = createPlugin({
   id: 'welcome',
@@ -27,5 +28,6 @@ export const plugin = createPlugin({
     router.registerRoute('/createcarcheckinout', CreateCarcheckinout);
     //router.registerRoute('/createtransport', CreateTransport);
     router.registerRoute('/maindriver', MainDriverPage);
+    router.registerRoute('/carrepairmain', CreateCarrepairrecord);
   },
 });
