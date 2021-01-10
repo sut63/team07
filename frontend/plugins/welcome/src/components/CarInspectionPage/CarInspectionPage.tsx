@@ -95,16 +95,16 @@ export default function CarInspectionPage() {
         const checkJobPosition = async () => {
             const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
             setLoading(false);
-            if (jobdata != "เจ้าหน้าที่ตรวจสภาพรถ" ) {
-              localStorage.setItem("userdata",JSON.stringify(null));
-              localStorage.setItem("jobpositiondata",JSON.stringify(null));
-              history.pushState("","","./");
-              window.location.reload(false);        
+            if (jobdata != "เจ้าหน้าที่ตรวจสภาพรถ") {
+                localStorage.setItem("userdata", JSON.stringify(null));
+                localStorage.setItem("jobpositiondata", JSON.stringify(null));
+                history.pushState("", "", "./");
+                window.location.reload(false);
             }
-            else{
+            else {
                 setUser(Number(localStorage.getItem("userdata")))
             }
-          }
+        }
         checkJobPosition();
 
     }, [loading]);
@@ -127,21 +127,25 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarInspection = async () => {
-        const carinspection = {
-            inspectionResultID: inspectionresultid,
-            ambulanceID: ambulanceid,
-            userID: userid,
-            datetime: datetime + ":00+07:00",
-            note: note
+        if ((inspectionresultid != null) && (ambulanceid != null) && (datetime != null) && (datetime != "")) {
+            const carinspection = {
+                inspectionResultID: inspectionresultid,
+                ambulanceID: ambulanceid,
+                userID: userid,
+                datetime: datetime + ":00+07:00",
+                note: note
 
 
-        };
-        const res: any = await api.createCarinspection({ carinspection: carinspection });
-        setStatus(true);
-        if (res.id != '') {
-            setAlert(true);
-            window.location.reload(false);
-        } else {
+            };
+            const res: any = await api.createCarinspection({ carinspection: carinspection });
+            setStatus(true);
+            if (res.id != '') {
+                setAlert(true);
+                window.location.reload(false);
+            }
+        }
+        else {
+            setStatus(true);
             setAlert(false);
         }
         const timer = setTimeout(() => {
@@ -181,7 +185,7 @@ export default function CarInspectionPage() {
                     <CardMedia
                         component="img"
                         src={Image2Base64Function}
-                        style={ {marginTop:30} }
+                        style={{ marginTop: 30 }}
                     ></CardMedia>
                 </FormControl>
                 <div className={classes.root}>
@@ -197,7 +201,7 @@ export default function CarInspectionPage() {
                                     label="เจ้าหน้าที่"
                                     type="string"
                                     size="medium"
-                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name} (${item.email})`)}
+                                    value={users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}
                                     style={{ width: 400 }}
                                 />
                             </FormControl>
