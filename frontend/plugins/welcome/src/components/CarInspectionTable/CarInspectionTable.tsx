@@ -24,7 +24,6 @@ export default function ComponentsTable() {
  const classes = useStyles();
  const api = new DefaultApi();
  const [carinspections, setCarInspections] = useState<EntCarInspection[]>([]);
- //const [coolrooms, setCoolrooms] = useState<EntCoolroom[]>([]);
  const [loading, setLoading] = useState(true);
  
  useEffect(() => {

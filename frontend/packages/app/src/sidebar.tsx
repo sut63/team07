@@ -1,14 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import HomeIcon from '@material-ui/icons/Home';
-import BuildIcon from '@material-ui/icons/Build';
-import SignOut from '@material-ui/icons/Settings';
-import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import AccessibleForwardIcon from '@material-ui/icons/AccessibleForward';
-import AirlineSeatFlatAngledIcon from '@material-ui/icons/AirlineSeatFlatAngled';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-
-
+import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
   Sidebar,
   SidebarItem,
@@ -19,54 +12,60 @@ import {
   SidebarPinButton,
 } from '@backstage/core';
 
-export const AppSidebar = () => (
-  <Sidebar>
-    <SidebarDivider />
-    {/* Global nav, not org-specific */}
-    <SidebarItem icon={HomeIcon} to="" text="Home" />
-    {/* <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
-    <SidebarItem icon={CreateComponentIcon} to="welcome" text="Welcome" /> */}
-    <SidebarItem
-      icon={AirportShuttleIcon}
-      to="Mainambulance"
-      text="รถเข็ญใหม่"
-    />
-    <SidebarItem
-      icon={AssignmentIcon}
-      to="Carcheckinout"
-      text="รถเข้าออก"
-    />
-    <SidebarItem
-      icon={ShoppingCartIcon}
-      to="CarInspection"
-      text="ตรวจรถเข็ญ"
-    />
-    <SidebarItem
-      icon={AccessibleForwardIcon}
-      to="Carservicemain"
-      text="บริการรถเข็ญ"
-    />
-    <SidebarItem
-      icon={AirlineSeatFlatAngledIcon}
-      to="watch_video" //ใส่ตัวแปรของplugin
-      text="บีม"
-    />
-    <SidebarItem
-      icon={BuildIcon}
-      to="watch_video"  //ใส่ตัวแปรของplugin
-      text="ฟง"
-    />
+import { EntUser } from 'plugin-welcome/src/api/models/EntUser';
+import { DefaultApi } from 'plugin-welcome/src/api/apis';
 
-    {/* End global nav */}
-    <SidebarDivider />
-    <SidebarSpace />
-    <SidebarDivider />
-    <SidebarItem
-      icon={SignOut}
-      to="sign_out"
-      text="Sign Out"
-    />
-    {/* <SidebarUserSettings  /> */}
-    <SidebarPinButton />
-  </Sidebar>
-);
+export const AppSidebar = () => {
+
+  const api = new DefaultApi();
+  const [userid, setUser] = useState(Number);
+  const [users, setUsers] = useState<EntUser[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const res = await api.listUser();
+      setLoading(false);
+      setUsers(res);
+    };
+    getUsers();
+    const data = localStorage.getItem("userdata");
+    if (data) {
+      setUser(Number(JSON.parse(data)));
+      setLoading(false);
+    }
+    
+  }, [loading]);
+
+  return (
+
+    <Sidebar>
+      <SidebarDivider />
+      {/* Global nav, not org-specific */}
+      {(userid != null) ?
+        users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => 
+          <SidebarItem icon={HomeIcon} text={item.name} />
+        )
+        :
+        null
+      }
+      {/* End global nav */}
+      <SidebarDivider />
+      <SidebarSpace />
+      <SidebarDivider />
+      <SidebarThemeToggle />
+      {(userid != null) ?
+        <SidebarItem icon={MeetingRoomIcon} to="./" text="Log out"
+          onClick={() => {
+            localStorage.setItem("userdata", JSON.stringify(null));
+            localStorage.setItem("jobpositiondata", JSON.stringify(null));
+            history.pushState("", "", "./");
+            window.location.reload(false);
+          }} />
+        :
+        null
+      }
+      <SidebarPinButton />
+    </Sidebar>
+  )
+};

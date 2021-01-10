@@ -44,7 +44,7 @@ export function EntReceiveEdgesFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'receiveid': !exists(json, 'receiveid') ? undefined : ((json['receiveid'] as Array<any>).map(EntTransportFromJSON)),
+        'receiveid': !exists(json, 'Receiveid') ? undefined : ((json['Receiveid'] as Array<any>).map(EntTransportFromJSON)),
     };
 }
 
