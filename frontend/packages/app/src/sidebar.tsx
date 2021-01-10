@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import HomeIcon from '@material-ui/icons/Home';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import {
@@ -44,7 +44,7 @@ export const AppSidebar = () => {
       {/* Global nav, not org-specific */}
       {(userid != null) ?
         users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => 
-          <SidebarItem icon={HomeIcon} text={item.name} />
+          <SidebarItem icon={PermIdentityIcon} text={item.name} />
         )
         :
         null
@@ -55,7 +55,7 @@ export const AppSidebar = () => {
       <SidebarDivider />
       <SidebarThemeToggle />
       {(userid != null) ?
-        <SidebarItem icon={MeetingRoomIcon} to="./" text="Log out"
+        <SidebarItem icon={MeetingRoomIcon} to="./" text="ออกจากระบบ"
           onClick={() => {
             localStorage.setItem("userdata", JSON.stringify(null));
             localStorage.setItem("jobpositiondata", JSON.stringify(null));
