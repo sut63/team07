@@ -92,8 +92,24 @@ export default function Create() {
     const res = await api.listUser();
     setLoading(false);
     setUsers(res);
-   };
-   getUser();
+    console.log(res);
+  };
+  getUser();
+
+   const checkJobPosition = async () => {
+    const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+    setLoading(false);
+    if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์" ) {
+      localStorage.setItem("userdata",JSON.stringify(null));
+      localStorage.setItem("jobpositiondata",JSON.stringify(null));
+      history.pushState("","","./");
+      window.location.reload(false);        
+    }
+    else{
+        setUser(Number(localStorage.getItem("userdata")))
+    }
+  }
+checkJobPosition();
 
 }, [loading]);
 
@@ -126,6 +142,7 @@ const handleInformationChange = (event: any) => {
  };
 
  const CreateCarservice = async ()=>{
+   if ((customer != null) && (customer != "") && (location != null) && (location != "") && (information != null) && (information != "") && (datetime != null) && (datetime != "")) {
    const carservice ={
      userID: userid,
      urgentID: urgentid,
@@ -135,18 +152,21 @@ const handleInformationChange = (event: any) => {
      information: information,
      datetime: datetime + ":00+07:00",
    };
-   console.log(carservice);
-   const res: any = await api.createCarservice({carservice : carservice});
-   setStatus(true);
-   if(res.id != ''){
-     setAlert(true);
-   }else{
-     setAlert(false);
-   }
-   //const timer = setTimeout(()=>{
-  //   setStatus(false);
-  // },1000);
- };
+   const res: any = await api.createCarservice({ carservice: carservice });
+            setStatus(true);
+            if (res.id != '') {
+                setAlert(true);
+                window.location.reload(false);
+            }
+        }
+        else {
+            setStatus(true);
+            setAlert(false);
+        }
+        const timer = setTimeout(() => {
+            setStatus(false);
+        }, 1000);
+    };
  
  return (
     <Page theme={pageTheme.home}>
@@ -166,11 +186,30 @@ const handleInformationChange = (event: any) => {
                </Alert>
              ) : (
                <Alert severity="warning" style={{ marginTop: 20 }}>
-                 บันทึกไม่สำเร็จ
+                 บันทึกไม่สำเร็จ!
                </Alert>
              )}
            </div>
          ) : null}
+         <div className={classes.margin}>
+             <Button
+               onClick={() => {
+                 CreateCarservice();
+               }}
+               variant="contained"
+               color="primary"
+             >
+               ยืนยันการบันทึก
+             </Button>
+             <Button
+               style={{ marginLeft: 20 }}
+               component={RouterLink}
+               to="/Carservicemain"
+               variant="contained"
+             >
+               ย้อนกลับ
+             </Button>
+           </div>
        </ContentHeader>
 
        <div className={classes.root}>
@@ -274,45 +313,21 @@ const handleInformationChange = (event: any) => {
                 </FormControl>   
                 
                 <div>
-          <FormControl
-              className={classes.margin}
-              variant="outlined"
-            >
-              <div className={classes.paper}><strong>ผู้บันทึก</strong></div>
-              <InputLabel id="user-label"></InputLabel>
-              <Select
-                labelId="user-label"
-                id="ผู้บันทึก"
-                value={userid}
-                onChange={handleUserchange}
-                style={{ width: 400 }}
-              >
-                {users.map((item: EntUser) => (
-                  <MenuItem value={item.id}>{item.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            </div> 
-            
-           <div className={classes.margin}>
-             <Button
-               onClick={() => {
-                 CreateCarservice();
-               }}
-               variant="contained"
-               color="primary"
-             >
-               ยืนยันการบันทึก
-             </Button>
-             <Button
-               style={{ marginLeft: 20 }}
-               component={RouterLink}
-               to="/Carservicemain"
-               variant="contained"
-             >
-               ย้อนกลับ
-             </Button>
-           </div>
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                                <TextField
+                                    id="user"
+                                    label="เจ้าหน้าที่"
+                                    type="string"
+                                    size="medium"
+                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name}`)}
+                                    style={{ width: 400 }}
+                                />
+                            </FormControl>
+                        </div>
+           
          </form>
        </div>
      </Content>
