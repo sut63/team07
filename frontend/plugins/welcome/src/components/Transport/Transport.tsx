@@ -67,7 +67,7 @@ export default function Create() {
 
   const [sendid, setsend] = useState(Number);
   const [receiveid, setreceive] = useState(Number);
-  const [ambulanceid, setambulance] = useState(Number);
+  const [ambulanceid, setAmbulance] = useState(Number);
   const [userid, setUser] = useState(Number);
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function Create() {
   };
 
   const AmbulancehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setambulance(event.target.value as number);
+    setAmbulance(event.target.value as number);
   };
 
   const UserthandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -128,13 +128,12 @@ export default function Create() {
   const CreateTransport = async () => {
     const transports = {
       sendID: sendid,
-      recieveID: receiveid,
+      receiveID: receiveid,
       ambulanceID: ambulanceid,
       userID: userid,
-
-    };
-    console.log(transports);
-    const res: any = await api.createTransport({ transport : transports });
+   };
+    console.log(ambulances);
+    const res: any = await api.createTransport({ transport: transports });
     setStatus(true);
     if (res.id != '') {
       setAlert(true);
@@ -247,7 +246,7 @@ export default function Create() {
                 <Select
                   labelId="ambulance-label"
                   id="ambulance"
-                  value={ambulances}
+                  value={ambulanceid}
                   onChange={AmbulancehandleChange}
                   style={{ width: 400 }}
                 >
