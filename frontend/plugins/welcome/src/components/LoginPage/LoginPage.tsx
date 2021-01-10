@@ -114,14 +114,16 @@ export default function Login(props: any) {
         subtitle="บริการ คุ ณ ภ า พ"
       ></Header>
       <Content>
-        <ContentHeader title="Login">
+        <ContentHeader title="โปรดทำการ Login ก่อนเข้าใช้งาน">
           {status ? (
             <div>
               {alert ? (
                 <Alert severity="success">
+                  เข้าสู่ระบบสำเร็จ
                 </Alert>
               ) : (
                   <Alert severity="warning" style={{ marginTop: 20 }}>
+                    เข้าสู่ระบบไม่สำเร็จ
                   </Alert>
                 )}
             </div>
@@ -156,7 +158,7 @@ export default function Login(props: any) {
                   id="password"
                   label="Password"
                   variant="outlined"
-                  type="string"
+                  type="password"
                   size="medium"
                   value={password}
                   onChange={PasswordthandleChange}
@@ -174,7 +176,7 @@ export default function Login(props: any) {
                 variant="contained"
                 color="primary"
               >
-                Enter
+                เข้าสู่ระบบ
              </Button>
             </div>
           </form>
