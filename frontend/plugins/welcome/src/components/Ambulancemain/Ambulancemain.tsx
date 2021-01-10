@@ -4,6 +4,8 @@ import ComponanceTable from '../listambulance';
 import Button from '@material-ui/core/Button';
 
 
+import TableRow from '@material-ui/core/TableRow';
+
  
 import {
  Content,
@@ -13,13 +15,13 @@ import {
  ContentHeader,
  Link,
 } from '@backstage/core';
+import { TableCell, TableContainer } from '@material-ui/core';
  
 const WelcomePage: FC<{}> = () => {
 const profile = { givenName: 'ข้อมูลการลงทะเบียนรถ' };
 const HeaderCustom = {
     minHeight: '50px',
   };
-  
  return (
     
     <Page theme={pageTheme.service} >
@@ -30,15 +32,25 @@ const HeaderCustom = {
        subtitle=""
      >    
      
-        <div>
-      
-          <br></br>
+        
+      <table>
+        <tr>
+          <th>
           <Link component={RouterLink} to="/createambulance">
             <Button variant="contained" color="primary" style={{backgroundColor: "#21b6ae"}}>
               เพิ่มข้อมูลรถเข้าสู่ระบบ
             </Button>
           </Link>
-         </div>
+          </th>
+          <th>
+          <Link component={RouterLink} to="/maindriver">
+            <Button variant="contained" color="primary" style={{backgroundColor: "#21b6ae"}}>
+              กลับหน้าหลัก
+            </Button>
+          </Link>
+          </th>
+          </tr>
+          </table>
     </Header>
      <Content>
        <ContentHeader title="รถพยาบาลในระบบ">

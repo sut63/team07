@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
             marginLeft: 25,
             maxWidth: 300,
         }
+        
     }),
 );
 
