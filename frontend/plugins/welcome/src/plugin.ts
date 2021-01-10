@@ -10,11 +10,13 @@ import Carservicemain from './components/Carservicemain';
 import Carcheckinout from './components/Carcheckinoutmain'
 import CreateCarcheckinout from './components/Carcheckinoutcreate'
 //import CreateTransport from './components/Transport'
+import LoginPage from './components/LoginPage'
+import MainDriverPage from './components/Maindriver'
 
 export const plugin = createPlugin({
   id: 'welcome',
   register({ router }) {
-    router.registerRoute('/', WelcomePage);
+    router.registerRoute('/', LoginPage);
     router.registerRoute('/createambulance', Ambulance);
     router.registerRoute('/listambulance', Ambulancetable);
     router.registerRoute('/mainambulance', Mainambulance);
@@ -24,5 +26,6 @@ export const plugin = createPlugin({
     router.registerRoute('/carcheckinout', Carcheckinout);
     router.registerRoute('/createcarcheckinout', CreateCarcheckinout);
     //router.registerRoute('/createtransport', CreateTransport);
+    router.registerRoute('/maindriver', MainDriverPage);
   },
 });

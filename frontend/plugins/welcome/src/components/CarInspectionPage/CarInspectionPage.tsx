@@ -93,7 +93,7 @@ export default function CarInspectionPage() {
         getUsers();
 
         const checkJobPosition = async () => {
-            const jobdata = String(localStorage.getItem("jobpositiondata"));
+            const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
             setLoading(false);
             if (jobdata != "เจ้าหน้าที่ตรวจสภาพรถ" ) {
               localStorage.setItem("userdata",JSON.stringify(null));
@@ -264,7 +264,7 @@ export default function CarInspectionPage() {
                                 variant="outlined"
                             >
                                 <TextField
-                                    id="deathtime"
+                                    id="datetime"
                                     label="เดือน/วัน/ปี"
                                     type="datetime-local"
                                     value={datetime}
