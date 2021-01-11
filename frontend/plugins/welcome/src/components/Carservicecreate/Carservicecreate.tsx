@@ -142,7 +142,7 @@ const handleInformationChange = (event: any) => {
  };
 
  const CreateCarservice = async ()=>{
-   if ((customer != null) && (customer != "") && (location != null) && (location != "") && (information != null) && (information != "") && (datetime != null) && (datetime != "")) {
+   if ((customer != null) && (customer != "") && (location != null) && (location != "") && (information != null) && (information != "") && (datetime != null) && (datetime != "") && (urgentid != null) && (disid != null)) {
    const carservice ={
      userID: userid,
      urgentID: urgentid,
@@ -165,7 +165,7 @@ const handleInformationChange = (event: any) => {
         }
         const timer = setTimeout(() => {
             setStatus(false);
-        }, 1000);
+        }, 10000);
     };
  
  return (
@@ -182,7 +182,7 @@ const handleInformationChange = (event: any) => {
            <div>
              {alert ? (
                <Alert severity="success">
-                 เพิ่มบันทึกเรียบร้อย!
+                 บันทึกเรียบร้อย!
                </Alert>
              ) : (
                <Alert severity="warning" style={{ marginTop: 20 }}>
@@ -313,21 +313,20 @@ const handleInformationChange = (event: any) => {
                 </FormControl>   
                 
                 <div>
-                            <FormControl
-                                className={classes.margin}
-                                variant="outlined"
-                            >
-                                <TextField
-                                    id="user"
-                                    label="เจ้าหน้าที่"
-                                    type="string"
-                                    size="medium"
-                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name}`)}
-                                    style={{ width: 400 }}
-                                />
-                            </FormControl>
-                        </div>
-           
+                   <FormControl
+                  className={classes.margin}
+                  variant="outlined"
+                  >
+                  <TextField
+                   id="user"
+                   label="เจ้าหน้าที่"
+                   type="string"
+                   size="medium"
+                   value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name}`)}
+                   style={{ width: 400 }}
+                  />
+                  </FormControl>
+                </div>   
          </form>
        </div>
      </Content>
