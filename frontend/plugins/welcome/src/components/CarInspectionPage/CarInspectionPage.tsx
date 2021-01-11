@@ -221,7 +221,7 @@ export default function CarInspectionPage() {
                                 onChange={AmbulancehandleChange}
                                 style={{ width: 400 }}
                             >
-                                {ambulances.map((item: EntAmbulance) => (
+                                {ambulances.filter((filter:any) => filter.edges.Hasstatus.resultName == "ส่งตรวจสภาพรถ").map((item: EntAmbulance) => (
                                     <MenuItem value={item.id}>{item.carregistration}</MenuItem>
                                 ))}
                             </Select>
