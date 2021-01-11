@@ -94,10 +94,10 @@ export default function CarInspectionPage() {
         };
         getUsers();
 
-        /*const checkJobPosition = async () => {
-            const jobdata = String(localStorage.getItem("jobpositiondata"));
+        const checkJobPosition = async () => {
+            const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
             setLoading(false);
-            if (jobdata != "เจ้าหน้าที่ตรวจสภาพรถ" ) {
+            if (jobdata != "เจ้าหน้าที่ซ่อมบำรุงรถ" ) {
               localStorage.setItem("userdata",JSON.stringify(null));
               localStorage.setItem("jobpositiondata",JSON.stringify(null));
               history.pushState("","","./");
@@ -107,9 +107,9 @@ export default function CarInspectionPage() {
                 setUser(Number(localStorage.getItem("userdata")))
             }
           }
-        checkJobPosition();*/
-
-    }, [loading]);
+        checkJobPosition();
+        
+        }, [loading]);
 
     console.log(userid)
     const CarinspectionhandleChange = (event: React.ChangeEvent<{ value: unknown}>) => {
@@ -129,21 +129,27 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarrepairrecord = async () => {
+        if ((repairingid != null) && (carinspectionid != null) && (userid != null) && (datetime != "") && (datetime != null)) {
         const carrepairrecord = {
-            carinspectionID : carinspectionid,
+            carInspectionID : carinspectionid,
             repairingID : repairingid,
             userID : userid,
-            datetime : datetime + ":00+07 :00"
+            datetime : datetime + ":00+07:00"
         };
         console.log(carrepairrecord);
         const res: any = await api.createCarrepairrecord({ carrepairrecord: carrepairrecord});
         setStatus(true);
         if(res.id != ''){
             setAlert(true);
+            window.location.reload(false);
+            }
         }else{
             setAlert(false);
+            setStatus(true);
         }
-
+        const timer = setTimeout(() => {
+            setStatus(false);
+        }, 1000);
     };
 
     return (
@@ -184,8 +190,8 @@ export default function CarInspectionPage() {
                                     onChange={CarinspectionhandleChange}
                                     style={{ width: 400}}
                                 >
-                                    {carinspections.map((item: EntCarInspection) =>(
-                                        <MenuItem value={item.id}>{item.id}</MenuItem>
+                                    {carinspections.filter((filter:any) => filter.edges?.inspectionresult?.resultName == "ส่งซ่อมแซม").map((item: any) => (
+                                        <MenuItem value={item.id}>{item.edges?.ambulance?.carregistration}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
