@@ -23,6 +23,7 @@ import { EntCarbrand } from '../../api/models/EntCarbrand';
 import { EntInspectionResult } from '../../api/models/EntInspectionResult';
 import { EntInsurance } from '../../api/models/EntInsurance';
 import { EntUser } from '../../api/models/EntUser';
+import { EntAmbulance } from '../../api/models/EntAmbulance';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,11 +60,14 @@ export default function Create() {
   const api = new DefaultApi();
   const [status, setStatus] = useState(false);
   const [alert, setAlert] = useState(true);
+  const [alert2, setAlerts] = useState(true);
   //เก็บข้อมูลที่จะดึงมา
+  const [ambulance, setAmbulance] = useState<EntAmbulance[]>([]);
   const [carbrands, setCarbrands] = useState<EntCarbrand[]>([]);
   const [insurances, setInsurances] = useState<EntInsurance[]>([]);
   const [carstatuses, setCarstatuses] = useState<EntInspectionResult[]>([]);
   const [users, setUsers] = useState<EntUser[]>([]);
+ 
 
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState(String);
@@ -75,6 +79,12 @@ export default function Create() {
   const [userid, setUser] = useState(Number);
 
   useEffect(() => {
+    const getAmbulances = async () => {
+      const res = await api.listAmbulance({ limit: 120, offset: 0 });
+      setLoading(false);
+      setAmbulance(res);
+    };
+    getAmbulances();
 
     const getCarbrands = async () => {
  
@@ -83,6 +93,7 @@ export default function Create() {
       setCarbrands(br);
     };
     getCarbrands();
+
  
     const getUsers = async () => {
  
@@ -145,9 +156,20 @@ export default function Create() {
   const Registrationhandlehange = (event: any) => {
     setregistration(event.target.value as string);
   };
+  const forcheck = () => {
+    for (const color of ambulance){
+      if(registration === color.carregistration){
+             setStatus(true);
+             setAlert(false);
+             setAlerts(false);
+             //window.location.reload(false);
+      }
+  }
+  };
 
   const CreateAmbulance = async ()=>{
     if ((registration != null) && (registration != "") && (date!= null) && (date != "") && (carbrandid != null) && (carstatusid != null) && (insuranceid != null) ) {
+    
     const ambulance ={
       carbrandID: carbrandid,
       carstatusID: carstatusid,
@@ -160,12 +182,13 @@ export default function Create() {
              setStatus(true);
              if (res.id != '') {
                  setAlert(true);
-                 window.location.reload(false);
+                 window.location.href ="http://localhost:3000/mainambulance";
              }
          }
          else {
              setStatus(true);
              setAlert(false);
+             //window.location.reload(false);
          }
         
      };
@@ -182,15 +205,24 @@ export default function Create() {
       <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ">
       {status ? (
            <div>
-             {alert ? (
-               <Alert severity="success">
-                 เพิ่มบันทึกเรียบร้อย!
-               </Alert>
-             ) : (
-               <Alert severity="warning" style={{ marginTop: 20 }}>
-                 บันทึกไม่สำเร็จ!
-               </Alert>
-             )}
+       {(!alert2) ?
+            <Alert severity="warning" onClose={() => {setStatus(false)}}>
+            มีรถอยู่ในระบบแล้ว
+            </Alert>
+        :
+        
+        
+        (alert) ? (
+          <Alert severity="success">
+              บันทึกสำเร็จ
+          </Alert>
+      ) : (
+              <Alert severity="warning" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
+                  บันทึกไม่สำเร็จใส่ข้อมูลให้ครบ
+              </Alert>
+          )
+      }
+      
            </div>
          ) : null}
                 </ContentHeader>
@@ -233,7 +265,6 @@ export default function Create() {
             </div>
 
             <div></div>
-            
             
             <div>
             <FormControl
@@ -312,6 +343,7 @@ export default function Create() {
               <center>
               <Button
                 onClick={() => {
+                  forcheck();
                   CreateAmbulance();
                 }}
                 variant="outlined"
