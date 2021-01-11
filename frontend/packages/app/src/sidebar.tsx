@@ -42,7 +42,7 @@ export const AppSidebar = () => {
     <Sidebar>
       <SidebarDivider />
       {/* Global nav, not org-specific */}
-      {(userid != null) ?
+      {(userid) ?
         users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => 
           <SidebarItem icon={PermIdentityIcon} text={item.name} />
         )
@@ -54,7 +54,7 @@ export const AppSidebar = () => {
       <SidebarSpace />
       <SidebarDivider />
       <SidebarThemeToggle />
-      {(userid != null) ?
+      {(userid) ?
         <SidebarItem icon={MeetingRoomIcon} to="./" text="ออกจากระบบ"
           onClick={() => {
             localStorage.setItem("userdata", JSON.stringify(null));

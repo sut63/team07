@@ -50,7 +50,7 @@ export default function Login(props: any) {
   const [email, setEmail] = useState(String);
   const [password, setPassword] = useState(String);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -60,6 +60,14 @@ export default function Login(props: any) {
     }
 
     getUsers();
+
+    const resetUserData = async () => {
+      setLoading(false);
+      localStorage.setItem("userdata", JSON.stringify(null));
+      localStorage.setItem("jobpositiondata", JSON.stringify(null));
+    }
+    resetUserData();
+
   }, [loading]);
 
   const EmailthandleChange = (event: any) => {
@@ -74,34 +82,26 @@ export default function Login(props: any) {
     users.map((item: any) => {
       console.log(item.email);
       if ((item.email == email) && (item.password == password)) {
-        setStatus(true);
         setAlert(true);
-        localStorage.setItem("userdata",JSON.stringify(item.id));
-        localStorage.setItem("jobpositiondata",JSON.stringify(item.edges.jobposition.positionName))
-        if (item.edges.jobposition.positionName == "เจ้าหน้าที่ตรวจสภาพรถ"){
-          history.pushState("","","/carinspection");
+        localStorage.setItem("userdata", JSON.stringify(item.id));
+        localStorage.setItem("jobpositiondata", JSON.stringify(item.edges.jobposition.positionName))
+        if (item.edges.jobposition.positionName == "เจ้าหน้าที่ตรวจสภาพรถ") {
+          history.pushState("", "", "/carinspection");
         }
-        else if (item.edges.jobposition.positionName == "เจ้าหน้าที่รถพยาบาล"){
-          history.pushState("","","/maindriver");
+        else if (item.edges.jobposition.positionName == "เจ้าหน้าที่รถพยาบาล") {
+          history.pushState("", "", "/maindriver");
         }
-        else if (item.edges.jobposition.positionName == "เจ้าหน้าที่โอเปอร์เรเตอร์"){
-          history.pushState("","","/carservicemain");
+        else if (item.edges.jobposition.positionName == "เจ้าหน้าที่โอเปอร์เรเตอร์") {
+          history.pushState("", "", "/carservicemain");
         }
-        else if (item.edges.jobposition.positionName == "เจ้าหน้าที่ซ่อมบำรุงรถ"){
-          history.pushState("","","/carrepairmain");
+        else if (item.edges.jobposition.positionName == "เจ้าหน้าที่ซ่อมบำรุงรถ") {
+          history.pushState("", "", "/carrepairmain");
         }
-
-
         window.location.reload(false);
 
-        const timer = setTimeout(() => {
-        }, 1000);
-      }
-      else {
-        setStatus(true);
-        setAlert(false);
       }
     })
+    setStatus(true);
     const timer = setTimeout(() => {
       setStatus(false);
     }, 1000);
@@ -114,7 +114,7 @@ export default function Login(props: any) {
         subtitle="บริการ คุ ณ ภ า พ"
       ></Header>
       <Content>
-        <ContentHeader title="โปรดทำการ Login ก่อนเข้าใช้งาน">
+        <ContentHeader title="Login">
           {status ? (
             <div>
               {alert ? (
@@ -123,7 +123,7 @@ export default function Login(props: any) {
                 </Alert>
               ) : (
                   <Alert severity="warning" style={{ marginTop: 20 }}>
-                    เข้าสู่ระบบไม่สำเร็จ
+                    ไม่พบข้อมูลในระบบ
                   </Alert>
                 )}
             </div>
@@ -176,7 +176,7 @@ export default function Login(props: any) {
                 variant="contained"
                 color="primary"
               >
-                เข้าสู่ระบบ
+                Enter
              </Button>
             </div>
           </form>
