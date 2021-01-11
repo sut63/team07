@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Content,
@@ -139,6 +140,7 @@ export default function Create() {
   };
 
   const CreateCarcheckinout = async () => {
+    if ((ambulanceid != null) && (purposeid != null) && (checkin != "") && (checkout != "") && (checkin != null) && (checkout != null)) {
     const carcheckinouts = {
       ambulance: ambulanceid,
       name     : userid,
@@ -154,7 +156,10 @@ export default function Create() {
     if (res.id != '') {
       setAlert(true);
       window.location.reload(false);
-    } else {
+    } 
+  }
+  else {
+      setStatus(true)
       setAlert(false);
     }
   };
@@ -246,7 +251,7 @@ export default function Create() {
             />
        <br></br><br></br>
             <div className={classes.paper}><strong>วันที่เวลารถออก</strong></div>
-    <center>             <TextField
+      <center>             <TextField
                     className={classes.formControl}
                     id="checkout"
                     type="datetime-local"
@@ -256,7 +261,7 @@ export default function Create() {
                      shrink: true,
                      }}
                  />
-                 </center>
+      </center>
                 <Typography align ="center"></Typography>
                 <br></br>
                 <div className={classes.paper}><strong>วันที่เวลารถเข้า</strong></div>
@@ -271,7 +276,7 @@ export default function Create() {
                      }}
                  />
                 <Typography align ="center"></Typography>   
-</center>
+        </center>
             <div className={classes.margin}>
               <Button
                 onClick={() => {
