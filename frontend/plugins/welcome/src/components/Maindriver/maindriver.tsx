@@ -13,14 +13,14 @@ import {
 } from '@backstage/core';
 
 const MainDriverPage: FC<{}> = () => {
-const profile = { givenName: 'ข้อมูลการลงทะเบียนรถเข้าออก' };
+const profile = { givenName: 'ระบบรถพยาบาล' };
 const HeaderCustom = {
     minHeight: '50px',
   };
   
  return (
     
-    <Page theme={pageTheme.service} >
+    <Page theme={pageTheme.other} >
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      <Header
        style={HeaderCustom}

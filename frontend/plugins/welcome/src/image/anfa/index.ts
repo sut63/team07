@@ -1,0 +1,1 @@
+export { anfaBase64Function } from './anfa';

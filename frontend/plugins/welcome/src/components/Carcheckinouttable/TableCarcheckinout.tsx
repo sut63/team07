@@ -72,8 +72,9 @@ export default function ComponentsTable() {
                    deleteCarcheckinouts(item.id);
                  }}
                  style={{ marginLeft: 2 }}
-                 variant="contained"
-                 color="secondary"
+                 variant="contained" 
+                 color="primary"
+                 style={{backgroundColor: "#F5454D"}}
                >
                  Delete
                </Button>

@@ -110,7 +110,7 @@ export default function CarInspectionPage() {
 
     }, [loading]);
 
-
+    console.log(userid)
     const DateTimehandleChange = (event: any) => {
         setDatetime(event.target.value as string);
     };
@@ -176,6 +176,7 @@ export default function CarInspectionPage() {
                         </div>
                     ) : null}
                 </ContentHeader>
+                
                 <FormControl
                     className={classes.media}
                 >
