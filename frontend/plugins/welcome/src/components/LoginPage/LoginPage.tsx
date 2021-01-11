@@ -16,6 +16,9 @@ import { DefaultApi } from '../../api/apis';
 
 import { EntUser } from '../../api/models/EntUser';
 
+import CardMedia from '@material-ui/core/CardMedia';
+import { SnakeDanceBase64Function } from '../../image/SnakeDance';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -117,11 +120,11 @@ export default function Login(props: any) {
           {status ? (
             <div>
               {alert ? (
-                <Alert severity="success" onClose={() => {}}>
+                <Alert severity="success" onClose={() => { }}>
                   เข้าสู่ระบบสำเร็จ
                 </Alert>
               ) : (
-                <Alert severity="error" onClose={() => {setStatus(false)}}>
+                  <Alert severity="error" onClose={() => { setStatus(false) }}>
                     เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบ Email หรือ Password
                   </Alert>
                 )}
@@ -130,6 +133,22 @@ export default function Login(props: any) {
         </ContentHeader>
         <div className={classes.root}>
           <form noValidate autoComplete="off">
+            <div>
+              <FormControl
+                className={classes.margin}
+                variant="outlined"
+              >
+                <CardMedia
+                  component="video"
+                  src={SnakeDanceBase64Function}
+                  style={{ width: 400 }}
+                  autoPlay
+                  loop
+                  muted
+                >
+                </CardMedia>
+              </FormControl>
+            </div>
             <div>
               <FormControl
                 className={classes.margin}
