@@ -186,6 +186,7 @@ func main() {
 	controllers.NewSendController(v1, client)
 	controllers.NewReceiveController(v1, client)
 	controllers.NewRepairingController(v1, client)
+	controllers.NewCarRepairrecord(v1, client)
 
 	//ลงข้อมูล User
 	jobpositions := []string{"เจ้าหน้าที่ตรวจสภาพรถ", "เจ้าหน้าที่รถพยาบาล", "เจ้าหน้าที่โอเปอร์เรเตอร์", "เจ้าหน้าที่ซ่อมบำรุงรถ"}

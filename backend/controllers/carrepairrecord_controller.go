@@ -199,10 +199,10 @@ func NewCarRepairrecord(router gin.IRouter, client *ent.Client) *CarRepairrecord
 
 // InitCarRepairrecordController register routes to the main engine
 func (ctl *CarRepairrecordController) register() {
-	cr := ctl.router.Group("/carrepairrecord")
+	cr := ctl.router.Group("/carrepairrecords")
 
 	cr.GET("", ctl.ListCarRepairrecord)
-
+	cr.POST("", ctl.CreateCarRepairrecord)
 	// CRUD
 	cr.GET(":id", ctl.GetCarRepairrecord)
 	cr.DELETE(":id", ctl.DeleteCarRepairrecord)
