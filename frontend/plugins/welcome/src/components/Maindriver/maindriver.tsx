@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { DefaultApi } from '../../api/apis';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { jaikeleBase64Function } from '../../image/jaikele'
@@ -14,6 +15,7 @@ import {
  ContentHeader,
  Link
 } from '@backstage/core';
+import { EntUser } from '../../api/models/EntUser';
 
 const MainDriverPage: FC<{}> = () => {
 const profile = { givenName: 'ระบบรถพยาบาล' };
@@ -44,7 +46,33 @@ const HeaderCustom = {
       
   }),
 );
+const api = new DefaultApi();
 const classes = useStyles();  
+const [users, setUsers] = useState<EntUser[]>([]);
+const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getUsers = async () => {
+            const res = await api.listUser();
+            setLoading(false);
+            setUsers(res);
+        };
+        getUsers();
+
+        const checkJobPosition = async () => {
+          const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+          setLoading(false);
+          if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+            localStorage.setItem("userdata",JSON.stringify(null));
+            localStorage.setItem("jobpositiondata",JSON.stringify(null));
+            history.pushState("","","./");
+            window.location.reload(false);        
+          }
+        }
+      checkJobPosition();
+   
+    }, [loading]);
+
  return (
     <Page theme={pageTheme.other} >
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

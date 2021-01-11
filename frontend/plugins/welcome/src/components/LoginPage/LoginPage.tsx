@@ -104,7 +104,7 @@ export default function Login(props: any) {
     setStatus(true);
     const timer = setTimeout(() => {
       setStatus(false);
-    }, 1000);
+    }, 3000);
   };
 
   return (
