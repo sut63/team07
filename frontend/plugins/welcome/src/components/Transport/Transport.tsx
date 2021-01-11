@@ -143,6 +143,7 @@ export default function Create() {
 
 
   const CreateTransport = async () => {
+    if ((sendid != "") && (receiveid != "") && (ambulanceid != "")){
     const transports = {
       sendID: sendid,
       receiveID: receiveid,
@@ -155,8 +156,11 @@ export default function Create() {
     if (res.id != '') {
       setAlert(true);
       window.location.reload(false);
-    } else {
+    }
+  }
+     else {
       setAlert(false);
+      setStatus(true);
     }
   };
   
@@ -168,24 +172,26 @@ export default function Create() {
          >
       </Header>
       <Content>
-        <ContentHeader title="กรอกข้อมูลการส่งตัวผู้ป่วย">
-          {status ? (
-            <div>
-              {alert ? (
-                <Alert severity="success">
-                  บันทึกสำเร็จ
-                </Alert>
-              ) : (
-                  <Alert severity="warning" style={{ marginTop: 20 }}>
-                    กรุณากรอกข้อมูลอีกครั้ง
-                  </Alert>
-                )}
-            </div>
-          ) : null}
-        </ContentHeader>
+      <ContentHeader title="กรอกข้อมูลส่งตัวผู้ป่วย">
+                    {status ? (
+                        <div>
+                            {alert ? (
+                                <Alert severity="success">
+                                    บันทึกสำเร็จ
+                                </Alert>
+                            ) : (
+                                <Alert severity="warning" style={{marginTop: 20}}>
+                                    กรุณากรอกข้อมูลให้ครบถ้วน
+                                </Alert>
+                            )}
+                        </div>
+                    ) : null}
+                </ContentHeader>
 
         <div className={classes.root}>
         <form noValidate autoComplete="off">
+
+          <div>
           <FormControl
               className={classes.margin}
               variant="outlined"
@@ -204,8 +210,7 @@ export default function Create() {
                 ))}
               </Select>
             </FormControl>
-
-            <div></div>
+            </div>      
             
             
             <div>
