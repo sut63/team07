@@ -152,6 +152,10 @@ export default function Create() {
     setcarstatus(event.target.value as number);
   };
 
+  const listamb = () => {
+    window.location.href ="http://localhost:3000/mainambulance";
+  };
+
  
   const Registrationhandlehange = (event: any) => {
     setregistration(event.target.value as string);
@@ -185,7 +189,7 @@ export default function Create() {
              setStatus(true);
              if (res.id != '') {
                  setAlert(true);
-                 window.location.href ="http://localhost:3000/mainambulance";
+                 //window.location.href ="http://localhost:3000/mainambulance";
              }
          }
          else {
@@ -205,7 +209,7 @@ export default function Create() {
 
       </Header>
       <Content>
-      <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ">
+      <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ" >
       {status ? (
            <div>
        {(!alert2) ?
@@ -216,7 +220,7 @@ export default function Create() {
         
         
         (alert) ? (
-          <Alert severity="success">
+          <Alert severity="success" onClose={() => {listamb()}}>
               บันทึกสำเร็จ
           </Alert>
       ) : (
