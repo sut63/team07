@@ -17,22 +17,21 @@ const WelcomePage: FC<{}> = () => {
  const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
 
  return (
-   <Page theme={pageTheme.prism}>
+   <Page theme={pageTheme.library}>
      <Header
        title={`ท่านกำลังใช้งาน ${profile.givenName || ':)'}`}
        subtitle="สวัสดีครับท่านสมาชิกชมรมคนชอบรถพยาบาล"
      ></Header>
      <Content>
        <ContentHeader title="ตารางบันทึกการใช้รถพยาบาล">
-       </ContentHeader>
-       <ComponanceTable></ComponanceTable>
-       <br></br>
-       
        <Link component={RouterLink} to="/Carservicecreate">
            <Button variant="contained" color="primary" >
              เพิ่มบันทึก
            </Button>
          </Link>
+       </ContentHeader>
+       <ComponanceTable></ComponanceTable>
+       <br></br>
      </Content>
    </Page>
  );

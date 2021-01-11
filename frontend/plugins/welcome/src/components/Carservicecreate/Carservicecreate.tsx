@@ -169,7 +169,7 @@ const handleInformationChange = (event: any) => {
     };
  
  return (
-    <Page theme={pageTheme.home}>
+    <Page theme={pageTheme.library}>
      <Header
        title={`${profile.thisName}`}
        subtitle="บรื๊นๆๆ"
