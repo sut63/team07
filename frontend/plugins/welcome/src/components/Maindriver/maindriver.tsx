@@ -114,6 +114,7 @@ const [loading, setLoading] = useState(true);
           src={jaikeleBase64Function}
           style={{ marginTop: 30 }}
           autoPlay
+          loop
        />
        </FormControl>
        </center>
