@@ -164,6 +164,9 @@ export default function Create() {
              setAlerts(false);
              //window.location.reload(false);
       }
+      else{
+        CreateAmbulance();
+      }
   }
   };
 
@@ -344,7 +347,6 @@ export default function Create() {
               <Button
                 onClick={() => {
                   forcheck();
-                  CreateAmbulance();
                 }}
                 variant="outlined"
                 color="primary"
