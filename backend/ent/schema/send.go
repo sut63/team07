@@ -14,7 +14,8 @@ type Send struct {
 // Fields of the Send.
 func (Send) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("sendname"),
+		field.String("sendname").
+		Unique(),
 	}
 }
 

@@ -125,6 +125,7 @@ export default function Create() {
     setUser(event.target.value as number);
   };
 
+
   const CreateTransport = async () => {
     const transports = {
       sendID: sendid,
@@ -148,8 +149,8 @@ export default function Create() {
  <Page theme={pageTheme.home}>
       <Header
         title={`${profile.givenName}`}
-      //subtitle="Some quick intro and links."
-      ></Header>
+         >
+      </Header>
       <Content>
         <ContentHeader title="กรอกข้อมูลการส่งตัวผู้ป่วย">
           {status ? (
