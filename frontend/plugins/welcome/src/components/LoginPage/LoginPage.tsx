@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Login(props: any) {
   const classes = useStyles();
-  const profile = { givenName: 'to Software Analysis 63' };
   const api = new DefaultApi();
 
   const [users, setUsers] = useState<EntUser[]>([]);
@@ -114,7 +113,7 @@ export default function Login(props: any) {
         subtitle="บริการ คุ ณ ภ า พ"
       ></Header>
       <Content>
-        <ContentHeader title="Login">
+        <ContentHeader title="โปรดทำการ Login ก่อนใช้งาน">
           {status ? (
             <div>
               {alert ? (
@@ -123,7 +122,7 @@ export default function Login(props: any) {
                 </Alert>
               ) : (
                 <Alert severity="error" onClose={() => {setStatus(false)}}>
-                    ไม่พบข้อมูลในระบบ
+                    เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบ Email หรือ Password
                   </Alert>
                 )}
             </div>
