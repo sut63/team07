@@ -8,6 +8,7 @@ import {
   ContentHeader,
 } from '@backstage/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import { Alert } from '@material-ui/lab';
@@ -15,6 +16,7 @@ import { DefaultApi } from '../../api/apis';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import SaveIcon from '@material-ui/icons/Save';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
@@ -103,6 +105,20 @@ export default function Create() {
         setAmbulances(am);
       };
       getAmbulances();
+      const checkJobPosition = async () => {
+        const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+        setLoading(false);
+        if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+          localStorage.setItem("userdata",JSON.stringify(null));
+          localStorage.setItem("jobpositiondata",JSON.stringify(null));
+          history.pushState("","","./");
+          window.location.reload(false);        
+        }
+        else{
+            setUser(Number(localStorage.getItem("userdata")))
+        }
+      }
+    checkJobPosition();
  
   }, [loading]);
 
@@ -218,19 +234,14 @@ export default function Create() {
                 className={classes.margin}
                 variant="outlined"
               >
-                <div className={classes.paper}><strong>เจ้าหน้าที่รถพยาบาล</strong></div>
-                <InputLabel id="user-label"></InputLabel>
-                <Select
-                  labelId="user-label"
-                  id="user"
-                  value={userid}
-                  onChange={UserthandleChange}
-                  style={{ width: 400 }}
-                >
-                  {users.map((item: EntUser) => (
-                  <MenuItem value={item.id}>{item.name}</MenuItem>
-                ))}
-                </Select>
+                <div className={classes.paper}><strong>ชื่อเจ้าหน้าที่รถพยาบาล</strong></div>
+                <TextField
+                                    id="user"
+                                    type="string"
+                                    size="medium"
+                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name} (${item.email})`)}
+                                    style={{ width: 400 }}
+                                />
               </FormControl>
             </div>
 
