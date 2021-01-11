@@ -102,9 +102,9 @@ export default function Login(props: any) {
       }
     })
     setStatus(true);
-    const timer = setTimeout(() => {
-      setStatus(false);
-    }, 3000);
+    // const timer = setTimeout(() => {
+    //   setStatus(false);
+    // }, 3000);
   };
 
   return (
@@ -118,11 +118,11 @@ export default function Login(props: any) {
           {status ? (
             <div>
               {alert ? (
-                <Alert severity="success">
+                <Alert severity="success" onClose={() => {}}>
                   เข้าสู่ระบบสำเร็จ
                 </Alert>
               ) : (
-                  <Alert severity="warning" style={{ marginTop: 20 }}>
+                <Alert severity="error" onClose={() => {setStatus(false)}}>
                     ไม่พบข้อมูลในระบบ
                   </Alert>
                 )}
