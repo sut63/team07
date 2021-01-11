@@ -16,7 +16,7 @@ import { DefaultApi } from '../../api/apis';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import SaveIcon from '@material-ui/icons/Save';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import { EntCarbrand } from '../../api/models/EntCarbrand';
@@ -141,9 +141,7 @@ export default function Create() {
     setcarstatus(event.target.value as number);
   };
 
-  const UserthandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setUser(event.target.value as number);
-  };
+ 
   const Registrationhandlehange = (event: any) => {
     setregistration(event.target.value as string);
   };
@@ -169,16 +167,17 @@ export default function Create() {
              setStatus(true);
              setAlert(false);
          }
-         const timer = setTimeout(() => {
-             setStatus(false);
-         }, 1000);
+        
      };
 
   return (
  <Page theme={pageTheme.home}>
       <Header
         title={`${profile.givenName}`}
-      ></Header>
+      >
+       <table><h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3></table>
+
+      </Header>
       <Content>
       <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ">
       {status ? (
@@ -296,6 +295,7 @@ export default function Create() {
 
             
             <div className={classes.paper}><strong>วันที่เวลาบันทึกข้อมูล</strong></div>
+            <center> 
                 <TextField
                     className={classes.formControl}
                     id="datetime"
@@ -307,25 +307,30 @@ export default function Create() {
                      }}
                  />
                 <Typography align ="right"></Typography>
-
+                </center> 
             <div className={classes.margin}>
+              <center>
               <Button
                 onClick={() => {
                   CreateAmbulance();
                 }}
-                variant="contained"
+                variant="outlined"
                 color="primary"
+                size="large"
+                startIcon={<SaveIcon />}
               >
-                ยืนยัน
+                บันทึกข้อมูล
              </Button>
               <Button
                 style={{ marginLeft: 20 }}
                 component={RouterLink}
                 to="/mainambulance"
                 variant="contained"
+                size="large"
               >
                 กลับ
              </Button>
+             </center>
             </div>
           </form>
         </div>
