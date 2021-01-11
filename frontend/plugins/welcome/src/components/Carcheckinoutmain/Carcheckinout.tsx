@@ -22,7 +22,7 @@ const HeaderCustom = {
   
  return (
     
-    <Page theme={pageTheme.service} >
+    <Page theme={pageTheme.other} >
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      <Header
        style={HeaderCustom}
@@ -31,17 +31,21 @@ const HeaderCustom = {
      >    
      
         <div>
-      
-          <br></br>
-          <Link component={RouterLink} to="/CreateCarcheckinout">
-            <Button variant="contained" color="primary" style={{backgroundColor: "#21b6ae"}}>
-              ลงทะเบียนรถเข้าออก
+          <Link component={RouterLink} to="/maindriver">
+            <Button variant="contained" color="primary" style={{backgroundColor: "#9834AE"}}>
+              หน้าแรก
             </Button>
-          </Link>
+          </Link> 
+          <br></br>   
          </div>
     </Header>
      <Content>
-       <ContentHeader title="">
+       <ContentHeader title="ตารางการบันทึกรถเข้าออก">
+       <Link component={RouterLink} to="/CreateCarcheckinout">
+            <Button variant="contained" color="primary" style={{backgroundColor: "#9834AE"}}>
+              ลงทะเบียนรถเข้าออก
+            </Button>
+          </Link>
        </ContentHeader>
        <div>
        </div>

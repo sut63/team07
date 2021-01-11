@@ -13,10 +13,10 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import { Alert } from '@material-ui/lab';
 import { DefaultApi } from '../../api/apis';
-
+import Avatar from '@material-ui/core/Avatar';
+import { anfaBase64Function } from '../../image/anfa';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
@@ -97,6 +97,21 @@ export default function Create() {
        setPurposes(pp);
      };
      getPurposes();
+
+      const checkJobPosition = async () => {
+        const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+        setLoading(false);
+        if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+          localStorage.setItem("userdata",JSON.stringify(null));
+          localStorage.setItem("jobpositiondata",JSON.stringify(null));
+          history.pushState("","","./");
+          window.location.reload(false);        
+        }
+        else{
+            setUser(Number(localStorage.getItem("userdata")))
+        }
+      }
+    checkJobPosition();
  
   }, [loading]);
 
@@ -116,7 +131,7 @@ export default function Create() {
     setpurpose(event.target.value as number);
   };
 
-  const UserthandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const UserhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setUser(event.target.value as number);
   };
   const Notehandlehange = (event: any) => {
@@ -142,20 +157,19 @@ export default function Create() {
     } else {
       setAlert(false);
     }
-    const timer = setTimeout(() => {
-      setStatus(false);
-    }, 1000);
   };
   
-
   return (
- <Page theme={pageTheme.home}>
+ <Page theme={pageTheme.other}>
       <Header
         title={`${profile.givenName}`}
       //subtitle="Some quick intro and links."
       ></Header>
       <Content>
         <ContentHeader title="ลงทะเบียนรถเข้าออก">
+        <Avatar alt="anfa" src={anfaBase64Function} /> &nbsp;&nbsp;&nbsp;&nbsp;
+        <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3>
+        &nbsp;&nbsp;&nbsp;&nbsp;
           {status ? (
             <div>
               {alert ? (
@@ -170,6 +184,9 @@ export default function Create() {
             </div>
           ) : null}
         </ContentHeader>
+        <FormControl>
+       
+        </FormControl>
         <div className={classes.root}>
           <form noValidate autoComplete="off">
 
@@ -193,27 +210,6 @@ export default function Create() {
               </Select>
             </FormControl>
             </div>
-            
-            <div>
-              <FormControl
-                className={classes.margin}
-                variant="outlined"
-              >
-                <div className={classes.paper}><strong>เจ้าหน้าที่รถพยาบาล</strong></div>
-                <InputLabel id="user-label"></InputLabel>
-                <Select
-                  labelId="user-label"
-                  id="user"
-                  value={userid}
-                  onChange={UserthandleChange}
-                  style={{ width: 400 }}
-                >
-                  {users.map((item: EntUser) => (
-                  <MenuItem value={item.id}>{item.name}</MenuItem>
-                ))}
-                </Select>
-              </FormControl>
-            </div>
 
           <div>
             <FormControl
@@ -236,12 +232,9 @@ export default function Create() {
             </FormControl>
             </div>
 
-
           <div className={classes.paper}><strong>หมายเหตุ</strong></div>
-
             <TextField className={classes.textField}
-            style={{ width: 400 ,marginLeft:20,marginRight:-10}}
-      
+            style={{ width: 400 ,marginLeft:20,marginRight:-10}}      
               id="note"
               label=""
               variant="standard"
@@ -251,9 +244,9 @@ export default function Create() {
               value={note}
               onChange={Notehandlehange}
             />
-          
+       <br></br><br></br>
             <div className={classes.paper}><strong>วันที่เวลารถออก</strong></div>
-                <TextField
+    <center>             <TextField
                     className={classes.formControl}
                     id="checkout"
                     type="datetime-local"
@@ -263,10 +256,11 @@ export default function Create() {
                      shrink: true,
                      }}
                  />
-                <Typography align ="right"></Typography>
-
+                 </center>
+                <Typography align ="center"></Typography>
+                <br></br>
                 <div className={classes.paper}><strong>วันที่เวลารถเข้า</strong></div>
-                <TextField
+      <center>          <TextField
                     className={classes.formControl}
                     id="checkin"
                     type="datetime-local"
@@ -276,8 +270,8 @@ export default function Create() {
                      shrink: true,
                      }}
                  />
-                <Typography align ="right"></Typography>   
-
+                <Typography align ="center"></Typography>   
+</center>
             <div className={classes.margin}>
               <Button
                 onClick={() => {
@@ -299,8 +293,7 @@ export default function Create() {
             </div>
           </form>
         </div>
-        
-        
+             
       </Content>
     </Page>
   );
