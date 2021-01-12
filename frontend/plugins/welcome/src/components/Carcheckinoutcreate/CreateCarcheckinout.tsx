@@ -67,7 +67,9 @@ export default function Create() {
 
   const [loading, setLoading] = useState(true);
   const [checkin, setCheckin] = useState(String);
+  const [timedatein, setTimedatein] = useState(String);
   const [checkout, setCheckout] = useState(String);
+  const [timedateout, setTimedateout] = useState(String);
 
   const [ambulanceid, setambulance] = useState(Number);
   const [purposeid, setpurpose] = useState(Number);
@@ -100,20 +102,20 @@ export default function Create() {
      };
      getPurposes();
 
-      const checkJobPosition = async () => {
-        const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
-        setLoading(false);
-        if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
-          localStorage.setItem("userdata",JSON.stringify(null));
-          localStorage.setItem("jobpositiondata",JSON.stringify(null));
-          history.pushState("","","./");
-          window.location.reload(false);        
-        }
-        else{
-            setUser(Number(localStorage.getItem("userdata")))
-        }
-      }
-    checkJobPosition();
+    //   const checkJobPosition = async () => {
+    //     const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+    //     setLoading(false);
+    //     if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+    //       localStorage.setItem("userdata",JSON.stringify(null));
+    //       localStorage.setItem("jobpositiondata",JSON.stringify(null));
+    //       history.pushState("","","./");
+    //       window.location.reload(false);        
+    //     }
+    //     else{
+    //         setUser(Number(localStorage.getItem("userdata")))
+    //     }
+    //   }
+    // checkJobPosition();
  
   }, [loading]);
   
@@ -121,8 +123,14 @@ export default function Create() {
   const CheckinhandleChange = (event: any) => {
     setCheckin(event.target.value as string);
   };
+  const TimedateinhandleChange = (event: any) => {
+    setTimedatein(event.target.value as string);
+  };
   const CheckouthandleChange = (event: any) => {
     setCheckout(event.target.value as string);
+  };
+  const TimedateouthandleChange = (event: any) => {
+    setTimedateout(event.target.value as string);
   };
 
   const AmbulancehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -256,7 +264,7 @@ export default function Create() {
        <br></br><br></br>
             <div className={classes.paper}><strong>วันที่เวลารถออก</strong></div>
       <center>             <FormControl className={classes.margin} >
-                <TextField
+        <div>        <TextField
                  id="checkout"
                   // label="checkout"
                   type="datetime-local"
@@ -267,15 +275,29 @@ export default function Create() {
                    shrink: true,
                  }}
                  style={{ width: 400 }}
-        
-                />
+                />&nbsp;&nbsp;&nbsp;&nbsp;
+                {/* <TextField
+                  id="timedateout"
+                  //label="Alarm clock"
+                  type="time"
+                  value={timedateout}
+                  onChange={TimedateouthandleChange}
+                  className={classes.textField}
+                   InputLabelProps={{
+                  shrink: true,
+                  }}
+                     inputProps={{
+                      step: 300, // 5 min
+                   }}
+                /> */}
+                </div>
                 </FormControl>
       </center>
                 {/* <Typography align ="center"></Typography> */}
                 <br></br>
                 <div className={classes.paper}><strong>วันที่เวลารถเข้า</strong></div>
       <center>          <FormControl className={classes.margin} >
-                <TextField
+        <div>        <TextField
                  id="checkin"
                   // label="checkin"
                   type="datetime-local"
@@ -286,9 +308,24 @@ export default function Create() {
                    shrink: true,
                  }}
                  style={{ width: 400 }}
-        
-                />
+                />&nbsp;&nbsp;&nbsp;&nbsp;
+                {/* <TextField
+                  id="timedatein"
+                  //label="Alarm clock"
+                  type="time"
+                  value={timedatein}
+                  onChange={TimedateinhandleChange}
+                  className={classes.textField}
+                   InputLabelProps={{
+                  shrink: true,
+                  }}
+                     inputProps={{
+                      step: 300, // 5 min
+                   }}
+                /> */}
+                </div>
                 </FormControl>
+
                 {/* <Typography align ="center"></Typography>    */}
         </center>
             <div className={classes.margin}>
