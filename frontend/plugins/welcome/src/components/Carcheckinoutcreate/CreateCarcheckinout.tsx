@@ -118,7 +118,6 @@ export default function Create() {
     // checkJobPosition();
  
   }, [loading]);
-  
   console.log(userid)
   const CheckinhandleChange = (event: any) => {
     setCheckin(event.target.value as string);
@@ -185,7 +184,7 @@ export default function Create() {
       <Content>
         <ContentHeader title="ลงทะเบียนรถเข้าออก">
         <Avatar alt="anfa" src={anfaBase64Function} /> &nbsp;&nbsp;&nbsp;&nbsp;
-        <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3>
+        {/* <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3> */}
         &nbsp;&nbsp;&nbsp;&nbsp;
           {status ? (
             <div>
@@ -208,6 +207,24 @@ export default function Create() {
           <form noValidate autoComplete="off">
 
           <div>
+          <FormControl
+              className={classes.margin}
+              variant="outlined"
+            >
+              <div className={classes.paper}><strong>เจ้าหน้าที่รถพยาบาล</strong></div>
+              <InputLabel id="staff-label"></InputLabel>
+              <Select
+                labelId="staff-label"
+                id="user"
+                value={userid}
+                onChange={UserhandleChange}
+                style={{ width: 400 }}
+              >
+                {users.map((item: EntUser) => (
+                  <MenuItem value={item.id}>{item.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           <FormControl
               className={classes.margin}
               variant="outlined"
