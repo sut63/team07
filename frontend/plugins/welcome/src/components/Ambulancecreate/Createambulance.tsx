@@ -175,7 +175,7 @@ export default function Create() {
   };
 
   const CreateAmbulance = async ()=>{
-    if ((registration != null) && (registration != "") && (date!= null) && (date != "") && (carbrandid != null) && (carstatusid != null) && (insuranceid != null) ) {
+    if ((registration != null) && (registration != "") && (date!= null) && (date != "") && (carbrandid != "") && (carstatusid != "") && (insuranceid != "") ) {
     
     const ambulance ={
       carbrandID: carbrandid,
@@ -213,7 +213,7 @@ export default function Create() {
       {status ? (
            <div>
        {(!alert2) ?
-            <Alert severity="warning" onClose={() => {setStatus(false)}}>
+            <Alert severity="warning" onClose={() => {window.location.reload(false)}}>
             มีรถอยู่ในระบบแล้ว
             </Alert>
         :
