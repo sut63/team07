@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+// import SaveIcon from '@material-ui/icons/Save'; // icon save
+// import Swal from 'sweetalert2'; // alert
 import {
   Content,
   Header,
@@ -19,7 +21,7 @@ import { anfaBase64Function } from '../../image/anfa';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
 import { EntUser } from '../../api/models/EntUser';
 import { EntPurpose } from '../../api/models/EntPurpose';
@@ -51,7 +53,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-
 
 export default function Create() {
   const classes = useStyles();
@@ -115,7 +116,7 @@ export default function Create() {
     checkJobPosition();
  
   }, [loading]);
-
+  
   console.log(userid)
   const CheckinhandleChange = (event: any) => {
     setCheckin(event.target.value as string);
@@ -148,20 +149,23 @@ export default function Create() {
       note     : note,
       checkin  : checkin + ":00+07:00",
       checkout : checkout + ":00+07:00"
-
     };
+    
     console.log(carcheckinouts);
     const res: any = await api.createCarcheckinout({ carcheckinout: carcheckinouts });
     setStatus(true);
     if (res.id != '') {
       setAlert(true);
-      window.location.reload(false);
+      //window.location.reload(false);
     } 
   }
   else {
       setStatus(true)
       setAlert(false);
     }
+    const timer = setTimeout(() => {
+      setStatus(false);
+      }, 10000);
   };
   
   return (
@@ -178,11 +182,11 @@ export default function Create() {
           {status ? (
             <div>
               {alert ? (
-                <Alert severity="success">
+                 <Alert severity="success" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
                   บันทึกสำเร็จ
-                </Alert>
+                 </Alert>
               ) : (
-                  <Alert severity="warning" style={{ marginTop: 20 }}>
+                  <Alert severity="warning" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
                     กรุณากรอกข้อมูลอีกครั้ง
                   </Alert>
                 )}
@@ -251,31 +255,41 @@ export default function Create() {
             />
        <br></br><br></br>
             <div className={classes.paper}><strong>วันที่เวลารถออก</strong></div>
-      <center>             <TextField
-                    className={classes.formControl}
-                    id="checkout"
-                    type="datetime-local"
-                    value={checkout}
-                    onChange={CheckouthandleChange}
-                    InputLabelProps={{
-                     shrink: true,
-                     }}
-                 />
+      <center>             <FormControl className={classes.margin} >
+                <TextField
+                 id="checkout"
+                  // label="checkout"
+                  type="datetime-local"
+                  value={checkout}
+                  onChange={CheckouthandleChange}
+                  className={classes.textField}
+                  InputLabelProps={{
+                   shrink: true,
+                 }}
+                 style={{ width: 400 }}
+        
+                />
+                </FormControl>
       </center>
-                <Typography align ="center"></Typography>
+                {/* <Typography align ="center"></Typography> */}
                 <br></br>
                 <div className={classes.paper}><strong>วันที่เวลารถเข้า</strong></div>
-      <center>          <TextField
-                    className={classes.formControl}
-                    id="checkin"
-                    type="datetime-local"
-                    value={checkin}
-                    onChange={CheckinhandleChange}
-                    InputLabelProps={{
-                     shrink: true,
-                     }}
-                 />
-                <Typography align ="center"></Typography>   
+      <center>          <FormControl className={classes.margin} >
+                <TextField
+                 id="checkin"
+                  // label="checkin"
+                  type="datetime-local"
+                  value={checkin}
+                  onChange={CheckinhandleChange}
+                  className={classes.textField}
+                  InputLabelProps={{
+                   shrink: true,
+                 }}
+                 style={{ width: 400 }}
+        
+                />
+                </FormControl>
+                {/* <Typography align ="center"></Typography>    */}
         </center>
             <div className={classes.margin}>
               <Button

@@ -115,6 +115,7 @@ const [loading, setLoading] = useState(true);
           style={{ marginTop: 30 }}
           autoPlay
           loop
+          muted
        />
        </FormControl>
        </center>
