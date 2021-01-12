@@ -142,16 +142,12 @@ export default function CarInspectionPage() {
             setStatus(true);
             if (res.id != '') {
                 setAlert(true);
-                window.location.reload(false);
             }
         }
         else {
             setStatus(true);
             setAlert(false);
         }
-        const timer = setTimeout(() => {
-            setStatus(false);
-        }, 1000);
     };
 
     return (
@@ -165,11 +161,11 @@ export default function CarInspectionPage() {
                     {status ? (
                         <div>
                             {alert ? (
-                                <Alert severity="success">
+                                <Alert severity="success" onClose={() => { setStatus(false) }}>
                                     บันทึกสำเร็จ
                                 </Alert>
                             ) : (
-                                    <Alert severity="warning" style={{ marginTop: 20 }}>
+                                    <Alert severity="error" style={{ marginTop: 20 }} onClose={() => { setStatus(false) }}>
                                         พบปัญหาระหว่างบันทึกข้อมูล
                                     </Alert>
                                 )}
