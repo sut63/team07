@@ -1,0 +1,18 @@
+Test Case Undefind Component DateTime-local <Katalon>
+	
+Katalon detect
+
+command	|	Target	|	Value
+ ----------+--------------------+------------------------
+click	|	datetime	|
+type	|	datetime	|       2020-01-01T12:34
+
+change 
+	type  >> setText
+
+command	|	Target	|	Value
+ ----------+--------------------+------------------------
+click	|	datetime	|
+setText	|	datetime	|       2020-01-01T12:34
+
+
