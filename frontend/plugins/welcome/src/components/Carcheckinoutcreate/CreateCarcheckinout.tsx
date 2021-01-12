@@ -207,7 +207,6 @@ export default function Create() {
           <form noValidate autoComplete="off">
 
           <div>
-
           <FormControl
               className={classes.margin}
               variant="outlined"
@@ -226,7 +225,6 @@ export default function Create() {
                 ))}
               </Select>
             </FormControl>
-
           <FormControl
               className={classes.margin}
               variant="outlined"
