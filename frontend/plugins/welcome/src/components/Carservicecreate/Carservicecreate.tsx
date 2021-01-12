@@ -155,8 +155,10 @@ const handleInformationChange = (event: any) => {
    const res: any = await api.createCarservice({ carservice: carservice });
             setStatus(true);
             if (res.id != '') {
+              const timer = setTimeout(() => {
                 setAlert(true);
-                window.location.reload(false);
+            }, 10000);
+                //window.location.reload(false);
             }
         }
         else {
