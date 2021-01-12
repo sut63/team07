@@ -67,9 +67,7 @@ export default function Create() {
 
   const [loading, setLoading] = useState(true);
   const [checkin, setCheckin] = useState(String);
-  const [timedatein, setTimedatein] = useState(String);
   const [checkout, setCheckout] = useState(String);
-  const [timedateout, setTimedateout] = useState(String);
 
   const [ambulanceid, setambulance] = useState(Number);
   const [purposeid, setpurpose] = useState(Number);
@@ -102,34 +100,28 @@ export default function Create() {
      };
      getPurposes();
 
-    //   const checkJobPosition = async () => {
-    //     const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
-    //     setLoading(false);
-    //     if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
-    //       localStorage.setItem("userdata",JSON.stringify(null));
-    //       localStorage.setItem("jobpositiondata",JSON.stringify(null));
-    //       history.pushState("","","./");
-    //       window.location.reload(false);        
-    //     }
-    //     else{
-    //         setUser(Number(localStorage.getItem("userdata")))
-    //     }
-    //   }
-    // checkJobPosition();
+      const checkJobPosition = async () => {
+        const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+        setLoading(false);
+        if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+          localStorage.setItem("userdata",JSON.stringify(null));
+          localStorage.setItem("jobpositiondata",JSON.stringify(null));
+          history.pushState("","","./");
+          window.location.reload(false);        
+        }
+        else{
+            setUser(Number(localStorage.getItem("userdata")))
+        }
+      }
+    checkJobPosition();
  
   }, [loading]);
   console.log(userid)
   const CheckinhandleChange = (event: any) => {
     setCheckin(event.target.value as string);
   };
-  const TimedateinhandleChange = (event: any) => {
-    setTimedatein(event.target.value as string);
-  };
   const CheckouthandleChange = (event: any) => {
     setCheckout(event.target.value as string);
-  };
-  const TimedateouthandleChange = (event: any) => {
-    setTimedateout(event.target.value as string);
   };
 
   const AmbulancehandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -184,7 +176,7 @@ export default function Create() {
       <Content>
         <ContentHeader title="ลงทะเบียนรถเข้าออก">
         <Avatar alt="anfa" src={anfaBase64Function} /> &nbsp;&nbsp;&nbsp;&nbsp;
-        {/* <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3> */}
+        <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3>
         &nbsp;&nbsp;&nbsp;&nbsp;
           {status ? (
             <div>
@@ -207,7 +199,7 @@ export default function Create() {
           <form noValidate autoComplete="off">
 
           <div>
-          <FormControl
+          {/* <FormControl
               className={classes.margin}
               variant="outlined"
             >
@@ -224,7 +216,7 @@ export default function Create() {
                   <MenuItem value={item.id}>{item.name}</MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
           <FormControl
               className={classes.margin}
               variant="outlined"
