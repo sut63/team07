@@ -13,6 +13,7 @@ import CreateTransport from './components/Transport'
 import LoginPage from './components/LoginPage'
 import MainDriverPage from './components/Maindriver'
 import CreateCarrepairrecord from './components/Carrepairrecordmain'
+import Carrepairrecordtable from './components/CarrepairrecordTable';
 
 export const plugin = createPlugin({
   id: 'welcome',
@@ -29,5 +30,6 @@ export const plugin = createPlugin({
     router.registerRoute('/createtransport', CreateTransport);
     router.registerRoute('/maindriver', MainDriverPage);
     router.registerRoute('/carrepairmain', CreateCarrepairrecord);
+    router.registerRoute('/Carrepairrecordtable', Carrepairrecordtable);
   },
 });
