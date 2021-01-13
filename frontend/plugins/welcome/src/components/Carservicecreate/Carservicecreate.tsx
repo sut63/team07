@@ -155,19 +155,13 @@ const handleInformationChange = (event: any) => {
    const res: any = await api.createCarservice({ carservice: carservice });
             setStatus(true);
             if (res.id != '') {
-              const timer = setTimeout(() => {
                 setAlert(true);
-            }, 10000);
-                //window.location.reload(false);
             }
         }
         else {
             setStatus(true);
             setAlert(false);
         }
-        const timer = setTimeout(() => {
-            setStatus(false);
-        }, 10000);
     };
  
  return (
@@ -184,7 +178,7 @@ const handleInformationChange = (event: any) => {
            <div>
              {alert ? (
                <Alert severity="success">
-                 บันทึกเรียบร้อย!
+                 บันทึกสำเร็จ! กด ย้อนกลับ เพื่อดูข้อมูล
                </Alert>
              ) : (
                <Alert severity="warning" style={{ marginTop: 20 }}>
