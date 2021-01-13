@@ -128,7 +128,7 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarInspection = async () => {
-        if ((inspectionresultid != null) && (ambulanceid != null) && (datetime != null) && (datetime != "")) {
+        if ((inspectionresultid != 0) && (inspectionresultid != null) && (ambulanceid != 0) && (ambulanceid != null) && (datetime != null) && (datetime != "")) {
             const carinspection = {
                 inspectionResultID: inspectionresultid,
                 ambulanceID: ambulanceid,
@@ -138,6 +138,7 @@ export default function CarInspectionPage() {
 
 
             };
+            console.log(carinspection);
             const res: any = await api.createCarinspection({ carinspection: carinspection });
             setStatus(true);
             if (res.id != '') {
