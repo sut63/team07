@@ -25,6 +25,7 @@ import { EntUser } from '../../api/models/EntUser';
 import { EntRepairing } from '../../api/models/EntRepairing';
 ///import { EntCarInspectionEdges } from '../../api';
 ///import ComponentsTable from '../listambulance';
+import ComponentsTable from '../CarrepairrecordTable';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -129,7 +130,7 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarrepairrecord = async () => {
-        if ((repairingid != null) && (carinspectionid != null) && (userid != null) && (datetime != "") && (datetime != null)) {
+        if ((repairingid != null) && (repairingid != "") && (carinspectionid != null) && (carinspectionid != "") && (userid != null) && (userid != "") && (datetime != "") && (datetime != null)) {
         const carrepairrecord = {
             carInspectionID : carinspectionid,
             repairingID : repairingid,
@@ -149,7 +150,7 @@ export default function CarInspectionPage() {
         }
         const timer = setTimeout(() => {
             setStatus(false);
-        }, 1000);
+        }, 10000);
     };
 
     return (
@@ -241,7 +242,7 @@ export default function CarInspectionPage() {
                             >
                                 <TextField
                                     id="deathtime"
-                                    label="เดือน/วัน/ปี"
+                                    label="วัน/เดือน/ปี เวลา"
                                     type="datetime-local"
                                     value={datetime}
                                     onChange={DateTimehandleChange}
@@ -269,7 +270,6 @@ export default function CarInspectionPage() {
                         </center>
                     </form>
                 </div>
-                
             </Content>
         </Page>   
     );
