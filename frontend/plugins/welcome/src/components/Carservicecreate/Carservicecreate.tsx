@@ -142,7 +142,7 @@ const handleInformationChange = (event: any) => {
  };
 
  const CreateCarservice = async ()=>{
-   if ((customer != null) && (customer != "") && (location != null) && (location != "") && (information != null) && (information != "") && (datetime != null) && (datetime != "") && (urgentid != null) && (disid != null)) {
+   if ((customer != null) && (customer != "") && (location != null) && (location != "") && (information != null) && (information != "") && (datetime != null) && (datetime != "") && (urgentid != 0) &&  (urgentid != null) && (disid != 0) && (disid != null)) {
    const carservice ={
      userID: userid,
      urgentID: urgentid,
