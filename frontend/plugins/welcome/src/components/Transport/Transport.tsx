@@ -24,6 +24,7 @@ import { EntSend } from '../../api/models/EntSend';
 import { EntReceive } from '../../api/models/EntReceive';
 import { EntUser } from '../../api/models/EntUser';
 import ComponanceTransportTable from '../TransportTable';
+import { EntTransport } from '../../api';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -143,7 +144,7 @@ export default function Create() {
 
 
   const CreateTransport = async () => {
-    if ((sendid != "") && (receiveid != "") && (ambulanceid != "")){
+    if ((sendid != 0) && (receiveid != 0) && (ambulanceid != 0)){
     const transports = {
       sendID: sendid,
       receiveID: receiveid,
@@ -264,9 +265,9 @@ export default function Create() {
                   onChange={AmbulancehandleChange}
                   style={{ width: 400 }}
                 >
-                  {ambulances.map((item: EntAmbulance) => (
-                  <MenuItem value={item.id}>{item.carregistration}</MenuItem>
-                ))}
+                  {ambulances.filter((filter:any) => filter.edges.Hasstatus.resultName == "พร้อมใช้งาน").map((item: any) => (
+                                        <MenuItem value={item.id}>{item.carregistration}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </div>

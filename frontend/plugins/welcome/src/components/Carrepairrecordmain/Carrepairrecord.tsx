@@ -130,7 +130,7 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarrepairrecord = async () => {
-        if ((repairingid != null) && (repairingid != "") && (carinspectionid != null) && (carinspectionid != "") && (userid != null) && (userid != "") && (datetime != "") && (datetime != null)) {
+        if ((repairingid != null) && (repairingid != 0) && (carinspectionid != null) && (carinspectionid != 0) && (userid != null) && (userid != 0) && (datetime != "") && (datetime != null)) {
         const carrepairrecord = {
             carInspectionID : carinspectionid,
             repairingID : repairingid,
@@ -150,7 +150,7 @@ export default function CarInspectionPage() {
         }
         const timer = setTimeout(() => {
             setStatus(false);
-        }, 10000);
+        }, 1000);
     };
 
     return (
