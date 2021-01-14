@@ -7,7 +7,7 @@ import {
   pageTheme,
   ContentHeader,
 } from '@backstage/core';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles, formatMs } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -160,21 +160,33 @@ export default function Create() {
   const Registrationhandlehange = (event: any) => {
     setregistration(event.target.value as string);
   };
+  
+  
   const forcheck = () => {
-    for (const color of ambulance){
-      if(registration === color.carregistration){
-             setStatus(true);
-             setAlert(false);
-             setAlerts(false);
-             //window.location.reload(false);
-      }
-      else{
-        CreateAmbulance();
-      }
+    var i = 0;
+    for (const amb of ambulance){
+     i++;
+    }
+    if(i === 0){
+      CreateAmbulance();
+   }
+   else{
+    for (const amb of ambulance){
+      if(registration === amb.carregistration){
+        setStatus(true);
+        setAlert(false);
+        setAlerts(false);
+        //window.location.reload(false);
+ }
+ else{
+   CreateAmbulance();
+ }
+     }
+   }
   }
-  };
 
   const CreateAmbulance = async ()=>{
+
     if ((registration != null) && (registration != "") && (date!= null) && (date != "") && (carbrandid != "") && (carstatusid != "") && (insuranceid != "") ) {
     
     const ambulance ={
@@ -199,6 +211,9 @@ export default function Create() {
          }
         
      };
+     
+        
+
 
   return (
  <Page theme={pageTheme.home}>
