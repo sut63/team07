@@ -184,6 +184,16 @@ func (ctl *CarRepairrecordController) DeleteCarRepairrecord(c *gin.Context) {
 		return
 	}
 
+	err = ctl.client.CarRepairrecord.
+		DeleteOneID(int(id)).
+		Exec(context.Background())
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	c.JSON(200, gin.H{"result": fmt.Sprintf("ok deleted %v", id)})
 }
 
