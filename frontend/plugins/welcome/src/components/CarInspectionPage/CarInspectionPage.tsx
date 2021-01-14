@@ -218,7 +218,7 @@ export default function CarInspectionPage() {
                                 onChange={AmbulancehandleChange}
                                 style={{ width: 400 }}
                             >
-                                {ambulances.filter((filter:any) => filter.edges.Hasstatus.resultName == "ส่งตรวจสภาพรถ").map((item: EntAmbulance) => (
+                                {ambulances.filter((filter:any) => filter.edges?.Hasstatus?.resultName == "ส่งตรวจสภาพรถ").map((item: EntAmbulance) => (
                                     <MenuItem value={item.id}>{item.carregistration}</MenuItem>
                                 ))}
                             </Select>
@@ -237,7 +237,7 @@ export default function CarInspectionPage() {
                                     onChange={InspectionResulthandleChange}
                                     style={{ width: 400 }}
                                 >
-                                    {inspectionresults.filter((filter: any) => filter.edges.jobposition.positionName == "เจ้าหน้าที่ตรวจสภาพรถ").map((item: EntInspectionResult) => (
+                                    {inspectionresults.filter((filter: any) => filter.edges?.jobposition?.positionName == "เจ้าหน้าที่ตรวจสภาพรถ").map((item: EntInspectionResult) => (
                                         <MenuItem value={item.id}>{item.resultName}</MenuItem>
                                     ))}
                                 </Select>
