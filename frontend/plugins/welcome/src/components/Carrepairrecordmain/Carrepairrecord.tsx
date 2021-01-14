@@ -270,6 +270,7 @@ export default function CarInspectionPage() {
                         </center>
                     </form>
                 </div>
+                <ComponentsTable></ComponentsTable>
             </Content>
         </Page>   
     );

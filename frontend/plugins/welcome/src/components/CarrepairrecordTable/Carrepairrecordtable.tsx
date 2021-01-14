@@ -13,6 +13,7 @@ import { DefaultApi } from '../../api/apis';
 import moment from 'moment';
 
 import { EntCarRepairrecord } from '../../api/models/EntCarRepairrecord';
+import { EntCarInspection } from '../../api/models/EntCarInspection';
 
 const useStyles = makeStyles({
     table: {
@@ -34,6 +35,13 @@ const useStyles = makeStyles({
         setCarrepairrecords(res);
       };
       getCarrepairrecords();
+
+      const getCarinspections = async () => {
+        const res2 = await api.listCarinspection();
+        setLoading(false);
+        setCarInspections(res2);
+      };
+      getCarinspections();
    
     }, [loading]);
 
@@ -56,10 +64,12 @@ const useStyles = makeStyles({
               </TableRow>
             </TableHead>
             <TableBody>
-              {carrepairrecords.map((item: EntCarRepairrecord) => (
+              {carrepairrecords.map((item: any) => (
                 <TableRow key={item.id}>
                   <TableCell align="center">{item.id}</TableCell>
-                  <TableCell align="center">{item.edges?.carinspection?.id}</TableCell>
+                  {carinspections.filter((item2: EntCarInspection) => item2.id == item.edges.carinspection.id).map((item3: EntCarInspection) => (
+                    <TableCell align="center">{item3.edges.ambulance.carregistration}</TableCell>
+                  ))}
                   <TableCell align="center">{item.edges?.keeper?.repairpart}</TableCell>
                   <TableCell align="center">{item.edges?.user?.name}</TableCell>
                   <TableCell align="center">{moment(item.datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
@@ -68,7 +78,7 @@ const useStyles = makeStyles({
                       onClick={() => {
                          deleteCarRepairrecords(item.id);
                       }}
-                      style={{ marginLeft: 10 , backgroundColor: "#140087" }}
+                      style={{ marginLeft: 10 , backgroundColor: "#140020" }}
                       variant="contained"
                       color="secondary"
                     >
