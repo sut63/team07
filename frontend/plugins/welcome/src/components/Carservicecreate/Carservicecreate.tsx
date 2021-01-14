@@ -162,6 +162,10 @@ const handleInformationChange = (event: any) => {
             setStatus(true);
             setAlert(false);
         }
+  const timer = setTimeout(()=>{
+     setStatus(false);
+     window.location.reload(false);
+   },5000);
     };
  
  return (
