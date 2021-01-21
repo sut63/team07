@@ -26,6 +26,7 @@ type Carservice struct {
 	UrgentID   int 
 	UserID     int
 	Customer  string
+	Age		int
 	Location  string
 	Information  string 
 	Datetime  string
@@ -96,17 +97,23 @@ func (ctl *CarserviceController) CreateCarservice(c *gin.Context) {
 		SetDisid(di).
 		SetDatetime(times).
 		SetCustomer(obj.Customer).
+		SetAge(obj.Age).
 		SetLocation(obj.Location).
 		SetInformation(obj.Information).
 		Save(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error": err,
 		})
 		return
 	}
 
-	c.JSON(200, cars)
+	c.JSON(200, gin.H{
+		"status" : true,
+		"data" : cars,
+	})
 }
 
 // GetCarservice handles GET requests to retrieve a carservice entity

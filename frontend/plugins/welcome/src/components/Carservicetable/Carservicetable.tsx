@@ -45,6 +45,7 @@ export default function ComponentsTable() {
          <TableRow>
            <TableCell align="center">เลขที่</TableCell>
            <TableCell align="center">ชื่อผู้ใช้บริการ</TableCell>
+           <TableCell align="center">อายุผู้ใช้บริการ</TableCell>
            <TableCell align="center">ที่อยู่</TableCell>
            <TableCell align="center">การใช้บริการ</TableCell>
            <TableCell align="center">ระยะทาง</TableCell>
@@ -58,6 +59,7 @@ export default function ComponentsTable() {
            <TableRow key={item.id}>
              <TableCell align="center">{item.id}</TableCell>
              <TableCell align="center">{item.customer}</TableCell>
+             <TableCell align="center">{item.age}</TableCell>
              <TableCell align="center">{item.location}</TableCell>
              <TableCell align="center">{item.information}</TableCell>
              <TableCell align="center">{item.edges?.urgentid?.urgent}</TableCell>

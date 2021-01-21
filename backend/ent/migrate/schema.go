@@ -195,6 +195,7 @@ var (
 	CarservicesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "customer", Type: field.TypeString},
+		{Name: "age", Type: field.TypeInt},
 		{Name: "location", Type: field.TypeString},
 		{Name: "information", Type: field.TypeString},
 		{Name: "datetime", Type: field.TypeTime},
@@ -210,21 +211,21 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "carservices_distances_disid",
-				Columns: []*schema.Column{CarservicesColumns[5]},
+				Columns: []*schema.Column{CarservicesColumns[6]},
 
 				RefColumns: []*schema.Column{DistancesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "carservices_urgents_urgentid",
-				Columns: []*schema.Column{CarservicesColumns[6]},
+				Columns: []*schema.Column{CarservicesColumns[7]},
 
 				RefColumns: []*schema.Column{UrgentsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "carservices_users_userid",
-				Columns: []*schema.Column{CarservicesColumns[7]},
+				Columns: []*schema.Column{CarservicesColumns[8]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

@@ -21,6 +21,12 @@ import { exists, mapValues } from '../runtime';
 export interface ControllersCarservice {
     /**
      * 
+     * @type {number}
+     * @memberof ControllersCarservice
+     */
+    age?: number;
+    /**
+     * 
      * @type {string}
      * @memberof ControllersCarservice
      */
@@ -73,6 +79,7 @@ export function ControllersCarserviceFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
+        'age': !exists(json, 'age') ? undefined : json['age'],
         'customer': !exists(json, 'customer') ? undefined : json['customer'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'distanceID': !exists(json, 'distanceID') ? undefined : json['distanceID'],
@@ -92,6 +99,7 @@ export function ControllersCarserviceToJSON(value?: ControllersCarservice | null
     }
     return {
         
+        'age': value.age,
         'customer': value.customer,
         'datetime': value.datetime,
         'distanceID': value.distanceID,

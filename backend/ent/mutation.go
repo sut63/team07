@@ -3124,6 +3124,8 @@ type CarserviceMutation struct {
 	typ             string
 	id              *int
 	customer        *string
+	age             *int
+	addage          *int
 	location        *string
 	information     *string
 	_Datetime       *time.Time
@@ -3252,6 +3254,63 @@ func (m *CarserviceMutation) OldCustomer(ctx context.Context) (v string, err err
 // ResetCustomer reset all changes of the "customer" field.
 func (m *CarserviceMutation) ResetCustomer() {
 	m.customer = nil
+}
+
+// SetAge sets the age field.
+func (m *CarserviceMutation) SetAge(i int) {
+	m.age = &i
+	m.addage = nil
+}
+
+// Age returns the age value in the mutation.
+func (m *CarserviceMutation) Age() (r int, exists bool) {
+	v := m.age
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAge returns the old age value of the Carservice.
+// If the Carservice object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarserviceMutation) OldAge(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldAge is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldAge requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAge: %w", err)
+	}
+	return oldValue.Age, nil
+}
+
+// AddAge adds i to age.
+func (m *CarserviceMutation) AddAge(i int) {
+	if m.addage != nil {
+		*m.addage += i
+	} else {
+		m.addage = &i
+	}
+}
+
+// AddedAge returns the value that was added to the age field in this mutation.
+func (m *CarserviceMutation) AddedAge() (r int, exists bool) {
+	v := m.addage
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAge reset all changes of the "age" field.
+func (m *CarserviceMutation) ResetAge() {
+	m.age = nil
+	m.addage = nil
 }
 
 // SetLocation sets the location field.
@@ -3496,9 +3555,12 @@ func (m *CarserviceMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *CarserviceMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.customer != nil {
 		fields = append(fields, carservice.FieldCustomer)
+	}
+	if m.age != nil {
+		fields = append(fields, carservice.FieldAge)
 	}
 	if m.location != nil {
 		fields = append(fields, carservice.FieldLocation)
@@ -3519,6 +3581,8 @@ func (m *CarserviceMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case carservice.FieldCustomer:
 		return m.Customer()
+	case carservice.FieldAge:
+		return m.Age()
 	case carservice.FieldLocation:
 		return m.Location()
 	case carservice.FieldInformation:
@@ -3536,6 +3600,8 @@ func (m *CarserviceMutation) OldField(ctx context.Context, name string) (ent.Val
 	switch name {
 	case carservice.FieldCustomer:
 		return m.OldCustomer(ctx)
+	case carservice.FieldAge:
+		return m.OldAge(ctx)
 	case carservice.FieldLocation:
 		return m.OldLocation(ctx)
 	case carservice.FieldInformation:
@@ -3557,6 +3623,13 @@ func (m *CarserviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCustomer(v)
+		return nil
+	case carservice.FieldAge:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAge(v)
 		return nil
 	case carservice.FieldLocation:
 		v, ok := value.(string)
@@ -3586,13 +3659,21 @@ func (m *CarserviceMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *CarserviceMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addage != nil {
+		fields = append(fields, carservice.FieldAge)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *CarserviceMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case carservice.FieldAge:
+		return m.AddedAge()
+	}
 	return nil, false
 }
 
@@ -3601,6 +3682,13 @@ func (m *CarserviceMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *CarserviceMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case carservice.FieldAge:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAge(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Carservice numeric field %s", name)
 }
@@ -3631,6 +3719,9 @@ func (m *CarserviceMutation) ResetField(name string) error {
 	switch name {
 	case carservice.FieldCustomer:
 		m.ResetCustomer()
+		return nil
+	case carservice.FieldAge:
+		m.ResetAge()
 		return nil
 	case carservice.FieldLocation:
 		m.ResetLocation()

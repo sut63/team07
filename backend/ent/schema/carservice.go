@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"regexp"
+	"errors"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/edge"
@@ -14,9 +16,29 @@ type Carservice struct {
 // Fields of the Carservice.
 func (Carservice) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("customer"),
-		field.String("location"),
-		field.String("information"),
+		field.String("customer").Validate(func(s string) error {
+			match, _ := regexp.MatchString("^[ก-๙a-zA-Z-\\s]+$",s)
+			if !match {
+				return errors.New("รูปแบบไม่ถูกต้อง")
+			}
+			return nil
+		}),
+		field.Int("age").Positive(),
+
+		field.String("location").Validate(func(s string) error {
+			match, _ := regexp.MatchString("^[ก-๙a-zA-Z-\\s]+$",s)
+			if !match {
+				return errors.New("รูปแบบไม่ถูกต้อง")
+			}
+			return nil
+		}),
+		field.String("information").Validate(func(s string) error {
+			match, _ := regexp.MatchString("^[ก-๙a-zA-Z-\\s]+$",s)
+			if !match {
+				return errors.New("รูปแบบไม่ถูกต้อง")
+			}
+			return nil
+		}),
 		field.Time("Datetime"),
 	}
 }

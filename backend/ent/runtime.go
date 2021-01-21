@@ -7,6 +7,7 @@ import (
 
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carcheckinout"
+	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
@@ -36,6 +37,24 @@ func init() {
 	carcheckinoutDescCheckIn := carcheckinoutFields[1].Descriptor()
 	// carcheckinout.DefaultCheckIn holds the default value on creation for the checkIn field.
 	carcheckinout.DefaultCheckIn = carcheckinoutDescCheckIn.Default.(func() time.Time)
+	carserviceFields := schema.Carservice{}.Fields()
+	_ = carserviceFields
+	// carserviceDescCustomer is the schema descriptor for customer field.
+	carserviceDescCustomer := carserviceFields[0].Descriptor()
+	// carservice.CustomerValidator is a validator for the "customer" field. It is called by the builders before save.
+	carservice.CustomerValidator = carserviceDescCustomer.Validators[0].(func(string) error)
+	// carserviceDescAge is the schema descriptor for age field.
+	carserviceDescAge := carserviceFields[1].Descriptor()
+	// carservice.AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	carservice.AgeValidator = carserviceDescAge.Validators[0].(func(int) error)
+	// carserviceDescLocation is the schema descriptor for location field.
+	carserviceDescLocation := carserviceFields[2].Descriptor()
+	// carservice.LocationValidator is a validator for the "location" field. It is called by the builders before save.
+	carservice.LocationValidator = carserviceDescLocation.Validators[0].(func(string) error)
+	// carserviceDescInformation is the schema descriptor for information field.
+	carserviceDescInformation := carserviceFields[3].Descriptor()
+	// carservice.InformationValidator is a validator for the "information" field. It is called by the builders before save.
+	carservice.InformationValidator = carserviceDescInformation.Validators[0].(func(string) error)
 	distanceFields := schema.Distance{}.Fields()
 	_ = distanceFields
 	// distanceDescDistance is the schema descriptor for Distance field.
