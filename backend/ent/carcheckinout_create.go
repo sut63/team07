@@ -29,6 +29,24 @@ func (ccioc *CarCheckInOutCreate) SetNote(s string) *CarCheckInOutCreate {
 	return ccioc
 }
 
+// SetPlace sets the place field.
+func (ccioc *CarCheckInOutCreate) SetPlace(s string) *CarCheckInOutCreate {
+	ccioc.mutation.SetPlace(s)
+	return ccioc
+}
+
+// SetPerson sets the person field.
+func (ccioc *CarCheckInOutCreate) SetPerson(i int) *CarCheckInOutCreate {
+	ccioc.mutation.SetPerson(i)
+	return ccioc
+}
+
+// SetDistance sets the distance field.
+func (ccioc *CarCheckInOutCreate) SetDistance(f float64) *CarCheckInOutCreate {
+	ccioc.mutation.SetDistance(f)
+	return ccioc
+}
+
 // SetCheckIn sets the checkIn field.
 func (ccioc *CarCheckInOutCreate) SetCheckIn(t time.Time) *CarCheckInOutCreate {
 	ccioc.mutation.SetCheckIn(t)
@@ -116,6 +134,30 @@ func (ccioc *CarCheckInOutCreate) Save(ctx context.Context) (*CarCheckInOut, err
 	if _, ok := ccioc.mutation.Note(); !ok {
 		return nil, &ValidationError{Name: "note", err: errors.New("ent: missing required field \"note\"")}
 	}
+	if _, ok := ccioc.mutation.Place(); !ok {
+		return nil, &ValidationError{Name: "place", err: errors.New("ent: missing required field \"place\"")}
+	}
+	if v, ok := ccioc.mutation.Place(); ok {
+		if err := carcheckinout.PlaceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "place", err: fmt.Errorf("ent: validator failed for field \"place\": %w", err)}
+		}
+	}
+	if _, ok := ccioc.mutation.Person(); !ok {
+		return nil, &ValidationError{Name: "person", err: errors.New("ent: missing required field \"person\"")}
+	}
+	if v, ok := ccioc.mutation.Person(); ok {
+		if err := carcheckinout.PersonValidator(v); err != nil {
+			return nil, &ValidationError{Name: "person", err: fmt.Errorf("ent: validator failed for field \"person\": %w", err)}
+		}
+	}
+	if _, ok := ccioc.mutation.Distance(); !ok {
+		return nil, &ValidationError{Name: "distance", err: errors.New("ent: missing required field \"distance\"")}
+	}
+	if v, ok := ccioc.mutation.Distance(); ok {
+		if err := carcheckinout.DistanceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "distance", err: fmt.Errorf("ent: validator failed for field \"distance\": %w", err)}
+		}
+	}
 	if _, ok := ccioc.mutation.CheckIn(); !ok {
 		v := carcheckinout.DefaultCheckIn()
 		ccioc.mutation.SetCheckIn(v)
@@ -190,6 +232,30 @@ func (ccioc *CarCheckInOutCreate) createSpec() (*CarCheckInOut, *sqlgraph.Create
 			Column: carcheckinout.FieldNote,
 		})
 		ccio.Note = value
+	}
+	if value, ok := ccioc.mutation.Place(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carcheckinout.FieldPlace,
+		})
+		ccio.Place = value
+	}
+	if value, ok := ccioc.mutation.Person(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carcheckinout.FieldPerson,
+		})
+		ccio.Person = value
+	}
+	if value, ok := ccioc.mutation.Distance(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carcheckinout.FieldDistance,
+		})
+		ccio.Distance = value
 	}
 	if value, ok := ccioc.mutation.CheckIn(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

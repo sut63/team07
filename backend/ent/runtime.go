@@ -35,8 +35,34 @@ func init() {
 	ambulance.DefaultRegisterat = ambulanceDescRegisterat.Default.(func() time.Time)
 	carcheckinoutFields := schema.CarCheckInOut{}.Fields()
 	_ = carcheckinoutFields
+	// carcheckinoutDescPlace is the schema descriptor for place field.
+	carcheckinoutDescPlace := carcheckinoutFields[1].Descriptor()
+	// carcheckinout.PlaceValidator is a validator for the "place" field. It is called by the builders before save.
+	carcheckinout.PlaceValidator = carcheckinoutDescPlace.Validators[0].(func(string) error)
+	// carcheckinoutDescPerson is the schema descriptor for person field.
+	carcheckinoutDescPerson := carcheckinoutFields[2].Descriptor()
+	// carcheckinout.PersonValidator is a validator for the "person" field. It is called by the builders before save.
+	carcheckinout.PersonValidator = func() func(int) error {
+		validators := carcheckinoutDescPerson.Validators
+		fns := [...]func(int) error{
+			validators[0].(func(int) error),
+			validators[1].(func(int) error),
+		}
+		return func(person int) error {
+			for _, fn := range fns {
+				if err := fn(person); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// carcheckinoutDescDistance is the schema descriptor for distance field.
+	carcheckinoutDescDistance := carcheckinoutFields[3].Descriptor()
+	// carcheckinout.DistanceValidator is a validator for the "distance" field. It is called by the builders before save.
+	carcheckinout.DistanceValidator = carcheckinoutDescDistance.Validators[0].(func(float64) error)
 	// carcheckinoutDescCheckIn is the schema descriptor for checkIn field.
-	carcheckinoutDescCheckIn := carcheckinoutFields[1].Descriptor()
+	carcheckinoutDescCheckIn := carcheckinoutFields[4].Descriptor()
 	// carcheckinout.DefaultCheckIn holds the default value on creation for the checkIn field.
 	carcheckinout.DefaultCheckIn = carcheckinoutDescCheckIn.Default.(func() time.Time)
 	carinspectionFields := schema.CarInspection{}.Fields()

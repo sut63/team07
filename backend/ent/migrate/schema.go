@@ -58,6 +58,9 @@ var (
 	CarCheckInOutsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "note", Type: field.TypeString},
+		{Name: "place", Type: field.TypeString},
+		{Name: "person", Type: field.TypeInt},
+		{Name: "distance", Type: field.TypeFloat64},
 		{Name: "check_in", Type: field.TypeTime},
 		{Name: "check_out", Type: field.TypeTime},
 		{Name: "ambulance", Type: field.TypeInt, Nullable: true},
@@ -72,21 +75,21 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "car_check_in_outs_ambulances_carcheckinout",
-				Columns: []*schema.Column{CarCheckInOutsColumns[4]},
+				Columns: []*schema.Column{CarCheckInOutsColumns[7]},
 
 				RefColumns: []*schema.Column{AmbulancesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "car_check_in_outs_purposes_carcheckinout",
-				Columns: []*schema.Column{CarCheckInOutsColumns[5]},
+				Columns: []*schema.Column{CarCheckInOutsColumns[8]},
 
 				RefColumns: []*schema.Column{PurposesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "car_check_in_outs_users_carcheckinout",
-				Columns: []*schema.Column{CarCheckInOutsColumns[6]},
+				Columns: []*schema.Column{CarCheckInOutsColumns[9]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

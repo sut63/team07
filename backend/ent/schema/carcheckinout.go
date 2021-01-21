@@ -16,6 +16,9 @@ type CarCheckInOut struct {
 func (CarCheckInOut) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("note"),
+		field.String("place").NotEmpty(),
+		field.Int("person").Positive().Max(6),
+		field.Float("distance").Positive(),
 		field.Time("checkIn").Default(time.Now),
 		field.Time("checkOut"),
 	}

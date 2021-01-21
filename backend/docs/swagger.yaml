@@ -156,6 +156,9 @@ definitions:
       checkOut:
         description: CheckOut holds the value of the "checkOut" field.
         type: string
+      distance:
+        description: Distance holds the value of the "distance" field.
+        type: number
       edges:
         $ref: '#/definitions/ent.CarCheckInOutEdges'
         description: |-
@@ -167,6 +170,12 @@ definitions:
         type: integer
       note:
         description: Note holds the value of the "note" field.
+        type: string
+      person:
+        description: Person holds the value of the "person" field.
+        type: integer
+      place:
+        description: Place holds the value of the "place" field.
         type: string
     type: object
   ent.CarCheckInOutEdges:
@@ -961,39 +970,6 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a carcheckinout entity by ID
-    put:
-      consumes:
-      - application/json
-      description: update carcheckinout by ID
-      operationId: update-carcheckinout
-      parameters:
-      - description: CarCheckInOut ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: CarCheckInOut entity
-        in: body
-        name: carcheckinout
-        required: true
-        schema:
-          $ref: '#/definitions/ent.CarCheckInOut'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ent.CarCheckInOut'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Update a carcheckinout entity by ID
   /carinspections:
     get:
       description: list carinspection entities
@@ -1302,10 +1278,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get urgent by ID
-      operationId: get-urgent
+      description: get carservice by ID
+      operationId: get-carservice
       parameters:
-      - description: Urgent ID
+      - description: Carservice ID
         in: path
         name: id
         required: true
@@ -1316,7 +1292,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Urgent'
+            $ref: '#/definitions/ent.Carservice'
         "400":
           description: Bad Request
           schema:
@@ -1329,7 +1305,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a urgent entity by ID
+      summary: Get a carservice entity by ID
   /distances:
     get:
       description: list distance entities

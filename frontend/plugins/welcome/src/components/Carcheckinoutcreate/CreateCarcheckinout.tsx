@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-// import SaveIcon from '@material-ui/icons/Save'; // icon save
-// import Swal from 'sweetalert2'; // alert
 import {
   Content,
   Header,
@@ -21,7 +19,6 @@ import { anfaBase64Function } from '../../image/anfa';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-// import Typography from '@material-ui/core/Typography';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
 import { EntUser } from '../../api/models/EntUser';
 import { EntPurpose } from '../../api/models/EntPurpose';
@@ -59,11 +56,16 @@ export default function Create() {
   const profile = { givenName: 'ระบบลงทะเบียนรถเข้าออก' };
   const api = new DefaultApi();
   const [status, setStatus] = useState(false);
-  const [alert, setAlert] = useState(true);
   //เก็บข้อมูลที่จะดึงมา
   const [ambulances, setAmbulances] = useState<EntAmbulance[]>([]);
   const [purposes, setPurposes] = useState<EntPurpose[]>([]);
   const [users, setUsers] = useState<EntUser[]>([]);
+
+  const [errormessege, setErrorMessege] = useState(String);
+  const [alerttype, setAlertType] = useState(String);
+  const [personError, setpersonError] = React.useState('');
+  const [placeError, setplaceError] = React.useState('');
+  const [distanceError, setdistanceError] = React.useState('');
 
   const [loading, setLoading] = useState(true);
   const [checkin, setCheckin] = useState(String);
@@ -73,6 +75,9 @@ export default function Create() {
   const [purposeid, setpurpose] = useState(Number);
   const [userid, setUser] = useState(Number);
   const [note, setnote] = useState(String);
+  const [place, setplace] = useState(String);
+  const [person, setperson] = useState(Number);
+  const [distance, setdistance] = useState(Number);
 
   useEffect(() => {
 
@@ -135,38 +140,108 @@ export default function Create() {
   const UserhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setUser(event.target.value as number);
   };
+
   const Notehandlehange = (event: any) => {
     setnote(event.target.value as string);
   };
 
+  const Placehandlehange = (event: any) => {
+    const { value } = event.target;
+    const validateValue = value
+    checkfield('place', validateValue)
+    setplace(event.target.value as string);
+  };
+
+  const Distancehandlehange = (event: any) => {
+    const { value } = event.target;
+    const validateValue = value
+    checkfield('distance', validateValue)
+    setdistance(event.target.value as number);
+  };
+
+  const Personhandlehange = (event: any) => {
+    const { value } = event.target;
+    const validateValue = value
+    checkfield('person', validateValue)
+    setperson(event.target.value as number);
+  };
+
+  const validatePerson = (val: number) =>{
+    return val >=1 && val <=6 ? true:false
+  }
+
+  const validateDistance = (val: number) =>{
+    return val >=10 ? true:false
+  }
+
+  const validatePlace = (val: string) =>{
+    return val.length != 0 ? true:false
+  }
+
+  const checkfield = (id: string, value:any) =>{
+    switch(id){
+      case 'place':
+        validatePlace(value) ? setplaceError('') : setplaceError('กรุณาใส่สถานที่');
+        return;
+      case 'distance':
+        validateDistance(value) ? setdistanceError('') : setdistanceError('กรุณาใส่ระยะทาง(มากกว่า 10)ให้ถูกต้อง');
+        return;
+      case 'person':
+        validatePerson(value) ? setpersonError('') : setpersonError('กรุณาใส่จำนวนเจ้าหน้าที่ให้ถูกต้อง(1-6คน/คัน)');
+        return;
+      default:
+        return;
+    }
+  }
+
   const CreateCarcheckinout = async () => {
-    if ((ambulanceid != null) && (purposeid != null) && (checkin != "") && (checkout != "") && (checkin != null) && (checkout != null)) {
+   if((checkin != "") && (checkout != "") && (checkin != null) && (checkout != null)) {
     const carcheckinouts = {
       ambulance: ambulanceid,
       name     : userid,
       purpose  : purposeid,
+      person   : Number(person),
+      distance : Number(distance),
+      place    : place,
       note     : note,
       checkin  : checkin + ":00+07:00",
       checkout : checkout + ":00+07:00"
     };
     
     console.log(carcheckinouts);
-    const res: any = await api.createCarcheckinout({ carcheckinout: carcheckinouts });
-    setStatus(true);
-    if (res.id != '') {
-      setAlert(true);
-      //window.location.reload(false);
-    } 
-  }
-  else {
-      setStatus(true)
-      setAlert(false);
+    const apiUrl = 'http://localhost:8080/api/v1/carcheckinouts';
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(carcheckinouts),
+        };
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === true) {
+                    setErrorMessege("บันทึกข้อมูลสำเร็จ");
+                    setAlertType("success");
+                }
+                else {
+                    ErrorCaseCheck(data.error.Name);
+                    setAlertType("error");
+                }
+            });}
+        else{
+          ErrorCaseCheck("กรุณาใส่เวลา");
+          setAlertType("error");
+        }
+        setStatus(true);
+    };
+
+    const ErrorCaseCheck = (casename: string) => {
+        if (casename == "person") { setErrorMessege("จำนวนเจ้าหน้าที่ 1-6 คน/คัน"); }
+        else if (casename == "distance") { setErrorMessege("กรุณาใส่ระยะทางให้ถูกต้อง"); }
+        else if (casename == "place") { setErrorMessege("กรุณาใส่สถานที่ก่อน"); }
+        else { setErrorMessege("บันทึกไม่สำเร็จ"); }
     }
-    const timer = setTimeout(() => {
-      setStatus(false);
-      }, 10000);
-  };
-  
+
   return (
  <Page theme={pageTheme.other}>
       <Header
@@ -180,43 +255,19 @@ export default function Create() {
         &nbsp;&nbsp;&nbsp;&nbsp;
           {status ? (
             <div>
-              {alert ? (
-                 <Alert severity="success" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
-                  บันทึกสำเร็จ
-                 </Alert>
-              ) : (
-                  <Alert severity="warning" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
-                    กรุณากรอกข้อมูลอีกครั้ง
+          {alerttype != "" ? (
+                  <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
+                      {errormessege}
                   </Alert>
-                )}
+            ) : null}
             </div>
           ) : null}
         </ContentHeader>
-        <FormControl>
-       
-        </FormControl>
+        
         <div className={classes.root}>
-          <form noValidate autoComplete="off">
-
+        <form noValidate autoComplete="off">
+         
           <div>
-          {/* <FormControl
-              className={classes.margin}
-              variant="outlined"
-            >
-              <div className={classes.paper}><strong>เจ้าหน้าที่รถพยาบาล</strong></div>
-              <InputLabel id="staff-label"></InputLabel>
-              <Select
-                labelId="staff-label"
-                id="user"
-                value={userid}
-                onChange={UserhandleChange}
-                style={{ width: 400 }}
-              >
-                {users.map((item: EntUser) => (
-                  <MenuItem value={item.id}>{item.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
           <FormControl
               className={classes.margin}
               variant="outlined"
@@ -231,18 +282,16 @@ export default function Create() {
                 style={{ width: 400 }}
               >
                 {ambulances.map((item: EntAmbulance) => (
-                  <MenuItem value={item.id}>{item.carregistration}</MenuItem>
+                <MenuItem value={item.id}>{item.carregistration}</MenuItem>
                 ))}
               </Select>
             </FormControl>
-            </div>
-
-          <div>
+           
             <FormControl
               className={classes.margin}
               variant="outlined"
             >
-              <div className={classes.paper}><strong>วัตถุประสงค์</strong></div>
+              <div className={classes.paper}><strong>จุดประสงค์</strong></div>
               <InputLabel id="purpose-label"></InputLabel>
               <Select
                 labelId="purpose-label"
@@ -252,17 +301,59 @@ export default function Create() {
                 style={{ width: 400 }}
               >
                 {purposes.map((item: EntPurpose) => (
-                  <MenuItem value={item.id}>{item.objective}</MenuItem>
+                <MenuItem value={item.id}>{item.objective}</MenuItem>
                 ))}
               </Select>
             </FormControl>
             </div>
-
-          <div className={classes.paper}><strong>หมายเหตุ</strong></div>
+            <br></br><br></br>
+            <div>
+            <TextField className={classes.textField}
+            style={{ width: 400 ,marginLeft:20,marginRight:-10}}      
+              error = {personError ? true : false}
+              helperText={personError}
+              id="person"
+              label="จำนวนเจ้าหน้าที่"
+              variant="standard"
+              color="secondary"
+              type="number"
+              size="medium"
+              value={person}
+              onChange={Personhandlehange}
+            />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <TextField className={classes.textField}
+            style={{ width: 400 ,marginLeft:20,marginRight:-10}}    
+              error = {distanceError ? true : false}
+              helperText={distanceError}  
+              id="distance"
+              label="ระยะทาง"
+              variant="standard"
+              color="secondary"
+              type="number"
+              size="medium"
+              value={distance}
+              onChange={Distancehandlehange}
+            />
+            </div>
+            <br></br><br></br>
+            <div>
+            <TextField className={classes.textField}
+            style={{ width: 400 ,marginLeft:20,marginRight:-10}}   
+              error = {placeError ? true : false}
+              helperText={placeError}   
+              id="place"
+              label="สถานที่"
+              variant="standard"
+              color="secondary"
+              type="string"
+              size="medium"
+              value={place}
+              onChange={Placehandlehange}
+            />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <TextField className={classes.textField}
             style={{ width: 400 ,marginLeft:20,marginRight:-10}}      
               id="note"
-              label=""
+              label="หมายเหตุ"
               variant="standard"
               color="secondary"
               type="string"
@@ -270,73 +361,37 @@ export default function Create() {
               value={note}
               onChange={Notehandlehange}
             />
-       <br></br><br></br>
-            <div className={classes.paper}><strong>วันที่เวลารถออก</strong></div>
-      <center>             <FormControl className={classes.margin} >
-        <div>        <TextField
+            </div>
+                <br></br><br></br>
+            <div>
+            <FormControl className={classes.margin} ><div className={classes.paper}><strong>วันที่เวลารถออก</strong></div>
+                <TextField
                  id="checkout"
-                  // label="checkout"
-                  type="datetime-local"
-                  value={checkout}
-                  onChange={CheckouthandleChange}
-                  className={classes.textField}
-                  InputLabelProps={{
-                   shrink: true,
+                 type="datetime-local"
+                 value={checkout}
+                 onChange={CheckouthandleChange}
+                 className={classes.textField}
+                 InputLabelProps={{
+                 shrink: true,
                  }}
                  style={{ width: 400 }}
-                />&nbsp;&nbsp;&nbsp;&nbsp;
-                {/* <TextField
-                  id="timedateout"
-                  //label="Alarm clock"
-                  type="time"
-                  value={timedateout}
-                  onChange={TimedateouthandleChange}
-                  className={classes.textField}
-                   InputLabelProps={{
-                  shrink: true,
-                  }}
-                     inputProps={{
-                      step: 300, // 5 min
-                   }}
-                /> */}
-                </div>
+                />&nbsp;&nbsp;&nbsp;&nbsp;              
                 </FormControl>
-      </center>
-                {/* <Typography align ="center"></Typography> */}
-                <br></br>
-                <div className={classes.paper}><strong>วันที่เวลารถเข้า</strong></div>
-      <center>          <FormControl className={classes.margin} >
-        <div>        <TextField
+                <br></br>             
+            <FormControl className={classes.margin} >  <div className={classes.paper}><strong>วันที่เวลารถเข้า</strong></div>
+               <TextField
                  id="checkin"
-                  // label="checkin"
-                  type="datetime-local"
-                  value={checkin}
-                  onChange={CheckinhandleChange}
-                  className={classes.textField}
-                  InputLabelProps={{
-                   shrink: true,
+                 type="datetime-local"
+                 value={checkin}
+                 onChange={CheckinhandleChange}
+                 className={classes.textField}
+                 InputLabelProps={{
+                 shrink: true,
                  }}
                  style={{ width: 400 }}
-                />&nbsp;&nbsp;&nbsp;&nbsp;
-                {/* <TextField
-                  id="timedatein"
-                  //label="Alarm clock"
-                  type="time"
-                  value={timedatein}
-                  onChange={TimedateinhandleChange}
-                  className={classes.textField}
-                   InputLabelProps={{
-                  shrink: true,
-                  }}
-                     inputProps={{
-                      step: 300, // 5 min
-                   }}
-                /> */}
-                </div>
+                />&nbsp;&nbsp;&nbsp;&nbsp;  
                 </FormControl>
-
-                {/* <Typography align ="center"></Typography>    */}
-        </center>
+            </div>
             <div className={classes.margin}>
               <Button
                 onClick={() => {

@@ -25,6 +25,9 @@ type CarCheckInOut struct {
 	Ambulance   int
 	Name    	int
 	Purpose    	int
+	Place		string
+	Person		int
+	Distance	float64
 	Note   		string
 	Checkin     string
 	Checkout    string
@@ -94,18 +97,26 @@ func (ctl *CarCheckInOutController) CreateCarCheckInOut(c *gin.Context) {
 		SetAmbulance(a).
 		SetName(u).
 		SetPurpose(p).
+		SetPlace(obj.Place).
+		SetPerson(obj.Person).
+		SetDistance(obj.Distance).
 		SetNote(obj.Note).
 		SetCheckIn(timein).
 		SetCheckOut(timeout).
 		Save(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"error": err,
+			"status": false,
 		})
 		return
 	}
 
-	c.JSON(200, cio)
+	c.JSON(200, gin.H{
+		"data": cio,
+		"status": true,
+	})
 }
 
 // GetCarCheckInOut handles GET requests to retrieve a carcheckinout entity
@@ -221,47 +232,6 @@ func (ctl *CarCheckInOutController) DeleteCarCheckInOut(c *gin.Context) {
 	c.JSON(200, gin.H{"result": fmt.Sprintf("ok deleted %v", id)})
 }
 
-// UpdateCarCheckInOut handles PUT requests to update a carcheckinout entity
-// @Summary Update a carcheckinout entity by ID
-// @Description update carcheckinout by ID
-// @ID update-carcheckinout
-// @Accept   json
-// @Produce  json
-// @Param id path int true "CarCheckInOut ID"
-// @Param carcheckinout body ent.CarCheckInOut true "CarCheckInOut entity"
-// @Success 200 {object} ent.CarCheckInOut
-// @Failure 400 {object} gin.H
-// @Failure 500 {object} gin.H
-// @Router /carcheckinouts/{id} [put]
-func (ctl *CarCheckInOutController) UpdateCarCheckInOut(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	obj := ent.CarCheckInOut{}
-	if err := c.ShouldBind(&obj); err != nil {
-		c.JSON(400, gin.H{
-			"error": "carcheckinout binding failed",
-		})
-		return
-	}
-	
-	obj.ID = int(id)
-	cio, err := ctl.client.CarCheckInOut.
-		UpdateOne(&obj).
-		Save(context.Background())
-	if err != nil {
-		c.JSON(400, gin.H{"error": "update failed"})
-		return
-	}
-
-	c.JSON(200, cio)
-}
-
 // NewCarCheckInOutController creates and registers handles for the carcheckinout controller
 func NewCarCheckInOutController(router gin.IRouter, client *ent.Client) *CarCheckInOutController {
 	uc := &CarCheckInOutController{
@@ -275,12 +245,10 @@ func NewCarCheckInOutController(router gin.IRouter, client *ent.Client) *CarChec
 // InitCarCheckInOutController registers routes to the main engine
 func (ctl *CarCheckInOutController) register() {
 	carcheckinouts := ctl.router.Group("/carcheckinouts")
-
 	carcheckinouts.GET("", ctl.ListCarCheckInOut)
 
 	// CRUD
 	carcheckinouts.POST("", ctl.CreateCarCheckInOut)
 	carcheckinouts.GET(":id", ctl.GetCarCheckInOut)
-	carcheckinouts.PUT(":id", ctl.UpdateCarCheckInOut)
 	carcheckinouts.DELETE(":id", ctl.DeleteCarCheckInOut)
 }

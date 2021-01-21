@@ -100,6 +100,27 @@ func Note(v string) predicate.CarCheckInOut {
 	})
 }
 
+// Place applies equality check predicate on the "place" field. It's identical to PlaceEQ.
+func Place(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPlace), v))
+	})
+}
+
+// Person applies equality check predicate on the "person" field. It's identical to PersonEQ.
+func Person(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPerson), v))
+	})
+}
+
+// Distance applies equality check predicate on the "distance" field. It's identical to DistanceEQ.
+func Distance(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDistance), v))
+	})
+}
+
 // CheckIn applies equality check predicate on the "checkIn" field. It's identical to CheckInEQ.
 func CheckIn(v time.Time) predicate.CarCheckInOut {
 	return predicate.CarCheckInOut(func(s *sql.Selector) {
@@ -222,6 +243,269 @@ func NoteEqualFold(v string) predicate.CarCheckInOut {
 func NoteContainsFold(v string) predicate.CarCheckInOut {
 	return predicate.CarCheckInOut(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldNote), v))
+	})
+}
+
+// PlaceEQ applies the EQ predicate on the "place" field.
+func PlaceEQ(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceNEQ applies the NEQ predicate on the "place" field.
+func PlaceNEQ(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceIn applies the In predicate on the "place" field.
+func PlaceIn(vs ...string) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPlace), v...))
+	})
+}
+
+// PlaceNotIn applies the NotIn predicate on the "place" field.
+func PlaceNotIn(vs ...string) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPlace), v...))
+	})
+}
+
+// PlaceGT applies the GT predicate on the "place" field.
+func PlaceGT(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceGTE applies the GTE predicate on the "place" field.
+func PlaceGTE(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceLT applies the LT predicate on the "place" field.
+func PlaceLT(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceLTE applies the LTE predicate on the "place" field.
+func PlaceLTE(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceContains applies the Contains predicate on the "place" field.
+func PlaceContains(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceHasPrefix applies the HasPrefix predicate on the "place" field.
+func PlaceHasPrefix(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceHasSuffix applies the HasSuffix predicate on the "place" field.
+func PlaceHasSuffix(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceEqualFold applies the EqualFold predicate on the "place" field.
+func PlaceEqualFold(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldPlace), v))
+	})
+}
+
+// PlaceContainsFold applies the ContainsFold predicate on the "place" field.
+func PlaceContainsFold(v string) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldPlace), v))
+	})
+}
+
+// PersonEQ applies the EQ predicate on the "person" field.
+func PersonEQ(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPerson), v))
+	})
+}
+
+// PersonNEQ applies the NEQ predicate on the "person" field.
+func PersonNEQ(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPerson), v))
+	})
+}
+
+// PersonIn applies the In predicate on the "person" field.
+func PersonIn(vs ...int) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPerson), v...))
+	})
+}
+
+// PersonNotIn applies the NotIn predicate on the "person" field.
+func PersonNotIn(vs ...int) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPerson), v...))
+	})
+}
+
+// PersonGT applies the GT predicate on the "person" field.
+func PersonGT(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPerson), v))
+	})
+}
+
+// PersonGTE applies the GTE predicate on the "person" field.
+func PersonGTE(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPerson), v))
+	})
+}
+
+// PersonLT applies the LT predicate on the "person" field.
+func PersonLT(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPerson), v))
+	})
+}
+
+// PersonLTE applies the LTE predicate on the "person" field.
+func PersonLTE(v int) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPerson), v))
+	})
+}
+
+// DistanceEQ applies the EQ predicate on the "distance" field.
+func DistanceEQ(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDistance), v))
+	})
+}
+
+// DistanceNEQ applies the NEQ predicate on the "distance" field.
+func DistanceNEQ(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDistance), v))
+	})
+}
+
+// DistanceIn applies the In predicate on the "distance" field.
+func DistanceIn(vs ...float64) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldDistance), v...))
+	})
+}
+
+// DistanceNotIn applies the NotIn predicate on the "distance" field.
+func DistanceNotIn(vs ...float64) predicate.CarCheckInOut {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldDistance), v...))
+	})
+}
+
+// DistanceGT applies the GT predicate on the "distance" field.
+func DistanceGT(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldDistance), v))
+	})
+}
+
+// DistanceGTE applies the GTE predicate on the "distance" field.
+func DistanceGTE(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldDistance), v))
+	})
+}
+
+// DistanceLT applies the LT predicate on the "distance" field.
+func DistanceLT(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldDistance), v))
+	})
+}
+
+// DistanceLTE applies the LTE predicate on the "distance" field.
+func DistanceLTE(v float64) predicate.CarCheckInOut {
+	return predicate.CarCheckInOut(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldDistance), v))
 	})
 }
 

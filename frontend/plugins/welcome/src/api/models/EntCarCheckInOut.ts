@@ -39,6 +39,12 @@ export interface EntCarCheckInOut {
      */
     checkOut?: string;
     /**
+     * Distance holds the value of the "distance" field.
+     * @type {number}
+     * @memberof EntCarCheckInOut
+     */
+    distance?: number;
+    /**
      * 
      * @type {EntCarCheckInOutEdges}
      * @memberof EntCarCheckInOut
@@ -56,6 +62,18 @@ export interface EntCarCheckInOut {
      * @memberof EntCarCheckInOut
      */
     note?: string;
+    /**
+     * Person holds the value of the "person" field.
+     * @type {number}
+     * @memberof EntCarCheckInOut
+     */
+    person?: number;
+    /**
+     * Place holds the value of the "place" field.
+     * @type {string}
+     * @memberof EntCarCheckInOut
+     */
+    place?: string;
 }
 
 export function EntCarCheckInOutFromJSON(json: any): EntCarCheckInOut {
@@ -70,9 +88,12 @@ export function EntCarCheckInOutFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'checkIn': !exists(json, 'checkIn') ? undefined : json['checkIn'],
         'checkOut': !exists(json, 'checkOut') ? undefined : json['checkOut'],
+        'distance': !exists(json, 'distance') ? undefined : json['distance'],
         'edges': !exists(json, 'edges') ? undefined : EntCarCheckInOutEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
         'note': !exists(json, 'note') ? undefined : json['note'],
+        'person': !exists(json, 'person') ? undefined : json['person'],
+        'place': !exists(json, 'place') ? undefined : json['place'],
     };
 }
 
@@ -87,9 +108,12 @@ export function EntCarCheckInOutToJSON(value?: EntCarCheckInOut | null): any {
         
         'checkIn': value.checkIn,
         'checkOut': value.checkOut,
+        'distance': value.distance,
         'edges': EntCarCheckInOutEdgesToJSON(value.edges),
         'id': value.id,
         'note': value.note,
+        'person': value.person,
+        'place': value.place,
     };
 }
 

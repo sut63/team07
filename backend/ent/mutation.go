@@ -854,6 +854,11 @@ type CarCheckInOutMutation struct {
 	typ              string
 	id               *int
 	note             *string
+	place            *string
+	person           *int
+	addperson        *int
+	distance         *float64
+	adddistance      *float64
 	checkIn          *time.Time
 	checkOut         *time.Time
 	clearedFields    map[string]struct{}
@@ -981,6 +986,157 @@ func (m *CarCheckInOutMutation) OldNote(ctx context.Context) (v string, err erro
 // ResetNote reset all changes of the "note" field.
 func (m *CarCheckInOutMutation) ResetNote() {
 	m.note = nil
+}
+
+// SetPlace sets the place field.
+func (m *CarCheckInOutMutation) SetPlace(s string) {
+	m.place = &s
+}
+
+// Place returns the place value in the mutation.
+func (m *CarCheckInOutMutation) Place() (r string, exists bool) {
+	v := m.place
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPlace returns the old place value of the CarCheckInOut.
+// If the CarCheckInOut object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarCheckInOutMutation) OldPlace(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPlace is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPlace requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPlace: %w", err)
+	}
+	return oldValue.Place, nil
+}
+
+// ResetPlace reset all changes of the "place" field.
+func (m *CarCheckInOutMutation) ResetPlace() {
+	m.place = nil
+}
+
+// SetPerson sets the person field.
+func (m *CarCheckInOutMutation) SetPerson(i int) {
+	m.person = &i
+	m.addperson = nil
+}
+
+// Person returns the person value in the mutation.
+func (m *CarCheckInOutMutation) Person() (r int, exists bool) {
+	v := m.person
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPerson returns the old person value of the CarCheckInOut.
+// If the CarCheckInOut object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarCheckInOutMutation) OldPerson(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPerson is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPerson requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPerson: %w", err)
+	}
+	return oldValue.Person, nil
+}
+
+// AddPerson adds i to person.
+func (m *CarCheckInOutMutation) AddPerson(i int) {
+	if m.addperson != nil {
+		*m.addperson += i
+	} else {
+		m.addperson = &i
+	}
+}
+
+// AddedPerson returns the value that was added to the person field in this mutation.
+func (m *CarCheckInOutMutation) AddedPerson() (r int, exists bool) {
+	v := m.addperson
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPerson reset all changes of the "person" field.
+func (m *CarCheckInOutMutation) ResetPerson() {
+	m.person = nil
+	m.addperson = nil
+}
+
+// SetDistance sets the distance field.
+func (m *CarCheckInOutMutation) SetDistance(f float64) {
+	m.distance = &f
+	m.adddistance = nil
+}
+
+// Distance returns the distance value in the mutation.
+func (m *CarCheckInOutMutation) Distance() (r float64, exists bool) {
+	v := m.distance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDistance returns the old distance value of the CarCheckInOut.
+// If the CarCheckInOut object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarCheckInOutMutation) OldDistance(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldDistance is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldDistance requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDistance: %w", err)
+	}
+	return oldValue.Distance, nil
+}
+
+// AddDistance adds f to distance.
+func (m *CarCheckInOutMutation) AddDistance(f float64) {
+	if m.adddistance != nil {
+		*m.adddistance += f
+	} else {
+		m.adddistance = &f
+	}
+}
+
+// AddedDistance returns the value that was added to the distance field in this mutation.
+func (m *CarCheckInOutMutation) AddedDistance() (r float64, exists bool) {
+	v := m.adddistance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDistance reset all changes of the "distance" field.
+func (m *CarCheckInOutMutation) ResetDistance() {
+	m.distance = nil
+	m.adddistance = nil
 }
 
 // SetCheckIn sets the checkIn field.
@@ -1188,9 +1344,18 @@ func (m *CarCheckInOutMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *CarCheckInOutMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 6)
 	if m.note != nil {
 		fields = append(fields, carcheckinout.FieldNote)
+	}
+	if m.place != nil {
+		fields = append(fields, carcheckinout.FieldPlace)
+	}
+	if m.person != nil {
+		fields = append(fields, carcheckinout.FieldPerson)
+	}
+	if m.distance != nil {
+		fields = append(fields, carcheckinout.FieldDistance)
 	}
 	if m.checkIn != nil {
 		fields = append(fields, carcheckinout.FieldCheckIn)
@@ -1208,6 +1373,12 @@ func (m *CarCheckInOutMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case carcheckinout.FieldNote:
 		return m.Note()
+	case carcheckinout.FieldPlace:
+		return m.Place()
+	case carcheckinout.FieldPerson:
+		return m.Person()
+	case carcheckinout.FieldDistance:
+		return m.Distance()
 	case carcheckinout.FieldCheckIn:
 		return m.CheckIn()
 	case carcheckinout.FieldCheckOut:
@@ -1223,6 +1394,12 @@ func (m *CarCheckInOutMutation) OldField(ctx context.Context, name string) (ent.
 	switch name {
 	case carcheckinout.FieldNote:
 		return m.OldNote(ctx)
+	case carcheckinout.FieldPlace:
+		return m.OldPlace(ctx)
+	case carcheckinout.FieldPerson:
+		return m.OldPerson(ctx)
+	case carcheckinout.FieldDistance:
+		return m.OldDistance(ctx)
 	case carcheckinout.FieldCheckIn:
 		return m.OldCheckIn(ctx)
 	case carcheckinout.FieldCheckOut:
@@ -1242,6 +1419,27 @@ func (m *CarCheckInOutMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNote(v)
+		return nil
+	case carcheckinout.FieldPlace:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPlace(v)
+		return nil
+	case carcheckinout.FieldPerson:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPerson(v)
+		return nil
+	case carcheckinout.FieldDistance:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDistance(v)
 		return nil
 	case carcheckinout.FieldCheckIn:
 		v, ok := value.(time.Time)
@@ -1264,13 +1462,26 @@ func (m *CarCheckInOutMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *CarCheckInOutMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addperson != nil {
+		fields = append(fields, carcheckinout.FieldPerson)
+	}
+	if m.adddistance != nil {
+		fields = append(fields, carcheckinout.FieldDistance)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *CarCheckInOutMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case carcheckinout.FieldPerson:
+		return m.AddedPerson()
+	case carcheckinout.FieldDistance:
+		return m.AddedDistance()
+	}
 	return nil, false
 }
 
@@ -1279,6 +1490,20 @@ func (m *CarCheckInOutMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *CarCheckInOutMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case carcheckinout.FieldPerson:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPerson(v)
+		return nil
+	case carcheckinout.FieldDistance:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDistance(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CarCheckInOut numeric field %s", name)
 }
@@ -1309,6 +1534,15 @@ func (m *CarCheckInOutMutation) ResetField(name string) error {
 	switch name {
 	case carcheckinout.FieldNote:
 		m.ResetNote()
+		return nil
+	case carcheckinout.FieldPlace:
+		m.ResetPlace()
+		return nil
+	case carcheckinout.FieldPerson:
+		m.ResetPerson()
+		return nil
+	case carcheckinout.FieldDistance:
+		m.ResetDistance()
 		return nil
 	case carcheckinout.FieldCheckIn:
 		m.ResetCheckIn()
