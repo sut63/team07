@@ -172,6 +172,10 @@ export interface GetCarrepairrecordRequest {
     id: number;
 }
 
+export interface GetCarserviceRequest {
+    id: number;
+}
+
 export interface GetDistanceRequest {
     id: number;
 }
@@ -197,10 +201,6 @@ export interface GetRepairingRequest {
 }
 
 export interface GetTransportRequest {
-    id: number;
-}
-
-export interface GetUrgentRequest {
     id: number;
 }
 
@@ -998,6 +998,38 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get carservice by ID
+     * Get a carservice entity by ID
+     */
+    async getCarserviceRaw(requestParameters: GetCarserviceRequest): Promise<runtime.ApiResponse<EntCarservice>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getCarservice.');
+        }
+
+        const queryParameters: runtime.HTTPQuery = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/carservices/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntCarserviceFromJSON(jsonValue));
+    }
+
+    /**
+     * get carservice by ID
+     * Get a carservice entity by ID
+     */
+    async getCarservice(requestParameters: GetCarserviceRequest): Promise<EntCarservice> {
+        const response = await this.getCarserviceRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get distance by ID
      * Get a distance entity by ID
      */
@@ -1218,38 +1250,6 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getTransport(requestParameters: GetTransportRequest): Promise<EntTransport> {
         const response = await this.getTransportRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
-     * get urgent by ID
-     * Get a urgent entity by ID
-     */
-    async getUrgentRaw(requestParameters: GetUrgentRequest): Promise<runtime.ApiResponse<EntUrgent>> {
-        if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getUrgent.');
-        }
-
-        const queryParameters: runtime.HTTPQuery = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request({
-            path: `/carservices/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EntUrgentFromJSON(jsonValue));
-    }
-
-    /**
-     * get urgent by ID
-     * Get a urgent entity by ID
-     */
-    async getUrgent(requestParameters: GetUrgentRequest): Promise<EntUrgent> {
-        const response = await this.getUrgentRaw(requestParameters);
         return await response.value();
     }
 

@@ -52,7 +52,7 @@ type Purpose struct {
 	objective string
 }
 
-type Carservices struct {
+/* type Carservices struct {
 	Carservice []Carservice
 }
 
@@ -61,7 +61,7 @@ type Carservice struct {
 	age         int
 	location    string
 	information string
-}
+} */
 
 type Urgents struct {
 	Urgent []Urgent

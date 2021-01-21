@@ -84,3 +84,5 @@ export function EntCarCheckInOutEdgesToJSON(value?: EntCarCheckInOutEdges | null
         'purpose': EntPurposeToJSON(value.purpose),
     };
 }
+
+

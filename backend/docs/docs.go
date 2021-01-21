@@ -925,16 +925,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get urgent by ID",
+                "description": "get carservice by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a urgent entity by ID",
-                "operationId": "get-urgent",
+                "summary": "Get a carservice entity by ID",
+                "operationId": "get-carservice",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Urgent ID",
+                        "description": "Carservice ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -944,7 +944,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Urgent"
+                            "$ref": "#/definitions/ent.Carservice"
                         }
                     },
                     "400": {
