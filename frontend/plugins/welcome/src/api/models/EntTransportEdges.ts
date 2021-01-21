@@ -18,14 +18,10 @@ import {
     EntAmbulanceFromJSON,
     EntAmbulanceFromJSONTyped,
     EntAmbulanceToJSON,
-    EntReceive,
-    EntReceiveFromJSON,
-    EntReceiveFromJSONTyped,
-    EntReceiveToJSON,
-    EntSend,
-    EntSendFromJSON,
-    EntSendFromJSONTyped,
-    EntSendToJSON,
+    EntHospital,
+    EntHospitalFromJSON,
+    EntHospitalFromJSONTyped,
+    EntHospitalToJSON,
     EntUser,
     EntUserFromJSON,
     EntUserFromJSONTyped,
@@ -46,16 +42,16 @@ export interface EntTransportEdges {
     ambulance?: EntAmbulance;
     /**
      * 
-     * @type {EntReceive}
+     * @type {EntHospital}
      * @memberof EntTransportEdges
      */
-    receiveid?: EntReceive;
+    receive?: EntHospital;
     /**
      * 
-     * @type {EntSend}
+     * @type {EntHospital}
      * @memberof EntTransportEdges
      */
-    sendid?: EntSend;
+    send?: EntHospital;
     /**
      * 
      * @type {EntUser}
@@ -75,8 +71,8 @@ export function EntTransportEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'ambulance': !exists(json, 'Ambulance') ? undefined : EntAmbulanceFromJSON(json['Ambulance']),
-        'receiveid': !exists(json, 'Receiveid') ? undefined : EntReceiveFromJSON(json['Receiveid']),
-        'sendid': !exists(json, 'Sendid') ? undefined : EntSendFromJSON(json['Sendid']),
+        'receive': !exists(json, 'Receive') ? undefined : EntHospitalFromJSON(json['Receive']),
+        'send': !exists(json, 'Send') ? undefined : EntHospitalFromJSON(json['Send']),
         'user': !exists(json, 'User') ? undefined : EntUserFromJSON(json['User']),
     };
 }
@@ -91,8 +87,8 @@ export function EntTransportEdgesToJSON(value?: EntTransportEdges | null): any {
     return {
         
         'ambulance': EntAmbulanceToJSON(value.ambulance),
-        'receiveid': EntReceiveToJSON(value.receiveid),
-        'sendid': EntSendToJSON(value.sendid),
+        'receive': EntHospitalToJSON(value.receive),
+        'send': EntHospitalToJSON(value.send),
         'user': EntUserToJSON(value.user),
     };
 }

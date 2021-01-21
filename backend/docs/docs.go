@@ -974,16 +974,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get urgent by ID",
+                "description": "get carservice by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a urgent entity by ID",
-                "operationId": "get-urgent",
+                "summary": "Get a carservice entity by ID",
+                "operationId": "get-carservice",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Urgent ID",
+                        "description": "Carservice ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -993,7 +993,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Urgent"
+                            "$ref": "#/definitions/ent.Carservice"
                         }
                     },
                     "400": {
@@ -1129,6 +1129,127 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ent.Distance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/hospitals": {
+            "get": {
+                "description": "list hospital entities",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List hospital entities",
+                "operationId": "list-hospital",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ent.Hospital"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/hospitals/{id}": {
+            "get": {
+                "description": "get hospital by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a hospital entity by ID",
+                "operationId": "get-hospital",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Hospital ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Hospital"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "get hospital by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a hospital entity by ID",
+                "operationId": "delete-hospital",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Hospital ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
                         }
                     },
                     "400": {
@@ -1515,127 +1636,6 @@ var doc = `{
                 }
             }
         },
-        "/receives": {
-            "get": {
-                "description": "list receive entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List receive entities",
-                "operationId": "list-receive",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.Receive"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/receives/{id}": {
-            "get": {
-                "description": "get receive by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a receive entity by ID",
-                "operationId": "get-receive",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Receive ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.Receive"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "get receive by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Delete a receive entity by ID",
-                "operationId": "delete-receive",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Receive ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
         "/repairings": {
             "get": {
                 "description": "list repairing entities",
@@ -1705,127 +1705,6 @@ var doc = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/ent.Repairing"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/sends": {
-            "get": {
-                "description": "list send entities",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "List send entities",
-                "operationId": "list-send",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/ent.Send"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            }
-        },
-        "/sends/{id}": {
-            "get": {
-                "description": "get send by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a send entity by ID",
-                "operationId": "get-send",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Send ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.Send"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "get send by ID",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Delete a send entity by ID",
-                "operationId": "delete-send",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Send ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
                         }
                     },
                     "400": {
@@ -2300,11 +2179,20 @@ var doc = `{
                 "ambulanceID": {
                     "type": "integer"
                 },
+                "drugallergy": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
                 "receiveID": {
                     "type": "integer"
                 },
                 "sendID": {
                     "type": "integer"
+                },
+                "symptom": {
+                    "type": "string"
                 },
                 "userID": {
                     "type": "integer"
@@ -2626,6 +2514,43 @@ var doc = `{
                 }
             }
         },
+        "ent.Hospital": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the HospitalQuery when eager-loading is set.",
+                    "type": "object",
+                    "$ref": "#/definitions/ent.HospitalEdges"
+                },
+                "hospital": {
+                    "description": "Hospital holds the value of the \"hospital\" field.",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID of the ent.",
+                    "type": "integer"
+                }
+            }
+        },
+        "ent.HospitalEdges": {
+            "type": "object",
+            "properties": {
+                "receive": {
+                    "description": "Receive holds the value of the receive edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Transport"
+                    }
+                },
+                "send": {
+                    "description": "Send holds the value of the send edge.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ent.Transport"
+                    }
+                }
+            }
+        },
         "ent.InspectionResult": {
             "type": "object",
             "properties": {
@@ -2765,36 +2690,6 @@ var doc = `{
                 }
             }
         },
-        "ent.Receive": {
-            "type": "object",
-            "properties": {
-                "edges": {
-                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the ReceiveQuery when eager-loading is set.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.ReceiveEdges"
-                },
-                "id": {
-                    "description": "ID of the ent.",
-                    "type": "integer"
-                },
-                "receivename": {
-                    "description": "Receivename holds the value of the \"receivename\" field.",
-                    "type": "string"
-                }
-            }
-        },
-        "ent.ReceiveEdges": {
-            "type": "object",
-            "properties": {
-                "receiveid": {
-                    "description": "Receiveid holds the value of the receiveid edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.Transport"
-                    }
-                }
-            }
-        },
         "ent.Repairing": {
             "type": "object",
             "properties": {
@@ -2825,39 +2720,13 @@ var doc = `{
                 }
             }
         },
-        "ent.Send": {
-            "type": "object",
-            "properties": {
-                "edges": {
-                    "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the SendQuery when eager-loading is set.",
-                    "type": "object",
-                    "$ref": "#/definitions/ent.SendEdges"
-                },
-                "id": {
-                    "description": "ID of the ent.",
-                    "type": "integer"
-                },
-                "sendname": {
-                    "description": "Sendname holds the value of the \"sendname\" field.",
-                    "type": "string"
-                }
-            }
-        },
-        "ent.SendEdges": {
-            "type": "object",
-            "properties": {
-                "sendid": {
-                    "description": "Sendid holds the value of the sendid edge.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ent.Transport"
-                    }
-                }
-            }
-        },
         "ent.Transport": {
             "type": "object",
             "properties": {
+                "drugallergy": {
+                    "description": "Drugallergy holds the value of the \"drugallergy\" field.",
+                    "type": "string"
+                },
                 "edges": {
                     "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the TransportQuery when eager-loading is set.",
                     "type": "object",
@@ -2866,6 +2735,14 @@ var doc = `{
                 "id": {
                     "description": "ID of the ent.",
                     "type": "integer"
+                },
+                "note": {
+                    "description": "Note holds the value of the \"note\" field.",
+                    "type": "string"
+                },
+                "symptom": {
+                    "description": "Symptom holds the value of the \"symptom\" field.",
+                    "type": "string"
                 }
             }
         },
@@ -2877,15 +2754,15 @@ var doc = `{
                     "type": "object",
                     "$ref": "#/definitions/ent.Ambulance"
                 },
-                "receiveid": {
-                    "description": "Receiveid holds the value of the receiveid edge.",
+                "receive": {
+                    "description": "Receive holds the value of the receive edge.",
                     "type": "object",
-                    "$ref": "#/definitions/ent.Receive"
+                    "$ref": "#/definitions/ent.Hospital"
                 },
-                "sendid": {
-                    "description": "Sendid holds the value of the sendid edge.",
+                "send": {
+                    "description": "Send holds the value of the send edge.",
                     "type": "object",
-                    "$ref": "#/definitions/ent.Send"
+                    "$ref": "#/definitions/ent.Hospital"
                 },
                 "user": {
                     "description": "User holds the value of the user edge.",

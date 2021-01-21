@@ -12,9 +12,8 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/predicate"
-	"github.com/team07/app/ent/receive"
-	"github.com/team07/app/ent/send"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
@@ -28,8 +27,8 @@ type TransportQuery struct {
 	unique     []string
 	predicates []predicate.Transport
 	// eager-loading edges.
-	withSendid    *SendQuery
-	withReceiveid *ReceiveQuery
+	withSend      *HospitalQuery
+	withReceive   *HospitalQuery
 	withUser      *UserQuery
 	withAmbulance *AmbulanceQuery
 	withFKs       bool
@@ -62,17 +61,17 @@ func (tq *TransportQuery) Order(o ...OrderFunc) *TransportQuery {
 	return tq
 }
 
-// QuerySendid chains the current query on the sendid edge.
-func (tq *TransportQuery) QuerySendid() *SendQuery {
-	query := &SendQuery{config: tq.config}
+// QuerySend chains the current query on the send edge.
+func (tq *TransportQuery) QuerySend() *HospitalQuery {
+	query := &HospitalQuery{config: tq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := tq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(transport.Table, transport.FieldID, tq.sqlQuery()),
-			sqlgraph.To(send.Table, send.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, transport.SendidTable, transport.SendidColumn),
+			sqlgraph.To(hospital.Table, hospital.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, transport.SendTable, transport.SendColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -80,17 +79,17 @@ func (tq *TransportQuery) QuerySendid() *SendQuery {
 	return query
 }
 
-// QueryReceiveid chains the current query on the receiveid edge.
-func (tq *TransportQuery) QueryReceiveid() *ReceiveQuery {
-	query := &ReceiveQuery{config: tq.config}
+// QueryReceive chains the current query on the receive edge.
+func (tq *TransportQuery) QueryReceive() *HospitalQuery {
+	query := &HospitalQuery{config: tq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := tq.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(transport.Table, transport.FieldID, tq.sqlQuery()),
-			sqlgraph.To(receive.Table, receive.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, transport.ReceiveidTable, transport.ReceiveidColumn),
+			sqlgraph.To(hospital.Table, hospital.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, transport.ReceiveTable, transport.ReceiveColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -313,25 +312,25 @@ func (tq *TransportQuery) Clone() *TransportQuery {
 	}
 }
 
-//  WithSendid tells the query-builder to eager-loads the nodes that are connected to
-// the "sendid" edge. The optional arguments used to configure the query builder of the edge.
-func (tq *TransportQuery) WithSendid(opts ...func(*SendQuery)) *TransportQuery {
-	query := &SendQuery{config: tq.config}
+//  WithSend tells the query-builder to eager-loads the nodes that are connected to
+// the "send" edge. The optional arguments used to configure the query builder of the edge.
+func (tq *TransportQuery) WithSend(opts ...func(*HospitalQuery)) *TransportQuery {
+	query := &HospitalQuery{config: tq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withSendid = query
+	tq.withSend = query
 	return tq
 }
 
-//  WithReceiveid tells the query-builder to eager-loads the nodes that are connected to
-// the "receiveid" edge. The optional arguments used to configure the query builder of the edge.
-func (tq *TransportQuery) WithReceiveid(opts ...func(*ReceiveQuery)) *TransportQuery {
-	query := &ReceiveQuery{config: tq.config}
+//  WithReceive tells the query-builder to eager-loads the nodes that are connected to
+// the "receive" edge. The optional arguments used to configure the query builder of the edge.
+func (tq *TransportQuery) WithReceive(opts ...func(*HospitalQuery)) *TransportQuery {
+	query := &HospitalQuery{config: tq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withReceiveid = query
+	tq.withReceive = query
 	return tq
 }
 
@@ -359,6 +358,19 @@ func (tq *TransportQuery) WithAmbulance(opts ...func(*AmbulanceQuery)) *Transpor
 
 // GroupBy used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Symptom string `json:"symptom,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Transport.Query().
+//		GroupBy(transport.FieldSymptom).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
+//
 func (tq *TransportQuery) GroupBy(field string, fields ...string) *TransportGroupBy {
 	group := &TransportGroupBy{config: tq.config}
 	group.fields = append([]string{field}, fields...)
@@ -372,6 +384,17 @@ func (tq *TransportQuery) GroupBy(field string, fields ...string) *TransportGrou
 }
 
 // Select one or more fields from the given query.
+//
+// Example:
+//
+//	var v []struct {
+//		Symptom string `json:"symptom,omitempty"`
+//	}
+//
+//	client.Transport.Query().
+//		Select(transport.FieldSymptom).
+//		Scan(ctx, &v)
+//
 func (tq *TransportQuery) Select(field string, fields ...string) *TransportSelect {
 	selector := &TransportSelect{config: tq.config}
 	selector.fields = append([]string{field}, fields...)
@@ -401,13 +424,13 @@ func (tq *TransportQuery) sqlAll(ctx context.Context) ([]*Transport, error) {
 		withFKs     = tq.withFKs
 		_spec       = tq.querySpec()
 		loadedTypes = [4]bool{
-			tq.withSendid != nil,
-			tq.withReceiveid != nil,
+			tq.withSend != nil,
+			tq.withReceive != nil,
 			tq.withUser != nil,
 			tq.withAmbulance != nil,
 		}
 	)
-	if tq.withSendid != nil || tq.withReceiveid != nil || tq.withUser != nil || tq.withAmbulance != nil {
+	if tq.withSend != nil || tq.withReceive != nil || tq.withUser != nil || tq.withAmbulance != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -437,16 +460,16 @@ func (tq *TransportQuery) sqlAll(ctx context.Context) ([]*Transport, error) {
 		return nodes, nil
 	}
 
-	if query := tq.withSendid; query != nil {
+	if query := tq.withSend; query != nil {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Transport)
 		for i := range nodes {
-			if fk := nodes[i].sendid; fk != nil {
+			if fk := nodes[i].send; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
 		}
-		query.Where(send.IDIn(ids...))
+		query.Where(hospital.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
@@ -454,24 +477,24 @@ func (tq *TransportQuery) sqlAll(ctx context.Context) ([]*Transport, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "sendid" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "send" returned %v`, n.ID)
 			}
 			for i := range nodes {
-				nodes[i].Edges.Sendid = n
+				nodes[i].Edges.Send = n
 			}
 		}
 	}
 
-	if query := tq.withReceiveid; query != nil {
+	if query := tq.withReceive; query != nil {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Transport)
 		for i := range nodes {
-			if fk := nodes[i].receiveid; fk != nil {
+			if fk := nodes[i].receive; fk != nil {
 				ids = append(ids, *fk)
 				nodeids[*fk] = append(nodeids[*fk], nodes[i])
 			}
 		}
-		query.Where(receive.IDIn(ids...))
+		query.Where(hospital.IDIn(ids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
@@ -479,10 +502,10 @@ func (tq *TransportQuery) sqlAll(ctx context.Context) ([]*Transport, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "receiveid" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "receive" returned %v`, n.ID)
 			}
 			for i := range nodes {
-				nodes[i].Edges.Receiveid = n
+				nodes[i].Edges.Receive = n
 			}
 		}
 	}

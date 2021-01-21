@@ -10,9 +10,8 @@ import (
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/predicate"
-	"github.com/team07/app/ent/receive"
-	"github.com/team07/app/ent/send"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
@@ -31,42 +30,60 @@ func (tu *TransportUpdate) Where(ps ...predicate.Transport) *TransportUpdate {
 	return tu
 }
 
-// SetSendidID sets the sendid edge to Send by id.
-func (tu *TransportUpdate) SetSendidID(id int) *TransportUpdate {
-	tu.mutation.SetSendidID(id)
+// SetSymptom sets the symptom field.
+func (tu *TransportUpdate) SetSymptom(s string) *TransportUpdate {
+	tu.mutation.SetSymptom(s)
 	return tu
 }
 
-// SetNillableSendidID sets the sendid edge to Send by id if the given value is not nil.
-func (tu *TransportUpdate) SetNillableSendidID(id *int) *TransportUpdate {
+// SetDrugallergy sets the drugallergy field.
+func (tu *TransportUpdate) SetDrugallergy(s string) *TransportUpdate {
+	tu.mutation.SetDrugallergy(s)
+	return tu
+}
+
+// SetNote sets the note field.
+func (tu *TransportUpdate) SetNote(s string) *TransportUpdate {
+	tu.mutation.SetNote(s)
+	return tu
+}
+
+// SetSendID sets the send edge to Hospital by id.
+func (tu *TransportUpdate) SetSendID(id int) *TransportUpdate {
+	tu.mutation.SetSendID(id)
+	return tu
+}
+
+// SetNillableSendID sets the send edge to Hospital by id if the given value is not nil.
+func (tu *TransportUpdate) SetNillableSendID(id *int) *TransportUpdate {
 	if id != nil {
-		tu = tu.SetSendidID(*id)
+		tu = tu.SetSendID(*id)
 	}
 	return tu
 }
 
-// SetSendid sets the sendid edge to Send.
-func (tu *TransportUpdate) SetSendid(s *Send) *TransportUpdate {
-	return tu.SetSendidID(s.ID)
+// SetSend sets the send edge to Hospital.
+func (tu *TransportUpdate) SetSend(h *Hospital) *TransportUpdate {
+	return tu.SetSendID(h.ID)
 }
 
-// SetReceiveidID sets the receiveid edge to Receive by id.
-func (tu *TransportUpdate) SetReceiveidID(id int) *TransportUpdate {
-	tu.mutation.SetReceiveidID(id)
+// SetReceiveID sets the receive edge to Hospital by id.
+func (tu *TransportUpdate) SetReceiveID(id int) *TransportUpdate {
+	tu.mutation.SetReceiveID(id)
 	return tu
 }
 
-// SetNillableReceiveidID sets the receiveid edge to Receive by id if the given value is not nil.
-func (tu *TransportUpdate) SetNillableReceiveidID(id *int) *TransportUpdate {
+// SetNillableReceiveID sets the receive edge to Hospital by id if the given value is not nil.
+func (tu *TransportUpdate) SetNillableReceiveID(id *int) *TransportUpdate {
 	if id != nil {
-		tu = tu.SetReceiveidID(*id)
+		tu = tu.SetReceiveID(*id)
 	}
 	return tu
 }
 
-// SetReceiveid sets the receiveid edge to Receive.
-func (tu *TransportUpdate) SetReceiveid(r *Receive) *TransportUpdate {
-	return tu.SetReceiveidID(r.ID)
+// SetReceive sets the receive edge to Hospital.
+func (tu *TransportUpdate) SetReceive(h *Hospital) *TransportUpdate {
+	return tu.SetReceiveID(h.ID)
 }
 
 // SetUserID sets the user edge to User by id.
@@ -112,15 +129,15 @@ func (tu *TransportUpdate) Mutation() *TransportMutation {
 	return tu.mutation
 }
 
-// ClearSendid clears the sendid edge to Send.
-func (tu *TransportUpdate) ClearSendid() *TransportUpdate {
-	tu.mutation.ClearSendid()
+// ClearSend clears the send edge to Hospital.
+func (tu *TransportUpdate) ClearSend() *TransportUpdate {
+	tu.mutation.ClearSend()
 	return tu
 }
 
-// ClearReceiveid clears the receiveid edge to Receive.
-func (tu *TransportUpdate) ClearReceiveid() *TransportUpdate {
-	tu.mutation.ClearReceiveid()
+// ClearReceive clears the receive edge to Hospital.
+func (tu *TransportUpdate) ClearReceive() *TransportUpdate {
+	tu.mutation.ClearReceive()
 	return tu
 }
 
@@ -138,6 +155,21 @@ func (tu *TransportUpdate) ClearAmbulance() *TransportUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (tu *TransportUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := tu.mutation.Symptom(); ok {
+		if err := transport.SymptomValidator(v); err != nil {
+			return 0, &ValidationError{Name: "symptom", err: fmt.Errorf("ent: validator failed for field \"symptom\": %w", err)}
+		}
+	}
+	if v, ok := tu.mutation.Drugallergy(); ok {
+		if err := transport.DrugallergyValidator(v); err != nil {
+			return 0, &ValidationError{Name: "drugallergy", err: fmt.Errorf("ent: validator failed for field \"drugallergy\": %w", err)}
+		}
+	}
+	if v, ok := tu.mutation.Note(); ok {
+		if err := transport.NoteValidator(v); err != nil {
+			return 0, &ValidationError{Name: "note", err: fmt.Errorf("ent: validator failed for field \"note\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -206,33 +238,54 @@ func (tu *TransportUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if tu.mutation.SendidCleared() {
+	if value, ok := tu.mutation.Symptom(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldSymptom,
+		})
+	}
+	if value, ok := tu.mutation.Drugallergy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldDrugallergy,
+		})
+	}
+	if value, ok := tu.mutation.Note(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldNote,
+		})
+	}
+	if tu.mutation.SendCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.SendidTable,
-			Columns: []string{transport.SendidColumn},
+			Table:   transport.SendTable,
+			Columns: []string{transport.SendColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: send.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.SendidIDs(); len(nodes) > 0 {
+	if nodes := tu.mutation.SendIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.SendidTable,
-			Columns: []string{transport.SendidColumn},
+			Table:   transport.SendTable,
+			Columns: []string{transport.SendColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: send.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
@@ -241,33 +294,33 @@ func (tu *TransportUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tu.mutation.ReceiveidCleared() {
+	if tu.mutation.ReceiveCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.ReceiveidTable,
-			Columns: []string{transport.ReceiveidColumn},
+			Table:   transport.ReceiveTable,
+			Columns: []string{transport.ReceiveColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: receive.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.ReceiveidIDs(); len(nodes) > 0 {
+	if nodes := tu.mutation.ReceiveIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.ReceiveidTable,
-			Columns: []string{transport.ReceiveidColumn},
+			Table:   transport.ReceiveTable,
+			Columns: []string{transport.ReceiveColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: receive.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
@@ -364,42 +417,60 @@ type TransportUpdateOne struct {
 	mutation *TransportMutation
 }
 
-// SetSendidID sets the sendid edge to Send by id.
-func (tuo *TransportUpdateOne) SetSendidID(id int) *TransportUpdateOne {
-	tuo.mutation.SetSendidID(id)
+// SetSymptom sets the symptom field.
+func (tuo *TransportUpdateOne) SetSymptom(s string) *TransportUpdateOne {
+	tuo.mutation.SetSymptom(s)
 	return tuo
 }
 
-// SetNillableSendidID sets the sendid edge to Send by id if the given value is not nil.
-func (tuo *TransportUpdateOne) SetNillableSendidID(id *int) *TransportUpdateOne {
+// SetDrugallergy sets the drugallergy field.
+func (tuo *TransportUpdateOne) SetDrugallergy(s string) *TransportUpdateOne {
+	tuo.mutation.SetDrugallergy(s)
+	return tuo
+}
+
+// SetNote sets the note field.
+func (tuo *TransportUpdateOne) SetNote(s string) *TransportUpdateOne {
+	tuo.mutation.SetNote(s)
+	return tuo
+}
+
+// SetSendID sets the send edge to Hospital by id.
+func (tuo *TransportUpdateOne) SetSendID(id int) *TransportUpdateOne {
+	tuo.mutation.SetSendID(id)
+	return tuo
+}
+
+// SetNillableSendID sets the send edge to Hospital by id if the given value is not nil.
+func (tuo *TransportUpdateOne) SetNillableSendID(id *int) *TransportUpdateOne {
 	if id != nil {
-		tuo = tuo.SetSendidID(*id)
+		tuo = tuo.SetSendID(*id)
 	}
 	return tuo
 }
 
-// SetSendid sets the sendid edge to Send.
-func (tuo *TransportUpdateOne) SetSendid(s *Send) *TransportUpdateOne {
-	return tuo.SetSendidID(s.ID)
+// SetSend sets the send edge to Hospital.
+func (tuo *TransportUpdateOne) SetSend(h *Hospital) *TransportUpdateOne {
+	return tuo.SetSendID(h.ID)
 }
 
-// SetReceiveidID sets the receiveid edge to Receive by id.
-func (tuo *TransportUpdateOne) SetReceiveidID(id int) *TransportUpdateOne {
-	tuo.mutation.SetReceiveidID(id)
+// SetReceiveID sets the receive edge to Hospital by id.
+func (tuo *TransportUpdateOne) SetReceiveID(id int) *TransportUpdateOne {
+	tuo.mutation.SetReceiveID(id)
 	return tuo
 }
 
-// SetNillableReceiveidID sets the receiveid edge to Receive by id if the given value is not nil.
-func (tuo *TransportUpdateOne) SetNillableReceiveidID(id *int) *TransportUpdateOne {
+// SetNillableReceiveID sets the receive edge to Hospital by id if the given value is not nil.
+func (tuo *TransportUpdateOne) SetNillableReceiveID(id *int) *TransportUpdateOne {
 	if id != nil {
-		tuo = tuo.SetReceiveidID(*id)
+		tuo = tuo.SetReceiveID(*id)
 	}
 	return tuo
 }
 
-// SetReceiveid sets the receiveid edge to Receive.
-func (tuo *TransportUpdateOne) SetReceiveid(r *Receive) *TransportUpdateOne {
-	return tuo.SetReceiveidID(r.ID)
+// SetReceive sets the receive edge to Hospital.
+func (tuo *TransportUpdateOne) SetReceive(h *Hospital) *TransportUpdateOne {
+	return tuo.SetReceiveID(h.ID)
 }
 
 // SetUserID sets the user edge to User by id.
@@ -445,15 +516,15 @@ func (tuo *TransportUpdateOne) Mutation() *TransportMutation {
 	return tuo.mutation
 }
 
-// ClearSendid clears the sendid edge to Send.
-func (tuo *TransportUpdateOne) ClearSendid() *TransportUpdateOne {
-	tuo.mutation.ClearSendid()
+// ClearSend clears the send edge to Hospital.
+func (tuo *TransportUpdateOne) ClearSend() *TransportUpdateOne {
+	tuo.mutation.ClearSend()
 	return tuo
 }
 
-// ClearReceiveid clears the receiveid edge to Receive.
-func (tuo *TransportUpdateOne) ClearReceiveid() *TransportUpdateOne {
-	tuo.mutation.ClearReceiveid()
+// ClearReceive clears the receive edge to Hospital.
+func (tuo *TransportUpdateOne) ClearReceive() *TransportUpdateOne {
+	tuo.mutation.ClearReceive()
 	return tuo
 }
 
@@ -471,6 +542,21 @@ func (tuo *TransportUpdateOne) ClearAmbulance() *TransportUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (tuo *TransportUpdateOne) Save(ctx context.Context) (*Transport, error) {
+	if v, ok := tuo.mutation.Symptom(); ok {
+		if err := transport.SymptomValidator(v); err != nil {
+			return nil, &ValidationError{Name: "symptom", err: fmt.Errorf("ent: validator failed for field \"symptom\": %w", err)}
+		}
+	}
+	if v, ok := tuo.mutation.Drugallergy(); ok {
+		if err := transport.DrugallergyValidator(v); err != nil {
+			return nil, &ValidationError{Name: "drugallergy", err: fmt.Errorf("ent: validator failed for field \"drugallergy\": %w", err)}
+		}
+	}
+	if v, ok := tuo.mutation.Note(); ok {
+		if err := transport.NoteValidator(v); err != nil {
+			return nil, &ValidationError{Name: "note", err: fmt.Errorf("ent: validator failed for field \"note\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -537,33 +623,54 @@ func (tuo *TransportUpdateOne) sqlSave(ctx context.Context) (t *Transport, err e
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing Transport.ID for update")}
 	}
 	_spec.Node.ID.Value = id
-	if tuo.mutation.SendidCleared() {
+	if value, ok := tuo.mutation.Symptom(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldSymptom,
+		})
+	}
+	if value, ok := tuo.mutation.Drugallergy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldDrugallergy,
+		})
+	}
+	if value, ok := tuo.mutation.Note(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldNote,
+		})
+	}
+	if tuo.mutation.SendCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.SendidTable,
-			Columns: []string{transport.SendidColumn},
+			Table:   transport.SendTable,
+			Columns: []string{transport.SendColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: send.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.SendidIDs(); len(nodes) > 0 {
+	if nodes := tuo.mutation.SendIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.SendidTable,
-			Columns: []string{transport.SendidColumn},
+			Table:   transport.SendTable,
+			Columns: []string{transport.SendColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: send.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
@@ -572,33 +679,33 @@ func (tuo *TransportUpdateOne) sqlSave(ctx context.Context) (t *Transport, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tuo.mutation.ReceiveidCleared() {
+	if tuo.mutation.ReceiveCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.ReceiveidTable,
-			Columns: []string{transport.ReceiveidColumn},
+			Table:   transport.ReceiveTable,
+			Columns: []string{transport.ReceiveColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: receive.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.ReceiveidIDs(); len(nodes) > 0 {
+	if nodes := tuo.mutation.ReceiveIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.ReceiveidTable,
-			Columns: []string{transport.ReceiveidColumn},
+			Table:   transport.ReceiveTable,
+			Columns: []string{transport.ReceiveColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: receive.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}

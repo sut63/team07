@@ -18,13 +18,12 @@ import (
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/deliver"
 	"github.com/team07/app/ent/distance"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/purpose"
-	"github.com/team07/app/ent/receive"
 	"github.com/team07/app/ent/repairing"
-	"github.com/team07/app/ent/send"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
@@ -57,6 +56,8 @@ type Client struct {
 	Deliver *DeliverClient
 	// Distance is the client for interacting with the Distance builders.
 	Distance *DistanceClient
+	// Hospital is the client for interacting with the Hospital builders.
+	Hospital *HospitalClient
 	// InspectionResult is the client for interacting with the InspectionResult builders.
 	InspectionResult *InspectionResultClient
 	// Insurance is the client for interacting with the Insurance builders.
@@ -65,12 +66,8 @@ type Client struct {
 	JobPosition *JobPositionClient
 	// Purpose is the client for interacting with the Purpose builders.
 	Purpose *PurposeClient
-	// Receive is the client for interacting with the Receive builders.
-	Receive *ReceiveClient
 	// Repairing is the client for interacting with the Repairing builders.
 	Repairing *RepairingClient
-	// Send is the client for interacting with the Send builders.
-	Send *SendClient
 	// Transport is the client for interacting with the Transport builders.
 	Transport *TransportClient
 	// Urgent is the client for interacting with the Urgent builders.
@@ -99,13 +96,12 @@ func (c *Client) init() {
 	c.Carservice = NewCarserviceClient(c.config)
 	c.Deliver = NewDeliverClient(c.config)
 	c.Distance = NewDistanceClient(c.config)
+	c.Hospital = NewHospitalClient(c.config)
 	c.InspectionResult = NewInspectionResultClient(c.config)
 	c.Insurance = NewInsuranceClient(c.config)
 	c.JobPosition = NewJobPositionClient(c.config)
 	c.Purpose = NewPurposeClient(c.config)
-	c.Receive = NewReceiveClient(c.config)
 	c.Repairing = NewRepairingClient(c.config)
-	c.Send = NewSendClient(c.config)
 	c.Transport = NewTransportClient(c.config)
 	c.Urgent = NewUrgentClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -150,13 +146,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Carservice:       NewCarserviceClient(cfg),
 		Deliver:          NewDeliverClient(cfg),
 		Distance:         NewDistanceClient(cfg),
+		Hospital:         NewHospitalClient(cfg),
 		InspectionResult: NewInspectionResultClient(cfg),
 		Insurance:        NewInsuranceClient(cfg),
 		JobPosition:      NewJobPositionClient(cfg),
 		Purpose:          NewPurposeClient(cfg),
-		Receive:          NewReceiveClient(cfg),
 		Repairing:        NewRepairingClient(cfg),
-		Send:             NewSendClient(cfg),
 		Transport:        NewTransportClient(cfg),
 		Urgent:           NewUrgentClient(cfg),
 		User:             NewUserClient(cfg),
@@ -184,13 +179,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Carservice:       NewCarserviceClient(cfg),
 		Deliver:          NewDeliverClient(cfg),
 		Distance:         NewDistanceClient(cfg),
+		Hospital:         NewHospitalClient(cfg),
 		InspectionResult: NewInspectionResultClient(cfg),
 		Insurance:        NewInsuranceClient(cfg),
 		JobPosition:      NewJobPositionClient(cfg),
 		Purpose:          NewPurposeClient(cfg),
-		Receive:          NewReceiveClient(cfg),
 		Repairing:        NewRepairingClient(cfg),
-		Send:             NewSendClient(cfg),
 		Transport:        NewTransportClient(cfg),
 		Urgent:           NewUrgentClient(cfg),
 		User:             NewUserClient(cfg),
@@ -231,13 +225,12 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Carservice.Use(hooks...)
 	c.Deliver.Use(hooks...)
 	c.Distance.Use(hooks...)
+	c.Hospital.Use(hooks...)
 	c.InspectionResult.Use(hooks...)
 	c.Insurance.Use(hooks...)
 	c.JobPosition.Use(hooks...)
 	c.Purpose.Use(hooks...)
-	c.Receive.Use(hooks...)
 	c.Repairing.Use(hooks...)
-	c.Send.Use(hooks...)
 	c.Transport.Use(hooks...)
 	c.Urgent.Use(hooks...)
 	c.User.Use(hooks...)
@@ -1342,6 +1335,121 @@ func (c *DistanceClient) Hooks() []Hook {
 	return c.hooks.Distance
 }
 
+// HospitalClient is a client for the Hospital schema.
+type HospitalClient struct {
+	config
+}
+
+// NewHospitalClient returns a client for the Hospital from the given config.
+func NewHospitalClient(c config) *HospitalClient {
+	return &HospitalClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `hospital.Hooks(f(g(h())))`.
+func (c *HospitalClient) Use(hooks ...Hook) {
+	c.hooks.Hospital = append(c.hooks.Hospital, hooks...)
+}
+
+// Create returns a create builder for Hospital.
+func (c *HospitalClient) Create() *HospitalCreate {
+	mutation := newHospitalMutation(c.config, OpCreate)
+	return &HospitalCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Update returns an update builder for Hospital.
+func (c *HospitalClient) Update() *HospitalUpdate {
+	mutation := newHospitalMutation(c.config, OpUpdate)
+	return &HospitalUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *HospitalClient) UpdateOne(h *Hospital) *HospitalUpdateOne {
+	mutation := newHospitalMutation(c.config, OpUpdateOne, withHospital(h))
+	return &HospitalUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *HospitalClient) UpdateOneID(id int) *HospitalUpdateOne {
+	mutation := newHospitalMutation(c.config, OpUpdateOne, withHospitalID(id))
+	return &HospitalUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Hospital.
+func (c *HospitalClient) Delete() *HospitalDelete {
+	mutation := newHospitalMutation(c.config, OpDelete)
+	return &HospitalDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *HospitalClient) DeleteOne(h *Hospital) *HospitalDeleteOne {
+	return c.DeleteOneID(h.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *HospitalClient) DeleteOneID(id int) *HospitalDeleteOne {
+	builder := c.Delete().Where(hospital.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &HospitalDeleteOne{builder}
+}
+
+// Create returns a query builder for Hospital.
+func (c *HospitalClient) Query() *HospitalQuery {
+	return &HospitalQuery{config: c.config}
+}
+
+// Get returns a Hospital entity by its id.
+func (c *HospitalClient) Get(ctx context.Context, id int) (*Hospital, error) {
+	return c.Query().Where(hospital.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *HospitalClient) GetX(ctx context.Context, id int) *Hospital {
+	h, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return h
+}
+
+// QueryReceive queries the receive edge of a Hospital.
+func (c *HospitalClient) QueryReceive(h *Hospital) *TransportQuery {
+	query := &TransportQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hospital.Table, hospital.FieldID, id),
+			sqlgraph.To(transport.Table, transport.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, hospital.ReceiveTable, hospital.ReceiveColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySend queries the send edge of a Hospital.
+func (c *HospitalClient) QuerySend(h *Hospital) *TransportQuery {
+	query := &TransportQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := h.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(hospital.Table, hospital.FieldID, id),
+			sqlgraph.To(transport.Table, transport.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, hospital.SendTable, hospital.SendColumn),
+		)
+		fromV = sqlgraph.Neighbors(h.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *HospitalClient) Hooks() []Hook {
+	return c.hooks.Hospital
+}
+
 // InspectionResultClient is a client for the InspectionResult schema.
 type InspectionResultClient struct {
 	config
@@ -1786,105 +1894,6 @@ func (c *PurposeClient) Hooks() []Hook {
 	return c.hooks.Purpose
 }
 
-// ReceiveClient is a client for the Receive schema.
-type ReceiveClient struct {
-	config
-}
-
-// NewReceiveClient returns a client for the Receive from the given config.
-func NewReceiveClient(c config) *ReceiveClient {
-	return &ReceiveClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `receive.Hooks(f(g(h())))`.
-func (c *ReceiveClient) Use(hooks ...Hook) {
-	c.hooks.Receive = append(c.hooks.Receive, hooks...)
-}
-
-// Create returns a create builder for Receive.
-func (c *ReceiveClient) Create() *ReceiveCreate {
-	mutation := newReceiveMutation(c.config, OpCreate)
-	return &ReceiveCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Receive.
-func (c *ReceiveClient) Update() *ReceiveUpdate {
-	mutation := newReceiveMutation(c.config, OpUpdate)
-	return &ReceiveUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *ReceiveClient) UpdateOne(r *Receive) *ReceiveUpdateOne {
-	mutation := newReceiveMutation(c.config, OpUpdateOne, withReceive(r))
-	return &ReceiveUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *ReceiveClient) UpdateOneID(id int) *ReceiveUpdateOne {
-	mutation := newReceiveMutation(c.config, OpUpdateOne, withReceiveID(id))
-	return &ReceiveUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Receive.
-func (c *ReceiveClient) Delete() *ReceiveDelete {
-	mutation := newReceiveMutation(c.config, OpDelete)
-	return &ReceiveDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *ReceiveClient) DeleteOne(r *Receive) *ReceiveDeleteOne {
-	return c.DeleteOneID(r.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *ReceiveClient) DeleteOneID(id int) *ReceiveDeleteOne {
-	builder := c.Delete().Where(receive.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &ReceiveDeleteOne{builder}
-}
-
-// Create returns a query builder for Receive.
-func (c *ReceiveClient) Query() *ReceiveQuery {
-	return &ReceiveQuery{config: c.config}
-}
-
-// Get returns a Receive entity by its id.
-func (c *ReceiveClient) Get(ctx context.Context, id int) (*Receive, error) {
-	return c.Query().Where(receive.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *ReceiveClient) GetX(ctx context.Context, id int) *Receive {
-	r, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return r
-}
-
-// QueryReceiveid queries the receiveid edge of a Receive.
-func (c *ReceiveClient) QueryReceiveid(r *Receive) *TransportQuery {
-	query := &TransportQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := r.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(receive.Table, receive.FieldID, id),
-			sqlgraph.To(transport.Table, transport.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, receive.ReceiveidTable, receive.ReceiveidColumn),
-		)
-		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *ReceiveClient) Hooks() []Hook {
-	return c.hooks.Receive
-}
-
 // RepairingClient is a client for the Repairing schema.
 type RepairingClient struct {
 	config
@@ -1984,105 +1993,6 @@ func (c *RepairingClient) Hooks() []Hook {
 	return c.hooks.Repairing
 }
 
-// SendClient is a client for the Send schema.
-type SendClient struct {
-	config
-}
-
-// NewSendClient returns a client for the Send from the given config.
-func NewSendClient(c config) *SendClient {
-	return &SendClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `send.Hooks(f(g(h())))`.
-func (c *SendClient) Use(hooks ...Hook) {
-	c.hooks.Send = append(c.hooks.Send, hooks...)
-}
-
-// Create returns a create builder for Send.
-func (c *SendClient) Create() *SendCreate {
-	mutation := newSendMutation(c.config, OpCreate)
-	return &SendCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Update returns an update builder for Send.
-func (c *SendClient) Update() *SendUpdate {
-	mutation := newSendMutation(c.config, OpUpdate)
-	return &SendUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *SendClient) UpdateOne(s *Send) *SendUpdateOne {
-	mutation := newSendMutation(c.config, OpUpdateOne, withSend(s))
-	return &SendUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *SendClient) UpdateOneID(id int) *SendUpdateOne {
-	mutation := newSendMutation(c.config, OpUpdateOne, withSendID(id))
-	return &SendUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Send.
-func (c *SendClient) Delete() *SendDelete {
-	mutation := newSendMutation(c.config, OpDelete)
-	return &SendDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a delete builder for the given entity.
-func (c *SendClient) DeleteOne(s *Send) *SendDeleteOne {
-	return c.DeleteOneID(s.ID)
-}
-
-// DeleteOneID returns a delete builder for the given id.
-func (c *SendClient) DeleteOneID(id int) *SendDeleteOne {
-	builder := c.Delete().Where(send.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &SendDeleteOne{builder}
-}
-
-// Create returns a query builder for Send.
-func (c *SendClient) Query() *SendQuery {
-	return &SendQuery{config: c.config}
-}
-
-// Get returns a Send entity by its id.
-func (c *SendClient) Get(ctx context.Context, id int) (*Send, error) {
-	return c.Query().Where(send.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *SendClient) GetX(ctx context.Context, id int) *Send {
-	s, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return s
-}
-
-// QuerySendid queries the sendid edge of a Send.
-func (c *SendClient) QuerySendid(s *Send) *TransportQuery {
-	query := &TransportQuery{config: c.config}
-	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := s.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(send.Table, send.FieldID, id),
-			sqlgraph.To(transport.Table, transport.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, send.SendidTable, send.SendidColumn),
-		)
-		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *SendClient) Hooks() []Hook {
-	return c.hooks.Send
-}
-
 // TransportClient is a client for the Transport schema.
 type TransportClient struct {
 	config
@@ -2161,15 +2071,15 @@ func (c *TransportClient) GetX(ctx context.Context, id int) *Transport {
 	return t
 }
 
-// QuerySendid queries the sendid edge of a Transport.
-func (c *TransportClient) QuerySendid(t *Transport) *SendQuery {
-	query := &SendQuery{config: c.config}
+// QuerySend queries the send edge of a Transport.
+func (c *TransportClient) QuerySend(t *Transport) *HospitalQuery {
+	query := &HospitalQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := t.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(transport.Table, transport.FieldID, id),
-			sqlgraph.To(send.Table, send.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, transport.SendidTable, transport.SendidColumn),
+			sqlgraph.To(hospital.Table, hospital.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, transport.SendTable, transport.SendColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil
@@ -2177,15 +2087,15 @@ func (c *TransportClient) QuerySendid(t *Transport) *SendQuery {
 	return query
 }
 
-// QueryReceiveid queries the receiveid edge of a Transport.
-func (c *TransportClient) QueryReceiveid(t *Transport) *ReceiveQuery {
-	query := &ReceiveQuery{config: c.config}
+// QueryReceive queries the receive edge of a Transport.
+func (c *TransportClient) QueryReceive(t *Transport) *HospitalQuery {
+	query := &HospitalQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := t.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(transport.Table, transport.FieldID, id),
-			sqlgraph.To(receive.Table, receive.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, transport.ReceiveidTable, transport.ReceiveidColumn),
+			sqlgraph.To(hospital.Table, hospital.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, transport.ReceiveTable, transport.ReceiveColumn),
 		)
 		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil

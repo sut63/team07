@@ -15,13 +15,12 @@ import (
 	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/distance"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/insurance"
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/purpose"
-	"github.com/team07/app/ent/receive"
 	"github.com/team07/app/ent/repairing"
-	"github.com/team07/app/ent/send"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
@@ -47,13 +46,12 @@ const (
 	TypeCarservice       = "Carservice"
 	TypeDeliver          = "Deliver"
 	TypeDistance         = "Distance"
+	TypeHospital         = "Hospital"
 	TypeInspectionResult = "InspectionResult"
 	TypeInsurance        = "Insurance"
 	TypeJobPosition      = "JobPosition"
 	TypePurpose          = "Purpose"
-	TypeReceive          = "Receive"
 	TypeRepairing        = "Repairing"
-	TypeSend             = "Send"
 	TypeTransport        = "Transport"
 	TypeUrgent           = "Urgent"
 	TypeUser             = "User"
@@ -4450,6 +4448,439 @@ func (m *DistanceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Distance edge %s", name)
 }
 
+// HospitalMutation represents an operation that mutate the Hospitals
+// nodes in the graph.
+type HospitalMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int
+	hospital       *string
+	clearedFields  map[string]struct{}
+	receive        map[int]struct{}
+	removedreceive map[int]struct{}
+	send           map[int]struct{}
+	removedsend    map[int]struct{}
+	done           bool
+	oldValue       func(context.Context) (*Hospital, error)
+}
+
+var _ ent.Mutation = (*HospitalMutation)(nil)
+
+// hospitalOption allows to manage the mutation configuration using functional options.
+type hospitalOption func(*HospitalMutation)
+
+// newHospitalMutation creates new mutation for $n.Name.
+func newHospitalMutation(c config, op Op, opts ...hospitalOption) *HospitalMutation {
+	m := &HospitalMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeHospital,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withHospitalID sets the id field of the mutation.
+func withHospitalID(id int) hospitalOption {
+	return func(m *HospitalMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Hospital
+		)
+		m.oldValue = func(ctx context.Context) (*Hospital, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Hospital.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withHospital sets the old Hospital of the mutation.
+func withHospital(node *Hospital) hospitalOption {
+	return func(m *HospitalMutation) {
+		m.oldValue = func(context.Context) (*Hospital, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m HospitalMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m HospitalMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the id value in the mutation. Note that, the id
+// is available only if it was provided to the builder.
+func (m *HospitalMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetHospital sets the hospital field.
+func (m *HospitalMutation) SetHospital(s string) {
+	m.hospital = &s
+}
+
+// Hospital returns the hospital value in the mutation.
+func (m *HospitalMutation) Hospital() (r string, exists bool) {
+	v := m.hospital
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHospital returns the old hospital value of the Hospital.
+// If the Hospital object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *HospitalMutation) OldHospital(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldHospital is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldHospital requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHospital: %w", err)
+	}
+	return oldValue.Hospital, nil
+}
+
+// ResetHospital reset all changes of the "hospital" field.
+func (m *HospitalMutation) ResetHospital() {
+	m.hospital = nil
+}
+
+// AddReceiveIDs adds the receive edge to Transport by ids.
+func (m *HospitalMutation) AddReceiveIDs(ids ...int) {
+	if m.receive == nil {
+		m.receive = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.receive[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveReceiveIDs removes the receive edge to Transport by ids.
+func (m *HospitalMutation) RemoveReceiveIDs(ids ...int) {
+	if m.removedreceive == nil {
+		m.removedreceive = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedreceive[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedReceive returns the removed ids of receive.
+func (m *HospitalMutation) RemovedReceiveIDs() (ids []int) {
+	for id := range m.removedreceive {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ReceiveIDs returns the receive ids in the mutation.
+func (m *HospitalMutation) ReceiveIDs() (ids []int) {
+	for id := range m.receive {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetReceive reset all changes of the "receive" edge.
+func (m *HospitalMutation) ResetReceive() {
+	m.receive = nil
+	m.removedreceive = nil
+}
+
+// AddSendIDs adds the send edge to Transport by ids.
+func (m *HospitalMutation) AddSendIDs(ids ...int) {
+	if m.send == nil {
+		m.send = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.send[ids[i]] = struct{}{}
+	}
+}
+
+// RemoveSendIDs removes the send edge to Transport by ids.
+func (m *HospitalMutation) RemoveSendIDs(ids ...int) {
+	if m.removedsend == nil {
+		m.removedsend = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.removedsend[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedSend returns the removed ids of send.
+func (m *HospitalMutation) RemovedSendIDs() (ids []int) {
+	for id := range m.removedsend {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// SendIDs returns the send ids in the mutation.
+func (m *HospitalMutation) SendIDs() (ids []int) {
+	for id := range m.send {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetSend reset all changes of the "send" edge.
+func (m *HospitalMutation) ResetSend() {
+	m.send = nil
+	m.removedsend = nil
+}
+
+// Op returns the operation name.
+func (m *HospitalMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Hospital).
+func (m *HospitalMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during
+// this mutation. Note that, in order to get all numeric
+// fields that were in/decremented, call AddedFields().
+func (m *HospitalMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.hospital != nil {
+		fields = append(fields, hospital.FieldHospital)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name.
+// The second boolean value indicates that this field was
+// not set, or was not define in the schema.
+func (m *HospitalMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case hospital.FieldHospital:
+		return m.Hospital()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database.
+// An error is returned if the mutation operation is not UpdateOne,
+// or the query to the database was failed.
+func (m *HospitalMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case hospital.FieldHospital:
+		return m.OldHospital(ctx)
+	}
+	return nil, fmt.Errorf("unknown Hospital field %s", name)
+}
+
+// SetField sets the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *HospitalMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case hospital.FieldHospital:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHospital(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Hospital field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented
+// or decremented during this mutation.
+func (m *HospitalMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was in/decremented
+// from a field with the given name. The second value indicates
+// that this field was not set, or was not define in the schema.
+func (m *HospitalMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *HospitalMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Hospital numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared
+// during this mutation.
+func (m *HospitalMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicates if this field was
+// cleared in this mutation.
+func (m *HospitalMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value for the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *HospitalMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Hospital nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation regarding the
+// given field name. It returns an error if the field is not
+// defined in the schema.
+func (m *HospitalMutation) ResetField(name string) error {
+	switch name {
+	case hospital.FieldHospital:
+		m.ResetHospital()
+		return nil
+	}
+	return fmt.Errorf("unknown Hospital field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this
+// mutation.
+func (m *HospitalMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.receive != nil {
+		edges = append(edges, hospital.EdgeReceive)
+	}
+	if m.send != nil {
+		edges = append(edges, hospital.EdgeSend)
+	}
+	return edges
+}
+
+// AddedIDs returns all ids (to other nodes) that were added for
+// the given edge name.
+func (m *HospitalMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case hospital.EdgeReceive:
+		ids := make([]ent.Value, 0, len(m.receive))
+		for id := range m.receive {
+			ids = append(ids, id)
+		}
+		return ids
+	case hospital.EdgeSend:
+		ids := make([]ent.Value, 0, len(m.send))
+		for id := range m.send {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this
+// mutation.
+func (m *HospitalMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedreceive != nil {
+		edges = append(edges, hospital.EdgeReceive)
+	}
+	if m.removedsend != nil {
+		edges = append(edges, hospital.EdgeSend)
+	}
+	return edges
+}
+
+// RemovedIDs returns all ids (to other nodes) that were removed for
+// the given edge name.
+func (m *HospitalMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case hospital.EdgeReceive:
+		ids := make([]ent.Value, 0, len(m.removedreceive))
+		for id := range m.removedreceive {
+			ids = append(ids, id)
+		}
+		return ids
+	case hospital.EdgeSend:
+		ids := make([]ent.Value, 0, len(m.removedsend))
+		for id := range m.removedsend {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this
+// mutation.
+func (m *HospitalMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// EdgeCleared returns a boolean indicates if this edge was
+// cleared in this mutation.
+func (m *HospitalMutation) EdgeCleared(name string) bool {
+	switch name {
+	}
+	return false
+}
+
+// ClearEdge clears the value for the given name. It returns an
+// error if the edge name is not defined in the schema.
+func (m *HospitalMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Hospital unique edge %s", name)
+}
+
+// ResetEdge resets all changes in the mutation regarding the
+// given edge name. It returns an error if the edge is not
+// defined in the schema.
+func (m *HospitalMutation) ResetEdge(name string) error {
+	switch name {
+	case hospital.EdgeReceive:
+		m.ResetReceive()
+		return nil
+	case hospital.EdgeSend:
+		m.ResetSend()
+		return nil
+	}
+	return fmt.Errorf("unknown Hospital edge %s", name)
+}
+
 // InspectionResultMutation represents an operation that mutate the InspectionResults
 // nodes in the graph.
 type InspectionResultMutation struct {
@@ -6111,374 +6542,6 @@ func (m *PurposeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Purpose edge %s", name)
 }
 
-// ReceiveMutation represents an operation that mutate the Receives
-// nodes in the graph.
-type ReceiveMutation struct {
-	config
-	op               Op
-	typ              string
-	id               *int
-	receivename      *string
-	clearedFields    map[string]struct{}
-	receiveid        map[int]struct{}
-	removedreceiveid map[int]struct{}
-	done             bool
-	oldValue         func(context.Context) (*Receive, error)
-}
-
-var _ ent.Mutation = (*ReceiveMutation)(nil)
-
-// receiveOption allows to manage the mutation configuration using functional options.
-type receiveOption func(*ReceiveMutation)
-
-// newReceiveMutation creates new mutation for $n.Name.
-func newReceiveMutation(c config, op Op, opts ...receiveOption) *ReceiveMutation {
-	m := &ReceiveMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeReceive,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withReceiveID sets the id field of the mutation.
-func withReceiveID(id int) receiveOption {
-	return func(m *ReceiveMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Receive
-		)
-		m.oldValue = func(ctx context.Context) (*Receive, error) {
-			once.Do(func() {
-				if m.done {
-					err = fmt.Errorf("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Receive.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withReceive sets the old Receive of the mutation.
-func withReceive(node *Receive) receiveOption {
-	return func(m *ReceiveMutation) {
-		m.oldValue = func(context.Context) (*Receive, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ReceiveMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ReceiveMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
-func (m *ReceiveMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// SetReceivename sets the receivename field.
-func (m *ReceiveMutation) SetReceivename(s string) {
-	m.receivename = &s
-}
-
-// Receivename returns the receivename value in the mutation.
-func (m *ReceiveMutation) Receivename() (r string, exists bool) {
-	v := m.receivename
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldReceivename returns the old receivename value of the Receive.
-// If the Receive object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *ReceiveMutation) OldReceivename(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldReceivename is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldReceivename requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldReceivename: %w", err)
-	}
-	return oldValue.Receivename, nil
-}
-
-// ResetReceivename reset all changes of the "receivename" field.
-func (m *ReceiveMutation) ResetReceivename() {
-	m.receivename = nil
-}
-
-// AddReceiveidIDs adds the receiveid edge to Transport by ids.
-func (m *ReceiveMutation) AddReceiveidIDs(ids ...int) {
-	if m.receiveid == nil {
-		m.receiveid = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.receiveid[ids[i]] = struct{}{}
-	}
-}
-
-// RemoveReceiveidIDs removes the receiveid edge to Transport by ids.
-func (m *ReceiveMutation) RemoveReceiveidIDs(ids ...int) {
-	if m.removedreceiveid == nil {
-		m.removedreceiveid = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedreceiveid[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedReceiveid returns the removed ids of receiveid.
-func (m *ReceiveMutation) RemovedReceiveidIDs() (ids []int) {
-	for id := range m.removedreceiveid {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ReceiveidIDs returns the receiveid ids in the mutation.
-func (m *ReceiveMutation) ReceiveidIDs() (ids []int) {
-	for id := range m.receiveid {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetReceiveid reset all changes of the "receiveid" edge.
-func (m *ReceiveMutation) ResetReceiveid() {
-	m.receiveid = nil
-	m.removedreceiveid = nil
-}
-
-// Op returns the operation name.
-func (m *ReceiveMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (Receive).
-func (m *ReceiveMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
-func (m *ReceiveMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.receivename != nil {
-		fields = append(fields, receive.FieldReceivename)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
-func (m *ReceiveMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case receive.FieldReceivename:
-		return m.Receivename()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
-func (m *ReceiveMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case receive.FieldReceivename:
-		return m.OldReceivename(ctx)
-	}
-	return nil, fmt.Errorf("unknown Receive field %s", name)
-}
-
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *ReceiveMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case receive.FieldReceivename:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetReceivename(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Receive field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
-func (m *ReceiveMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
-func (m *ReceiveMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *ReceiveMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Receive numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
-func (m *ReceiveMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicates if this field was
-// cleared in this mutation.
-func (m *ReceiveMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value for the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ReceiveMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Receive nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
-func (m *ReceiveMutation) ResetField(name string) error {
-	switch name {
-	case receive.FieldReceivename:
-		m.ResetReceivename()
-		return nil
-	}
-	return fmt.Errorf("unknown Receive field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
-func (m *ReceiveMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.receiveid != nil {
-		edges = append(edges, receive.EdgeReceiveid)
-	}
-	return edges
-}
-
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
-func (m *ReceiveMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case receive.EdgeReceiveid:
-		ids := make([]ent.Value, 0, len(m.receiveid))
-		for id := range m.receiveid {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
-func (m *ReceiveMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedreceiveid != nil {
-		edges = append(edges, receive.EdgeReceiveid)
-	}
-	return edges
-}
-
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
-func (m *ReceiveMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case receive.EdgeReceiveid:
-		ids := make([]ent.Value, 0, len(m.removedreceiveid))
-		for id := range m.removedreceiveid {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
-func (m *ReceiveMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
-func (m *ReceiveMutation) EdgeCleared(name string) bool {
-	switch name {
-	}
-	return false
-}
-
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
-func (m *ReceiveMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Receive unique edge %s", name)
-}
-
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
-func (m *ReceiveMutation) ResetEdge(name string) error {
-	switch name {
-	case receive.EdgeReceiveid:
-		m.ResetReceiveid()
-		return nil
-	}
-	return fmt.Errorf("unknown Receive edge %s", name)
-}
-
 // RepairingMutation represents an operation that mutate the Repairings
 // nodes in the graph.
 type RepairingMutation struct {
@@ -6847,374 +6910,6 @@ func (m *RepairingMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Repairing edge %s", name)
 }
 
-// SendMutation represents an operation that mutate the Sends
-// nodes in the graph.
-type SendMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *int
-	sendname      *string
-	clearedFields map[string]struct{}
-	sendid        map[int]struct{}
-	removedsendid map[int]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Send, error)
-}
-
-var _ ent.Mutation = (*SendMutation)(nil)
-
-// sendOption allows to manage the mutation configuration using functional options.
-type sendOption func(*SendMutation)
-
-// newSendMutation creates new mutation for $n.Name.
-func newSendMutation(c config, op Op, opts ...sendOption) *SendMutation {
-	m := &SendMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeSend,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withSendID sets the id field of the mutation.
-func withSendID(id int) sendOption {
-	return func(m *SendMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Send
-		)
-		m.oldValue = func(ctx context.Context) (*Send, error) {
-			once.Do(func() {
-				if m.done {
-					err = fmt.Errorf("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Send.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withSend sets the old Send of the mutation.
-func withSend(node *Send) sendOption {
-	return func(m *SendMutation) {
-		m.oldValue = func(context.Context) (*Send, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m SendMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m SendMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the id value in the mutation. Note that, the id
-// is available only if it was provided to the builder.
-func (m *SendMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// SetSendname sets the sendname field.
-func (m *SendMutation) SetSendname(s string) {
-	m.sendname = &s
-}
-
-// Sendname returns the sendname value in the mutation.
-func (m *SendMutation) Sendname() (r string, exists bool) {
-	v := m.sendname
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSendname returns the old sendname value of the Send.
-// If the Send object wasn't provided to the builder, the object is fetched
-// from the database.
-// An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *SendMutation) OldSendname(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldSendname is allowed only on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldSendname requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSendname: %w", err)
-	}
-	return oldValue.Sendname, nil
-}
-
-// ResetSendname reset all changes of the "sendname" field.
-func (m *SendMutation) ResetSendname() {
-	m.sendname = nil
-}
-
-// AddSendidIDs adds the sendid edge to Transport by ids.
-func (m *SendMutation) AddSendidIDs(ids ...int) {
-	if m.sendid == nil {
-		m.sendid = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.sendid[ids[i]] = struct{}{}
-	}
-}
-
-// RemoveSendidIDs removes the sendid edge to Transport by ids.
-func (m *SendMutation) RemoveSendidIDs(ids ...int) {
-	if m.removedsendid == nil {
-		m.removedsendid = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.removedsendid[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedSendid returns the removed ids of sendid.
-func (m *SendMutation) RemovedSendidIDs() (ids []int) {
-	for id := range m.removedsendid {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// SendidIDs returns the sendid ids in the mutation.
-func (m *SendMutation) SendidIDs() (ids []int) {
-	for id := range m.sendid {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetSendid reset all changes of the "sendid" edge.
-func (m *SendMutation) ResetSendid() {
-	m.sendid = nil
-	m.removedsendid = nil
-}
-
-// Op returns the operation name.
-func (m *SendMutation) Op() Op {
-	return m.op
-}
-
-// Type returns the node type of this mutation (Send).
-func (m *SendMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during
-// this mutation. Note that, in order to get all numeric
-// fields that were in/decremented, call AddedFields().
-func (m *SendMutation) Fields() []string {
-	fields := make([]string, 0, 1)
-	if m.sendname != nil {
-		fields = append(fields, send.FieldSendname)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name.
-// The second boolean value indicates that this field was
-// not set, or was not define in the schema.
-func (m *SendMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case send.FieldSendname:
-		return m.Sendname()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database.
-// An error is returned if the mutation operation is not UpdateOne,
-// or the query to the database was failed.
-func (m *SendMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case send.FieldSendname:
-		return m.OldSendname(ctx)
-	}
-	return nil, fmt.Errorf("unknown Send field %s", name)
-}
-
-// SetField sets the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *SendMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case send.FieldSendname:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSendname(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Send field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented
-// or decremented during this mutation.
-func (m *SendMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was in/decremented
-// from a field with the given name. The second value indicates
-// that this field was not set, or was not define in the schema.
-func (m *SendMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value for the given name. It returns an
-// error if the field is not defined in the schema, or if the
-// type mismatch the field type.
-func (m *SendMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Send numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared
-// during this mutation.
-func (m *SendMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicates if this field was
-// cleared in this mutation.
-func (m *SendMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value for the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *SendMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Send nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation regarding the
-// given field name. It returns an error if the field is not
-// defined in the schema.
-func (m *SendMutation) ResetField(name string) error {
-	switch name {
-	case send.FieldSendname:
-		m.ResetSendname()
-		return nil
-	}
-	return fmt.Errorf("unknown Send field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this
-// mutation.
-func (m *SendMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.sendid != nil {
-		edges = append(edges, send.EdgeSendid)
-	}
-	return edges
-}
-
-// AddedIDs returns all ids (to other nodes) that were added for
-// the given edge name.
-func (m *SendMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case send.EdgeSendid:
-		ids := make([]ent.Value, 0, len(m.sendid))
-		for id := range m.sendid {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this
-// mutation.
-func (m *SendMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedsendid != nil {
-		edges = append(edges, send.EdgeSendid)
-	}
-	return edges
-}
-
-// RemovedIDs returns all ids (to other nodes) that were removed for
-// the given edge name.
-func (m *SendMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case send.EdgeSendid:
-		ids := make([]ent.Value, 0, len(m.removedsendid))
-		for id := range m.removedsendid {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this
-// mutation.
-func (m *SendMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// EdgeCleared returns a boolean indicates if this edge was
-// cleared in this mutation.
-func (m *SendMutation) EdgeCleared(name string) bool {
-	switch name {
-	}
-	return false
-}
-
-// ClearEdge clears the value for the given name. It returns an
-// error if the edge name is not defined in the schema.
-func (m *SendMutation) ClearEdge(name string) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown Send unique edge %s", name)
-}
-
-// ResetEdge resets all changes in the mutation regarding the
-// given edge name. It returns an error if the edge is not
-// defined in the schema.
-func (m *SendMutation) ResetEdge(name string) error {
-	switch name {
-	case send.EdgeSendid:
-		m.ResetSendid()
-		return nil
-	}
-	return fmt.Errorf("unknown Send edge %s", name)
-}
-
 // TransportMutation represents an operation that mutate the Transports
 // nodes in the graph.
 type TransportMutation struct {
@@ -7222,11 +6917,14 @@ type TransportMutation struct {
 	op               Op
 	typ              string
 	id               *int
+	symptom          *string
+	drugallergy      *string
+	note             *string
 	clearedFields    map[string]struct{}
-	sendid           *int
-	clearedsendid    bool
-	receiveid        *int
-	clearedreceiveid bool
+	send             *int
+	clearedsend      bool
+	receive          *int
+	clearedreceive   bool
 	user             *int
 	cleareduser      bool
 	ambulance        *int
@@ -7314,82 +7012,193 @@ func (m *TransportMutation) ID() (id int, exists bool) {
 	return *m.id, true
 }
 
-// SetSendidID sets the sendid edge to Send by id.
-func (m *TransportMutation) SetSendidID(id int) {
-	m.sendid = &id
+// SetSymptom sets the symptom field.
+func (m *TransportMutation) SetSymptom(s string) {
+	m.symptom = &s
 }
 
-// ClearSendid clears the sendid edge to Send.
-func (m *TransportMutation) ClearSendid() {
-	m.clearedsendid = true
+// Symptom returns the symptom value in the mutation.
+func (m *TransportMutation) Symptom() (r string, exists bool) {
+	v := m.symptom
+	if v == nil {
+		return
+	}
+	return *v, true
 }
 
-// SendidCleared returns if the edge sendid was cleared.
-func (m *TransportMutation) SendidCleared() bool {
-	return m.clearedsendid
+// OldSymptom returns the old symptom value of the Transport.
+// If the Transport object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *TransportMutation) OldSymptom(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSymptom is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSymptom requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSymptom: %w", err)
+	}
+	return oldValue.Symptom, nil
 }
 
-// SendidID returns the sendid id in the mutation.
-func (m *TransportMutation) SendidID() (id int, exists bool) {
-	if m.sendid != nil {
-		return *m.sendid, true
+// ResetSymptom reset all changes of the "symptom" field.
+func (m *TransportMutation) ResetSymptom() {
+	m.symptom = nil
+}
+
+// SetDrugallergy sets the drugallergy field.
+func (m *TransportMutation) SetDrugallergy(s string) {
+	m.drugallergy = &s
+}
+
+// Drugallergy returns the drugallergy value in the mutation.
+func (m *TransportMutation) Drugallergy() (r string, exists bool) {
+	v := m.drugallergy
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDrugallergy returns the old drugallergy value of the Transport.
+// If the Transport object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *TransportMutation) OldDrugallergy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldDrugallergy is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldDrugallergy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDrugallergy: %w", err)
+	}
+	return oldValue.Drugallergy, nil
+}
+
+// ResetDrugallergy reset all changes of the "drugallergy" field.
+func (m *TransportMutation) ResetDrugallergy() {
+	m.drugallergy = nil
+}
+
+// SetNote sets the note field.
+func (m *TransportMutation) SetNote(s string) {
+	m.note = &s
+}
+
+// Note returns the note value in the mutation.
+func (m *TransportMutation) Note() (r string, exists bool) {
+	v := m.note
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNote returns the old note value of the Transport.
+// If the Transport object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *TransportMutation) OldNote(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldNote is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldNote requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNote: %w", err)
+	}
+	return oldValue.Note, nil
+}
+
+// ResetNote reset all changes of the "note" field.
+func (m *TransportMutation) ResetNote() {
+	m.note = nil
+}
+
+// SetSendID sets the send edge to Hospital by id.
+func (m *TransportMutation) SetSendID(id int) {
+	m.send = &id
+}
+
+// ClearSend clears the send edge to Hospital.
+func (m *TransportMutation) ClearSend() {
+	m.clearedsend = true
+}
+
+// SendCleared returns if the edge send was cleared.
+func (m *TransportMutation) SendCleared() bool {
+	return m.clearedsend
+}
+
+// SendID returns the send id in the mutation.
+func (m *TransportMutation) SendID() (id int, exists bool) {
+	if m.send != nil {
+		return *m.send, true
 	}
 	return
 }
 
-// SendidIDs returns the sendid ids in the mutation.
+// SendIDs returns the send ids in the mutation.
 // Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// SendidID instead. It exists only for internal usage by the builders.
-func (m *TransportMutation) SendidIDs() (ids []int) {
-	if id := m.sendid; id != nil {
+// SendID instead. It exists only for internal usage by the builders.
+func (m *TransportMutation) SendIDs() (ids []int) {
+	if id := m.send; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetSendid reset all changes of the "sendid" edge.
-func (m *TransportMutation) ResetSendid() {
-	m.sendid = nil
-	m.clearedsendid = false
+// ResetSend reset all changes of the "send" edge.
+func (m *TransportMutation) ResetSend() {
+	m.send = nil
+	m.clearedsend = false
 }
 
-// SetReceiveidID sets the receiveid edge to Receive by id.
-func (m *TransportMutation) SetReceiveidID(id int) {
-	m.receiveid = &id
+// SetReceiveID sets the receive edge to Hospital by id.
+func (m *TransportMutation) SetReceiveID(id int) {
+	m.receive = &id
 }
 
-// ClearReceiveid clears the receiveid edge to Receive.
-func (m *TransportMutation) ClearReceiveid() {
-	m.clearedreceiveid = true
+// ClearReceive clears the receive edge to Hospital.
+func (m *TransportMutation) ClearReceive() {
+	m.clearedreceive = true
 }
 
-// ReceiveidCleared returns if the edge receiveid was cleared.
-func (m *TransportMutation) ReceiveidCleared() bool {
-	return m.clearedreceiveid
+// ReceiveCleared returns if the edge receive was cleared.
+func (m *TransportMutation) ReceiveCleared() bool {
+	return m.clearedreceive
 }
 
-// ReceiveidID returns the receiveid id in the mutation.
-func (m *TransportMutation) ReceiveidID() (id int, exists bool) {
-	if m.receiveid != nil {
-		return *m.receiveid, true
+// ReceiveID returns the receive id in the mutation.
+func (m *TransportMutation) ReceiveID() (id int, exists bool) {
+	if m.receive != nil {
+		return *m.receive, true
 	}
 	return
 }
 
-// ReceiveidIDs returns the receiveid ids in the mutation.
+// ReceiveIDs returns the receive ids in the mutation.
 // Note that ids always returns len(ids) <= 1 for unique edges, and you should use
-// ReceiveidID instead. It exists only for internal usage by the builders.
-func (m *TransportMutation) ReceiveidIDs() (ids []int) {
-	if id := m.receiveid; id != nil {
+// ReceiveID instead. It exists only for internal usage by the builders.
+func (m *TransportMutation) ReceiveIDs() (ids []int) {
+	if id := m.receive; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetReceiveid reset all changes of the "receiveid" edge.
-func (m *TransportMutation) ResetReceiveid() {
-	m.receiveid = nil
-	m.clearedreceiveid = false
+// ResetReceive reset all changes of the "receive" edge.
+func (m *TransportMutation) ResetReceive() {
+	m.receive = nil
+	m.clearedreceive = false
 }
 
 // SetUserID sets the user edge to User by id.
@@ -7484,7 +7293,16 @@ func (m *TransportMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *TransportMutation) Fields() []string {
-	fields := make([]string, 0, 0)
+	fields := make([]string, 0, 3)
+	if m.symptom != nil {
+		fields = append(fields, transport.FieldSymptom)
+	}
+	if m.drugallergy != nil {
+		fields = append(fields, transport.FieldDrugallergy)
+	}
+	if m.note != nil {
+		fields = append(fields, transport.FieldNote)
+	}
 	return fields
 }
 
@@ -7492,6 +7310,14 @@ func (m *TransportMutation) Fields() []string {
 // The second boolean value indicates that this field was
 // not set, or was not define in the schema.
 func (m *TransportMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case transport.FieldSymptom:
+		return m.Symptom()
+	case transport.FieldDrugallergy:
+		return m.Drugallergy()
+	case transport.FieldNote:
+		return m.Note()
+	}
 	return nil, false
 }
 
@@ -7499,6 +7325,14 @@ func (m *TransportMutation) Field(name string) (ent.Value, bool) {
 // An error is returned if the mutation operation is not UpdateOne,
 // or the query to the database was failed.
 func (m *TransportMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case transport.FieldSymptom:
+		return m.OldSymptom(ctx)
+	case transport.FieldDrugallergy:
+		return m.OldDrugallergy(ctx)
+	case transport.FieldNote:
+		return m.OldNote(ctx)
+	}
 	return nil, fmt.Errorf("unknown Transport field %s", name)
 }
 
@@ -7507,6 +7341,27 @@ func (m *TransportMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type mismatch the field type.
 func (m *TransportMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case transport.FieldSymptom:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSymptom(v)
+		return nil
+	case transport.FieldDrugallergy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDrugallergy(v)
+		return nil
+	case transport.FieldNote:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNote(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Transport field %s", name)
 }
@@ -7528,6 +7383,8 @@ func (m *TransportMutation) AddedField(name string) (ent.Value, bool) {
 // error if the field is not defined in the schema, or if the
 // type mismatch the field type.
 func (m *TransportMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Transport numeric field %s", name)
 }
 
@@ -7554,6 +7411,17 @@ func (m *TransportMutation) ClearField(name string) error {
 // given field name. It returns an error if the field is not
 // defined in the schema.
 func (m *TransportMutation) ResetField(name string) error {
+	switch name {
+	case transport.FieldSymptom:
+		m.ResetSymptom()
+		return nil
+	case transport.FieldDrugallergy:
+		m.ResetDrugallergy()
+		return nil
+	case transport.FieldNote:
+		m.ResetNote()
+		return nil
+	}
 	return fmt.Errorf("unknown Transport field %s", name)
 }
 
@@ -7561,11 +7429,11 @@ func (m *TransportMutation) ResetField(name string) error {
 // mutation.
 func (m *TransportMutation) AddedEdges() []string {
 	edges := make([]string, 0, 4)
-	if m.sendid != nil {
-		edges = append(edges, transport.EdgeSendid)
+	if m.send != nil {
+		edges = append(edges, transport.EdgeSend)
 	}
-	if m.receiveid != nil {
-		edges = append(edges, transport.EdgeReceiveid)
+	if m.receive != nil {
+		edges = append(edges, transport.EdgeReceive)
 	}
 	if m.user != nil {
 		edges = append(edges, transport.EdgeUser)
@@ -7580,12 +7448,12 @@ func (m *TransportMutation) AddedEdges() []string {
 // the given edge name.
 func (m *TransportMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case transport.EdgeSendid:
-		if id := m.sendid; id != nil {
+	case transport.EdgeSend:
+		if id := m.send; id != nil {
 			return []ent.Value{*id}
 		}
-	case transport.EdgeReceiveid:
-		if id := m.receiveid; id != nil {
+	case transport.EdgeReceive:
+		if id := m.receive; id != nil {
 			return []ent.Value{*id}
 		}
 	case transport.EdgeUser:
@@ -7619,11 +7487,11 @@ func (m *TransportMutation) RemovedIDs(name string) []ent.Value {
 // mutation.
 func (m *TransportMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 4)
-	if m.clearedsendid {
-		edges = append(edges, transport.EdgeSendid)
+	if m.clearedsend {
+		edges = append(edges, transport.EdgeSend)
 	}
-	if m.clearedreceiveid {
-		edges = append(edges, transport.EdgeReceiveid)
+	if m.clearedreceive {
+		edges = append(edges, transport.EdgeReceive)
 	}
 	if m.cleareduser {
 		edges = append(edges, transport.EdgeUser)
@@ -7638,10 +7506,10 @@ func (m *TransportMutation) ClearedEdges() []string {
 // cleared in this mutation.
 func (m *TransportMutation) EdgeCleared(name string) bool {
 	switch name {
-	case transport.EdgeSendid:
-		return m.clearedsendid
-	case transport.EdgeReceiveid:
-		return m.clearedreceiveid
+	case transport.EdgeSend:
+		return m.clearedsend
+	case transport.EdgeReceive:
+		return m.clearedreceive
 	case transport.EdgeUser:
 		return m.cleareduser
 	case transport.EdgeAmbulance:
@@ -7654,11 +7522,11 @@ func (m *TransportMutation) EdgeCleared(name string) bool {
 // error if the edge name is not defined in the schema.
 func (m *TransportMutation) ClearEdge(name string) error {
 	switch name {
-	case transport.EdgeSendid:
-		m.ClearSendid()
+	case transport.EdgeSend:
+		m.ClearSend()
 		return nil
-	case transport.EdgeReceiveid:
-		m.ClearReceiveid()
+	case transport.EdgeReceive:
+		m.ClearReceive()
 		return nil
 	case transport.EdgeUser:
 		m.ClearUser()
@@ -7675,11 +7543,11 @@ func (m *TransportMutation) ClearEdge(name string) error {
 // defined in the schema.
 func (m *TransportMutation) ResetEdge(name string) error {
 	switch name {
-	case transport.EdgeSendid:
-		m.ResetSendid()
+	case transport.EdgeSend:
+		m.ResetSend()
 		return nil
-	case transport.EdgeReceiveid:
-		m.ResetReceiveid()
+	case transport.EdgeReceive:
+		m.ResetReceive()
 		return nil
 	case transport.EdgeUser:
 		m.ResetUser()

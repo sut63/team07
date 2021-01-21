@@ -77,10 +77,16 @@ definitions:
     properties:
       ambulanceID:
         type: integer
+      drugallergy:
+        type: string
+      note:
+        type: string
       receiveID:
         type: integer
       sendID:
         type: integer
+      symptom:
+        type: string
       userID:
         type: integer
     type: object
@@ -328,6 +334,34 @@ definitions:
           $ref: '#/definitions/ent.Carservice'
         type: array
     type: object
+  ent.Hospital:
+    properties:
+      edges:
+        $ref: '#/definitions/ent.HospitalEdges'
+        description: |-
+          Edges holds the relations/edges for other nodes in the graph.
+          The values are being populated by the HospitalQuery when eager-loading is set.
+        type: object
+      hospital:
+        description: Hospital holds the value of the "hospital" field.
+        type: string
+      id:
+        description: ID of the ent.
+        type: integer
+    type: object
+  ent.HospitalEdges:
+    properties:
+      receive:
+        description: Receive holds the value of the receive edge.
+        items:
+          $ref: '#/definitions/ent.Transport'
+        type: array
+      send:
+        description: Send holds the value of the send edge.
+        items:
+          $ref: '#/definitions/ent.Transport'
+        type: array
+    type: object
   ent.InspectionResult:
     properties:
       edges:
@@ -434,29 +468,6 @@ definitions:
           $ref: '#/definitions/ent.CarCheckInOut'
         type: array
     type: object
-  ent.Receive:
-    properties:
-      edges:
-        $ref: '#/definitions/ent.ReceiveEdges'
-        description: |-
-          Edges holds the relations/edges for other nodes in the graph.
-          The values are being populated by the ReceiveQuery when eager-loading is set.
-        type: object
-      id:
-        description: ID of the ent.
-        type: integer
-      receivename:
-        description: Receivename holds the value of the "receivename" field.
-        type: string
-    type: object
-  ent.ReceiveEdges:
-    properties:
-      receiveid:
-        description: Receiveid holds the value of the receiveid edge.
-        items:
-          $ref: '#/definitions/ent.Transport'
-        type: array
-    type: object
   ent.Repairing:
     properties:
       edges:
@@ -480,31 +491,11 @@ definitions:
           $ref: '#/definitions/ent.CarRepairrecord'
         type: array
     type: object
-  ent.Send:
-    properties:
-      edges:
-        $ref: '#/definitions/ent.SendEdges'
-        description: |-
-          Edges holds the relations/edges for other nodes in the graph.
-          The values are being populated by the SendQuery when eager-loading is set.
-        type: object
-      id:
-        description: ID of the ent.
-        type: integer
-      sendname:
-        description: Sendname holds the value of the "sendname" field.
-        type: string
-    type: object
-  ent.SendEdges:
-    properties:
-      sendid:
-        description: Sendid holds the value of the sendid edge.
-        items:
-          $ref: '#/definitions/ent.Transport'
-        type: array
-    type: object
   ent.Transport:
     properties:
+      drugallergy:
+        description: Drugallergy holds the value of the "drugallergy" field.
+        type: string
       edges:
         $ref: '#/definitions/ent.TransportEdges'
         description: |-
@@ -514,6 +505,12 @@ definitions:
       id:
         description: ID of the ent.
         type: integer
+      note:
+        description: Note holds the value of the "note" field.
+        type: string
+      symptom:
+        description: Symptom holds the value of the "symptom" field.
+        type: string
     type: object
   ent.TransportEdges:
     properties:
@@ -521,13 +518,13 @@ definitions:
         $ref: '#/definitions/ent.Ambulance'
         description: Ambulance holds the value of the ambulance edge.
         type: object
-      receiveid:
-        $ref: '#/definitions/ent.Receive'
-        description: Receiveid holds the value of the receiveid edge.
+      receive:
+        $ref: '#/definitions/ent.Hospital'
+        description: Receive holds the value of the receive edge.
         type: object
-      sendid:
-        $ref: '#/definitions/ent.Send'
-        description: Sendid holds the value of the sendid edge.
+      send:
+        $ref: '#/definitions/ent.Hospital'
+        description: Send holds the value of the send edge.
         type: object
       user:
         $ref: '#/definitions/ent.User'
@@ -1290,10 +1287,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get urgent by ID
-      operationId: get-urgent
+      description: get carservice by ID
+      operationId: get-carservice
       parameters:
-      - description: Urgent ID
+      - description: Carservice ID
         in: path
         name: id
         required: true
@@ -1304,7 +1301,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Urgent'
+            $ref: '#/definitions/ent.Carservice'
         "400":
           description: Bad Request
           schema:
@@ -1317,7 +1314,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a urgent entity by ID
+      summary: Get a carservice entity by ID
   /distances:
     get:
       description: list distance entities
@@ -1379,6 +1376,87 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a distance entity by ID
+  /hospitals:
+    get:
+      description: list hospital entities
+      operationId: list-hospital
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ent.Hospital'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: List hospital entities
+  /hospitals/{id}:
+    delete:
+      description: get hospital by ID
+      operationId: delete-hospital
+      parameters:
+      - description: Hospital ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Delete a hospital entity by ID
+    get:
+      description: get hospital by ID
+      operationId: get-hospital
+      parameters:
+      - description: Hospital ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Hospital'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a hospital entity by ID
   /inspectionresults:
     get:
       description: list inspectionresult entities
@@ -1622,87 +1700,6 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a purpose entity by ID
-  /receives:
-    get:
-      description: list receive entities
-      operationId: list-receive
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ent.Receive'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: List receive entities
-  /receives/{id}:
-    delete:
-      description: get receive by ID
-      operationId: delete-receive
-      parameters:
-      - description: Receive ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/gin.H'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Delete a receive entity by ID
-    get:
-      description: get receive by ID
-      operationId: get-receive
-      parameters:
-      - description: Receive ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ent.Receive'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Get a receive entity by ID
   /repairings:
     get:
       description: list repairing entities
@@ -1764,87 +1761,6 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a repairing entity by ID
-  /sends:
-    get:
-      description: list send entities
-      operationId: list-send
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/ent.Send'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: List send entities
-  /sends/{id}:
-    delete:
-      description: get send by ID
-      operationId: delete-send
-      parameters:
-      - description: Send ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/gin.H'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Delete a send entity by ID
-    get:
-      description: get send by ID
-      operationId: get-send
-      parameters:
-      - description: Send ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/ent.Send'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/gin.H'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/gin.H'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/gin.H'
-      summary: Get a send entity by ID
   /transports:
     get:
       description: list transport entities

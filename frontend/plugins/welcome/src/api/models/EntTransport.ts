@@ -27,6 +27,12 @@ import {
  */
 export interface EntTransport {
     /**
+     * Drugallergy holds the value of the "drugallergy" field.
+     * @type {string}
+     * @memberof EntTransport
+     */
+    drugallergy?: string;
+    /**
      * 
      * @type {EntTransportEdges}
      * @memberof EntTransport
@@ -38,6 +44,18 @@ export interface EntTransport {
      * @memberof EntTransport
      */
     id?: number;
+    /**
+     * Note holds the value of the "note" field.
+     * @type {string}
+     * @memberof EntTransport
+     */
+    note?: string;
+    /**
+     * Symptom holds the value of the "symptom" field.
+     * @type {string}
+     * @memberof EntTransport
+     */
+    symptom?: string;
 }
 
 export function EntTransportFromJSON(json: any): EntTransport {
@@ -50,8 +68,11 @@ export function EntTransportFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
+        'drugallergy': !exists(json, 'drugallergy') ? undefined : json['drugallergy'],
         'edges': !exists(json, 'edges') ? undefined : EntTransportEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
+        'note': !exists(json, 'note') ? undefined : json['note'],
+        'symptom': !exists(json, 'symptom') ? undefined : json['symptom'],
     };
 }
 
@@ -64,8 +85,11 @@ export function EntTransportToJSON(value?: EntTransport | null): any {
     }
     return {
         
+        'drugallergy': value.drugallergy,
         'edges': EntTransportEdgesToJSON(value.edges),
         'id': value.id,
+        'note': value.note,
+        'symptom': value.symptom,
     };
 }
 

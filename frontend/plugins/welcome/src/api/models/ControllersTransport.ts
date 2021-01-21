@@ -27,6 +27,18 @@ export interface ControllersTransport {
     ambulanceID?: number;
     /**
      * 
+     * @type {string}
+     * @memberof ControllersTransport
+     */
+    drugallergy?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersTransport
+     */
+    note?: string;
+    /**
+     * 
      * @type {number}
      * @memberof ControllersTransport
      */
@@ -37,6 +49,12 @@ export interface ControllersTransport {
      * @memberof ControllersTransport
      */
     sendID?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersTransport
+     */
+    symptom?: string;
     /**
      * 
      * @type {number}
@@ -56,8 +74,11 @@ export function ControllersTransportFromJSONTyped(json: any, ignoreDiscriminator
     return {
         
         'ambulanceID': !exists(json, 'ambulanceID') ? undefined : json['ambulanceID'],
+        'drugallergy': !exists(json, 'drugallergy') ? undefined : json['drugallergy'],
+        'note': !exists(json, 'note') ? undefined : json['note'],
         'receiveID': !exists(json, 'receiveID') ? undefined : json['receiveID'],
         'sendID': !exists(json, 'sendID') ? undefined : json['sendID'],
+        'symptom': !exists(json, 'symptom') ? undefined : json['symptom'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
     };
 }
@@ -72,8 +93,11 @@ export function ControllersTransportToJSON(value?: ControllersTransport | null):
     return {
         
         'ambulanceID': value.ambulanceID,
+        'drugallergy': value.drugallergy,
+        'note': value.note,
         'receiveID': value.receiveID,
         'sendID': value.sendID,
+        'symptom': value.symptom,
         'userID': value.userID,
     };
 }
