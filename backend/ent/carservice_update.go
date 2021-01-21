@@ -37,6 +37,19 @@ func (cu *CarserviceUpdate) SetCustomer(s string) *CarserviceUpdate {
 	return cu
 }
 
+// SetAge sets the age field.
+func (cu *CarserviceUpdate) SetAge(i int) *CarserviceUpdate {
+	cu.mutation.ResetAge()
+	cu.mutation.SetAge(i)
+	return cu
+}
+
+// AddAge adds i to age.
+func (cu *CarserviceUpdate) AddAge(i int) *CarserviceUpdate {
+	cu.mutation.AddAge(i)
+	return cu
+}
+
 // SetLocation sets the location field.
 func (cu *CarserviceUpdate) SetLocation(s string) *CarserviceUpdate {
 	cu.mutation.SetLocation(s)
@@ -137,6 +150,26 @@ func (cu *CarserviceUpdate) ClearUrgentid() *CarserviceUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (cu *CarserviceUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := cu.mutation.Customer(); ok {
+		if err := carservice.CustomerValidator(v); err != nil {
+			return 0, &ValidationError{Name: "customer", err: fmt.Errorf("ent: validator failed for field \"customer\": %w", err)}
+		}
+	}
+	if v, ok := cu.mutation.Age(); ok {
+		if err := carservice.AgeValidator(v); err != nil {
+			return 0, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+		}
+	}
+	if v, ok := cu.mutation.Location(); ok {
+		if err := carservice.LocationValidator(v); err != nil {
+			return 0, &ValidationError{Name: "location", err: fmt.Errorf("ent: validator failed for field \"location\": %w", err)}
+		}
+	}
+	if v, ok := cu.mutation.Information(); ok {
+		if err := carservice.InformationValidator(v); err != nil {
+			return 0, &ValidationError{Name: "information", err: fmt.Errorf("ent: validator failed for field \"information\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -210,6 +243,20 @@ func (cu *CarserviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: carservice.FieldCustomer,
+		})
+	}
+	if value, ok := cu.mutation.Age(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carservice.FieldAge,
+		})
+	}
+	if value, ok := cu.mutation.AddedAge(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carservice.FieldAge,
 		})
 	}
 	if value, ok := cu.mutation.Location(); ok {
@@ -362,6 +409,19 @@ func (cuo *CarserviceUpdateOne) SetCustomer(s string) *CarserviceUpdateOne {
 	return cuo
 }
 
+// SetAge sets the age field.
+func (cuo *CarserviceUpdateOne) SetAge(i int) *CarserviceUpdateOne {
+	cuo.mutation.ResetAge()
+	cuo.mutation.SetAge(i)
+	return cuo
+}
+
+// AddAge adds i to age.
+func (cuo *CarserviceUpdateOne) AddAge(i int) *CarserviceUpdateOne {
+	cuo.mutation.AddAge(i)
+	return cuo
+}
+
 // SetLocation sets the location field.
 func (cuo *CarserviceUpdateOne) SetLocation(s string) *CarserviceUpdateOne {
 	cuo.mutation.SetLocation(s)
@@ -462,6 +522,26 @@ func (cuo *CarserviceUpdateOne) ClearUrgentid() *CarserviceUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (cuo *CarserviceUpdateOne) Save(ctx context.Context) (*Carservice, error) {
+	if v, ok := cuo.mutation.Customer(); ok {
+		if err := carservice.CustomerValidator(v); err != nil {
+			return nil, &ValidationError{Name: "customer", err: fmt.Errorf("ent: validator failed for field \"customer\": %w", err)}
+		}
+	}
+	if v, ok := cuo.mutation.Age(); ok {
+		if err := carservice.AgeValidator(v); err != nil {
+			return nil, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+		}
+	}
+	if v, ok := cuo.mutation.Location(); ok {
+		if err := carservice.LocationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "location", err: fmt.Errorf("ent: validator failed for field \"location\": %w", err)}
+		}
+	}
+	if v, ok := cuo.mutation.Information(); ok {
+		if err := carservice.InformationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "information", err: fmt.Errorf("ent: validator failed for field \"information\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -533,6 +613,20 @@ func (cuo *CarserviceUpdateOne) sqlSave(ctx context.Context) (c *Carservice, err
 			Type:   field.TypeString,
 			Value:  value,
 			Column: carservice.FieldCustomer,
+		})
+	}
+	if value, ok := cuo.mutation.Age(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carservice.FieldAge,
+		})
+	}
+	if value, ok := cuo.mutation.AddedAge(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carservice.FieldAge,
 		})
 	}
 	if value, ok := cuo.mutation.Location(); ok {

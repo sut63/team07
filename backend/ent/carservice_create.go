@@ -29,6 +29,12 @@ func (cc *CarserviceCreate) SetCustomer(s string) *CarserviceCreate {
 	return cc
 }
 
+// SetAge sets the age field.
+func (cc *CarserviceCreate) SetAge(i int) *CarserviceCreate {
+	cc.mutation.SetAge(i)
+	return cc
+}
+
 // SetLocation sets the location field.
 func (cc *CarserviceCreate) SetLocation(s string) *CarserviceCreate {
 	cc.mutation.SetLocation(s)
@@ -114,11 +120,34 @@ func (cc *CarserviceCreate) Save(ctx context.Context) (*Carservice, error) {
 	if _, ok := cc.mutation.Customer(); !ok {
 		return nil, &ValidationError{Name: "customer", err: errors.New("ent: missing required field \"customer\"")}
 	}
+	if v, ok := cc.mutation.Customer(); ok {
+		if err := carservice.CustomerValidator(v); err != nil {
+			return nil, &ValidationError{Name: "customer", err: fmt.Errorf("ent: validator failed for field \"customer\": %w", err)}
+		}
+	}
+	if _, ok := cc.mutation.Age(); !ok {
+		return nil, &ValidationError{Name: "age", err: errors.New("ent: missing required field \"age\"")}
+	}
+	if v, ok := cc.mutation.Age(); ok {
+		if err := carservice.AgeValidator(v); err != nil {
+			return nil, &ValidationError{Name: "age", err: fmt.Errorf("ent: validator failed for field \"age\": %w", err)}
+		}
+	}
 	if _, ok := cc.mutation.Location(); !ok {
 		return nil, &ValidationError{Name: "location", err: errors.New("ent: missing required field \"location\"")}
 	}
+	if v, ok := cc.mutation.Location(); ok {
+		if err := carservice.LocationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "location", err: fmt.Errorf("ent: validator failed for field \"location\": %w", err)}
+		}
+	}
 	if _, ok := cc.mutation.Information(); !ok {
 		return nil, &ValidationError{Name: "information", err: errors.New("ent: missing required field \"information\"")}
+	}
+	if v, ok := cc.mutation.Information(); ok {
+		if err := carservice.InformationValidator(v); err != nil {
+			return nil, &ValidationError{Name: "information", err: fmt.Errorf("ent: validator failed for field \"information\": %w", err)}
+		}
 	}
 	if _, ok := cc.mutation.Datetime(); !ok {
 		return nil, &ValidationError{Name: "Datetime", err: errors.New("ent: missing required field \"Datetime\"")}
@@ -190,6 +219,14 @@ func (cc *CarserviceCreate) createSpec() (*Carservice, *sqlgraph.CreateSpec) {
 			Column: carservice.FieldCustomer,
 		})
 		c.Customer = value
+	}
+	if value, ok := cc.mutation.Age(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carservice.FieldAge,
+		})
+		c.Age = value
 	}
 	if value, ok := cc.mutation.Location(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

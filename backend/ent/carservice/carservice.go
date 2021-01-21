@@ -9,6 +9,8 @@ const (
 	FieldID = "id"
 	// FieldCustomer holds the string denoting the customer field in the database.
 	FieldCustomer = "customer"
+	// FieldAge holds the string denoting the age field in the database.
+	FieldAge = "age"
 	// FieldLocation holds the string denoting the location field in the database.
 	FieldLocation = "location"
 	// FieldInformation holds the string denoting the information field in the database.
@@ -52,6 +54,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldCustomer,
+	FieldAge,
 	FieldLocation,
 	FieldInformation,
 	FieldDatetime,
@@ -63,3 +66,14 @@ var ForeignKeys = []string{
 	"urgent_urgentid",
 	"user_id",
 }
+
+var (
+	// CustomerValidator is a validator for the "customer" field. It is called by the builders before save.
+	CustomerValidator func(string) error
+	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	AgeValidator func(int) error
+	// LocationValidator is a validator for the "location" field. It is called by the builders before save.
+	LocationValidator func(string) error
+	// InformationValidator is a validator for the "information" field. It is called by the builders before save.
+	InformationValidator func(string) error
+)

@@ -2268,6 +2268,9 @@ var doc = `{
         "controllers.Carservice": {
             "type": "object",
             "properties": {
+                "age": {
+                    "type": "integer"
+                },
                 "customer": {
                     "type": "string"
                 },
@@ -2545,6 +2548,10 @@ var doc = `{
                 "Datetime": {
                     "description": "Datetime holds the value of the \"Datetime\" field.",
                     "type": "string"
+                },
+                "age": {
+                    "description": "Age holds the value of the \"age\" field.",
+                    "type": "integer"
                 },
                 "customer": {
                     "description": "Customer holds the value of the \"customer\" field.",

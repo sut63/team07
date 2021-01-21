@@ -21,6 +21,8 @@ type Carservice struct {
 	ID int `json:"id,omitempty"`
 	// Customer holds the value of the "customer" field.
 	Customer string `json:"customer,omitempty"`
+	// Age holds the value of the "age" field.
+	Age int `json:"age,omitempty"`
 	// Location holds the value of the "location" field.
 	Location string `json:"location,omitempty"`
 	// Information holds the value of the "information" field.
@@ -95,6 +97,7 @@ func (*Carservice) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // customer
+		&sql.NullInt64{},  // age
 		&sql.NullString{}, // location
 		&sql.NullString{}, // information
 		&sql.NullTime{},   // Datetime
@@ -127,22 +130,27 @@ func (c *Carservice) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		c.Customer = value.String
 	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field location", values[1])
+	if value, ok := values[1].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field age", values[1])
+	} else if value.Valid {
+		c.Age = int(value.Int64)
+	}
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field location", values[2])
 	} else if value.Valid {
 		c.Location = value.String
 	}
-	if value, ok := values[2].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field information", values[2])
+	if value, ok := values[3].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field information", values[3])
 	} else if value.Valid {
 		c.Information = value.String
 	}
-	if value, ok := values[3].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field Datetime", values[3])
+	if value, ok := values[4].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field Datetime", values[4])
 	} else if value.Valid {
 		c.Datetime = value.Time
 	}
-	values = values[4:]
+	values = values[5:]
 	if len(values) == len(carservice.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field distance_disid", value)
@@ -206,6 +214,8 @@ func (c *Carservice) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", c.ID))
 	builder.WriteString(", customer=")
 	builder.WriteString(c.Customer)
+	builder.WriteString(", age=")
+	builder.WriteString(fmt.Sprintf("%v", c.Age))
 	builder.WriteString(", location=")
 	builder.WriteString(c.Location)
 	builder.WriteString(", information=")

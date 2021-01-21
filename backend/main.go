@@ -58,6 +58,7 @@ type Carservices struct {
 
 type Carservice struct {
 	customer    string
+	age			int
 	location    string
 	information string
 }

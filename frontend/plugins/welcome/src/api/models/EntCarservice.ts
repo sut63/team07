@@ -33,6 +33,12 @@ export interface EntCarservice {
      */
     datetime?: string;
     /**
+     * Age holds the value of the "age" field.
+     * @type {number}
+     * @memberof EntCarservice
+     */
+    age?: number;
+    /**
      * Customer holds the value of the "customer" field.
      * @type {string}
      * @memberof EntCarservice
@@ -75,6 +81,7 @@ export function EntCarserviceFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'datetime': !exists(json, 'Datetime') ? undefined : json['Datetime'],
+        'age': !exists(json, 'age') ? undefined : json['age'],
         'customer': !exists(json, 'customer') ? undefined : json['customer'],
         'edges': !exists(json, 'edges') ? undefined : EntCarserviceEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
@@ -93,6 +100,7 @@ export function EntCarserviceToJSON(value?: EntCarservice | null): any {
     return {
         
         'Datetime': value.datetime,
+        'age': value.age,
         'customer': value.customer,
         'edges': EntCarserviceEdgesToJSON(value.edges),
         'id': value.id,
