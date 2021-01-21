@@ -42,6 +42,12 @@ export interface ControllersCarCheckInOut {
      * @type {number}
      * @memberof ControllersCarCheckInOut
      */
+    distance?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersCarCheckInOut
+     */
     name?: number;
     /**
      * 
@@ -49,6 +55,18 @@ export interface ControllersCarCheckInOut {
      * @memberof ControllersCarCheckInOut
      */
     note?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersCarCheckInOut
+     */
+    person?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersCarCheckInOut
+     */
+    place?: string;
     /**
      * 
      * @type {number}
@@ -70,8 +88,11 @@ export function ControllersCarCheckInOutFromJSONTyped(json: any, ignoreDiscrimin
         'ambulance': !exists(json, 'ambulance') ? undefined : json['ambulance'],
         'checkin': !exists(json, 'checkin') ? undefined : json['checkin'],
         'checkout': !exists(json, 'checkout') ? undefined : json['checkout'],
+        'distance': !exists(json, 'distance') ? undefined : json['distance'],
         'name': !exists(json, 'name') ? undefined : json['name'],
         'note': !exists(json, 'note') ? undefined : json['note'],
+        'person': !exists(json, 'person') ? undefined : json['person'],
+        'place': !exists(json, 'place') ? undefined : json['place'],
         'purpose': !exists(json, 'purpose') ? undefined : json['purpose'],
     };
 }
@@ -88,8 +109,11 @@ export function ControllersCarCheckInOutToJSON(value?: ControllersCarCheckInOut 
         'ambulance': value.ambulance,
         'checkin': value.checkin,
         'checkout': value.checkout,
+        'distance': value.distance,
         'name': value.name,
         'note': value.note,
+        'person': value.person,
+        'place': value.place,
         'purpose': value.purpose,
     };
 }

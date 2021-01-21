@@ -12,6 +12,8 @@ var (
 	AmbulancesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "carregistration", Type: field.TypeString, Unique: true},
+		{Name: "enginepower", Type: field.TypeInt},
+		{Name: "displacement", Type: field.TypeInt},
 		{Name: "registerat", Type: field.TypeTime},
 		{Name: "brand_id", Type: field.TypeInt, Nullable: true},
 		{Name: "carstatus_id", Type: field.TypeInt, Nullable: true},
@@ -26,28 +28,28 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "ambulances_carbrands_brandof",
-				Columns: []*schema.Column{AmbulancesColumns[3]},
+				Columns: []*schema.Column{AmbulancesColumns[5]},
 
 				RefColumns: []*schema.Column{CarbrandsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "ambulances_inspection_results_statusof",
-				Columns: []*schema.Column{AmbulancesColumns[4]},
+				Columns: []*schema.Column{AmbulancesColumns[6]},
 
 				RefColumns: []*schema.Column{InspectionResultsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "ambulances_insurances_insuranceof",
-				Columns: []*schema.Column{AmbulancesColumns[5]},
+				Columns: []*schema.Column{AmbulancesColumns[7]},
 
 				RefColumns: []*schema.Column{InsurancesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "ambulances_users_userof",
-				Columns: []*schema.Column{AmbulancesColumns[6]},
+				Columns: []*schema.Column{AmbulancesColumns[8]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

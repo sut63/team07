@@ -42,6 +42,18 @@ export interface ControllersAmbulance {
      * @type {number}
      * @memberof ControllersAmbulance
      */
+    displacement?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersAmbulance
+     */
+    enginepower?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersAmbulance
+     */
     insuranceID?: number;
     /**
      * 
@@ -70,6 +82,8 @@ export function ControllersAmbulanceFromJSONTyped(json: any, ignoreDiscriminator
         'carbrandID': !exists(json, 'carbrandID') ? undefined : json['carbrandID'],
         'carstatusID': !exists(json, 'carstatusID') ? undefined : json['carstatusID'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
+        'displacement': !exists(json, 'displacement') ? undefined : json['displacement'],
+        'enginepower': !exists(json, 'enginepower') ? undefined : json['enginepower'],
         'insuranceID': !exists(json, 'insuranceID') ? undefined : json['insuranceID'],
         'registration': !exists(json, 'registration') ? undefined : json['registration'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
@@ -88,6 +102,8 @@ export function ControllersAmbulanceToJSON(value?: ControllersAmbulance | null):
         'carbrandID': value.carbrandID,
         'carstatusID': value.carstatusID,
         'datetime': value.datetime,
+        'displacement': value.displacement,
+        'enginepower': value.enginepower,
         'insuranceID': value.insuranceID,
         'registration': value.registration,
         'userID': value.userID,

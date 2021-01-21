@@ -33,17 +33,21 @@ func (ac *AmbulanceCreate) SetCarregistration(s string) *AmbulanceCreate {
 	return ac
 }
 
-// SetRegisterat sets the registerat field.
-func (ac *AmbulanceCreate) SetRegisterat(t time.Time) *AmbulanceCreate {
-	ac.mutation.SetRegisterat(t)
+// SetEnginepower sets the enginepower field.
+func (ac *AmbulanceCreate) SetEnginepower(i int) *AmbulanceCreate {
+	ac.mutation.SetEnginepower(i)
 	return ac
 }
 
-// SetNillableRegisterat sets the registerat field if the given value is not nil.
-func (ac *AmbulanceCreate) SetNillableRegisterat(t *time.Time) *AmbulanceCreate {
-	if t != nil {
-		ac.SetRegisterat(*t)
-	}
+// SetDisplacement sets the displacement field.
+func (ac *AmbulanceCreate) SetDisplacement(i int) *AmbulanceCreate {
+	ac.mutation.SetDisplacement(i)
+	return ac
+}
+
+// SetRegisterat sets the registerat field.
+func (ac *AmbulanceCreate) SetRegisterat(t time.Time) *AmbulanceCreate {
+	ac.mutation.SetRegisterat(t)
 	return ac
 }
 
@@ -183,9 +187,24 @@ func (ac *AmbulanceCreate) Save(ctx context.Context) (*Ambulance, error) {
 			return nil, &ValidationError{Name: "carregistration", err: fmt.Errorf("ent: validator failed for field \"carregistration\": %w", err)}
 		}
 	}
+	if _, ok := ac.mutation.Enginepower(); !ok {
+		return nil, &ValidationError{Name: "enginepower", err: errors.New("ent: missing required field \"enginepower\"")}
+	}
+	if v, ok := ac.mutation.Enginepower(); ok {
+		if err := ambulance.EnginepowerValidator(v); err != nil {
+			return nil, &ValidationError{Name: "enginepower", err: fmt.Errorf("ent: validator failed for field \"enginepower\": %w", err)}
+		}
+	}
+	if _, ok := ac.mutation.Displacement(); !ok {
+		return nil, &ValidationError{Name: "displacement", err: errors.New("ent: missing required field \"displacement\"")}
+	}
+	if v, ok := ac.mutation.Displacement(); ok {
+		if err := ambulance.DisplacementValidator(v); err != nil {
+			return nil, &ValidationError{Name: "displacement", err: fmt.Errorf("ent: validator failed for field \"displacement\": %w", err)}
+		}
+	}
 	if _, ok := ac.mutation.Registerat(); !ok {
-		v := ambulance.DefaultRegisterat()
-		ac.mutation.SetRegisterat(v)
+		return nil, &ValidationError{Name: "registerat", err: errors.New("ent: missing required field \"registerat\"")}
 	}
 	var (
 		err  error
@@ -254,6 +273,22 @@ func (ac *AmbulanceCreate) createSpec() (*Ambulance, *sqlgraph.CreateSpec) {
 			Column: ambulance.FieldCarregistration,
 		})
 		a.Carregistration = value
+	}
+	if value, ok := ac.mutation.Enginepower(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldEnginepower,
+		})
+		a.Enginepower = value
+	}
+	if value, ok := ac.mutation.Displacement(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldDisplacement,
+		})
+		a.Displacement = value
 	}
 	if value, ok := ac.mutation.Registerat(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

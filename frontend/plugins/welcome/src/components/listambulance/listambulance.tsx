@@ -64,6 +64,8 @@ checkJobPosition();
            <TableCell align="center">ลำดับ</TableCell>
            <TableCell align="center">ทะเบียนรถ</TableCell>
            <TableCell align="center">แบรนด์รถ</TableCell>
+           <TableCell align="center">เครื่องยนต์</TableCell>
+           <TableCell align="center">ความจุตัวถัง</TableCell>
            <TableCell align="center">บริษัทประกัน</TableCell>
            <TableCell align="center">สถานะ</TableCell>
            <TableCell align="center">เจ้าหน้าที่</TableCell>
@@ -78,6 +80,8 @@ checkJobPosition();
              <TableCell align="center">{item.id}</TableCell>
              <TableCell align="center">{item.carregistration}</TableCell>
              <TableCell align="center">{item.edges?.Hasbrand?.brand}</TableCell>
+             <TableCell align="center">{item.enginepower}</TableCell>
+             <TableCell align="center">{item.displacement}</TableCell>
              <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
              <TableCell align="center">{item.edges?.Hasstatus?.resultName}</TableCell>
              <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>

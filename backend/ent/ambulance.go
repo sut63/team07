@@ -22,6 +22,10 @@ type Ambulance struct {
 	ID int `json:"id,omitempty"`
 	// Carregistration holds the value of the "carregistration" field.
 	Carregistration string `json:"carregistration,omitempty"`
+	// Enginepower holds the value of the "enginepower" field.
+	Enginepower int `json:"enginepower,omitempty"`
+	// Displacement holds the value of the "displacement" field.
+	Displacement int `json:"displacement,omitempty"`
 	// Registerat holds the value of the "registerat" field.
 	Registerat time.Time `json:"registerat,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -142,6 +146,8 @@ func (*Ambulance) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{},  // id
 		&sql.NullString{}, // carregistration
+		&sql.NullInt64{},  // enginepower
+		&sql.NullInt64{},  // displacement
 		&sql.NullTime{},   // registerat
 	}
 }
@@ -173,12 +179,22 @@ func (a *Ambulance) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		a.Carregistration = value.String
 	}
-	if value, ok := values[1].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field registerat", values[1])
+	if value, ok := values[1].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field enginepower", values[1])
+	} else if value.Valid {
+		a.Enginepower = int(value.Int64)
+	}
+	if value, ok := values[2].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field displacement", values[2])
+	} else if value.Valid {
+		a.Displacement = int(value.Int64)
+	}
+	if value, ok := values[3].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field registerat", values[3])
 	} else if value.Valid {
 		a.Registerat = value.Time
 	}
-	values = values[2:]
+	values = values[4:]
 	if len(values) == len(ambulance.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field brand_id", value)
@@ -268,6 +284,10 @@ func (a *Ambulance) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", a.ID))
 	builder.WriteString(", carregistration=")
 	builder.WriteString(a.Carregistration)
+	builder.WriteString(", enginepower=")
+	builder.WriteString(fmt.Sprintf("%v", a.Enginepower))
+	builder.WriteString(", displacement=")
+	builder.WriteString(fmt.Sprintf("%v", a.Displacement))
 	builder.WriteString(", registerat=")
 	builder.WriteString(a.Registerat.Format(time.ANSIC))
 	builder.WriteByte(')')

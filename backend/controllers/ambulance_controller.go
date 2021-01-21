@@ -27,6 +27,8 @@ type Ambulance struct {
 	CarbrandID int
 	InsuranceID int
 	UserID     int
+	Enginepower int
+	Displacement int
 	Registration  string
 	Datetime  string
 }
@@ -108,15 +110,22 @@ func (ctl *AmbulanceController) CreateAmbulance(c *gin.Context) {
 		SetRegisterat(times).
 		SetHasinsurance(insurance).
 		SetCarregistration(obj.Registration).
+		SetEnginepower(obj.Enginepower).
+		SetDisplacement(obj.Displacement).
 		Save(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error": err,
 		})
 		return
 	}
 
-	c.JSON(200, am)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data": am,
+	})
 }
 
 // GetAmbulance handles GET requests to retrieve a ambulance entity

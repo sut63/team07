@@ -41,17 +41,35 @@ func (au *AmbulanceUpdate) SetCarregistration(s string) *AmbulanceUpdate {
 	return au
 }
 
-// SetRegisterat sets the registerat field.
-func (au *AmbulanceUpdate) SetRegisterat(t time.Time) *AmbulanceUpdate {
-	au.mutation.SetRegisterat(t)
+// SetEnginepower sets the enginepower field.
+func (au *AmbulanceUpdate) SetEnginepower(i int) *AmbulanceUpdate {
+	au.mutation.ResetEnginepower()
+	au.mutation.SetEnginepower(i)
 	return au
 }
 
-// SetNillableRegisterat sets the registerat field if the given value is not nil.
-func (au *AmbulanceUpdate) SetNillableRegisterat(t *time.Time) *AmbulanceUpdate {
-	if t != nil {
-		au.SetRegisterat(*t)
-	}
+// AddEnginepower adds i to enginepower.
+func (au *AmbulanceUpdate) AddEnginepower(i int) *AmbulanceUpdate {
+	au.mutation.AddEnginepower(i)
+	return au
+}
+
+// SetDisplacement sets the displacement field.
+func (au *AmbulanceUpdate) SetDisplacement(i int) *AmbulanceUpdate {
+	au.mutation.ResetDisplacement()
+	au.mutation.SetDisplacement(i)
+	return au
+}
+
+// AddDisplacement adds i to displacement.
+func (au *AmbulanceUpdate) AddDisplacement(i int) *AmbulanceUpdate {
+	au.mutation.AddDisplacement(i)
+	return au
+}
+
+// SetRegisterat sets the registerat field.
+func (au *AmbulanceUpdate) SetRegisterat(t time.Time) *AmbulanceUpdate {
+	au.mutation.SetRegisterat(t)
 	return au
 }
 
@@ -257,6 +275,16 @@ func (au *AmbulanceUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "carregistration", err: fmt.Errorf("ent: validator failed for field \"carregistration\": %w", err)}
 		}
 	}
+	if v, ok := au.mutation.Enginepower(); ok {
+		if err := ambulance.EnginepowerValidator(v); err != nil {
+			return 0, &ValidationError{Name: "enginepower", err: fmt.Errorf("ent: validator failed for field \"enginepower\": %w", err)}
+		}
+	}
+	if v, ok := au.mutation.Displacement(); ok {
+		if err := ambulance.DisplacementValidator(v); err != nil {
+			return 0, &ValidationError{Name: "displacement", err: fmt.Errorf("ent: validator failed for field \"displacement\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -330,6 +358,34 @@ func (au *AmbulanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: ambulance.FieldCarregistration,
+		})
+	}
+	if value, ok := au.mutation.Enginepower(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldEnginepower,
+		})
+	}
+	if value, ok := au.mutation.AddedEnginepower(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldEnginepower,
+		})
+	}
+	if value, ok := au.mutation.Displacement(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldDisplacement,
+		})
+	}
+	if value, ok := au.mutation.AddedDisplacement(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldDisplacement,
 		})
 	}
 	if value, ok := au.mutation.Registerat(); ok {
@@ -617,17 +673,35 @@ func (auo *AmbulanceUpdateOne) SetCarregistration(s string) *AmbulanceUpdateOne 
 	return auo
 }
 
-// SetRegisterat sets the registerat field.
-func (auo *AmbulanceUpdateOne) SetRegisterat(t time.Time) *AmbulanceUpdateOne {
-	auo.mutation.SetRegisterat(t)
+// SetEnginepower sets the enginepower field.
+func (auo *AmbulanceUpdateOne) SetEnginepower(i int) *AmbulanceUpdateOne {
+	auo.mutation.ResetEnginepower()
+	auo.mutation.SetEnginepower(i)
 	return auo
 }
 
-// SetNillableRegisterat sets the registerat field if the given value is not nil.
-func (auo *AmbulanceUpdateOne) SetNillableRegisterat(t *time.Time) *AmbulanceUpdateOne {
-	if t != nil {
-		auo.SetRegisterat(*t)
-	}
+// AddEnginepower adds i to enginepower.
+func (auo *AmbulanceUpdateOne) AddEnginepower(i int) *AmbulanceUpdateOne {
+	auo.mutation.AddEnginepower(i)
+	return auo
+}
+
+// SetDisplacement sets the displacement field.
+func (auo *AmbulanceUpdateOne) SetDisplacement(i int) *AmbulanceUpdateOne {
+	auo.mutation.ResetDisplacement()
+	auo.mutation.SetDisplacement(i)
+	return auo
+}
+
+// AddDisplacement adds i to displacement.
+func (auo *AmbulanceUpdateOne) AddDisplacement(i int) *AmbulanceUpdateOne {
+	auo.mutation.AddDisplacement(i)
+	return auo
+}
+
+// SetRegisterat sets the registerat field.
+func (auo *AmbulanceUpdateOne) SetRegisterat(t time.Time) *AmbulanceUpdateOne {
+	auo.mutation.SetRegisterat(t)
 	return auo
 }
 
@@ -833,6 +907,16 @@ func (auo *AmbulanceUpdateOne) Save(ctx context.Context) (*Ambulance, error) {
 			return nil, &ValidationError{Name: "carregistration", err: fmt.Errorf("ent: validator failed for field \"carregistration\": %w", err)}
 		}
 	}
+	if v, ok := auo.mutation.Enginepower(); ok {
+		if err := ambulance.EnginepowerValidator(v); err != nil {
+			return nil, &ValidationError{Name: "enginepower", err: fmt.Errorf("ent: validator failed for field \"enginepower\": %w", err)}
+		}
+	}
+	if v, ok := auo.mutation.Displacement(); ok {
+		if err := ambulance.DisplacementValidator(v); err != nil {
+			return nil, &ValidationError{Name: "displacement", err: fmt.Errorf("ent: validator failed for field \"displacement\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -904,6 +988,34 @@ func (auo *AmbulanceUpdateOne) sqlSave(ctx context.Context) (a *Ambulance, err e
 			Type:   field.TypeString,
 			Value:  value,
 			Column: ambulance.FieldCarregistration,
+		})
+	}
+	if value, ok := auo.mutation.Enginepower(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldEnginepower,
+		})
+	}
+	if value, ok := auo.mutation.AddedEnginepower(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldEnginepower,
+		})
+	}
+	if value, ok := auo.mutation.Displacement(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldDisplacement,
+		})
+	}
+	if value, ok := auo.mutation.AddedDisplacement(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: ambulance.FieldDisplacement,
 		})
 	}
 	if value, ok := auo.mutation.Registerat(); ok {

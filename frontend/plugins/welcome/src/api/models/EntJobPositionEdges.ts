@@ -72,5 +72,3 @@ export function EntJobPositionEdgesToJSON(value?: EntJobPositionEdges | null): a
         'users': value.users === undefined ? undefined : ((value.users as Array<any>).map(EntUserToJSON)),
     };
 }
-
-

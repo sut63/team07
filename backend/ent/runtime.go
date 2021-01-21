@@ -28,11 +28,29 @@ func init() {
 	// ambulanceDescCarregistration is the schema descriptor for carregistration field.
 	ambulanceDescCarregistration := ambulanceFields[0].Descriptor()
 	// ambulance.CarregistrationValidator is a validator for the "carregistration" field. It is called by the builders before save.
-	ambulance.CarregistrationValidator = ambulanceDescCarregistration.Validators[0].(func(string) error)
-	// ambulanceDescRegisterat is the schema descriptor for registerat field.
-	ambulanceDescRegisterat := ambulanceFields[1].Descriptor()
-	// ambulance.DefaultRegisterat holds the default value on creation for the registerat field.
-	ambulance.DefaultRegisterat = ambulanceDescRegisterat.Default.(func() time.Time)
+	ambulance.CarregistrationValidator = func() func(string) error {
+		validators := ambulanceDescCarregistration.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(carregistration string) error {
+			for _, fn := range fns {
+				if err := fn(carregistration); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// ambulanceDescEnginepower is the schema descriptor for enginepower field.
+	ambulanceDescEnginepower := ambulanceFields[1].Descriptor()
+	// ambulance.EnginepowerValidator is a validator for the "enginepower" field. It is called by the builders before save.
+	ambulance.EnginepowerValidator = ambulanceDescEnginepower.Validators[0].(func(int) error)
+	// ambulanceDescDisplacement is the schema descriptor for displacement field.
+	ambulanceDescDisplacement := ambulanceFields[2].Descriptor()
+	// ambulance.DisplacementValidator is a validator for the "displacement" field. It is called by the builders before save.
+	ambulance.DisplacementValidator = ambulanceDescDisplacement.Validators[0].(func(int) error)
 	carcheckinoutFields := schema.CarCheckInOut{}.Fields()
 	_ = carcheckinoutFields
 	// carcheckinoutDescPlace is the schema descriptor for place field.

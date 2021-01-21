@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+
 import {
   Content,
   Header,
   Page,
   pageTheme,
   ContentHeader,
+  Link,
 } from '@backstage/core';
 import { makeStyles, Theme, createStyles, formatMs } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -24,6 +25,8 @@ import { EntInspectionResult } from '../../api/models/EntInspectionResult';
 import { EntInsurance } from '../../api/models/EntInsurance';
 import { EntUser } from '../../api/models/EntUser';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
+import { Link as RouterLink } from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-export default function Create() {
+export default function AmbulanceCreate() {
   const classes = useStyles();
   const profile = { givenName: 'ยินดีต้อนรับสู่ ระบบลงทะเบียนรถ' };
   const api = new DefaultApi();
@@ -67,13 +70,20 @@ export default function Create() {
   const [insurances, setInsurances] = useState<EntInsurance[]>([]);
   const [carstatuses, setCarstatuses] = useState<EntInspectionResult[]>([]);
   const [users, setUsers] = useState<EntUser[]>([]);
- 
+  const [registrationerror, setRegistrationerror] = React.useState('');
+  const [enginepowererror, setEnginepowererror] = React.useState('');
+  const [displacementerror, setDisplacementerror] = React.useState('');
+  const [errormessege, setErrorMessege] = useState(String);
+  const [alerttype, setAlertType] = useState(String);
+
 
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState(String);
 
   const [carbrandid, setcarbrand] = useState(Number);
   const [insuranceid, setinsurance] = useState(Number);
+  const [enginepowers, setenginepower] = useState(Number);
+  const [displacements, setdisplacement] = useState(Number);
   const [carstatusid, setcarstatus] = useState(Number);
   const [registration, setregistration] = useState(String);
   const [userid, setUser] = useState(Number);
@@ -134,12 +144,53 @@ export default function Create() {
     checkJobPosition();
  
   }, [loading]);
+  const validateenginepower = (val: number) => {
+    return val <= 100 && val >=80 ? true:false
+  
+  }
 
+  const validatedisplacement = (val: number) => {
+    return val <= 4000 && val >=2900 ? true:false
+  }
+
+  const validateRegistration = (val: string) => {
+    return val.match("^[0-9]{1}[ก-ฮ]{2}[0-9]{4}$|^[ก-ฮ]{2}[0-9]{4}$");
+  }
+  const checkPattern  = (id: string, value:string) => {
+    console.log(value);
+    switch(id) {
+      case 'registration':
+        validateRegistration(value) ? setRegistrationerror('') : setRegistrationerror('เลขทะเบียนขึ้นต้นด้วยตัวเลข1ตัวหรือตัวก-ฮไม่ไเกิน3ตัวตามด้วยเลข4หลัก');
+        return;
+      case 'enginepower':
+        validateenginepower(Number(value)) ? setEnginepowererror('') : setEnginepowererror('กำลังเครื่องยนต์ต้องอยู่ในช่วง 80 - 100 กิโลวัตต์');
+      return;
+      case 'displacement':
+        validatedisplacement(Number(value)) ? setDisplacementerror('') : setDisplacementerror('ความจุตัวถังต้องอยู่ในช่วง 2900 - 4000 ซีซี');
+      return;
+        default:
+          return;
+    }
+  }
+ 
   console.log(userid)
   const DatehandleChange = (event: any) => {
     setDate(event.target.value as string);
   };
 
+  const enginehandleChange = (event: React.ChangeEvent<{ value: any }>) => {
+    const { value } = event.target;
+    const validateValue = value
+    checkPattern('enginepower', validateValue)
+    setenginepower(event.target.value as number);
+    
+  };
+  const displacementhandleChange = (event: React.ChangeEvent<{ value: any }>) => {
+    const { value } = event.target;
+    const validateValue = value
+    checkPattern('displacement', validateValue)
+    setdisplacement(event.target.value as number);
+  };
   const CarbrandhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setcarbrand(event.target.value as number);
   };
@@ -153,63 +204,98 @@ export default function Create() {
   };
 
   const listamb = () => {
+    setStatus(false);
+    if(errormessege == "บันทึกข้อมูลสำเร็จ"){
     window.location.href ="http://localhost:3000/mainambulance";
+    }
   };
 
  
-  const Registrationhandlehange = (event: any) => {
+  const Registrationhandlehange = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
+    const id = event.target.id as  typeof registration;
+    const { value } = event.target;
+    const validateValue = value.toString()
+    checkPattern(id, validateValue)
     setregistration(event.target.value as string);
+    
   };
   
   
   const forcheck = () => {
     var i = 0;
+    var check = 0;
     for (const amb of ambulance){
+      console.log(amb);
      i++;
     }
+    console.log(i);
     if(i === 0){
       CreateAmbulance();
    }
    else{
     for (const amb of ambulance){
       if(registration === amb.carregistration){
+        //console.log("ซ้ำ");
+        setAlertType("error");
+        setErrorMessege("มีข้อมูลรถในระบบแล้ว")
         setStatus(true);
-        setAlert(false);
-        setAlerts(false);
+        check = 1;
+        break;
         //window.location.reload(false);
- }
- else{
-   CreateAmbulance();
- }
      }
+ }
+ if(check != 1){
+  CreateAmbulance();
+}
    }
   }
-
+ 
+  const checkCaseSaveError = (field: string) => {
+    if (field == "carregistration") { setErrorMessege("ข้อมูลfield เลขทะเบียนรถผิด"); }
+        else if (field == "enginepower") { setErrorMessege("ข้อมูลfield กำลังเครื่องยนต์ผิด"); }
+        else if (field == "displacement") { setErrorMessege("ข้อมูลfield ความจุตัวถังผิด"); }
+        else { setErrorMessege("บันทึกไม่สำเร็จใส่ข้อมูลไม่ครบ"); }
+  }
   const CreateAmbulance = async ()=>{
-
-    if ((registration != null) && (registration != "") && (date!= null) && (date != "") && (carbrandid != "") && (carstatusid != "") && (insuranceid != "") ) {
-    
+  if((date!= null) && (date != "")){
+    const apiUrl = 'http://localhost:8080/api/v1/ambulances';
     const ambulance ={
       carbrandID: carbrandid,
       carstatusID: carstatusid,
       insuranceID: insuranceid,
       userID: userid,
+      enginepower:Number(enginepowers),
+      displacement:Number(displacements),
       registration: registration,
       datetime: date + ":00+07:00"
     };
-    const res: any = await api.createAmbulance({ ambulance: ambulance });
-             setStatus(true);
-             if (res.id != '') {
-                 setAlert(true);
-                 //window.location.href ="http://localhost:3000/mainambulance";
-             }
-         }
-         else {
-             setStatus(true);
-             setAlert(false);
-             //window.location.reload(false);
-         }
-        
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ambulance),
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setStatus(true);
+        if (data.status === true) {
+          setErrorMessege("บันทึกข้อมูลสำเร็จ");
+          setAlertType("success");
+
+      }
+      else {
+        checkCaseSaveError(data.error.Name);
+          setAlertType("error");
+      }
+  });
+}
+else{
+  setErrorMessege("บันทึกไม่สำเร็จใส่ข้อมูลไม่ครบ");
+  setAlertType("error");
+  setStatus(true);
+}
      };
      
         
@@ -220,33 +306,55 @@ export default function Create() {
       <Header
         title={`${profile.givenName}`}
       >
-       <table><h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3></table>
+       <table>
+       <tr>
+         <th>
+           <h3 style={
+             {color: "#483D8B",
+             background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',
+             borderRadius: 10,
+             height: 20,
+             padding: '0 30px',
+             
+            }
+          }>
+            {users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}
+        </h3>
+        </th>
+        <th>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Link component={RouterLink} to="/maindriver">
+            <Button variant="contained"style={{ background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',height: 40}}>
+              <h3
+              style={
+                {color: "#483D8B",
+                background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',
+                borderRadius: 10,
+                height: 25,
+                padding: '0 20px',
+                
+               }
+             }>
+               กลับหน้าหลัก
+            </h3>
+            </Button>
+          </Link>
+          </th>
+       </tr>
+       </table>
 
       </Header>
       <Content>
       <ContentHeader title="เพิ่มข้อมูลรถเข้าสู่ระบบ" >
       {status ? (
-           <div>
-       {(!alert2) ?
-            <Alert severity="warning" onClose={() => {window.location.reload(false)}}>
-            มีรถอยู่ในระบบแล้ว
-            </Alert>
-        :
-        
-        
-        (alert) ? (
-          <Alert severity="success" onClose={() => {listamb()}}>
-              บันทึกสำเร็จ
-          </Alert>
-      ) : (
-              <Alert severity="warning" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
-                  บันทึกไม่สำเร็จใส่ข้อมูลให้ครบ
-              </Alert>
-          )
-      }
-      
-           </div>
-         ) : null}
+                        <div>
+                            {alerttype != "" ? (
+                                <Alert severity={alerttype} onClose={() => { listamb() }}>
+                                    {errormessege}
+                                </Alert>
+                            ) : null}
+                        </div>
+                    ) : null}
                 </ContentHeader>
         <div className={classes.root}>
           <form noValidate autoComplete="off">
@@ -256,11 +364,13 @@ export default function Create() {
             style={{ width: 400 ,marginLeft:20,marginRight:-10}}
       
               id="registration"
+              error = {registrationerror ? true : false}
               label=""
               variant="standard"
               color="secondary"
               type="string"
               size="medium"
+              helperText= {registrationerror}
               value={registration}
               onChange={Registrationhandlehange}
             />
@@ -285,8 +395,44 @@ export default function Create() {
               </Select>
             </FormControl>
             </div>
+            <div>
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                               <div className={classes.paper}><strong>กำลังเครื่องยนต์(กิโลวัตต์)</strong></div>
+                                <TextField
+                                    id="enginepower"
+                                    error = {enginepowererror ? true : false}
+                                    helperText= {enginepowererror}
+                                    type="number"
+                                    size="small"
+                                    value={enginepowers}
+                                    onChange={enginehandleChange}
+                                    style={{ width: 100 }}
+                                />
+                            </FormControl>
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                              <div className={classes.paper}><strong>ความจุตัวถัง(ซีซี)</strong></div>
+                                <TextField
+                                    id="displacement"
+                                    error = {displacementerror ? true : false}
+                                    helperText= {displacementerror}
+                                    type="number"
+                                    size="small"
+                                    value={displacements}
+                                    onChange={displacementhandleChange}
+                                    style={{ width: 100 }}
+                                />
+                            </FormControl>
+                            
 
-            <div></div>
+
+                            
+                        </div>
             
             <div>
             <FormControl
