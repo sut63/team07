@@ -93,6 +93,27 @@ func IDLTE(id int) predicate.CarInspection {
 	})
 }
 
+// WheelCenter applies equality check predicate on the "wheel_center" field. It's identical to WheelCenterEQ.
+func WheelCenter(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldWheelCenter), v))
+	})
+}
+
+// SoundLevel applies equality check predicate on the "sound_level" field. It's identical to SoundLevelEQ.
+func SoundLevel(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSoundLevel), v))
+	})
+}
+
+// Blacksmoke applies equality check predicate on the "blacksmoke" field. It's identical to BlacksmokeEQ.
+func Blacksmoke(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBlacksmoke), v))
+	})
+}
+
 // Datetime applies equality check predicate on the "datetime" field. It's identical to DatetimeEQ.
 func Datetime(v time.Time) predicate.CarInspection {
 	return predicate.CarInspection(func(s *sql.Selector) {
@@ -104,6 +125,234 @@ func Datetime(v time.Time) predicate.CarInspection {
 func Note(v string) predicate.CarInspection {
 	return predicate.CarInspection(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldNote), v))
+	})
+}
+
+// WheelCenterEQ applies the EQ predicate on the "wheel_center" field.
+func WheelCenterEQ(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldWheelCenter), v))
+	})
+}
+
+// WheelCenterNEQ applies the NEQ predicate on the "wheel_center" field.
+func WheelCenterNEQ(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldWheelCenter), v))
+	})
+}
+
+// WheelCenterIn applies the In predicate on the "wheel_center" field.
+func WheelCenterIn(vs ...float64) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldWheelCenter), v...))
+	})
+}
+
+// WheelCenterNotIn applies the NotIn predicate on the "wheel_center" field.
+func WheelCenterNotIn(vs ...float64) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldWheelCenter), v...))
+	})
+}
+
+// WheelCenterGT applies the GT predicate on the "wheel_center" field.
+func WheelCenterGT(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldWheelCenter), v))
+	})
+}
+
+// WheelCenterGTE applies the GTE predicate on the "wheel_center" field.
+func WheelCenterGTE(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldWheelCenter), v))
+	})
+}
+
+// WheelCenterLT applies the LT predicate on the "wheel_center" field.
+func WheelCenterLT(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldWheelCenter), v))
+	})
+}
+
+// WheelCenterLTE applies the LTE predicate on the "wheel_center" field.
+func WheelCenterLTE(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldWheelCenter), v))
+	})
+}
+
+// SoundLevelEQ applies the EQ predicate on the "sound_level" field.
+func SoundLevelEQ(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldSoundLevel), v))
+	})
+}
+
+// SoundLevelNEQ applies the NEQ predicate on the "sound_level" field.
+func SoundLevelNEQ(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldSoundLevel), v))
+	})
+}
+
+// SoundLevelIn applies the In predicate on the "sound_level" field.
+func SoundLevelIn(vs ...float64) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldSoundLevel), v...))
+	})
+}
+
+// SoundLevelNotIn applies the NotIn predicate on the "sound_level" field.
+func SoundLevelNotIn(vs ...float64) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldSoundLevel), v...))
+	})
+}
+
+// SoundLevelGT applies the GT predicate on the "sound_level" field.
+func SoundLevelGT(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldSoundLevel), v))
+	})
+}
+
+// SoundLevelGTE applies the GTE predicate on the "sound_level" field.
+func SoundLevelGTE(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldSoundLevel), v))
+	})
+}
+
+// SoundLevelLT applies the LT predicate on the "sound_level" field.
+func SoundLevelLT(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldSoundLevel), v))
+	})
+}
+
+// SoundLevelLTE applies the LTE predicate on the "sound_level" field.
+func SoundLevelLTE(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldSoundLevel), v))
+	})
+}
+
+// BlacksmokeEQ applies the EQ predicate on the "blacksmoke" field.
+func BlacksmokeEQ(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBlacksmoke), v))
+	})
+}
+
+// BlacksmokeNEQ applies the NEQ predicate on the "blacksmoke" field.
+func BlacksmokeNEQ(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldBlacksmoke), v))
+	})
+}
+
+// BlacksmokeIn applies the In predicate on the "blacksmoke" field.
+func BlacksmokeIn(vs ...float64) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldBlacksmoke), v...))
+	})
+}
+
+// BlacksmokeNotIn applies the NotIn predicate on the "blacksmoke" field.
+func BlacksmokeNotIn(vs ...float64) predicate.CarInspection {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarInspection(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldBlacksmoke), v...))
+	})
+}
+
+// BlacksmokeGT applies the GT predicate on the "blacksmoke" field.
+func BlacksmokeGT(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldBlacksmoke), v))
+	})
+}
+
+// BlacksmokeGTE applies the GTE predicate on the "blacksmoke" field.
+func BlacksmokeGTE(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldBlacksmoke), v))
+	})
+}
+
+// BlacksmokeLT applies the LT predicate on the "blacksmoke" field.
+func BlacksmokeLT(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldBlacksmoke), v))
+	})
+}
+
+// BlacksmokeLTE applies the LTE predicate on the "blacksmoke" field.
+func BlacksmokeLTE(v float64) predicate.CarInspection {
+	return predicate.CarInspection(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldBlacksmoke), v))
 	})
 }
 

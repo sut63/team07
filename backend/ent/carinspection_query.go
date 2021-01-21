@@ -364,12 +364,12 @@ func (ciq *CarInspectionQuery) WithCarrepairrecords(opts ...func(*CarRepairrecor
 // Example:
 //
 //	var v []struct {
-//		Datetime time.Time `json:"datetime,omitempty"`
+//		WheelCenter float64 `json:"wheel_center,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.CarInspection.Query().
-//		GroupBy(carinspection.FieldDatetime).
+//		GroupBy(carinspection.FieldWheelCenter).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -390,11 +390,11 @@ func (ciq *CarInspectionQuery) GroupBy(field string, fields ...string) *CarInspe
 // Example:
 //
 //	var v []struct {
-//		Datetime time.Time `json:"datetime,omitempty"`
+//		WheelCenter float64 `json:"wheel_center,omitempty"`
 //	}
 //
 //	client.CarInspection.Query().
-//		Select(carinspection.FieldDatetime).
+//		Select(carinspection.FieldWheelCenter).
 //		Scan(ctx, &v)
 //
 func (ciq *CarInspectionQuery) Select(field string, fields ...string) *CarInspectionSelect {

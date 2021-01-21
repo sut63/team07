@@ -24,6 +24,24 @@ type CarInspectionCreate struct {
 	hooks    []Hook
 }
 
+// SetWheelCenter sets the wheel_center field.
+func (cic *CarInspectionCreate) SetWheelCenter(f float64) *CarInspectionCreate {
+	cic.mutation.SetWheelCenter(f)
+	return cic
+}
+
+// SetSoundLevel sets the sound_level field.
+func (cic *CarInspectionCreate) SetSoundLevel(f float64) *CarInspectionCreate {
+	cic.mutation.SetSoundLevel(f)
+	return cic
+}
+
+// SetBlacksmoke sets the blacksmoke field.
+func (cic *CarInspectionCreate) SetBlacksmoke(f float64) *CarInspectionCreate {
+	cic.mutation.SetBlacksmoke(f)
+	return cic
+}
+
 // SetDatetime sets the datetime field.
 func (cic *CarInspectionCreate) SetDatetime(t time.Time) *CarInspectionCreate {
 	cic.mutation.SetDatetime(t)
@@ -115,6 +133,30 @@ func (cic *CarInspectionCreate) Mutation() *CarInspectionMutation {
 
 // Save creates the CarInspection in the database.
 func (cic *CarInspectionCreate) Save(ctx context.Context) (*CarInspection, error) {
+	if _, ok := cic.mutation.WheelCenter(); !ok {
+		return nil, &ValidationError{Name: "wheel_center", err: errors.New("ent: missing required field \"wheel_center\"")}
+	}
+	if v, ok := cic.mutation.WheelCenter(); ok {
+		if err := carinspection.WheelCenterValidator(v); err != nil {
+			return nil, &ValidationError{Name: "wheel_center", err: fmt.Errorf("ent: validator failed for field \"wheel_center\": %w", err)}
+		}
+	}
+	if _, ok := cic.mutation.SoundLevel(); !ok {
+		return nil, &ValidationError{Name: "sound_level", err: errors.New("ent: missing required field \"sound_level\"")}
+	}
+	if v, ok := cic.mutation.SoundLevel(); ok {
+		if err := carinspection.SoundLevelValidator(v); err != nil {
+			return nil, &ValidationError{Name: "sound_level", err: fmt.Errorf("ent: validator failed for field \"sound_level\": %w", err)}
+		}
+	}
+	if _, ok := cic.mutation.Blacksmoke(); !ok {
+		return nil, &ValidationError{Name: "blacksmoke", err: errors.New("ent: missing required field \"blacksmoke\"")}
+	}
+	if v, ok := cic.mutation.Blacksmoke(); ok {
+		if err := carinspection.BlacksmokeValidator(v); err != nil {
+			return nil, &ValidationError{Name: "blacksmoke", err: fmt.Errorf("ent: validator failed for field \"blacksmoke\": %w", err)}
+		}
+	}
 	if _, ok := cic.mutation.Datetime(); !ok {
 		return nil, &ValidationError{Name: "datetime", err: errors.New("ent: missing required field \"datetime\"")}
 	}
@@ -181,6 +223,30 @@ func (cic *CarInspectionCreate) createSpec() (*CarInspection, *sqlgraph.CreateSp
 			},
 		}
 	)
+	if value, ok := cic.mutation.WheelCenter(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldWheelCenter,
+		})
+		ci.WheelCenter = value
+	}
+	if value, ok := cic.mutation.SoundLevel(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldSoundLevel,
+		})
+		ci.SoundLevel = value
+	}
+	if value, ok := cic.mutation.Blacksmoke(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldBlacksmoke,
+		})
+		ci.Blacksmoke = value
+	}
 	if value, ok := cic.mutation.Datetime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,

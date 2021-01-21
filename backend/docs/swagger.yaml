@@ -34,14 +34,20 @@ definitions:
     properties:
       ambulanceID:
         type: integer
+      blackSmoke:
+        type: number
       datetime:
         type: string
       inspectionResultID:
         type: integer
       note:
         type: string
+      soundLevel:
+        type: number
       userID:
         type: integer
+      wheelCenter:
+        type: number
     type: object
   controllers.CarRepairrecord:
     properties:
@@ -180,6 +186,9 @@ definitions:
     type: object
   ent.CarInspection:
     properties:
+      blacksmoke:
+        description: Blacksmoke holds the value of the "blacksmoke" field.
+        type: number
       datetime:
         description: Datetime holds the value of the "datetime" field.
         type: string
@@ -195,6 +204,12 @@ definitions:
       note:
         description: Note holds the value of the "note" field.
         type: string
+      sound_level:
+        description: SoundLevel holds the value of the "sound_level" field.
+        type: number
+      wheel_center:
+        description: WheelCenter holds the value of the "wheel_center" field.
+        type: number
     type: object
   ent.CarInspectionEdges:
     properties:
@@ -1287,10 +1302,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get carservice by ID
-      operationId: get-carservice
+      description: get urgent by ID
+      operationId: get-urgent
       parameters:
-      - description: Carservice ID
+      - description: Urgent ID
         in: path
         name: id
         required: true
@@ -1301,7 +1316,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Carservice'
+            $ref: '#/definitions/ent.Urgent'
         "400":
           description: Bad Request
           schema:
@@ -1314,7 +1329,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a carservice entity by ID
+      summary: Get a urgent entity by ID
   /distances:
     get:
       description: list distance entities

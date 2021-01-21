@@ -7,6 +7,7 @@ import (
 
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carcheckinout"
+	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
@@ -38,6 +39,34 @@ func init() {
 	carcheckinoutDescCheckIn := carcheckinoutFields[1].Descriptor()
 	// carcheckinout.DefaultCheckIn holds the default value on creation for the checkIn field.
 	carcheckinout.DefaultCheckIn = carcheckinoutDescCheckIn.Default.(func() time.Time)
+	carinspectionFields := schema.CarInspection{}.Fields()
+	_ = carinspectionFields
+	// carinspectionDescWheelCenter is the schema descriptor for wheel_center field.
+	carinspectionDescWheelCenter := carinspectionFields[0].Descriptor()
+	// carinspection.WheelCenterValidator is a validator for the "wheel_center" field. It is called by the builders before save.
+	carinspection.WheelCenterValidator = carinspectionDescWheelCenter.Validators[0].(func(float64) error)
+	// carinspectionDescSoundLevel is the schema descriptor for sound_level field.
+	carinspectionDescSoundLevel := carinspectionFields[1].Descriptor()
+	// carinspection.SoundLevelValidator is a validator for the "sound_level" field. It is called by the builders before save.
+	carinspection.SoundLevelValidator = carinspectionDescSoundLevel.Validators[0].(func(float64) error)
+	// carinspectionDescBlacksmoke is the schema descriptor for blacksmoke field.
+	carinspectionDescBlacksmoke := carinspectionFields[2].Descriptor()
+	// carinspection.BlacksmokeValidator is a validator for the "blacksmoke" field. It is called by the builders before save.
+	carinspection.BlacksmokeValidator = func() func(float64) error {
+		validators := carinspectionDescBlacksmoke.Validators
+		fns := [...]func(float64) error{
+			validators[0].(func(float64) error),
+			validators[1].(func(float64) error),
+		}
+		return func(blacksmoke float64) error {
+			for _, fn := range fns {
+				if err := fn(blacksmoke); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	carserviceFields := schema.Carservice{}.Fields()
 	_ = carserviceFields
 	// carserviceDescCustomer is the schema descriptor for customer field.

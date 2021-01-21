@@ -27,6 +27,12 @@ export interface ControllersCarInspection {
     ambulanceID?: number;
     /**
      * 
+     * @type {number}
+     * @memberof ControllersCarInspection
+     */
+    blackSmoke?: number;
+    /**
+     * 
      * @type {string}
      * @memberof ControllersCarInspection
      */
@@ -48,7 +54,19 @@ export interface ControllersCarInspection {
      * @type {number}
      * @memberof ControllersCarInspection
      */
+    soundLevel?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersCarInspection
+     */
     userID?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersCarInspection
+     */
+    wheelCenter?: number;
 }
 
 export function ControllersCarInspectionFromJSON(json: any): ControllersCarInspection {
@@ -62,10 +80,13 @@ export function ControllersCarInspectionFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'ambulanceID': !exists(json, 'ambulanceID') ? undefined : json['ambulanceID'],
+        'blackSmoke': !exists(json, 'blackSmoke') ? undefined : json['blackSmoke'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'inspectionResultID': !exists(json, 'inspectionResultID') ? undefined : json['inspectionResultID'],
         'note': !exists(json, 'note') ? undefined : json['note'],
+        'soundLevel': !exists(json, 'soundLevel') ? undefined : json['soundLevel'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
+        'wheelCenter': !exists(json, 'wheelCenter') ? undefined : json['wheelCenter'],
     };
 }
 
@@ -79,10 +100,13 @@ export function ControllersCarInspectionToJSON(value?: ControllersCarInspection 
     return {
         
         'ambulanceID': value.ambulanceID,
+        'blackSmoke': value.blackSmoke,
         'datetime': value.datetime,
         'inspectionResultID': value.inspectionResultID,
         'note': value.note,
+        'soundLevel': value.soundLevel,
         'userID': value.userID,
+        'wheelCenter': value.wheelCenter,
     };
 }
 

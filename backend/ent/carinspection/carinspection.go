@@ -7,6 +7,12 @@ const (
 	Label = "car_inspection"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldWheelCenter holds the string denoting the wheel_center field in the database.
+	FieldWheelCenter = "wheel_center"
+	// FieldSoundLevel holds the string denoting the sound_level field in the database.
+	FieldSoundLevel = "sound_level"
+	// FieldBlacksmoke holds the string denoting the blacksmoke field in the database.
+	FieldBlacksmoke = "blacksmoke"
 	// FieldDatetime holds the string denoting the datetime field in the database.
 	FieldDatetime = "datetime"
 	// FieldNote holds the string denoting the note field in the database.
@@ -56,6 +62,9 @@ const (
 // Columns holds all SQL columns for carinspection fields.
 var Columns = []string{
 	FieldID,
+	FieldWheelCenter,
+	FieldSoundLevel,
+	FieldBlacksmoke,
 	FieldDatetime,
 	FieldNote,
 }
@@ -66,3 +75,12 @@ var ForeignKeys = []string{
 	"inspectionresult_id",
 	"user_id",
 }
+
+var (
+	// WheelCenterValidator is a validator for the "wheel_center" field. It is called by the builders before save.
+	WheelCenterValidator func(float64) error
+	// SoundLevelValidator is a validator for the "sound_level" field. It is called by the builders before save.
+	SoundLevelValidator func(float64) error
+	// BlacksmokeValidator is a validator for the "blacksmoke" field. It is called by the builders before save.
+	BlacksmokeValidator func(float64) error
+)

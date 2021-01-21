@@ -14,6 +14,10 @@ type CarInspection struct {
 // Fields of the CarInspection.
 func (CarInspection) Fields() []ent.Field {
 	return []ent.Field{
+		field.Float("wheel_center").Positive(),
+		field.Float("sound_level").Positive(),
+		field.Float("blacksmoke").Positive().Max(100),
+
 		field.Time("datetime"),
 		field.String("note"),
 	}
