@@ -105,8 +105,8 @@ export function EntAmbulanceEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'ambulance': !exists(json, 'Ambulance') ? undefined : ((json['Ambulance'] as Array<any>).map(EntTransportFromJSON)),
-        'carcheckinout': !exists(json, 'Carcheckinout') ? undefined : ((json['Carcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
-        'carinspections': !exists(json, 'Carinspections') ? undefined : ((json['Carinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
+        'carcheckinout': !exists(json, 'Carcheckinout') ? undefined : ((json['Harcheckinout'] as Array<any>).map(EntCarCheckInOutFromJSON)),
+        'carinspections': !exists(json, 'Carinspections') ? undefined : ((json['Harinspections'] as Array<any>).map(EntCarInspectionFromJSON)),
         'hasbrand': !exists(json, 'Hasbrand') ? undefined : EntCarbrandFromJSON(json['Hasbrand']),
         'hasinsurance': !exists(json, 'Hasinsurance') ? undefined : EntInsuranceFromJSON(json['Hasinsurance']),
         'hasstatus': !exists(json, 'Hasstatus') ? undefined : EntInspectionResultFromJSON(json['Hasstatus']),
