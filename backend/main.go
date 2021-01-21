@@ -11,9 +11,9 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/team07/app/controllers"
+	_ "github.com/team07/app/docs"
 	"github.com/team07/app/ent"
 	"github.com/team07/app/ent/jobposition"
-	_ "github.com/team07/app/docs"
 )
 
 type Users struct {
@@ -58,7 +58,7 @@ type Carservices struct {
 
 type Carservice struct {
 	customer    string
-	age			int
+	age         int
 	location    string
 	information string
 }
@@ -231,7 +231,6 @@ func main() {
 		InspectionResult: []InspectionResult{
 			InspectionResult{"พร้อมปฏิบัติหน้าที่", 1},
 			InspectionResult{"ส่งซ่อมแซม", 1},
-			InspectionResult{"ไม่ได้รับการตรวจสภาพ", 1},
 			InspectionResult{"รอส่งตรวจสภาพรถ", 2},
 			InspectionResult{"ส่งตรวจสภาพรถ", 2},
 			InspectionResult{"ปลดประจำการ", 2},
@@ -347,7 +346,6 @@ func main() {
 			SetHospital(sn).
 			Save(context.Background())
 	}
-
 
 	// set Repairing Data
 	repairings := []string{"ช่วงล่าง", "ระบบเครื่องยนต์", "ระบบส่งกำลัง", "ไฟฟ้าเครื่องยนต์", "ไฟฟ้าตัวถัง"}

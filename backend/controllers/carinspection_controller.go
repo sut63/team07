@@ -22,6 +22,9 @@ type CarInspectionController struct {
 
 // CarInspection defines the struct for the carinspection
 type CarInspection struct {
+	WheelCenter        float64
+	BlackSmoke         float64
+	SoundLevel         float64
 	InspectionResultID int
 	UserID             int
 	AmbulanceID        int
@@ -93,16 +96,24 @@ func (ctl *CarInspectionController) CreateCarInspection(c *gin.Context) {
 		SetUser(u).
 		SetInspectionresult(ir).
 		SetDatetime(times).
+		SetWheelCenter(obj.WheelCenter).
+		SetBlacksmoke(obj.BlackSmoke).
+		SetSoundLevel(obj.SoundLevel).
 		SetNote(obj.Note).
 		Save(context.Background())
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error":  err,
 		})
 		return
 	}
 
-	c.JSON(200, ci)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data":   ci,
+	})
 }
 
 // GetCarInspection handles GET requests to retrieve a carinspection entity

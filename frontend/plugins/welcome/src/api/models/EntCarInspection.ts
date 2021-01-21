@@ -27,6 +27,12 @@ import {
  */
 export interface EntCarInspection {
     /**
+     * Blacksmoke holds the value of the "blacksmoke" field.
+     * @type {number}
+     * @memberof EntCarInspection
+     */
+    blacksmoke?: number;
+    /**
      * Datetime holds the value of the "datetime" field.
      * @type {string}
      * @memberof EntCarInspection
@@ -50,6 +56,18 @@ export interface EntCarInspection {
      * @memberof EntCarInspection
      */
     note?: string;
+    /**
+     * SoundLevel holds the value of the "sound_level" field.
+     * @type {number}
+     * @memberof EntCarInspection
+     */
+    soundLevel?: number;
+    /**
+     * WheelCenter holds the value of the "wheel_center" field.
+     * @type {number}
+     * @memberof EntCarInspection
+     */
+    wheelCenter?: number;
 }
 
 export function EntCarInspectionFromJSON(json: any): EntCarInspection {
@@ -62,10 +80,13 @@ export function EntCarInspectionFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
+        'blacksmoke': !exists(json, 'blacksmoke') ? undefined : json['blacksmoke'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'edges': !exists(json, 'edges') ? undefined : EntCarInspectionEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
         'note': !exists(json, 'note') ? undefined : json['note'],
+        'soundLevel': !exists(json, 'sound_level') ? undefined : json['sound_level'],
+        'wheelCenter': !exists(json, 'wheel_center') ? undefined : json['wheel_center'],
     };
 }
 
@@ -78,10 +99,13 @@ export function EntCarInspectionToJSON(value?: EntCarInspection | null): any {
     }
     return {
         
+        'blacksmoke': value.blacksmoke,
         'datetime': value.datetime,
         'edges': EntCarInspectionEdgesToJSON(value.edges),
         'id': value.id,
         'note': value.note,
+        'sound_level': value.soundLevel,
+        'wheel_center': value.wheelCenter,
     };
 }
 

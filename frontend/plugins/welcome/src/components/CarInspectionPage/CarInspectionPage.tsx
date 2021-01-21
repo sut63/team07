@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
             marginLeft: 25,
             maxWidth: 300,
         }
-        
+
     }),
 );
 
@@ -58,7 +58,13 @@ export default function CarInspectionPage() {
     const profile = { givenName: 'ยินดีต้อนรับสู่ ระบบตรวจสภาพรถ' };
     const api = new DefaultApi();
     const [status, setStatus] = useState(false);
-    const [alert, setAlert] = useState(true);
+    const [errormessege, setErrorMessege] = useState(String);
+    const [alerttype, setAlertType] = useState(String);
+
+    const [errorWheelCenter, setErrorWheelCenter] = useState(true);
+    const [errorBlackSmoke, setErrorBlackSmoke] = useState(true);
+    const [errorSoundLevel, setErrorSoundLevel] = useState(true);
+
     const [users, setUsers] = useState<EntUser[]>([]);
     const [ambulances, setAmbulances] = useState<EntAmbulance[]>([]);
     const [inspectionresults, setInspectionResults] = useState<EntInspectionResult[]>([]);
@@ -66,6 +72,10 @@ export default function CarInspectionPage() {
     const [loading, setLoading] = useState(true);
     const [datetime, setDatetime] = useState(String);
     const [note, setNote] = useState(String);
+
+    const [wheelcenterdata, setWheelCenter] = useState(Number);
+    const [blacksmokedata, setBlackSmoke] = useState(Number);
+    const [soundleveldata, setSoundLevel] = useState(Number);
 
     const [inspectionresultid, setInspectionResult] = useState(Number);
     const [ambulanceid, setAmbulance] = useState(Number);
@@ -110,9 +120,23 @@ export default function CarInspectionPage() {
 
     }, [loading]);
 
-    console.log(userid)
     const DateTimehandleChange = (event: any) => {
         setDatetime(event.target.value as string);
+    };
+
+    const SoundLevelhandleChange = (event: any) => {
+        setSoundLevel(event.target.value as number);
+        ValidateSoundLevel(event.target.value as number)
+    };
+
+    const BlackSmokehandleChange = (event: any) => {
+        setBlackSmoke(event.target.value as number);
+        ValidateBlackSmoke(event.target.value as number)
+    };
+
+    const WheelCenterhandleChange = (event: any) => {
+        setWheelCenter(event.target.value as number);
+        ValidateWheelCenter(event.target.value as number)
     };
 
     const NotehandleChange = (event: any) => {
@@ -128,28 +152,70 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarInspection = async () => {
-        if ((inspectionresultid != 0) && (inspectionresultid != null) && (ambulanceid != 0) && (ambulanceid != null) && (datetime != null) && (datetime != "")) {
-            const carinspection = {
-                inspectionResultID: inspectionresultid,
-                ambulanceID: ambulanceid,
-                userID: userid,
-                datetime: datetime + ":00+07:00",
-                note: note
+        if( datetime != "" ){
+        const carinspection = {
+            blackSmoke: Number(blacksmokedata),
+            soundLevel: Number(soundleveldata),
+            wheelCenter: Number(wheelcenterdata),
+            inspectionResultID: inspectionresultid,
+            ambulanceID: ambulanceid,
+            userID: userid,
+            datetime: datetime + ":00+07:00",
+            note: note
 
 
-            };
-            console.log(carinspection);
-            const res: any = await api.createCarinspection({ carinspection: carinspection });
-            setStatus(true);
-            if (res.id != '') {
-                setAlert(true);
-            }
+        };
+        console.log(carinspection);
+        const apiUrl = 'http://localhost:8080/api/v1/carinspections';
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(carinspection),
+        };
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === true) {
+                    setErrorMessege("บันทึกข้อมูลสำเร็จ");
+                    setAlertType("success");
+
+                }
+                else {
+                    ErrorCaseCheck(data.error.Name);
+                    setAlertType("error");
+                }
+            });
         }
         else {
-            setStatus(true);
-            setAlert(false);
+            ErrorCaseCheck("เวลาไม่ได้ใส่");
+            setAlertType("error");
         }
+
+        setStatus(true);
     };
+
+    const ErrorCaseCheck = (casename: string) => {
+        ValidateWheelCenter(Number(wheelcenterdata));
+        ValidateSoundLevel(Number(soundleveldata));
+        ValidateBlackSmoke(Number(blacksmokedata));
+        if (casename == "wheel_center") { setErrorMessege("ค่า ศูนย์ล้อ ต้องมากกว่า 0"); }
+        else if (casename == "sound_level") { setErrorMessege("ค่า ระดับเสียง ต้องมากกว่า 0"); }
+        else if (casename == "blacksmoke") { setErrorMessege("ค่า ควันดำ ต้องมากกว่า 0 และไม่เกิน100"); }
+        else { setErrorMessege("บันทึกไม่สำเร็จ"); }
+    }
+
+    const ValidateWheelCenter = (value : number) => {
+        value > 0 ? setErrorWheelCenter(true) : setErrorWheelCenter(false);
+    }
+
+    const ValidateSoundLevel = (value : number) => {
+        value > 0 ? setErrorSoundLevel(true) : setErrorSoundLevel(false);
+    }
+
+    const ValidateBlackSmoke = (value : number) => {
+        value > 0 && value <= 100 ? setErrorBlackSmoke(true) : setErrorBlackSmoke(false);
+    }
 
     return (
         <Page theme={pageTheme.service}>
@@ -161,19 +227,15 @@ export default function CarInspectionPage() {
                 <ContentHeader title="เพิ่มข้อมูลการตรวจสภาพรถ">
                     {status ? (
                         <div>
-                            {alert ? (
-                                <Alert severity="success" onClose={() => { setStatus(false) }}>
-                                    บันทึกสำเร็จ
+                            {alerttype != "" ? (
+                                <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
+                                    {errormessege}
                                 </Alert>
-                            ) : (
-                                    <Alert severity="error" style={{ marginTop: 20 }} onClose={() => { setStatus(false) }}>
-                                        พบปัญหาระหว่างบันทึกข้อมูล
-                                    </Alert>
-                                )}
+                            ) : null}
                         </div>
                     ) : null}
                 </ContentHeader>
-                
+
                 <FormControl
                     className={classes.media}
                 >
@@ -218,11 +280,64 @@ export default function CarInspectionPage() {
                                 onChange={AmbulancehandleChange}
                                 style={{ width: 400 }}
                             >
-                                {ambulances.filter((filter:any) => filter.edges?.Hasstatus?.resultName == "ส่งตรวจสภาพรถ").map((item: EntAmbulance) => (
+                                {ambulances.filter((filter: any) => filter.edges?.Hasstatus?.resultName == "ส่งตรวจสภาพรถ").map((item: EntAmbulance) => (
                                     <MenuItem value={item.id}>{item.carregistration}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
+
+                        <div>
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                                <TextField
+                                    id="wheelcenter"
+                                    label="ศูนย์ล้อ (เมตร)"
+                                    type="number"
+                                    size="medium"
+                                    value={wheelcenterdata}
+                                    helperText={errorWheelCenter? "" : "ค่า ศูนย์ล้อ ต้องมากกว่า 0"}
+                                    error={errorWheelCenter? false : true}
+                                    onChange={WheelCenterhandleChange}
+                                    style={{ width: 100 }}
+                                />
+                            </FormControl>
+
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                                <TextField
+                                    id="soundlevel"
+                                    label="ระดับเสียง (เดซิเบล)"
+                                    type="number"
+                                    size="medium"
+                                    value={soundleveldata}
+                                    helperText={errorSoundLevel? "" : "ค่า ระดับเสียง ต้องมากกว่า 0"}
+                                    error={errorSoundLevel? false : true}
+                                    onChange={SoundLevelhandleChange}
+                                    style={{ width: 100 }}
+                                />
+                            </FormControl>
+
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                                <TextField
+                                    id="blacksmoke"
+                                    label="ควันดำ (เปอร์เซ็นต์)"
+                                    type="number"
+                                    size="medium"
+                                    value={blacksmokedata}
+                                    helperText={errorBlackSmoke? "" : "ค่า ควันดำ ต้องมากกว่า 0 และไม่เกิน100"}
+                                    error={errorBlackSmoke? false : true}
+                                    onChange={BlackSmokehandleChange}
+                                    style={{ width: 100 }}
+                                />
+                            </FormControl>
+                        </div>
 
                         <div>
                             <FormControl
@@ -290,6 +405,16 @@ export default function CarInspectionPage() {
                                 color="primary"
                             >
                                 ยืนยัน
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    window.location.reload(false);
+                                }}
+                                variant="contained"
+                                color="primary"
+                                style={{marginLeft: 20}}
+                            >
+                                รีเฟรช
                             </Button>
                         </div>
                     </form>

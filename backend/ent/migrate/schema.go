@@ -96,6 +96,9 @@ var (
 	// CarInspectionsColumns holds the columns for the "car_inspections" table.
 	CarInspectionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "wheel_center", Type: field.TypeFloat64},
+		{Name: "sound_level", Type: field.TypeFloat64},
+		{Name: "blacksmoke", Type: field.TypeFloat64},
 		{Name: "datetime", Type: field.TypeTime},
 		{Name: "note", Type: field.TypeString},
 		{Name: "ambulance_id", Type: field.TypeInt, Nullable: true},
@@ -110,21 +113,21 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "car_inspections_ambulances_carinspections",
-				Columns: []*schema.Column{CarInspectionsColumns[3]},
+				Columns: []*schema.Column{CarInspectionsColumns[6]},
 
 				RefColumns: []*schema.Column{AmbulancesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "car_inspections_inspection_results_carinspections",
-				Columns: []*schema.Column{CarInspectionsColumns[4]},
+				Columns: []*schema.Column{CarInspectionsColumns[7]},
 
 				RefColumns: []*schema.Column{InspectionResultsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "car_inspections_users_carinspections",
-				Columns: []*schema.Column{CarInspectionsColumns[5]},
+				Columns: []*schema.Column{CarInspectionsColumns[8]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

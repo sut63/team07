@@ -1443,6 +1443,12 @@ type CarInspectionMutation struct {
 	op                      Op
 	typ                     string
 	id                      *int
+	wheel_center            *float64
+	addwheel_center         *float64
+	sound_level             *float64
+	addsound_level          *float64
+	blacksmoke              *float64
+	addblacksmoke           *float64
 	datetime                *time.Time
 	note                    *string
 	clearedFields           map[string]struct{}
@@ -1535,6 +1541,177 @@ func (m *CarInspectionMutation) ID() (id int, exists bool) {
 		return
 	}
 	return *m.id, true
+}
+
+// SetWheelCenter sets the wheel_center field.
+func (m *CarInspectionMutation) SetWheelCenter(f float64) {
+	m.wheel_center = &f
+	m.addwheel_center = nil
+}
+
+// WheelCenter returns the wheel_center value in the mutation.
+func (m *CarInspectionMutation) WheelCenter() (r float64, exists bool) {
+	v := m.wheel_center
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWheelCenter returns the old wheel_center value of the CarInspection.
+// If the CarInspection object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarInspectionMutation) OldWheelCenter(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldWheelCenter is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldWheelCenter requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWheelCenter: %w", err)
+	}
+	return oldValue.WheelCenter, nil
+}
+
+// AddWheelCenter adds f to wheel_center.
+func (m *CarInspectionMutation) AddWheelCenter(f float64) {
+	if m.addwheel_center != nil {
+		*m.addwheel_center += f
+	} else {
+		m.addwheel_center = &f
+	}
+}
+
+// AddedWheelCenter returns the value that was added to the wheel_center field in this mutation.
+func (m *CarInspectionMutation) AddedWheelCenter() (r float64, exists bool) {
+	v := m.addwheel_center
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetWheelCenter reset all changes of the "wheel_center" field.
+func (m *CarInspectionMutation) ResetWheelCenter() {
+	m.wheel_center = nil
+	m.addwheel_center = nil
+}
+
+// SetSoundLevel sets the sound_level field.
+func (m *CarInspectionMutation) SetSoundLevel(f float64) {
+	m.sound_level = &f
+	m.addsound_level = nil
+}
+
+// SoundLevel returns the sound_level value in the mutation.
+func (m *CarInspectionMutation) SoundLevel() (r float64, exists bool) {
+	v := m.sound_level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSoundLevel returns the old sound_level value of the CarInspection.
+// If the CarInspection object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarInspectionMutation) OldSoundLevel(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSoundLevel is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSoundLevel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSoundLevel: %w", err)
+	}
+	return oldValue.SoundLevel, nil
+}
+
+// AddSoundLevel adds f to sound_level.
+func (m *CarInspectionMutation) AddSoundLevel(f float64) {
+	if m.addsound_level != nil {
+		*m.addsound_level += f
+	} else {
+		m.addsound_level = &f
+	}
+}
+
+// AddedSoundLevel returns the value that was added to the sound_level field in this mutation.
+func (m *CarInspectionMutation) AddedSoundLevel() (r float64, exists bool) {
+	v := m.addsound_level
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSoundLevel reset all changes of the "sound_level" field.
+func (m *CarInspectionMutation) ResetSoundLevel() {
+	m.sound_level = nil
+	m.addsound_level = nil
+}
+
+// SetBlacksmoke sets the blacksmoke field.
+func (m *CarInspectionMutation) SetBlacksmoke(f float64) {
+	m.blacksmoke = &f
+	m.addblacksmoke = nil
+}
+
+// Blacksmoke returns the blacksmoke value in the mutation.
+func (m *CarInspectionMutation) Blacksmoke() (r float64, exists bool) {
+	v := m.blacksmoke
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBlacksmoke returns the old blacksmoke value of the CarInspection.
+// If the CarInspection object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarInspectionMutation) OldBlacksmoke(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldBlacksmoke is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldBlacksmoke requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBlacksmoke: %w", err)
+	}
+	return oldValue.Blacksmoke, nil
+}
+
+// AddBlacksmoke adds f to blacksmoke.
+func (m *CarInspectionMutation) AddBlacksmoke(f float64) {
+	if m.addblacksmoke != nil {
+		*m.addblacksmoke += f
+	} else {
+		m.addblacksmoke = &f
+	}
+}
+
+// AddedBlacksmoke returns the value that was added to the blacksmoke field in this mutation.
+func (m *CarInspectionMutation) AddedBlacksmoke() (r float64, exists bool) {
+	v := m.addblacksmoke
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBlacksmoke reset all changes of the "blacksmoke" field.
+func (m *CarInspectionMutation) ResetBlacksmoke() {
+	m.blacksmoke = nil
+	m.addblacksmoke = nil
 }
 
 // SetDatetime sets the datetime field.
@@ -1784,7 +1961,16 @@ func (m *CarInspectionMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *CarInspectionMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 5)
+	if m.wheel_center != nil {
+		fields = append(fields, carinspection.FieldWheelCenter)
+	}
+	if m.sound_level != nil {
+		fields = append(fields, carinspection.FieldSoundLevel)
+	}
+	if m.blacksmoke != nil {
+		fields = append(fields, carinspection.FieldBlacksmoke)
+	}
 	if m.datetime != nil {
 		fields = append(fields, carinspection.FieldDatetime)
 	}
@@ -1799,6 +1985,12 @@ func (m *CarInspectionMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *CarInspectionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case carinspection.FieldWheelCenter:
+		return m.WheelCenter()
+	case carinspection.FieldSoundLevel:
+		return m.SoundLevel()
+	case carinspection.FieldBlacksmoke:
+		return m.Blacksmoke()
 	case carinspection.FieldDatetime:
 		return m.Datetime()
 	case carinspection.FieldNote:
@@ -1812,6 +2004,12 @@ func (m *CarInspectionMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *CarInspectionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case carinspection.FieldWheelCenter:
+		return m.OldWheelCenter(ctx)
+	case carinspection.FieldSoundLevel:
+		return m.OldSoundLevel(ctx)
+	case carinspection.FieldBlacksmoke:
+		return m.OldBlacksmoke(ctx)
 	case carinspection.FieldDatetime:
 		return m.OldDatetime(ctx)
 	case carinspection.FieldNote:
@@ -1825,6 +2023,27 @@ func (m *CarInspectionMutation) OldField(ctx context.Context, name string) (ent.
 // type mismatch the field type.
 func (m *CarInspectionMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case carinspection.FieldWheelCenter:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWheelCenter(v)
+		return nil
+	case carinspection.FieldSoundLevel:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSoundLevel(v)
+		return nil
+	case carinspection.FieldBlacksmoke:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBlacksmoke(v)
+		return nil
 	case carinspection.FieldDatetime:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -1846,13 +2065,31 @@ func (m *CarInspectionMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *CarInspectionMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addwheel_center != nil {
+		fields = append(fields, carinspection.FieldWheelCenter)
+	}
+	if m.addsound_level != nil {
+		fields = append(fields, carinspection.FieldSoundLevel)
+	}
+	if m.addblacksmoke != nil {
+		fields = append(fields, carinspection.FieldBlacksmoke)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *CarInspectionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case carinspection.FieldWheelCenter:
+		return m.AddedWheelCenter()
+	case carinspection.FieldSoundLevel:
+		return m.AddedSoundLevel()
+	case carinspection.FieldBlacksmoke:
+		return m.AddedBlacksmoke()
+	}
 	return nil, false
 }
 
@@ -1861,6 +2098,27 @@ func (m *CarInspectionMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *CarInspectionMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case carinspection.FieldWheelCenter:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddWheelCenter(v)
+		return nil
+	case carinspection.FieldSoundLevel:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSoundLevel(v)
+		return nil
+	case carinspection.FieldBlacksmoke:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBlacksmoke(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CarInspection numeric field %s", name)
 }
@@ -1889,6 +2147,15 @@ func (m *CarInspectionMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *CarInspectionMutation) ResetField(name string) error {
 	switch name {
+	case carinspection.FieldWheelCenter:
+		m.ResetWheelCenter()
+		return nil
+	case carinspection.FieldSoundLevel:
+		m.ResetSoundLevel()
+		return nil
+	case carinspection.FieldBlacksmoke:
+		m.ResetBlacksmoke()
+		return nil
 	case carinspection.FieldDatetime:
 		m.ResetDatetime()
 		return nil

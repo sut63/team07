@@ -974,16 +974,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get carservice by ID",
+                "description": "get urgent by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a carservice entity by ID",
-                "operationId": "get-carservice",
+                "summary": "Get a urgent entity by ID",
+                "operationId": "get-urgent",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Carservice ID",
+                        "description": "Urgent ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -993,7 +993,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Carservice"
+                            "$ref": "#/definitions/ent.Urgent"
                         }
                     },
                     "400": {
@@ -2113,6 +2113,9 @@ var doc = `{
                 "ambulanceID": {
                     "type": "integer"
                 },
+                "blackSmoke": {
+                    "type": "number"
+                },
                 "datetime": {
                     "type": "string"
                 },
@@ -2122,8 +2125,14 @@ var doc = `{
                 "note": {
                     "type": "string"
                 },
+                "soundLevel": {
+                    "type": "number"
+                },
                 "userID": {
                     "type": "integer"
+                },
+                "wheelCenter": {
+                    "type": "number"
                 }
             }
         },
@@ -2316,6 +2325,10 @@ var doc = `{
         "ent.CarInspection": {
             "type": "object",
             "properties": {
+                "blacksmoke": {
+                    "description": "Blacksmoke holds the value of the \"blacksmoke\" field.",
+                    "type": "number"
+                },
                 "datetime": {
                     "description": "Datetime holds the value of the \"datetime\" field.",
                     "type": "string"
@@ -2332,6 +2345,14 @@ var doc = `{
                 "note": {
                     "description": "Note holds the value of the \"note\" field.",
                     "type": "string"
+                },
+                "sound_level": {
+                    "description": "SoundLevel holds the value of the \"sound_level\" field.",
+                    "type": "number"
+                },
+                "wheel_center": {
+                    "description": "WheelCenter holds the value of the \"wheel_center\" field.",
+                    "type": "number"
                 }
             }
         },

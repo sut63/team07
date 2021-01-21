@@ -19,6 +19,12 @@ type CarInspection struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// WheelCenter holds the value of the "wheel_center" field.
+	WheelCenter float64 `json:"wheel_center,omitempty"`
+	// SoundLevel holds the value of the "sound_level" field.
+	SoundLevel float64 `json:"sound_level,omitempty"`
+	// Blacksmoke holds the value of the "blacksmoke" field.
+	Blacksmoke float64 `json:"blacksmoke,omitempty"`
 	// Datetime holds the value of the "datetime" field.
 	Datetime time.Time `json:"datetime,omitempty"`
 	// Note holds the value of the "note" field.
@@ -100,9 +106,12 @@ func (e CarInspectionEdges) CarrepairrecordsOrErr() ([]*CarRepairrecord, error) 
 // scanValues returns the types for scanning values from sql.Rows.
 func (*CarInspection) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{},  // id
-		&sql.NullTime{},   // datetime
-		&sql.NullString{}, // note
+		&sql.NullInt64{},   // id
+		&sql.NullFloat64{}, // wheel_center
+		&sql.NullFloat64{}, // sound_level
+		&sql.NullFloat64{}, // blacksmoke
+		&sql.NullTime{},    // datetime
+		&sql.NullString{},  // note
 	}
 }
 
@@ -127,17 +136,32 @@ func (ci *CarInspection) assignValues(values ...interface{}) error {
 	}
 	ci.ID = int(value.Int64)
 	values = values[1:]
-	if value, ok := values[0].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field datetime", values[0])
+	if value, ok := values[0].(*sql.NullFloat64); !ok {
+		return fmt.Errorf("unexpected type %T for field wheel_center", values[0])
+	} else if value.Valid {
+		ci.WheelCenter = value.Float64
+	}
+	if value, ok := values[1].(*sql.NullFloat64); !ok {
+		return fmt.Errorf("unexpected type %T for field sound_level", values[1])
+	} else if value.Valid {
+		ci.SoundLevel = value.Float64
+	}
+	if value, ok := values[2].(*sql.NullFloat64); !ok {
+		return fmt.Errorf("unexpected type %T for field blacksmoke", values[2])
+	} else if value.Valid {
+		ci.Blacksmoke = value.Float64
+	}
+	if value, ok := values[3].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field datetime", values[3])
 	} else if value.Valid {
 		ci.Datetime = value.Time
 	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field note", values[1])
+	if value, ok := values[4].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field note", values[4])
 	} else if value.Valid {
 		ci.Note = value.String
 	}
-	values = values[2:]
+	values = values[5:]
 	if len(values) == len(carinspection.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field ambulance_id", value)
@@ -204,6 +228,12 @@ func (ci *CarInspection) String() string {
 	var builder strings.Builder
 	builder.WriteString("CarInspection(")
 	builder.WriteString(fmt.Sprintf("id=%v", ci.ID))
+	builder.WriteString(", wheel_center=")
+	builder.WriteString(fmt.Sprintf("%v", ci.WheelCenter))
+	builder.WriteString(", sound_level=")
+	builder.WriteString(fmt.Sprintf("%v", ci.SoundLevel))
+	builder.WriteString(", blacksmoke=")
+	builder.WriteString(fmt.Sprintf("%v", ci.Blacksmoke))
 	builder.WriteString(", datetime=")
 	builder.WriteString(ci.Datetime.Format(time.ANSIC))
 	builder.WriteString(", note=")

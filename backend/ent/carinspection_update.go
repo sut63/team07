@@ -32,6 +32,45 @@ func (ciu *CarInspectionUpdate) Where(ps ...predicate.CarInspection) *CarInspect
 	return ciu
 }
 
+// SetWheelCenter sets the wheel_center field.
+func (ciu *CarInspectionUpdate) SetWheelCenter(f float64) *CarInspectionUpdate {
+	ciu.mutation.ResetWheelCenter()
+	ciu.mutation.SetWheelCenter(f)
+	return ciu
+}
+
+// AddWheelCenter adds f to wheel_center.
+func (ciu *CarInspectionUpdate) AddWheelCenter(f float64) *CarInspectionUpdate {
+	ciu.mutation.AddWheelCenter(f)
+	return ciu
+}
+
+// SetSoundLevel sets the sound_level field.
+func (ciu *CarInspectionUpdate) SetSoundLevel(f float64) *CarInspectionUpdate {
+	ciu.mutation.ResetSoundLevel()
+	ciu.mutation.SetSoundLevel(f)
+	return ciu
+}
+
+// AddSoundLevel adds f to sound_level.
+func (ciu *CarInspectionUpdate) AddSoundLevel(f float64) *CarInspectionUpdate {
+	ciu.mutation.AddSoundLevel(f)
+	return ciu
+}
+
+// SetBlacksmoke sets the blacksmoke field.
+func (ciu *CarInspectionUpdate) SetBlacksmoke(f float64) *CarInspectionUpdate {
+	ciu.mutation.ResetBlacksmoke()
+	ciu.mutation.SetBlacksmoke(f)
+	return ciu
+}
+
+// AddBlacksmoke adds f to blacksmoke.
+func (ciu *CarInspectionUpdate) AddBlacksmoke(f float64) *CarInspectionUpdate {
+	ciu.mutation.AddBlacksmoke(f)
+	return ciu
+}
+
 // SetDatetime sets the datetime field.
 func (ciu *CarInspectionUpdate) SetDatetime(t time.Time) *CarInspectionUpdate {
 	ciu.mutation.SetDatetime(t)
@@ -156,6 +195,21 @@ func (ciu *CarInspectionUpdate) RemoveCarrepairrecords(c ...*CarRepairrecord) *C
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (ciu *CarInspectionUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := ciu.mutation.WheelCenter(); ok {
+		if err := carinspection.WheelCenterValidator(v); err != nil {
+			return 0, &ValidationError{Name: "wheel_center", err: fmt.Errorf("ent: validator failed for field \"wheel_center\": %w", err)}
+		}
+	}
+	if v, ok := ciu.mutation.SoundLevel(); ok {
+		if err := carinspection.SoundLevelValidator(v); err != nil {
+			return 0, &ValidationError{Name: "sound_level", err: fmt.Errorf("ent: validator failed for field \"sound_level\": %w", err)}
+		}
+	}
+	if v, ok := ciu.mutation.Blacksmoke(); ok {
+		if err := carinspection.BlacksmokeValidator(v); err != nil {
+			return 0, &ValidationError{Name: "blacksmoke", err: fmt.Errorf("ent: validator failed for field \"blacksmoke\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -223,6 +277,48 @@ func (ciu *CarInspectionUpdate) sqlSave(ctx context.Context) (n int, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := ciu.mutation.WheelCenter(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldWheelCenter,
+		})
+	}
+	if value, ok := ciu.mutation.AddedWheelCenter(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldWheelCenter,
+		})
+	}
+	if value, ok := ciu.mutation.SoundLevel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldSoundLevel,
+		})
+	}
+	if value, ok := ciu.mutation.AddedSoundLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldSoundLevel,
+		})
+	}
+	if value, ok := ciu.mutation.Blacksmoke(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldBlacksmoke,
+		})
+	}
+	if value, ok := ciu.mutation.AddedBlacksmoke(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldBlacksmoke,
+		})
 	}
 	if value, ok := ciu.mutation.Datetime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
@@ -399,6 +495,45 @@ type CarInspectionUpdateOne struct {
 	mutation *CarInspectionMutation
 }
 
+// SetWheelCenter sets the wheel_center field.
+func (ciuo *CarInspectionUpdateOne) SetWheelCenter(f float64) *CarInspectionUpdateOne {
+	ciuo.mutation.ResetWheelCenter()
+	ciuo.mutation.SetWheelCenter(f)
+	return ciuo
+}
+
+// AddWheelCenter adds f to wheel_center.
+func (ciuo *CarInspectionUpdateOne) AddWheelCenter(f float64) *CarInspectionUpdateOne {
+	ciuo.mutation.AddWheelCenter(f)
+	return ciuo
+}
+
+// SetSoundLevel sets the sound_level field.
+func (ciuo *CarInspectionUpdateOne) SetSoundLevel(f float64) *CarInspectionUpdateOne {
+	ciuo.mutation.ResetSoundLevel()
+	ciuo.mutation.SetSoundLevel(f)
+	return ciuo
+}
+
+// AddSoundLevel adds f to sound_level.
+func (ciuo *CarInspectionUpdateOne) AddSoundLevel(f float64) *CarInspectionUpdateOne {
+	ciuo.mutation.AddSoundLevel(f)
+	return ciuo
+}
+
+// SetBlacksmoke sets the blacksmoke field.
+func (ciuo *CarInspectionUpdateOne) SetBlacksmoke(f float64) *CarInspectionUpdateOne {
+	ciuo.mutation.ResetBlacksmoke()
+	ciuo.mutation.SetBlacksmoke(f)
+	return ciuo
+}
+
+// AddBlacksmoke adds f to blacksmoke.
+func (ciuo *CarInspectionUpdateOne) AddBlacksmoke(f float64) *CarInspectionUpdateOne {
+	ciuo.mutation.AddBlacksmoke(f)
+	return ciuo
+}
+
 // SetDatetime sets the datetime field.
 func (ciuo *CarInspectionUpdateOne) SetDatetime(t time.Time) *CarInspectionUpdateOne {
 	ciuo.mutation.SetDatetime(t)
@@ -523,6 +658,21 @@ func (ciuo *CarInspectionUpdateOne) RemoveCarrepairrecords(c ...*CarRepairrecord
 
 // Save executes the query and returns the updated entity.
 func (ciuo *CarInspectionUpdateOne) Save(ctx context.Context) (*CarInspection, error) {
+	if v, ok := ciuo.mutation.WheelCenter(); ok {
+		if err := carinspection.WheelCenterValidator(v); err != nil {
+			return nil, &ValidationError{Name: "wheel_center", err: fmt.Errorf("ent: validator failed for field \"wheel_center\": %w", err)}
+		}
+	}
+	if v, ok := ciuo.mutation.SoundLevel(); ok {
+		if err := carinspection.SoundLevelValidator(v); err != nil {
+			return nil, &ValidationError{Name: "sound_level", err: fmt.Errorf("ent: validator failed for field \"sound_level\": %w", err)}
+		}
+	}
+	if v, ok := ciuo.mutation.Blacksmoke(); ok {
+		if err := carinspection.BlacksmokeValidator(v); err != nil {
+			return nil, &ValidationError{Name: "blacksmoke", err: fmt.Errorf("ent: validator failed for field \"blacksmoke\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -589,6 +739,48 @@ func (ciuo *CarInspectionUpdateOne) sqlSave(ctx context.Context) (ci *CarInspect
 		return nil, &ValidationError{Name: "ID", err: fmt.Errorf("missing CarInspection.ID for update")}
 	}
 	_spec.Node.ID.Value = id
+	if value, ok := ciuo.mutation.WheelCenter(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldWheelCenter,
+		})
+	}
+	if value, ok := ciuo.mutation.AddedWheelCenter(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldWheelCenter,
+		})
+	}
+	if value, ok := ciuo.mutation.SoundLevel(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldSoundLevel,
+		})
+	}
+	if value, ok := ciuo.mutation.AddedSoundLevel(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldSoundLevel,
+		})
+	}
+	if value, ok := ciuo.mutation.Blacksmoke(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldBlacksmoke,
+		})
+	}
+	if value, ok := ciuo.mutation.AddedBlacksmoke(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carinspection.FieldBlacksmoke,
+		})
+	}
 	if value, ok := ciuo.mutation.Datetime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
