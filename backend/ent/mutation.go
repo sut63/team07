@@ -65,6 +65,10 @@ type AmbulanceMutation struct {
 	typ                   string
 	id                    *int
 	carregistration       *string
+	enginepower           *int
+	addenginepower        *int
+	displacement          *int
+	adddisplacement       *int
 	registerat            *time.Time
 	clearedFields         map[string]struct{}
 	hasbrand              *int
@@ -199,6 +203,120 @@ func (m *AmbulanceMutation) OldCarregistration(ctx context.Context) (v string, e
 // ResetCarregistration reset all changes of the "carregistration" field.
 func (m *AmbulanceMutation) ResetCarregistration() {
 	m.carregistration = nil
+}
+
+// SetEnginepower sets the enginepower field.
+func (m *AmbulanceMutation) SetEnginepower(i int) {
+	m.enginepower = &i
+	m.addenginepower = nil
+}
+
+// Enginepower returns the enginepower value in the mutation.
+func (m *AmbulanceMutation) Enginepower() (r int, exists bool) {
+	v := m.enginepower
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEnginepower returns the old enginepower value of the Ambulance.
+// If the Ambulance object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *AmbulanceMutation) OldEnginepower(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldEnginepower is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldEnginepower requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEnginepower: %w", err)
+	}
+	return oldValue.Enginepower, nil
+}
+
+// AddEnginepower adds i to enginepower.
+func (m *AmbulanceMutation) AddEnginepower(i int) {
+	if m.addenginepower != nil {
+		*m.addenginepower += i
+	} else {
+		m.addenginepower = &i
+	}
+}
+
+// AddedEnginepower returns the value that was added to the enginepower field in this mutation.
+func (m *AmbulanceMutation) AddedEnginepower() (r int, exists bool) {
+	v := m.addenginepower
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetEnginepower reset all changes of the "enginepower" field.
+func (m *AmbulanceMutation) ResetEnginepower() {
+	m.enginepower = nil
+	m.addenginepower = nil
+}
+
+// SetDisplacement sets the displacement field.
+func (m *AmbulanceMutation) SetDisplacement(i int) {
+	m.displacement = &i
+	m.adddisplacement = nil
+}
+
+// Displacement returns the displacement value in the mutation.
+func (m *AmbulanceMutation) Displacement() (r int, exists bool) {
+	v := m.displacement
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplacement returns the old displacement value of the Ambulance.
+// If the Ambulance object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *AmbulanceMutation) OldDisplacement(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldDisplacement is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldDisplacement requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplacement: %w", err)
+	}
+	return oldValue.Displacement, nil
+}
+
+// AddDisplacement adds i to displacement.
+func (m *AmbulanceMutation) AddDisplacement(i int) {
+	if m.adddisplacement != nil {
+		*m.adddisplacement += i
+	} else {
+		m.adddisplacement = &i
+	}
+}
+
+// AddedDisplacement returns the value that was added to the displacement field in this mutation.
+func (m *AmbulanceMutation) AddedDisplacement() (r int, exists bool) {
+	v := m.adddisplacement
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDisplacement reset all changes of the "displacement" field.
+func (m *AmbulanceMutation) ResetDisplacement() {
+	m.displacement = nil
+	m.adddisplacement = nil
 }
 
 // SetRegisterat sets the registerat field.
@@ -534,9 +652,15 @@ func (m *AmbulanceMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *AmbulanceMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 4)
 	if m.carregistration != nil {
 		fields = append(fields, ambulance.FieldCarregistration)
+	}
+	if m.enginepower != nil {
+		fields = append(fields, ambulance.FieldEnginepower)
+	}
+	if m.displacement != nil {
+		fields = append(fields, ambulance.FieldDisplacement)
 	}
 	if m.registerat != nil {
 		fields = append(fields, ambulance.FieldRegisterat)
@@ -551,6 +675,10 @@ func (m *AmbulanceMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case ambulance.FieldCarregistration:
 		return m.Carregistration()
+	case ambulance.FieldEnginepower:
+		return m.Enginepower()
+	case ambulance.FieldDisplacement:
+		return m.Displacement()
 	case ambulance.FieldRegisterat:
 		return m.Registerat()
 	}
@@ -564,6 +692,10 @@ func (m *AmbulanceMutation) OldField(ctx context.Context, name string) (ent.Valu
 	switch name {
 	case ambulance.FieldCarregistration:
 		return m.OldCarregistration(ctx)
+	case ambulance.FieldEnginepower:
+		return m.OldEnginepower(ctx)
+	case ambulance.FieldDisplacement:
+		return m.OldDisplacement(ctx)
 	case ambulance.FieldRegisterat:
 		return m.OldRegisterat(ctx)
 	}
@@ -582,6 +714,20 @@ func (m *AmbulanceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCarregistration(v)
 		return nil
+	case ambulance.FieldEnginepower:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEnginepower(v)
+		return nil
+	case ambulance.FieldDisplacement:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplacement(v)
+		return nil
 	case ambulance.FieldRegisterat:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -596,13 +742,26 @@ func (m *AmbulanceMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *AmbulanceMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addenginepower != nil {
+		fields = append(fields, ambulance.FieldEnginepower)
+	}
+	if m.adddisplacement != nil {
+		fields = append(fields, ambulance.FieldDisplacement)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *AmbulanceMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case ambulance.FieldEnginepower:
+		return m.AddedEnginepower()
+	case ambulance.FieldDisplacement:
+		return m.AddedDisplacement()
+	}
 	return nil, false
 }
 
@@ -611,6 +770,20 @@ func (m *AmbulanceMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *AmbulanceMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case ambulance.FieldEnginepower:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEnginepower(v)
+		return nil
+	case ambulance.FieldDisplacement:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDisplacement(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Ambulance numeric field %s", name)
 }
@@ -641,6 +814,12 @@ func (m *AmbulanceMutation) ResetField(name string) error {
 	switch name {
 	case ambulance.FieldCarregistration:
 		m.ResetCarregistration()
+		return nil
+	case ambulance.FieldEnginepower:
+		m.ResetEnginepower()
+		return nil
+	case ambulance.FieldDisplacement:
+		m.ResetDisplacement()
 		return nil
 	case ambulance.FieldRegisterat:
 		m.ResetRegisterat()

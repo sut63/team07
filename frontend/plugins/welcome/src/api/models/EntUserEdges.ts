@@ -132,5 +132,3 @@ export function EntUserEdgesToJSON(value?: EntUserEdges | null): any {
         'userof': value.userof === undefined ? undefined : ((value.userof as Array<any>).map(EntAmbulanceToJSON)),
     };
 }
-
-

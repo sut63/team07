@@ -33,11 +33,23 @@ export interface EntAmbulance {
      */
     carregistration?: string;
     /**
+     * Displacement holds the value of the "displacement" field.
+     * @type {number}
+     * @memberof EntAmbulance
+     */
+    displacement?: number;
+    /**
      * 
      * @type {EntAmbulanceEdges}
      * @memberof EntAmbulance
      */
     edges?: EntAmbulanceEdges;
+    /**
+     * Enginepower holds the value of the "enginepower" field.
+     * @type {number}
+     * @memberof EntAmbulance
+     */
+    enginepower?: number;
     /**
      * ID of the ent.
      * @type {number}
@@ -63,7 +75,9 @@ export function EntAmbulanceFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         
         'carregistration': !exists(json, 'carregistration') ? undefined : json['carregistration'],
+        'displacement': !exists(json, 'displacement') ? undefined : json['displacement'],
         'edges': !exists(json, 'edges') ? undefined : EntAmbulanceEdgesFromJSON(json['edges']),
+        'enginepower': !exists(json, 'enginepower') ? undefined : json['enginepower'],
         'id': !exists(json, 'id') ? undefined : json['id'],
         'registerat': !exists(json, 'registerat') ? undefined : json['registerat'],
     };
@@ -79,7 +93,9 @@ export function EntAmbulanceToJSON(value?: EntAmbulance | null): any {
     return {
         
         'carregistration': value.carregistration,
+        'displacement': value.displacement,
         'edges': EntAmbulanceEdgesToJSON(value.edges),
+        'enginepower': value.enginepower,
         'id': value.id,
         'registerat': value.registerat,
     };

@@ -2,10 +2,6 @@
 
 package ambulance
 
-import (
-	"time"
-)
-
 const (
 	// Label holds the string label denoting the ambulance type in the database.
 	Label = "ambulance"
@@ -13,6 +9,10 @@ const (
 	FieldID = "id"
 	// FieldCarregistration holds the string denoting the carregistration field in the database.
 	FieldCarregistration = "carregistration"
+	// FieldEnginepower holds the string denoting the enginepower field in the database.
+	FieldEnginepower = "enginepower"
+	// FieldDisplacement holds the string denoting the displacement field in the database.
+	FieldDisplacement = "displacement"
 	// FieldRegisterat holds the string denoting the registerat field in the database.
 	FieldRegisterat = "registerat"
 
@@ -88,6 +88,8 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldCarregistration,
+	FieldEnginepower,
+	FieldDisplacement,
 	FieldRegisterat,
 }
 
@@ -102,6 +104,8 @@ var ForeignKeys = []string{
 var (
 	// CarregistrationValidator is a validator for the "carregistration" field. It is called by the builders before save.
 	CarregistrationValidator func(string) error
-	// DefaultRegisterat holds the default value on creation for the registerat field.
-	DefaultRegisterat func() time.Time
+	// EnginepowerValidator is a validator for the "enginepower" field. It is called by the builders before save.
+	EnginepowerValidator func(int) error
+	// DisplacementValidator is a validator for the "displacement" field. It is called by the builders before save.
+	DisplacementValidator func(int) error
 )

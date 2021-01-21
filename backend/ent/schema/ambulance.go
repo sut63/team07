@@ -1,8 +1,8 @@
 package schema
 
 import (
-	"time"
-
+	"errors"
+	"regexp"
 	"github.com/facebookincubator/ent"
 	"github.com/facebookincubator/ent/schema/edge"
 	"github.com/facebookincubator/ent/schema/field"
@@ -17,9 +17,16 @@ type Ambulance struct {
 func (Ambulance) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("carregistration").
-			Unique().NotEmpty(),
-		field.Time("registerat").
-			Default(time.Now),
+			Unique().NotEmpty().Validate(func(s string) error {
+				match, _ := regexp.MatchString("^[0-9]{1}[ก-ฮ]{2}[0-9]{4}$|^[ก-ฮ]{2}[0-9]{4}$", s)
+				if !match {
+					return errors.New("รูปแบบเลขทะเบียนรถไม่ถูกต้อง")
+				}
+				return nil
+			}),
+		field.Int("enginepower").Range(80,100),
+		field.Int("displacement").Range(2900,4000),
+		field.Time("registerat"),
 	}
 }
 

@@ -100,6 +100,20 @@ func Carregistration(v string) predicate.Ambulance {
 	})
 }
 
+// Enginepower applies equality check predicate on the "enginepower" field. It's identical to EnginepowerEQ.
+func Enginepower(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEnginepower), v))
+	})
+}
+
+// Displacement applies equality check predicate on the "displacement" field. It's identical to DisplacementEQ.
+func Displacement(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDisplacement), v))
+	})
+}
+
 // Registerat applies equality check predicate on the "registerat" field. It's identical to RegisteratEQ.
 func Registerat(v time.Time) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
@@ -215,6 +229,158 @@ func CarregistrationEqualFold(v string) predicate.Ambulance {
 func CarregistrationContainsFold(v string) predicate.Ambulance {
 	return predicate.Ambulance(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldCarregistration), v))
+	})
+}
+
+// EnginepowerEQ applies the EQ predicate on the "enginepower" field.
+func EnginepowerEQ(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldEnginepower), v))
+	})
+}
+
+// EnginepowerNEQ applies the NEQ predicate on the "enginepower" field.
+func EnginepowerNEQ(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldEnginepower), v))
+	})
+}
+
+// EnginepowerIn applies the In predicate on the "enginepower" field.
+func EnginepowerIn(vs ...int) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldEnginepower), v...))
+	})
+}
+
+// EnginepowerNotIn applies the NotIn predicate on the "enginepower" field.
+func EnginepowerNotIn(vs ...int) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldEnginepower), v...))
+	})
+}
+
+// EnginepowerGT applies the GT predicate on the "enginepower" field.
+func EnginepowerGT(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldEnginepower), v))
+	})
+}
+
+// EnginepowerGTE applies the GTE predicate on the "enginepower" field.
+func EnginepowerGTE(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldEnginepower), v))
+	})
+}
+
+// EnginepowerLT applies the LT predicate on the "enginepower" field.
+func EnginepowerLT(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldEnginepower), v))
+	})
+}
+
+// EnginepowerLTE applies the LTE predicate on the "enginepower" field.
+func EnginepowerLTE(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldEnginepower), v))
+	})
+}
+
+// DisplacementEQ applies the EQ predicate on the "displacement" field.
+func DisplacementEQ(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDisplacement), v))
+	})
+}
+
+// DisplacementNEQ applies the NEQ predicate on the "displacement" field.
+func DisplacementNEQ(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDisplacement), v))
+	})
+}
+
+// DisplacementIn applies the In predicate on the "displacement" field.
+func DisplacementIn(vs ...int) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldDisplacement), v...))
+	})
+}
+
+// DisplacementNotIn applies the NotIn predicate on the "displacement" field.
+func DisplacementNotIn(vs ...int) predicate.Ambulance {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Ambulance(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldDisplacement), v...))
+	})
+}
+
+// DisplacementGT applies the GT predicate on the "displacement" field.
+func DisplacementGT(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldDisplacement), v))
+	})
+}
+
+// DisplacementGTE applies the GTE predicate on the "displacement" field.
+func DisplacementGTE(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldDisplacement), v))
+	})
+}
+
+// DisplacementLT applies the LT predicate on the "displacement" field.
+func DisplacementLT(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldDisplacement), v))
+	})
+}
+
+// DisplacementLTE applies the LTE predicate on the "displacement" field.
+func DisplacementLTE(v int) predicate.Ambulance {
+	return predicate.Ambulance(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldDisplacement), v))
 	})
 }
 

@@ -925,16 +925,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get carservice by ID",
+                "description": "get urgent by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a carservice entity by ID",
-                "operationId": "get-carservice",
+                "summary": "Get a urgent entity by ID",
+                "operationId": "get-urgent",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Carservice ID",
+                        "description": "Urgent ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -944,7 +944,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Carservice"
+                            "$ref": "#/definitions/ent.Urgent"
                         }
                     },
                     "400": {
@@ -2024,6 +2024,12 @@ var doc = `{
                 "datetime": {
                     "type": "string"
                 },
+                "displacement": {
+                    "type": "integer"
+                },
+                "enginepower": {
+                    "type": "integer"
+                },
                 "insuranceID": {
                     "type": "integer"
                 },
@@ -2047,10 +2053,19 @@ var doc = `{
                 "checkout": {
                     "type": "string"
                 },
+                "distance": {
+                    "type": "number"
+                },
                 "name": {
                     "type": "integer"
                 },
                 "note": {
+                    "type": "string"
+                },
+                "person": {
+                    "type": "integer"
+                },
+                "place": {
                     "type": "string"
                 },
                 "purpose": {
@@ -2166,10 +2181,18 @@ var doc = `{
                     "description": "Carregistration holds the value of the \"carregistration\" field.",
                     "type": "string"
                 },
+                "displacement": {
+                    "description": "Displacement holds the value of the \"displacement\" field.",
+                    "type": "integer"
+                },
                 "edges": {
                     "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the AmbulanceQuery when eager-loading is set.",
                     "type": "object",
                     "$ref": "#/definitions/ent.AmbulanceEdges"
+                },
+                "enginepower": {
+                    "description": "Enginepower holds the value of the \"enginepower\" field.",
+                    "type": "integer"
                 },
                 "id": {
                     "description": "ID of the ent.",
