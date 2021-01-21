@@ -51,6 +51,9 @@ export default function ComponentsTable() {
            <TableCell align="center">เจ้าหน้าที่</TableCell>
            <TableCell align="center">วัตถุประสงค์</TableCell>
            <TableCell align="center">หมายเหตุ</TableCell>
+           <TableCell align="center">จำนวนเจ้าหน้าที่</TableCell>
+           <TableCell align="center">ระยะทาง</TableCell>
+           <TableCell align="center">สถานที่</TableCell>
            <TableCell align="center">วันที่รถออก</TableCell>
            <TableCell align="center">วันที่รถเข้า</TableCell>
            <TableCell align="center">ลบข้อมูล</TableCell>
@@ -65,6 +68,9 @@ export default function ComponentsTable() {
              <TableCell align="center">{item.edges.name.name}</TableCell>
              <TableCell align="center">{item.edges.purpose.objective}</TableCell>
              <TableCell align="center">{item.note}</TableCell>
+             <TableCell align="center">{item.person}</TableCell>
+             <TableCell align="center">{item.distance}</TableCell>
+             <TableCell align="center">{item.place}</TableCell>
              <TableCell align="center">{moment(item.checkOut).format('DD/MM/YYYY HH.mm น.')}</TableCell>
              <TableCell align="center">{moment(item.checkIn).format('DD/MM/YYYY HH.mm น.')}</TableCell>
              <TableCell align="center">
@@ -74,8 +80,7 @@ export default function ComponentsTable() {
                  }}
                  style={{ marginLeft: 2 }}
                  variant="contained" 
-                 color="primary"
-                 style={{backgroundColor: "#F5454D"}}
+                 color="secondary"
                >
                  Delete
                </Button>

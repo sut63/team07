@@ -13,6 +13,12 @@ const (
 	FieldID = "id"
 	// FieldNote holds the string denoting the note field in the database.
 	FieldNote = "note"
+	// FieldPlace holds the string denoting the place field in the database.
+	FieldPlace = "place"
+	// FieldPerson holds the string denoting the person field in the database.
+	FieldPerson = "person"
+	// FieldDistance holds the string denoting the distance field in the database.
+	FieldDistance = "distance"
 	// FieldCheckIn holds the string denoting the checkin field in the database.
 	FieldCheckIn = "check_in"
 	// FieldCheckOut holds the string denoting the checkout field in the database.
@@ -54,6 +60,9 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldNote,
+	FieldPlace,
+	FieldPerson,
+	FieldDistance,
 	FieldCheckIn,
 	FieldCheckOut,
 }
@@ -66,6 +75,12 @@ var ForeignKeys = []string{
 }
 
 var (
+	// PlaceValidator is a validator for the "place" field. It is called by the builders before save.
+	PlaceValidator func(string) error
+	// PersonValidator is a validator for the "person" field. It is called by the builders before save.
+	PersonValidator func(int) error
+	// DistanceValidator is a validator for the "distance" field. It is called by the builders before save.
+	DistanceValidator func(float64) error
 	// DefaultCheckIn holds the default value on creation for the checkIn field.
 	DefaultCheckIn func() time.Time
 )

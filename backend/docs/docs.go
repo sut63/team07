@@ -464,55 +464,6 @@ var doc = `{
                     }
                 }
             },
-            "put": {
-                "description": "update carcheckinout by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Update a carcheckinout entity by ID",
-                "operationId": "update-carcheckinout",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "CarCheckInOut ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "CarCheckInOut entity",
-                        "name": "carcheckinout",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ent.CarCheckInOut"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/ent.CarCheckInOut"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/gin.H"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "description": "get carcheckinout by ID",
                 "produces": [
@@ -974,16 +925,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get urgent by ID",
+                "description": "get carservice by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a urgent entity by ID",
-                "operationId": "get-urgent",
+                "summary": "Get a carservice entity by ID",
+                "operationId": "get-carservice",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Urgent ID",
+                        "description": "Carservice ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -993,7 +944,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Urgent"
+                            "$ref": "#/definitions/ent.Carservice"
                         }
                     },
                     "400": {
@@ -2287,6 +2238,10 @@ var doc = `{
                     "description": "CheckOut holds the value of the \"checkOut\" field.",
                     "type": "string"
                 },
+                "distance": {
+                    "description": "Distance holds the value of the \"distance\" field.",
+                    "type": "number"
+                },
                 "edges": {
                     "description": "Edges holds the relations/edges for other nodes in the graph.\nThe values are being populated by the CarCheckInOutQuery when eager-loading is set.",
                     "type": "object",
@@ -2298,6 +2253,14 @@ var doc = `{
                 },
                 "note": {
                     "description": "Note holds the value of the \"note\" field.",
+                    "type": "string"
+                },
+                "person": {
+                    "description": "Person holds the value of the \"person\" field.",
+                    "type": "integer"
+                },
+                "place": {
+                    "description": "Place holds the value of the \"place\" field.",
                     "type": "string"
                 }
             }

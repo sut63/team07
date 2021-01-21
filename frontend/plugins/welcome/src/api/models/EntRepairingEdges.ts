@@ -44,7 +44,7 @@ export function EntRepairingEdgesFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'repairs': !exists(json, 'Repairs') ? undefined : ((json['Repairs'] as Array<any>).map(EntCarRepairrecordFromJSON)),
+        'repairs': !exists(json, 'repairs') ? undefined : ((json['repairs'] as Array<any>).map(EntCarRepairrecordFromJSON)),
     };
 }
 

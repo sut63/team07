@@ -37,6 +37,38 @@ func (cciou *CarCheckInOutUpdate) SetNote(s string) *CarCheckInOutUpdate {
 	return cciou
 }
 
+// SetPlace sets the place field.
+func (cciou *CarCheckInOutUpdate) SetPlace(s string) *CarCheckInOutUpdate {
+	cciou.mutation.SetPlace(s)
+	return cciou
+}
+
+// SetPerson sets the person field.
+func (cciou *CarCheckInOutUpdate) SetPerson(i int) *CarCheckInOutUpdate {
+	cciou.mutation.ResetPerson()
+	cciou.mutation.SetPerson(i)
+	return cciou
+}
+
+// AddPerson adds i to person.
+func (cciou *CarCheckInOutUpdate) AddPerson(i int) *CarCheckInOutUpdate {
+	cciou.mutation.AddPerson(i)
+	return cciou
+}
+
+// SetDistance sets the distance field.
+func (cciou *CarCheckInOutUpdate) SetDistance(f float64) *CarCheckInOutUpdate {
+	cciou.mutation.ResetDistance()
+	cciou.mutation.SetDistance(f)
+	return cciou
+}
+
+// AddDistance adds f to distance.
+func (cciou *CarCheckInOutUpdate) AddDistance(f float64) *CarCheckInOutUpdate {
+	cciou.mutation.AddDistance(f)
+	return cciou
+}
+
 // SetCheckIn sets the checkIn field.
 func (cciou *CarCheckInOutUpdate) SetCheckIn(t time.Time) *CarCheckInOutUpdate {
 	cciou.mutation.SetCheckIn(t)
@@ -139,6 +171,21 @@ func (cciou *CarCheckInOutUpdate) ClearPurpose() *CarCheckInOutUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (cciou *CarCheckInOutUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := cciou.mutation.Place(); ok {
+		if err := carcheckinout.PlaceValidator(v); err != nil {
+			return 0, &ValidationError{Name: "place", err: fmt.Errorf("ent: validator failed for field \"place\": %w", err)}
+		}
+	}
+	if v, ok := cciou.mutation.Person(); ok {
+		if err := carcheckinout.PersonValidator(v); err != nil {
+			return 0, &ValidationError{Name: "person", err: fmt.Errorf("ent: validator failed for field \"person\": %w", err)}
+		}
+	}
+	if v, ok := cciou.mutation.Distance(); ok {
+		if err := carcheckinout.DistanceValidator(v); err != nil {
+			return 0, &ValidationError{Name: "distance", err: fmt.Errorf("ent: validator failed for field \"distance\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -212,6 +259,41 @@ func (cciou *CarCheckInOutUpdate) sqlSave(ctx context.Context) (n int, err error
 			Type:   field.TypeString,
 			Value:  value,
 			Column: carcheckinout.FieldNote,
+		})
+	}
+	if value, ok := cciou.mutation.Place(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carcheckinout.FieldPlace,
+		})
+	}
+	if value, ok := cciou.mutation.Person(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carcheckinout.FieldPerson,
+		})
+	}
+	if value, ok := cciou.mutation.AddedPerson(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carcheckinout.FieldPerson,
+		})
+	}
+	if value, ok := cciou.mutation.Distance(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carcheckinout.FieldDistance,
+		})
+	}
+	if value, ok := cciou.mutation.AddedDistance(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carcheckinout.FieldDistance,
 		})
 	}
 	if value, ok := cciou.mutation.CheckIn(); ok {
@@ -357,6 +439,38 @@ func (cciouo *CarCheckInOutUpdateOne) SetNote(s string) *CarCheckInOutUpdateOne 
 	return cciouo
 }
 
+// SetPlace sets the place field.
+func (cciouo *CarCheckInOutUpdateOne) SetPlace(s string) *CarCheckInOutUpdateOne {
+	cciouo.mutation.SetPlace(s)
+	return cciouo
+}
+
+// SetPerson sets the person field.
+func (cciouo *CarCheckInOutUpdateOne) SetPerson(i int) *CarCheckInOutUpdateOne {
+	cciouo.mutation.ResetPerson()
+	cciouo.mutation.SetPerson(i)
+	return cciouo
+}
+
+// AddPerson adds i to person.
+func (cciouo *CarCheckInOutUpdateOne) AddPerson(i int) *CarCheckInOutUpdateOne {
+	cciouo.mutation.AddPerson(i)
+	return cciouo
+}
+
+// SetDistance sets the distance field.
+func (cciouo *CarCheckInOutUpdateOne) SetDistance(f float64) *CarCheckInOutUpdateOne {
+	cciouo.mutation.ResetDistance()
+	cciouo.mutation.SetDistance(f)
+	return cciouo
+}
+
+// AddDistance adds f to distance.
+func (cciouo *CarCheckInOutUpdateOne) AddDistance(f float64) *CarCheckInOutUpdateOne {
+	cciouo.mutation.AddDistance(f)
+	return cciouo
+}
+
 // SetCheckIn sets the checkIn field.
 func (cciouo *CarCheckInOutUpdateOne) SetCheckIn(t time.Time) *CarCheckInOutUpdateOne {
 	cciouo.mutation.SetCheckIn(t)
@@ -459,6 +573,21 @@ func (cciouo *CarCheckInOutUpdateOne) ClearPurpose() *CarCheckInOutUpdateOne {
 
 // Save executes the query and returns the updated entity.
 func (cciouo *CarCheckInOutUpdateOne) Save(ctx context.Context) (*CarCheckInOut, error) {
+	if v, ok := cciouo.mutation.Place(); ok {
+		if err := carcheckinout.PlaceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "place", err: fmt.Errorf("ent: validator failed for field \"place\": %w", err)}
+		}
+	}
+	if v, ok := cciouo.mutation.Person(); ok {
+		if err := carcheckinout.PersonValidator(v); err != nil {
+			return nil, &ValidationError{Name: "person", err: fmt.Errorf("ent: validator failed for field \"person\": %w", err)}
+		}
+	}
+	if v, ok := cciouo.mutation.Distance(); ok {
+		if err := carcheckinout.DistanceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "distance", err: fmt.Errorf("ent: validator failed for field \"distance\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -530,6 +659,41 @@ func (cciouo *CarCheckInOutUpdateOne) sqlSave(ctx context.Context) (ccio *CarChe
 			Type:   field.TypeString,
 			Value:  value,
 			Column: carcheckinout.FieldNote,
+		})
+	}
+	if value, ok := cciouo.mutation.Place(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carcheckinout.FieldPlace,
+		})
+	}
+	if value, ok := cciouo.mutation.Person(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carcheckinout.FieldPerson,
+		})
+	}
+	if value, ok := cciouo.mutation.AddedPerson(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carcheckinout.FieldPerson,
+		})
+	}
+	if value, ok := cciouo.mutation.Distance(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carcheckinout.FieldDistance,
+		})
+	}
+	if value, ok := cciouo.mutation.AddedDistance(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Value:  value,
+			Column: carcheckinout.FieldDistance,
 		})
 	}
 	if value, ok := cciouo.mutation.CheckIn(); ok {

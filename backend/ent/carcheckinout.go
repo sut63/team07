@@ -21,6 +21,12 @@ type CarCheckInOut struct {
 	ID int `json:"id,omitempty"`
 	// Note holds the value of the "note" field.
 	Note string `json:"note,omitempty"`
+	// Place holds the value of the "place" field.
+	Place string `json:"place,omitempty"`
+	// Person holds the value of the "person" field.
+	Person int `json:"person,omitempty"`
+	// Distance holds the value of the "distance" field.
+	Distance float64 `json:"distance,omitempty"`
 	// CheckIn holds the value of the "checkIn" field.
 	CheckIn time.Time `json:"checkIn,omitempty"`
 	// CheckOut holds the value of the "checkOut" field.
@@ -91,10 +97,13 @@ func (e CarCheckInOutEdges) PurposeOrErr() (*Purpose, error) {
 // scanValues returns the types for scanning values from sql.Rows.
 func (*CarCheckInOut) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{},  // id
-		&sql.NullString{}, // note
-		&sql.NullTime{},   // checkIn
-		&sql.NullTime{},   // checkOut
+		&sql.NullInt64{},   // id
+		&sql.NullString{},  // note
+		&sql.NullString{},  // place
+		&sql.NullInt64{},   // person
+		&sql.NullFloat64{}, // distance
+		&sql.NullTime{},    // checkIn
+		&sql.NullTime{},    // checkOut
 	}
 }
 
@@ -124,17 +133,32 @@ func (ccio *CarCheckInOut) assignValues(values ...interface{}) error {
 	} else if value.Valid {
 		ccio.Note = value.String
 	}
-	if value, ok := values[1].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field checkIn", values[1])
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field place", values[1])
+	} else if value.Valid {
+		ccio.Place = value.String
+	}
+	if value, ok := values[2].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field person", values[2])
+	} else if value.Valid {
+		ccio.Person = int(value.Int64)
+	}
+	if value, ok := values[3].(*sql.NullFloat64); !ok {
+		return fmt.Errorf("unexpected type %T for field distance", values[3])
+	} else if value.Valid {
+		ccio.Distance = value.Float64
+	}
+	if value, ok := values[4].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field checkIn", values[4])
 	} else if value.Valid {
 		ccio.CheckIn = value.Time
 	}
-	if value, ok := values[2].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field checkOut", values[2])
+	if value, ok := values[5].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field checkOut", values[5])
 	} else if value.Valid {
 		ccio.CheckOut = value.Time
 	}
-	values = values[3:]
+	values = values[6:]
 	if len(values) == len(carcheckinout.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field ambulance", value)
@@ -198,6 +222,12 @@ func (ccio *CarCheckInOut) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", ccio.ID))
 	builder.WriteString(", note=")
 	builder.WriteString(ccio.Note)
+	builder.WriteString(", place=")
+	builder.WriteString(ccio.Place)
+	builder.WriteString(", person=")
+	builder.WriteString(fmt.Sprintf("%v", ccio.Person))
+	builder.WriteString(", distance=")
+	builder.WriteString(fmt.Sprintf("%v", ccio.Distance))
 	builder.WriteString(", checkIn=")
 	builder.WriteString(ccio.CheckIn.Format(time.ANSIC))
 	builder.WriteString(", checkOut=")
