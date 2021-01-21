@@ -30,6 +30,8 @@ type Tx struct {
 	Deliver *DeliverClient
 	// Distance is the client for interacting with the Distance builders.
 	Distance *DistanceClient
+	// Hospital is the client for interacting with the Hospital builders.
+	Hospital *HospitalClient
 	// InspectionResult is the client for interacting with the InspectionResult builders.
 	InspectionResult *InspectionResultClient
 	// Insurance is the client for interacting with the Insurance builders.
@@ -38,12 +40,8 @@ type Tx struct {
 	JobPosition *JobPositionClient
 	// Purpose is the client for interacting with the Purpose builders.
 	Purpose *PurposeClient
-	// Receive is the client for interacting with the Receive builders.
-	Receive *ReceiveClient
 	// Repairing is the client for interacting with the Repairing builders.
 	Repairing *RepairingClient
-	// Send is the client for interacting with the Send builders.
-	Send *SendClient
 	// Transport is the client for interacting with the Transport builders.
 	Transport *TransportClient
 	// Urgent is the client for interacting with the Urgent builders.
@@ -194,13 +192,12 @@ func (tx *Tx) init() {
 	tx.Carservice = NewCarserviceClient(tx.config)
 	tx.Deliver = NewDeliverClient(tx.config)
 	tx.Distance = NewDistanceClient(tx.config)
+	tx.Hospital = NewHospitalClient(tx.config)
 	tx.InspectionResult = NewInspectionResultClient(tx.config)
 	tx.Insurance = NewInsuranceClient(tx.config)
 	tx.JobPosition = NewJobPositionClient(tx.config)
 	tx.Purpose = NewPurposeClient(tx.config)
-	tx.Receive = NewReceiveClient(tx.config)
 	tx.Repairing = NewRepairingClient(tx.config)
-	tx.Send = NewSendClient(tx.config)
 	tx.Transport = NewTransportClient(tx.config)
 	tx.Urgent = NewUrgentClient(tx.config)
 	tx.User = NewUserClient(tx.config)

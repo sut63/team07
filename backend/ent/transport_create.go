@@ -4,13 +4,13 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/facebookincubator/ent/dialect/sql/sqlgraph"
 	"github.com/facebookincubator/ent/schema/field"
 	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/receive"
-	"github.com/team07/app/ent/send"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
@@ -22,42 +22,60 @@ type TransportCreate struct {
 	hooks    []Hook
 }
 
-// SetSendidID sets the sendid edge to Send by id.
-func (tc *TransportCreate) SetSendidID(id int) *TransportCreate {
-	tc.mutation.SetSendidID(id)
+// SetSymptom sets the symptom field.
+func (tc *TransportCreate) SetSymptom(s string) *TransportCreate {
+	tc.mutation.SetSymptom(s)
 	return tc
 }
 
-// SetNillableSendidID sets the sendid edge to Send by id if the given value is not nil.
-func (tc *TransportCreate) SetNillableSendidID(id *int) *TransportCreate {
+// SetDrugallergy sets the drugallergy field.
+func (tc *TransportCreate) SetDrugallergy(s string) *TransportCreate {
+	tc.mutation.SetDrugallergy(s)
+	return tc
+}
+
+// SetNote sets the note field.
+func (tc *TransportCreate) SetNote(s string) *TransportCreate {
+	tc.mutation.SetNote(s)
+	return tc
+}
+
+// SetSendID sets the send edge to Hospital by id.
+func (tc *TransportCreate) SetSendID(id int) *TransportCreate {
+	tc.mutation.SetSendID(id)
+	return tc
+}
+
+// SetNillableSendID sets the send edge to Hospital by id if the given value is not nil.
+func (tc *TransportCreate) SetNillableSendID(id *int) *TransportCreate {
 	if id != nil {
-		tc = tc.SetSendidID(*id)
+		tc = tc.SetSendID(*id)
 	}
 	return tc
 }
 
-// SetSendid sets the sendid edge to Send.
-func (tc *TransportCreate) SetSendid(s *Send) *TransportCreate {
-	return tc.SetSendidID(s.ID)
+// SetSend sets the send edge to Hospital.
+func (tc *TransportCreate) SetSend(h *Hospital) *TransportCreate {
+	return tc.SetSendID(h.ID)
 }
 
-// SetReceiveidID sets the receiveid edge to Receive by id.
-func (tc *TransportCreate) SetReceiveidID(id int) *TransportCreate {
-	tc.mutation.SetReceiveidID(id)
+// SetReceiveID sets the receive edge to Hospital by id.
+func (tc *TransportCreate) SetReceiveID(id int) *TransportCreate {
+	tc.mutation.SetReceiveID(id)
 	return tc
 }
 
-// SetNillableReceiveidID sets the receiveid edge to Receive by id if the given value is not nil.
-func (tc *TransportCreate) SetNillableReceiveidID(id *int) *TransportCreate {
+// SetNillableReceiveID sets the receive edge to Hospital by id if the given value is not nil.
+func (tc *TransportCreate) SetNillableReceiveID(id *int) *TransportCreate {
 	if id != nil {
-		tc = tc.SetReceiveidID(*id)
+		tc = tc.SetReceiveID(*id)
 	}
 	return tc
 }
 
-// SetReceiveid sets the receiveid edge to Receive.
-func (tc *TransportCreate) SetReceiveid(r *Receive) *TransportCreate {
-	return tc.SetReceiveidID(r.ID)
+// SetReceive sets the receive edge to Hospital.
+func (tc *TransportCreate) SetReceive(h *Hospital) *TransportCreate {
+	return tc.SetReceiveID(h.ID)
 }
 
 // SetUserID sets the user edge to User by id.
@@ -105,6 +123,30 @@ func (tc *TransportCreate) Mutation() *TransportMutation {
 
 // Save creates the Transport in the database.
 func (tc *TransportCreate) Save(ctx context.Context) (*Transport, error) {
+	if _, ok := tc.mutation.Symptom(); !ok {
+		return nil, &ValidationError{Name: "symptom", err: errors.New("ent: missing required field \"symptom\"")}
+	}
+	if v, ok := tc.mutation.Symptom(); ok {
+		if err := transport.SymptomValidator(v); err != nil {
+			return nil, &ValidationError{Name: "symptom", err: fmt.Errorf("ent: validator failed for field \"symptom\": %w", err)}
+		}
+	}
+	if _, ok := tc.mutation.Drugallergy(); !ok {
+		return nil, &ValidationError{Name: "drugallergy", err: errors.New("ent: missing required field \"drugallergy\"")}
+	}
+	if v, ok := tc.mutation.Drugallergy(); ok {
+		if err := transport.DrugallergyValidator(v); err != nil {
+			return nil, &ValidationError{Name: "drugallergy", err: fmt.Errorf("ent: validator failed for field \"drugallergy\": %w", err)}
+		}
+	}
+	if _, ok := tc.mutation.Note(); !ok {
+		return nil, &ValidationError{Name: "note", err: errors.New("ent: missing required field \"note\"")}
+	}
+	if v, ok := tc.mutation.Note(); ok {
+		if err := transport.NoteValidator(v); err != nil {
+			return nil, &ValidationError{Name: "note", err: fmt.Errorf("ent: validator failed for field \"note\": %w", err)}
+		}
+	}
 	var (
 		err  error
 		node *Transport
@@ -165,17 +207,41 @@ func (tc *TransportCreate) createSpec() (*Transport, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if nodes := tc.mutation.SendidIDs(); len(nodes) > 0 {
+	if value, ok := tc.mutation.Symptom(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldSymptom,
+		})
+		t.Symptom = value
+	}
+	if value, ok := tc.mutation.Drugallergy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldDrugallergy,
+		})
+		t.Drugallergy = value
+	}
+	if value, ok := tc.mutation.Note(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: transport.FieldNote,
+		})
+		t.Note = value
+	}
+	if nodes := tc.mutation.SendIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.SendidTable,
-			Columns: []string{transport.SendidColumn},
+			Table:   transport.SendTable,
+			Columns: []string{transport.SendColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: send.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}
@@ -184,17 +250,17 @@ func (tc *TransportCreate) createSpec() (*Transport, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tc.mutation.ReceiveidIDs(); len(nodes) > 0 {
+	if nodes := tc.mutation.ReceiveIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   transport.ReceiveidTable,
-			Columns: []string{transport.ReceiveidColumn},
+			Table:   transport.ReceiveTable,
+			Columns: []string{transport.ReceiveColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: receive.FieldID,
+					Column: hospital.FieldID,
 				},
 			},
 		}

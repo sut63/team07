@@ -8,32 +8,37 @@ import (
 
 	"github.com/facebookincubator/ent/dialect/sql"
 	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/receive"
-	"github.com/team07/app/ent/send"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
 )
 
 // Transport is the model entity for the Transport schema.
 type Transport struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Symptom holds the value of the "symptom" field.
+	Symptom string `json:"symptom,omitempty"`
+	// Drugallergy holds the value of the "drugallergy" field.
+	Drugallergy string `json:"drugallergy,omitempty"`
+	// Note holds the value of the "note" field.
+	Note string `json:"note,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TransportQuery when eager-loading is set.
 	Edges     TransportEdges `json:"edges"`
 	ambulance *int
-	receiveid *int
-	sendid    *int
+	receive   *int
+	send      *int
 	user      *int
 }
 
 // TransportEdges holds the relations/edges for other nodes in the graph.
 type TransportEdges struct {
-	// Sendid holds the value of the sendid edge.
-	Sendid *Send
-	// Receiveid holds the value of the receiveid edge.
-	Receiveid *Receive
+	// Send holds the value of the send edge.
+	Send *Hospital
+	// Receive holds the value of the receive edge.
+	Receive *Hospital
 	// User holds the value of the user edge.
 	User *User
 	// Ambulance holds the value of the ambulance edge.
@@ -43,32 +48,32 @@ type TransportEdges struct {
 	loadedTypes [4]bool
 }
 
-// SendidOrErr returns the Sendid value or an error if the edge
+// SendOrErr returns the Send value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e TransportEdges) SendidOrErr() (*Send, error) {
+func (e TransportEdges) SendOrErr() (*Hospital, error) {
 	if e.loadedTypes[0] {
-		if e.Sendid == nil {
-			// The edge sendid was loaded in eager-loading,
+		if e.Send == nil {
+			// The edge send was loaded in eager-loading,
 			// but was not found.
-			return nil, &NotFoundError{label: send.Label}
+			return nil, &NotFoundError{label: hospital.Label}
 		}
-		return e.Sendid, nil
+		return e.Send, nil
 	}
-	return nil, &NotLoadedError{edge: "sendid"}
+	return nil, &NotLoadedError{edge: "send"}
 }
 
-// ReceiveidOrErr returns the Receiveid value or an error if the edge
+// ReceiveOrErr returns the Receive value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e TransportEdges) ReceiveidOrErr() (*Receive, error) {
+func (e TransportEdges) ReceiveOrErr() (*Hospital, error) {
 	if e.loadedTypes[1] {
-		if e.Receiveid == nil {
-			// The edge receiveid was loaded in eager-loading,
+		if e.Receive == nil {
+			// The edge receive was loaded in eager-loading,
 			// but was not found.
-			return nil, &NotFoundError{label: receive.Label}
+			return nil, &NotFoundError{label: hospital.Label}
 		}
-		return e.Receiveid, nil
+		return e.Receive, nil
 	}
-	return nil, &NotLoadedError{edge: "receiveid"}
+	return nil, &NotLoadedError{edge: "receive"}
 }
 
 // UserOrErr returns the User value or an error if the edge
@@ -102,7 +107,10 @@ func (e TransportEdges) AmbulanceOrErr() (*Ambulance, error) {
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Transport) scanValues() []interface{} {
 	return []interface{}{
-		&sql.NullInt64{}, // id
+		&sql.NullInt64{},  // id
+		&sql.NullString{}, // symptom
+		&sql.NullString{}, // drugallergy
+		&sql.NullString{}, // note
 	}
 }
 
@@ -110,8 +118,8 @@ func (*Transport) scanValues() []interface{} {
 func (*Transport) fkValues() []interface{} {
 	return []interface{}{
 		&sql.NullInt64{}, // ambulance
-		&sql.NullInt64{}, // receiveid
-		&sql.NullInt64{}, // sendid
+		&sql.NullInt64{}, // receive
+		&sql.NullInt64{}, // send
 		&sql.NullInt64{}, // user
 	}
 }
@@ -128,7 +136,22 @@ func (t *Transport) assignValues(values ...interface{}) error {
 	}
 	t.ID = int(value.Int64)
 	values = values[1:]
-	values = values[0:]
+	if value, ok := values[0].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field symptom", values[0])
+	} else if value.Valid {
+		t.Symptom = value.String
+	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field drugallergy", values[1])
+	} else if value.Valid {
+		t.Drugallergy = value.String
+	}
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field note", values[2])
+	} else if value.Valid {
+		t.Note = value.String
+	}
+	values = values[3:]
 	if len(values) == len(transport.ForeignKeys) {
 		if value, ok := values[0].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field ambulance", value)
@@ -137,16 +160,16 @@ func (t *Transport) assignValues(values ...interface{}) error {
 			*t.ambulance = int(value.Int64)
 		}
 		if value, ok := values[1].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field receiveid", value)
+			return fmt.Errorf("unexpected type %T for edge-field receive", value)
 		} else if value.Valid {
-			t.receiveid = new(int)
-			*t.receiveid = int(value.Int64)
+			t.receive = new(int)
+			*t.receive = int(value.Int64)
 		}
 		if value, ok := values[2].(*sql.NullInt64); !ok {
-			return fmt.Errorf("unexpected type %T for edge-field sendid", value)
+			return fmt.Errorf("unexpected type %T for edge-field send", value)
 		} else if value.Valid {
-			t.sendid = new(int)
-			*t.sendid = int(value.Int64)
+			t.send = new(int)
+			*t.send = int(value.Int64)
 		}
 		if value, ok := values[3].(*sql.NullInt64); !ok {
 			return fmt.Errorf("unexpected type %T for edge-field user", value)
@@ -158,14 +181,14 @@ func (t *Transport) assignValues(values ...interface{}) error {
 	return nil
 }
 
-// QuerySendid queries the sendid edge of the Transport.
-func (t *Transport) QuerySendid() *SendQuery {
-	return (&TransportClient{config: t.config}).QuerySendid(t)
+// QuerySend queries the send edge of the Transport.
+func (t *Transport) QuerySend() *HospitalQuery {
+	return (&TransportClient{config: t.config}).QuerySend(t)
 }
 
-// QueryReceiveid queries the receiveid edge of the Transport.
-func (t *Transport) QueryReceiveid() *ReceiveQuery {
-	return (&TransportClient{config: t.config}).QueryReceiveid(t)
+// QueryReceive queries the receive edge of the Transport.
+func (t *Transport) QueryReceive() *HospitalQuery {
+	return (&TransportClient{config: t.config}).QueryReceive(t)
 }
 
 // QueryUser queries the user edge of the Transport.
@@ -201,6 +224,12 @@ func (t *Transport) String() string {
 	var builder strings.Builder
 	builder.WriteString("Transport(")
 	builder.WriteString(fmt.Sprintf("id=%v", t.ID))
+	builder.WriteString(", symptom=")
+	builder.WriteString(t.Symptom)
+	builder.WriteString(", drugallergy=")
+	builder.WriteString(t.Drugallergy)
+	builder.WriteString(", note=")
+	builder.WriteString(t.Note)
 	builder.WriteByte(')')
 	return builder.String()
 }

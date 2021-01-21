@@ -7,11 +7,17 @@ const (
 	Label = "transport"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldSymptom holds the string denoting the symptom field in the database.
+	FieldSymptom = "symptom"
+	// FieldDrugallergy holds the string denoting the drugallergy field in the database.
+	FieldDrugallergy = "drugallergy"
+	// FieldNote holds the string denoting the note field in the database.
+	FieldNote = "note"
 
-	// EdgeSendid holds the string denoting the sendid edge name in mutations.
-	EdgeSendid = "sendid"
-	// EdgeReceiveid holds the string denoting the receiveid edge name in mutations.
-	EdgeReceiveid = "receiveid"
+	// EdgeSend holds the string denoting the send edge name in mutations.
+	EdgeSend = "send"
+	// EdgeReceive holds the string denoting the receive edge name in mutations.
+	EdgeReceive = "receive"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
 	// EdgeAmbulance holds the string denoting the ambulance edge name in mutations.
@@ -19,20 +25,20 @@ const (
 
 	// Table holds the table name of the transport in the database.
 	Table = "transports"
-	// SendidTable is the table the holds the sendid relation/edge.
-	SendidTable = "transports"
-	// SendidInverseTable is the table name for the Send entity.
-	// It exists in this package in order to avoid circular dependency with the "send" package.
-	SendidInverseTable = "sends"
-	// SendidColumn is the table column denoting the sendid relation/edge.
-	SendidColumn = "sendid"
-	// ReceiveidTable is the table the holds the receiveid relation/edge.
-	ReceiveidTable = "transports"
-	// ReceiveidInverseTable is the table name for the Receive entity.
-	// It exists in this package in order to avoid circular dependency with the "receive" package.
-	ReceiveidInverseTable = "receives"
-	// ReceiveidColumn is the table column denoting the receiveid relation/edge.
-	ReceiveidColumn = "receiveid"
+	// SendTable is the table the holds the send relation/edge.
+	SendTable = "transports"
+	// SendInverseTable is the table name for the Hospital entity.
+	// It exists in this package in order to avoid circular dependency with the "hospital" package.
+	SendInverseTable = "hospitals"
+	// SendColumn is the table column denoting the send relation/edge.
+	SendColumn = "send"
+	// ReceiveTable is the table the holds the receive relation/edge.
+	ReceiveTable = "transports"
+	// ReceiveInverseTable is the table name for the Hospital entity.
+	// It exists in this package in order to avoid circular dependency with the "hospital" package.
+	ReceiveInverseTable = "hospitals"
+	// ReceiveColumn is the table column denoting the receive relation/edge.
+	ReceiveColumn = "receive"
 	// UserTable is the table the holds the user relation/edge.
 	UserTable = "transports"
 	// UserInverseTable is the table name for the User entity.
@@ -52,12 +58,24 @@ const (
 // Columns holds all SQL columns for transport fields.
 var Columns = []string{
 	FieldID,
+	FieldSymptom,
+	FieldDrugallergy,
+	FieldNote,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the Transport type.
 var ForeignKeys = []string{
 	"ambulance",
-	"receiveid",
-	"sendid",
+	"receive",
+	"send",
 	"user",
 }
+
+var (
+	// SymptomValidator is a validator for the "symptom" field. It is called by the builders before save.
+	SymptomValidator func(string) error
+	// DrugallergyValidator is a validator for the "drugallergy" field. It is called by the builders before save.
+	DrugallergyValidator func(string) error
+	// NoteValidator is a validator for the "note" field. It is called by the builders before save.
+	NoteValidator func(string) error
+)

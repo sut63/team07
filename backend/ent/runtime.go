@@ -13,6 +13,7 @@ import (
 	"github.com/team07/app/ent/jobposition"
 	"github.com/team07/app/ent/repairing"
 	"github.com/team07/app/ent/schema"
+	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/urgent"
 	"github.com/team07/app/ent/user"
 )
@@ -79,6 +80,62 @@ func init() {
 	repairingDescRepairpart := repairingFields[0].Descriptor()
 	// repairing.RepairpartValidator is a validator for the "repairpart" field. It is called by the builders before save.
 	repairing.RepairpartValidator = repairingDescRepairpart.Validators[0].(func(string) error)
+	transportFields := schema.Transport{}.Fields()
+	_ = transportFields
+	// transportDescSymptom is the schema descriptor for symptom field.
+	transportDescSymptom := transportFields[0].Descriptor()
+	// transport.SymptomValidator is a validator for the "symptom" field. It is called by the builders before save.
+	transport.SymptomValidator = func() func(string) error {
+		validators := transportDescSymptom.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(symptom string) error {
+			for _, fn := range fns {
+				if err := fn(symptom); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// transportDescDrugallergy is the schema descriptor for drugallergy field.
+	transportDescDrugallergy := transportFields[1].Descriptor()
+	// transport.DrugallergyValidator is a validator for the "drugallergy" field. It is called by the builders before save.
+	transport.DrugallergyValidator = func() func(string) error {
+		validators := transportDescDrugallergy.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(drugallergy string) error {
+			for _, fn := range fns {
+				if err := fn(drugallergy); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// transportDescNote is the schema descriptor for note field.
+	transportDescNote := transportFields[2].Descriptor()
+	// transport.NoteValidator is a validator for the "note" field. It is called by the builders before save.
+	transport.NoteValidator = func() func(string) error {
+		validators := transportDescNote.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(note string) error {
+			for _, fn := range fns {
+				if err := fn(note); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	urgentFields := schema.Urgent{}.Fields()
 	_ = urgentFields
 	// urgentDescUrgent is the schema descriptor for urgent field.

@@ -9,8 +9,7 @@ import (
 	"github.com/team07/app/ent"
 	"github.com/team07/app/ent/transport"
 	"github.com/team07/app/ent/user"
-	"github.com/team07/app/ent/receive"
-	"github.com/team07/app/ent/send"
+	"github.com/team07/app/ent/hospital"
 	"github.com/team07/app/ent/ambulance"
 )
 
@@ -24,6 +23,9 @@ type Transport struct {
 	ReceiveID int
 	UserID int
 	AmbulanceID int
+	Symptom string
+	Drugallergy string
+	Note string
 }
 // CreateTransport handles POST requests for adding transport entities
 // @Summary Create transport
@@ -45,9 +47,9 @@ func (ctl *TransportController) CreateTransport(c *gin.Context) {
 		return
 	}
 
-	s, err := ctl.client.Send.
+	s, err := ctl.client.Hospital.
 		Query().
-		Where(send.IDEQ(int(obj.SendID))).
+		Where(hospital.IDEQ(int(obj.SendID))).
 		Only(context.Background())
 
 	if err != nil {
@@ -57,9 +59,9 @@ func (ctl *TransportController) CreateTransport(c *gin.Context) {
 		return
 	}
 
-	r, err := ctl.client.Receive.
+	r, err := ctl.client.Hospital.
 		Query().
-		Where(receive.IDEQ(int(obj.ReceiveID))).
+		Where(hospital.IDEQ(int(obj.ReceiveID))).
 		Only(context.Background())
 
 	if err != nil {
@@ -94,19 +96,28 @@ func (ctl *TransportController) CreateTransport(c *gin.Context) {
 
 	ts, err := ctl.client.Transport.
 		Create().
-		SetSendid(s).
-		SetReceiveid(r).
+		SetSend(s).
+		SetReceive(r).
+		SetDrugallergy(obj.Drugallergy).
+		SetNote(obj.Note).
+		SetSymptom(obj.Symptom).
 		SetUser(u).
 		SetAmbulance(ambulance).
 		Save(context.Background())
 	if err != nil {
+		
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"status": false,
+			"error": err,
+
 		})
 		return
 	}
 
-	c.JSON(200, ts)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data": ts,
+	})
 }
 
 // GetTransport handles GET requests to retrieve a transport entity
@@ -131,8 +142,8 @@ func (ctl *TransportController) GetTransport(c *gin.Context) {
 
 	ts, err := ctl.client.Transport.
 		Query().
-		WithSendid().
-		WithReceiveid().
+		WithSend().
+		WithReceive().
 		WithAmbulance().
 		WithUser().
 		Where(transport.IDEQ(int(id))).
@@ -159,8 +170,8 @@ func (ctl *TransportController) GetTransport(c *gin.Context) {
 func (ctl *TransportController) ListTransport(c *gin.Context) {
 	transports, err := ctl.client.Transport.
 		Query().
-		WithSendid().
-		WithReceiveid().
+		WithSend().
+		WithReceive().
 		WithAmbulance().
 		WithUser().
 		All(context.Background())

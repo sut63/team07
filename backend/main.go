@@ -111,12 +111,10 @@ type Repairings struct {
 type Repairing struct {
 	Repairpart string
 }
-type Sends struct {
-	Send []Sends
+type Hospitals struct {
+	Hospital []Hospitals
 }
-type Receives struct {
-	Receive []Receives
-}
+
 // @title SUT SA Example API
 // @version 1.0
 // @description This is a sample server for SUT SE 2563
@@ -184,8 +182,7 @@ func main() {
 	controllers.NewPurposeController(v1, client)
 	controllers.NewCarCheckInOutController(v1, client)
 	controllers.NewTransportController(v1, client)
-	controllers.NewSendController(v1, client)
-	controllers.NewReceiveController(v1, client)
+	controllers.NewHospitalController(v1, client)
 	controllers.NewRepairingController(v1, client)
 	controllers.NewCarRepairrecord(v1, client)
 
@@ -342,22 +339,15 @@ func main() {
 			SetCompany(class.company).
 			Save(context.Background())
 	}
-	// Set Send Data
-	Sends := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารี", "โรงพยาบาลนครราชสีมา", "โรงพยาบาลอัลฟ่า", "โรงพยาบาลก๋วยเตี๋ยวเป็ด"}
-	for _, sn := range Sends {
-		client.Send.
+	// Set Hospital Data
+	Hospitals := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารี", "โรงพยาบาลนครราชสีมา", "โรงพยาบาลอัลฟ่า", "โรงพยาบาลก๋วยเตี๋ยวเป็ด"}
+	for _, sn := range Hospitals {
+		client.Hospital.
 			Create().
-			SetSendname(sn).
+			SetHospital(sn).
 			Save(context.Background())
 	}
-	// Set Receive Data
-	Receives := []string{"โรงพยาบาลมหาวิทยาลัยสุรนารา", "โรงพยาบาลนครราชสีไป", "โรงพยาบาลอัลฟง", "โรงพยาบาลก๋วยเตี๋ยวน้ำตก"}
-	for _, rc := range Receives {
-		client.Receive.
-			Create().
-			SetReceivename(rc).
-			Save(context.Background())
-	}
+
 
 	// set Repairing Data
 	repairings := []string{"ช่วงล่าง", "ระบบเครื่องยนต์", "ระบบส่งกำลัง", "ไฟฟ้าเครื่องยนต์", "ไฟฟ้าตัวถัง"}

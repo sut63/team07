@@ -33,6 +33,9 @@ type Deliver func(*sql.Selector)
 // Distance is the predicate function for distance builders.
 type Distance func(*sql.Selector)
 
+// Hospital is the predicate function for hospital builders.
+type Hospital func(*sql.Selector)
+
 // InspectionResult is the predicate function for inspectionresult builders.
 type InspectionResult func(*sql.Selector)
 
@@ -45,14 +48,8 @@ type JobPosition func(*sql.Selector)
 // Purpose is the predicate function for purpose builders.
 type Purpose func(*sql.Selector)
 
-// Receive is the predicate function for receive builders.
-type Receive func(*sql.Selector)
-
 // Repairing is the predicate function for repairing builders.
 type Repairing func(*sql.Selector)
-
-// Send is the predicate function for send builders.
-type Send func(*sql.Selector)
 
 // Transport is the predicate function for transport builders.
 type Transport func(*sql.Selector)
