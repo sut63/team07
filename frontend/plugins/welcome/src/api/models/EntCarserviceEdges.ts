@@ -64,9 +64,9 @@ export function EntCarserviceEdgesFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'disid': !exists(json, 'disid') ? undefined : EntDistanceFromJSON(json['disid']),
-        'urgentid': !exists(json, 'urgentid') ? undefined : EntUrgentFromJSON(json['urgentid']),
-        'userid': !exists(json, 'userid') ? undefined : EntUserFromJSON(json['userid']),
+        'disid': !exists(json, 'Disid') ? undefined : EntDistanceFromJSON(json['Disid']),
+        'urgentid': !exists(json, 'Urgentid') ? undefined : EntUrgentFromJSON(json['Urgentid']),
+        'userid': !exists(json, 'Userid') ? undefined : EntUserFromJSON(json['Userid']),
     };
 }
 
@@ -84,3 +84,5 @@ export function EntCarserviceEdgesToJSON(value?: EntCarserviceEdges | null): any
         'userid': EntUserToJSON(value.userid),
     };
 }
+
+
