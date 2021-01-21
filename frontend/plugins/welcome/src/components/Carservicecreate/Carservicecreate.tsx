@@ -203,7 +203,7 @@ const handledatetimeChange = (event: any) => {
  };
 
  const validateCustomer = (val: string) => {
-   return val.match("^[ก-๙0-9a-zA-Z\\s]+$");
+   return val.match("^[ก-๙a-zA-Z\\s]+$");
  }
 
  const validateAge = (val: number) => {
