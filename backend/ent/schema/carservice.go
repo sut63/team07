@@ -26,14 +26,14 @@ func (Carservice) Fields() []ent.Field {
 		field.Int("age").Positive(),
 
 		field.String("location").Validate(func(s string) error {
-			match, _ := regexp.MatchString("^[ก-๙a-zA-Z-\\s]+$",s)
+			match, _ := regexp.MatchString("^[ก-๙0-9a-zA-Z-\\s]+$",s)
 			if !match {
 				return errors.New("รูปแบบไม่ถูกต้อง")
 			}
 			return nil
 		}),
 		field.String("information").Validate(func(s string) error {
-			match, _ := regexp.MatchString("^[ก-๙a-zA-Z-\\s]+$",s)
+			match, _ := regexp.MatchString("^[ก-๙0-9a-zA-Z-\\s]+$",s)
 			if !match {
 				return errors.New("รูปแบบไม่ถูกต้อง")
 			}
