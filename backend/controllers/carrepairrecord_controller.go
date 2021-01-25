@@ -26,6 +26,9 @@ type CarRepairrecord struct {
 	UserID			int
 	CarInspectionID	int
 	Datetime		string
+	Partrepair		string
+	Price			int
+	Techniciancomment string
 }
 
 // CreateCarRepairrecord handles POST requests for adding carrepairrecord entities
@@ -92,15 +95,22 @@ func (ctl *CarRepairrecordController) CreateCarRepairrecord(c *gin.Context) {
 		SetUser(u).
 		SetKeeper(r).
 		SetDatetime(times).
+		SetPartrepair(obj.Partrepair).
+		SetPrice(obj.Price).
+		SetTechniciancomment(obj.Techniciancomment).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{
-			"error": "saving failed",
+			"error": err,
+			"status": false,
 		})
 		return
 	}
 
-	c.JSON(200, cr)
+	c.JSON(200, gin.H{
+		"status": true,
+		"data": cr,
+	})
 }
 
 // GetCarRepairrecord handles GET requests to retrieve a carrepairrecord entity

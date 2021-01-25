@@ -29,6 +29,24 @@ func (crc *CarRepairrecordCreate) SetDatetime(t time.Time) *CarRepairrecordCreat
 	return crc
 }
 
+// SetPartrepair sets the partrepair field.
+func (crc *CarRepairrecordCreate) SetPartrepair(s string) *CarRepairrecordCreate {
+	crc.mutation.SetPartrepair(s)
+	return crc
+}
+
+// SetPrice sets the price field.
+func (crc *CarRepairrecordCreate) SetPrice(i int) *CarRepairrecordCreate {
+	crc.mutation.SetPrice(i)
+	return crc
+}
+
+// SetTechniciancomment sets the techniciancomment field.
+func (crc *CarRepairrecordCreate) SetTechniciancomment(s string) *CarRepairrecordCreate {
+	crc.mutation.SetTechniciancomment(s)
+	return crc
+}
+
 // SetKeeperID sets the keeper edge to Repairing by id.
 func (crc *CarRepairrecordCreate) SetKeeperID(id int) *CarRepairrecordCreate {
 	crc.mutation.SetKeeperID(id)
@@ -95,6 +113,30 @@ func (crc *CarRepairrecordCreate) Mutation() *CarRepairrecordMutation {
 func (crc *CarRepairrecordCreate) Save(ctx context.Context) (*CarRepairrecord, error) {
 	if _, ok := crc.mutation.Datetime(); !ok {
 		return nil, &ValidationError{Name: "datetime", err: errors.New("ent: missing required field \"datetime\"")}
+	}
+	if _, ok := crc.mutation.Partrepair(); !ok {
+		return nil, &ValidationError{Name: "partrepair", err: errors.New("ent: missing required field \"partrepair\"")}
+	}
+	if v, ok := crc.mutation.Partrepair(); ok {
+		if err := carrepairrecord.PartrepairValidator(v); err != nil {
+			return nil, &ValidationError{Name: "partrepair", err: fmt.Errorf("ent: validator failed for field \"partrepair\": %w", err)}
+		}
+	}
+	if _, ok := crc.mutation.Price(); !ok {
+		return nil, &ValidationError{Name: "price", err: errors.New("ent: missing required field \"price\"")}
+	}
+	if v, ok := crc.mutation.Price(); ok {
+		if err := carrepairrecord.PriceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "price", err: fmt.Errorf("ent: validator failed for field \"price\": %w", err)}
+		}
+	}
+	if _, ok := crc.mutation.Techniciancomment(); !ok {
+		return nil, &ValidationError{Name: "techniciancomment", err: errors.New("ent: missing required field \"techniciancomment\"")}
+	}
+	if v, ok := crc.mutation.Techniciancomment(); ok {
+		if err := carrepairrecord.TechniciancommentValidator(v); err != nil {
+			return nil, &ValidationError{Name: "techniciancomment", err: fmt.Errorf("ent: validator failed for field \"techniciancomment\": %w", err)}
+		}
 	}
 	var (
 		err  error
@@ -163,6 +205,30 @@ func (crc *CarRepairrecordCreate) createSpec() (*CarRepairrecord, *sqlgraph.Crea
 			Column: carrepairrecord.FieldDatetime,
 		})
 		cr.Datetime = value
+	}
+	if value, ok := crc.mutation.Partrepair(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carrepairrecord.FieldPartrepair,
+		})
+		cr.Partrepair = value
+	}
+	if value, ok := crc.mutation.Price(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carrepairrecord.FieldPrice,
+		})
+		cr.Price = value
+	}
+	if value, ok := crc.mutation.Techniciancomment(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carrepairrecord.FieldTechniciancomment,
+		})
+		cr.Techniciancomment = value
 	}
 	if nodes := crc.mutation.KeeperIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

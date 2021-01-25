@@ -9,6 +9,12 @@ const (
 	FieldID = "id"
 	// FieldDatetime holds the string denoting the datetime field in the database.
 	FieldDatetime = "datetime"
+	// FieldPartrepair holds the string denoting the partrepair field in the database.
+	FieldPartrepair = "partrepair"
+	// FieldPrice holds the string denoting the price field in the database.
+	FieldPrice = "price"
+	// FieldTechniciancomment holds the string denoting the techniciancomment field in the database.
+	FieldTechniciancomment = "techniciancomment"
 
 	// EdgeKeeper holds the string denoting the keeper edge name in mutations.
 	EdgeKeeper = "keeper"
@@ -46,6 +52,9 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldDatetime,
+	FieldPartrepair,
+	FieldPrice,
+	FieldTechniciancomment,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the CarRepairrecord type.
@@ -54,3 +63,12 @@ var ForeignKeys = []string{
 	"repairing_id",
 	"user_id",
 }
+
+var (
+	// PartrepairValidator is a validator for the "partrepair" field. It is called by the builders before save.
+	PartrepairValidator func(string) error
+	// PriceValidator is a validator for the "price" field. It is called by the builders before save.
+	PriceValidator func(int) error
+	// TechniciancommentValidator is a validator for the "techniciancomment" field. It is called by the builders before save.
+	TechniciancommentValidator func(string) error
+)

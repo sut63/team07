@@ -33,10 +33,28 @@ export interface ControllersCarRepairrecord {
     datetime?: string;
     /**
      * 
+     * @type {string}
+     * @memberof ControllersCarRepairrecord
+     */
+    partrepair?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersCarRepairrecord
+     */
+    price?: number;
+    /**
+     * 
      * @type {number}
      * @memberof ControllersCarRepairrecord
      */
     repairingID?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersCarRepairrecord
+     */
+    techniciancomment?: string;
     /**
      * 
      * @type {number}
@@ -57,7 +75,10 @@ export function ControllersCarRepairrecordFromJSONTyped(json: any, ignoreDiscrim
         
         'carInspectionID': !exists(json, 'carInspectionID') ? undefined : json['carInspectionID'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
+        'partrepair': !exists(json, 'partrepair') ? undefined : json['partrepair'],
+        'price': !exists(json, 'price') ? undefined : json['price'],
         'repairingID': !exists(json, 'repairingID') ? undefined : json['repairingID'],
+        'techniciancomment': !exists(json, 'techniciancomment') ? undefined : json['techniciancomment'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
     };
 }
@@ -73,7 +94,10 @@ export function ControllersCarRepairrecordToJSON(value?: ControllersCarRepairrec
         
         'carInspectionID': value.carInspectionID,
         'datetime': value.datetime,
+        'partrepair': value.partrepair,
+        'price': value.price,
         'repairingID': value.repairingID,
+        'techniciancomment': value.techniciancomment,
         'userID': value.userID,
     };
 }

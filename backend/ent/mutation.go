@@ -2724,6 +2724,10 @@ type CarRepairrecordMutation struct {
 	typ                  string
 	id                   *int
 	datetime             *time.Time
+	partrepair           *string
+	price                *int
+	addprice             *int
+	techniciancomment    *string
 	clearedFields        map[string]struct{}
 	keeper               *int
 	clearedkeeper        bool
@@ -2849,6 +2853,137 @@ func (m *CarRepairrecordMutation) OldDatetime(ctx context.Context) (v time.Time,
 // ResetDatetime reset all changes of the "datetime" field.
 func (m *CarRepairrecordMutation) ResetDatetime() {
 	m.datetime = nil
+}
+
+// SetPartrepair sets the partrepair field.
+func (m *CarRepairrecordMutation) SetPartrepair(s string) {
+	m.partrepair = &s
+}
+
+// Partrepair returns the partrepair value in the mutation.
+func (m *CarRepairrecordMutation) Partrepair() (r string, exists bool) {
+	v := m.partrepair
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPartrepair returns the old partrepair value of the CarRepairrecord.
+// If the CarRepairrecord object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarRepairrecordMutation) OldPartrepair(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPartrepair is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPartrepair requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPartrepair: %w", err)
+	}
+	return oldValue.Partrepair, nil
+}
+
+// ResetPartrepair reset all changes of the "partrepair" field.
+func (m *CarRepairrecordMutation) ResetPartrepair() {
+	m.partrepair = nil
+}
+
+// SetPrice sets the price field.
+func (m *CarRepairrecordMutation) SetPrice(i int) {
+	m.price = &i
+	m.addprice = nil
+}
+
+// Price returns the price value in the mutation.
+func (m *CarRepairrecordMutation) Price() (r int, exists bool) {
+	v := m.price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrice returns the old price value of the CarRepairrecord.
+// If the CarRepairrecord object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarRepairrecordMutation) OldPrice(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldPrice is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldPrice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrice: %w", err)
+	}
+	return oldValue.Price, nil
+}
+
+// AddPrice adds i to price.
+func (m *CarRepairrecordMutation) AddPrice(i int) {
+	if m.addprice != nil {
+		*m.addprice += i
+	} else {
+		m.addprice = &i
+	}
+}
+
+// AddedPrice returns the value that was added to the price field in this mutation.
+func (m *CarRepairrecordMutation) AddedPrice() (r int, exists bool) {
+	v := m.addprice
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPrice reset all changes of the "price" field.
+func (m *CarRepairrecordMutation) ResetPrice() {
+	m.price = nil
+	m.addprice = nil
+}
+
+// SetTechniciancomment sets the techniciancomment field.
+func (m *CarRepairrecordMutation) SetTechniciancomment(s string) {
+	m.techniciancomment = &s
+}
+
+// Techniciancomment returns the techniciancomment value in the mutation.
+func (m *CarRepairrecordMutation) Techniciancomment() (r string, exists bool) {
+	v := m.techniciancomment
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTechniciancomment returns the old techniciancomment value of the CarRepairrecord.
+// If the CarRepairrecord object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *CarRepairrecordMutation) OldTechniciancomment(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldTechniciancomment is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldTechniciancomment requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTechniciancomment: %w", err)
+	}
+	return oldValue.Techniciancomment, nil
+}
+
+// ResetTechniciancomment reset all changes of the "techniciancomment" field.
+func (m *CarRepairrecordMutation) ResetTechniciancomment() {
+	m.techniciancomment = nil
 }
 
 // SetKeeperID sets the keeper edge to Repairing by id.
@@ -2982,9 +3117,18 @@ func (m *CarRepairrecordMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *CarRepairrecordMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 4)
 	if m.datetime != nil {
 		fields = append(fields, carrepairrecord.FieldDatetime)
+	}
+	if m.partrepair != nil {
+		fields = append(fields, carrepairrecord.FieldPartrepair)
+	}
+	if m.price != nil {
+		fields = append(fields, carrepairrecord.FieldPrice)
+	}
+	if m.techniciancomment != nil {
+		fields = append(fields, carrepairrecord.FieldTechniciancomment)
 	}
 	return fields
 }
@@ -2996,6 +3140,12 @@ func (m *CarRepairrecordMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case carrepairrecord.FieldDatetime:
 		return m.Datetime()
+	case carrepairrecord.FieldPartrepair:
+		return m.Partrepair()
+	case carrepairrecord.FieldPrice:
+		return m.Price()
+	case carrepairrecord.FieldTechniciancomment:
+		return m.Techniciancomment()
 	}
 	return nil, false
 }
@@ -3007,6 +3157,12 @@ func (m *CarRepairrecordMutation) OldField(ctx context.Context, name string) (en
 	switch name {
 	case carrepairrecord.FieldDatetime:
 		return m.OldDatetime(ctx)
+	case carrepairrecord.FieldPartrepair:
+		return m.OldPartrepair(ctx)
+	case carrepairrecord.FieldPrice:
+		return m.OldPrice(ctx)
+	case carrepairrecord.FieldTechniciancomment:
+		return m.OldTechniciancomment(ctx)
 	}
 	return nil, fmt.Errorf("unknown CarRepairrecord field %s", name)
 }
@@ -3023,6 +3179,27 @@ func (m *CarRepairrecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDatetime(v)
 		return nil
+	case carrepairrecord.FieldPartrepair:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPartrepair(v)
+		return nil
+	case carrepairrecord.FieldPrice:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrice(v)
+		return nil
+	case carrepairrecord.FieldTechniciancomment:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTechniciancomment(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CarRepairrecord field %s", name)
 }
@@ -3030,13 +3207,21 @@ func (m *CarRepairrecordMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *CarRepairrecordMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addprice != nil {
+		fields = append(fields, carrepairrecord.FieldPrice)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *CarRepairrecordMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case carrepairrecord.FieldPrice:
+		return m.AddedPrice()
+	}
 	return nil, false
 }
 
@@ -3045,6 +3230,13 @@ func (m *CarRepairrecordMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *CarRepairrecordMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case carrepairrecord.FieldPrice:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPrice(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CarRepairrecord numeric field %s", name)
 }
@@ -3075,6 +3267,15 @@ func (m *CarRepairrecordMutation) ResetField(name string) error {
 	switch name {
 	case carrepairrecord.FieldDatetime:
 		m.ResetDatetime()
+		return nil
+	case carrepairrecord.FieldPartrepair:
+		m.ResetPartrepair()
+		return nil
+	case carrepairrecord.FieldPrice:
+		m.ResetPrice()
+		return nil
+	case carrepairrecord.FieldTechniciancomment:
+		m.ResetTechniciancomment()
 		return nil
 	}
 	return fmt.Errorf("unknown CarRepairrecord field %s", name)
