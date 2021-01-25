@@ -6,6 +6,7 @@ import (
 	"github.com/facebookincubator/ent/schema/edge"
 	"errors"
 	"regexp"
+	
 )
 
 // CarRepairrecord holds the schema definition for the CarRepairrecord entity.
