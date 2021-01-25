@@ -2111,8 +2111,17 @@ var doc = `{
                 "datetime": {
                     "type": "string"
                 },
+                "partrepair": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
                 "repairingID": {
                     "type": "integer"
+                },
+                "techniciancomment": {
+                    "type": "string"
                 },
                 "userID": {
                     "type": "integer"
@@ -2384,6 +2393,18 @@ var doc = `{
                 "id": {
                     "description": "ID of the ent.",
                     "type": "integer"
+                },
+                "partrepair": {
+                    "description": "Partrepair holds the value of the \"partrepair\" field.",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "Price holds the value of the \"price\" field.",
+                    "type": "integer"
+                },
+                "techniciancomment": {
+                    "description": "Techniciancomment holds the value of the \"techniciancomment\" field.",
+                    "type": "string"
                 }
             }
         },

@@ -100,6 +100,27 @@ func Datetime(v time.Time) predicate.CarRepairrecord {
 	})
 }
 
+// Partrepair applies equality check predicate on the "partrepair" field. It's identical to PartrepairEQ.
+func Partrepair(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPartrepair), v))
+	})
+}
+
+// Price applies equality check predicate on the "price" field. It's identical to PriceEQ.
+func Price(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPrice), v))
+	})
+}
+
+// Techniciancomment applies equality check predicate on the "techniciancomment" field. It's identical to TechniciancommentEQ.
+func Techniciancomment(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldTechniciancomment), v))
+	})
+}
+
 // DatetimeEQ applies the EQ predicate on the "datetime" field.
 func DatetimeEQ(v time.Time) predicate.CarRepairrecord {
 	return predicate.CarRepairrecord(func(s *sql.Selector) {
@@ -173,6 +194,304 @@ func DatetimeLT(v time.Time) predicate.CarRepairrecord {
 func DatetimeLTE(v time.Time) predicate.CarRepairrecord {
 	return predicate.CarRepairrecord(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldDatetime), v))
+	})
+}
+
+// PartrepairEQ applies the EQ predicate on the "partrepair" field.
+func PartrepairEQ(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairNEQ applies the NEQ predicate on the "partrepair" field.
+func PartrepairNEQ(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairIn applies the In predicate on the "partrepair" field.
+func PartrepairIn(vs ...string) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPartrepair), v...))
+	})
+}
+
+// PartrepairNotIn applies the NotIn predicate on the "partrepair" field.
+func PartrepairNotIn(vs ...string) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPartrepair), v...))
+	})
+}
+
+// PartrepairGT applies the GT predicate on the "partrepair" field.
+func PartrepairGT(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairGTE applies the GTE predicate on the "partrepair" field.
+func PartrepairGTE(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairLT applies the LT predicate on the "partrepair" field.
+func PartrepairLT(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairLTE applies the LTE predicate on the "partrepair" field.
+func PartrepairLTE(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairContains applies the Contains predicate on the "partrepair" field.
+func PartrepairContains(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairHasPrefix applies the HasPrefix predicate on the "partrepair" field.
+func PartrepairHasPrefix(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairHasSuffix applies the HasSuffix predicate on the "partrepair" field.
+func PartrepairHasSuffix(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairEqualFold applies the EqualFold predicate on the "partrepair" field.
+func PartrepairEqualFold(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldPartrepair), v))
+	})
+}
+
+// PartrepairContainsFold applies the ContainsFold predicate on the "partrepair" field.
+func PartrepairContainsFold(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldPartrepair), v))
+	})
+}
+
+// PriceEQ applies the EQ predicate on the "price" field.
+func PriceEQ(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPrice), v))
+	})
+}
+
+// PriceNEQ applies the NEQ predicate on the "price" field.
+func PriceNEQ(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPrice), v))
+	})
+}
+
+// PriceIn applies the In predicate on the "price" field.
+func PriceIn(vs ...int) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldPrice), v...))
+	})
+}
+
+// PriceNotIn applies the NotIn predicate on the "price" field.
+func PriceNotIn(vs ...int) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldPrice), v...))
+	})
+}
+
+// PriceGT applies the GT predicate on the "price" field.
+func PriceGT(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPrice), v))
+	})
+}
+
+// PriceGTE applies the GTE predicate on the "price" field.
+func PriceGTE(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPrice), v))
+	})
+}
+
+// PriceLT applies the LT predicate on the "price" field.
+func PriceLT(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPrice), v))
+	})
+}
+
+// PriceLTE applies the LTE predicate on the "price" field.
+func PriceLTE(v int) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPrice), v))
+	})
+}
+
+// TechniciancommentEQ applies the EQ predicate on the "techniciancomment" field.
+func TechniciancommentEQ(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentNEQ applies the NEQ predicate on the "techniciancomment" field.
+func TechniciancommentNEQ(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentIn applies the In predicate on the "techniciancomment" field.
+func TechniciancommentIn(vs ...string) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldTechniciancomment), v...))
+	})
+}
+
+// TechniciancommentNotIn applies the NotIn predicate on the "techniciancomment" field.
+func TechniciancommentNotIn(vs ...string) predicate.CarRepairrecord {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldTechniciancomment), v...))
+	})
+}
+
+// TechniciancommentGT applies the GT predicate on the "techniciancomment" field.
+func TechniciancommentGT(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentGTE applies the GTE predicate on the "techniciancomment" field.
+func TechniciancommentGTE(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentLT applies the LT predicate on the "techniciancomment" field.
+func TechniciancommentLT(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentLTE applies the LTE predicate on the "techniciancomment" field.
+func TechniciancommentLTE(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentContains applies the Contains predicate on the "techniciancomment" field.
+func TechniciancommentContains(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentHasPrefix applies the HasPrefix predicate on the "techniciancomment" field.
+func TechniciancommentHasPrefix(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentHasSuffix applies the HasSuffix predicate on the "techniciancomment" field.
+func TechniciancommentHasSuffix(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentEqualFold applies the EqualFold predicate on the "techniciancomment" field.
+func TechniciancommentEqualFold(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldTechniciancomment), v))
+	})
+}
+
+// TechniciancommentContainsFold applies the ContainsFold predicate on the "techniciancomment" field.
+func TechniciancommentContainsFold(v string) predicate.CarRepairrecord {
+	return predicate.CarRepairrecord(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldTechniciancomment), v))
 	})
 }
 

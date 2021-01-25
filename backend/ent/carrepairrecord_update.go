@@ -37,6 +37,31 @@ func (cru *CarRepairrecordUpdate) SetDatetime(t time.Time) *CarRepairrecordUpdat
 	return cru
 }
 
+// SetPartrepair sets the partrepair field.
+func (cru *CarRepairrecordUpdate) SetPartrepair(s string) *CarRepairrecordUpdate {
+	cru.mutation.SetPartrepair(s)
+	return cru
+}
+
+// SetPrice sets the price field.
+func (cru *CarRepairrecordUpdate) SetPrice(i int) *CarRepairrecordUpdate {
+	cru.mutation.ResetPrice()
+	cru.mutation.SetPrice(i)
+	return cru
+}
+
+// AddPrice adds i to price.
+func (cru *CarRepairrecordUpdate) AddPrice(i int) *CarRepairrecordUpdate {
+	cru.mutation.AddPrice(i)
+	return cru
+}
+
+// SetTechniciancomment sets the techniciancomment field.
+func (cru *CarRepairrecordUpdate) SetTechniciancomment(s string) *CarRepairrecordUpdate {
+	cru.mutation.SetTechniciancomment(s)
+	return cru
+}
+
 // SetKeeperID sets the keeper edge to Repairing by id.
 func (cru *CarRepairrecordUpdate) SetKeeperID(id int) *CarRepairrecordUpdate {
 	cru.mutation.SetKeeperID(id)
@@ -119,6 +144,21 @@ func (cru *CarRepairrecordUpdate) ClearCarinspection() *CarRepairrecordUpdate {
 
 // Save executes the query and returns the number of rows/vertices matched by this operation.
 func (cru *CarRepairrecordUpdate) Save(ctx context.Context) (int, error) {
+	if v, ok := cru.mutation.Partrepair(); ok {
+		if err := carrepairrecord.PartrepairValidator(v); err != nil {
+			return 0, &ValidationError{Name: "partrepair", err: fmt.Errorf("ent: validator failed for field \"partrepair\": %w", err)}
+		}
+	}
+	if v, ok := cru.mutation.Price(); ok {
+		if err := carrepairrecord.PriceValidator(v); err != nil {
+			return 0, &ValidationError{Name: "price", err: fmt.Errorf("ent: validator failed for field \"price\": %w", err)}
+		}
+	}
+	if v, ok := cru.mutation.Techniciancomment(); ok {
+		if err := carrepairrecord.TechniciancommentValidator(v); err != nil {
+			return 0, &ValidationError{Name: "techniciancomment", err: fmt.Errorf("ent: validator failed for field \"techniciancomment\": %w", err)}
+		}
+	}
 
 	var (
 		err      error
@@ -192,6 +232,34 @@ func (cru *CarRepairrecordUpdate) sqlSave(ctx context.Context) (n int, err error
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: carrepairrecord.FieldDatetime,
+		})
+	}
+	if value, ok := cru.mutation.Partrepair(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carrepairrecord.FieldPartrepair,
+		})
+	}
+	if value, ok := cru.mutation.Price(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carrepairrecord.FieldPrice,
+		})
+	}
+	if value, ok := cru.mutation.AddedPrice(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carrepairrecord.FieldPrice,
+		})
+	}
+	if value, ok := cru.mutation.Techniciancomment(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carrepairrecord.FieldTechniciancomment,
 		})
 	}
 	if cru.mutation.KeeperCleared() {
@@ -323,6 +391,31 @@ func (cruo *CarRepairrecordUpdateOne) SetDatetime(t time.Time) *CarRepairrecordU
 	return cruo
 }
 
+// SetPartrepair sets the partrepair field.
+func (cruo *CarRepairrecordUpdateOne) SetPartrepair(s string) *CarRepairrecordUpdateOne {
+	cruo.mutation.SetPartrepair(s)
+	return cruo
+}
+
+// SetPrice sets the price field.
+func (cruo *CarRepairrecordUpdateOne) SetPrice(i int) *CarRepairrecordUpdateOne {
+	cruo.mutation.ResetPrice()
+	cruo.mutation.SetPrice(i)
+	return cruo
+}
+
+// AddPrice adds i to price.
+func (cruo *CarRepairrecordUpdateOne) AddPrice(i int) *CarRepairrecordUpdateOne {
+	cruo.mutation.AddPrice(i)
+	return cruo
+}
+
+// SetTechniciancomment sets the techniciancomment field.
+func (cruo *CarRepairrecordUpdateOne) SetTechniciancomment(s string) *CarRepairrecordUpdateOne {
+	cruo.mutation.SetTechniciancomment(s)
+	return cruo
+}
+
 // SetKeeperID sets the keeper edge to Repairing by id.
 func (cruo *CarRepairrecordUpdateOne) SetKeeperID(id int) *CarRepairrecordUpdateOne {
 	cruo.mutation.SetKeeperID(id)
@@ -405,6 +498,21 @@ func (cruo *CarRepairrecordUpdateOne) ClearCarinspection() *CarRepairrecordUpdat
 
 // Save executes the query and returns the updated entity.
 func (cruo *CarRepairrecordUpdateOne) Save(ctx context.Context) (*CarRepairrecord, error) {
+	if v, ok := cruo.mutation.Partrepair(); ok {
+		if err := carrepairrecord.PartrepairValidator(v); err != nil {
+			return nil, &ValidationError{Name: "partrepair", err: fmt.Errorf("ent: validator failed for field \"partrepair\": %w", err)}
+		}
+	}
+	if v, ok := cruo.mutation.Price(); ok {
+		if err := carrepairrecord.PriceValidator(v); err != nil {
+			return nil, &ValidationError{Name: "price", err: fmt.Errorf("ent: validator failed for field \"price\": %w", err)}
+		}
+	}
+	if v, ok := cruo.mutation.Techniciancomment(); ok {
+		if err := carrepairrecord.TechniciancommentValidator(v); err != nil {
+			return nil, &ValidationError{Name: "techniciancomment", err: fmt.Errorf("ent: validator failed for field \"techniciancomment\": %w", err)}
+		}
+	}
 
 	var (
 		err  error
@@ -476,6 +584,34 @@ func (cruo *CarRepairrecordUpdateOne) sqlSave(ctx context.Context) (cr *CarRepai
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: carrepairrecord.FieldDatetime,
+		})
+	}
+	if value, ok := cruo.mutation.Partrepair(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carrepairrecord.FieldPartrepair,
+		})
+	}
+	if value, ok := cruo.mutation.Price(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carrepairrecord.FieldPrice,
+		})
+	}
+	if value, ok := cruo.mutation.AddedPrice(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: carrepairrecord.FieldPrice,
+		})
+	}
+	if value, ok := cruo.mutation.Techniciancomment(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: carrepairrecord.FieldTechniciancomment,
 		})
 	}
 	if cruo.mutation.KeeperCleared() {

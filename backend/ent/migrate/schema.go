@@ -143,6 +143,9 @@ var (
 	CarRepairrecordsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "datetime", Type: field.TypeTime},
+		{Name: "partrepair", Type: field.TypeString},
+		{Name: "price", Type: field.TypeInt},
+		{Name: "techniciancomment", Type: field.TypeString},
 		{Name: "carinspection_id", Type: field.TypeInt, Nullable: true},
 		{Name: "repairing_id", Type: field.TypeInt, Nullable: true},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true},
@@ -155,21 +158,21 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:  "car_repairrecords_car_inspections_carrepairrecords",
-				Columns: []*schema.Column{CarRepairrecordsColumns[2]},
+				Columns: []*schema.Column{CarRepairrecordsColumns[5]},
 
 				RefColumns: []*schema.Column{CarInspectionsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "car_repairrecords_repairings_repairs",
-				Columns: []*schema.Column{CarRepairrecordsColumns[3]},
+				Columns: []*schema.Column{CarRepairrecordsColumns[6]},
 
 				RefColumns: []*schema.Column{RepairingsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:  "car_repairrecords_users_carrepairrecords",
-				Columns: []*schema.Column{CarRepairrecordsColumns[4]},
+				Columns: []*schema.Column{CarRepairrecordsColumns[7]},
 
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

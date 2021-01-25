@@ -7,8 +7,12 @@ import (
 
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carcheckinout"
+<<<<<<< Updated upstream
 	"github.com/team07/app/ent/carinspection"
 	"github.com/team07/app/ent/carservice"
+=======
+	"github.com/team07/app/ent/carrepairrecord"
+>>>>>>> Stashed changes
 	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
@@ -83,6 +87,7 @@ func init() {
 	carcheckinoutDescCheckIn := carcheckinoutFields[4].Descriptor()
 	// carcheckinout.DefaultCheckIn holds the default value on creation for the checkIn field.
 	carcheckinout.DefaultCheckIn = carcheckinoutDescCheckIn.Default.(func() time.Time)
+<<<<<<< Updated upstream
 	carinspectionFields := schema.CarInspection{}.Fields()
 	_ = carinspectionFields
 	// carinspectionDescWheelCenter is the schema descriptor for wheel_center field.
@@ -129,6 +134,22 @@ func init() {
 	carserviceDescInformation := carserviceFields[3].Descriptor()
 	// carservice.InformationValidator is a validator for the "information" field. It is called by the builders before save.
 	carservice.InformationValidator = carserviceDescInformation.Validators[0].(func(string) error)
+=======
+	carrepairrecordFields := schema.CarRepairrecord{}.Fields()
+	_ = carrepairrecordFields
+	// carrepairrecordDescPartrepair is the schema descriptor for partrepair field.
+	carrepairrecordDescPartrepair := carrepairrecordFields[1].Descriptor()
+	// carrepairrecord.PartrepairValidator is a validator for the "partrepair" field. It is called by the builders before save.
+	carrepairrecord.PartrepairValidator = carrepairrecordDescPartrepair.Validators[0].(func(string) error)
+	// carrepairrecordDescPrice is the schema descriptor for price field.
+	carrepairrecordDescPrice := carrepairrecordFields[2].Descriptor()
+	// carrepairrecord.PriceValidator is a validator for the "price" field. It is called by the builders before save.
+	carrepairrecord.PriceValidator = carrepairrecordDescPrice.Validators[0].(func(int) error)
+	// carrepairrecordDescTechniciancomment is the schema descriptor for techniciancomment field.
+	carrepairrecordDescTechniciancomment := carrepairrecordFields[3].Descriptor()
+	// carrepairrecord.TechniciancommentValidator is a validator for the "techniciancomment" field. It is called by the builders before save.
+	carrepairrecord.TechniciancommentValidator = carrepairrecordDescTechniciancomment.Validators[0].(func(string) error)
+>>>>>>> Stashed changes
 	distanceFields := schema.Distance{}.Fields()
 	_ = distanceFields
 	// distanceDescDistance is the schema descriptor for Distance field.

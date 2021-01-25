@@ -44,6 +44,24 @@ export interface EntCarRepairrecord {
      * @memberof EntCarRepairrecord
      */
     id?: number;
+    /**
+     * Partrepair holds the value of the "partrepair" field.
+     * @type {string}
+     * @memberof EntCarRepairrecord
+     */
+    partrepair?: string;
+    /**
+     * Price holds the value of the "price" field.
+     * @type {number}
+     * @memberof EntCarRepairrecord
+     */
+    price?: number;
+    /**
+     * Techniciancomment holds the value of the "techniciancomment" field.
+     * @type {string}
+     * @memberof EntCarRepairrecord
+     */
+    techniciancomment?: string;
 }
 
 export function EntCarRepairrecordFromJSON(json: any): EntCarRepairrecord {
@@ -59,6 +77,9 @@ export function EntCarRepairrecordFromJSONTyped(json: any, ignoreDiscriminator: 
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'edges': !exists(json, 'edges') ? undefined : EntCarRepairrecordEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
+        'partrepair': !exists(json, 'partrepair') ? undefined : json['partrepair'],
+        'price': !exists(json, 'price') ? undefined : json['price'],
+        'techniciancomment': !exists(json, 'techniciancomment') ? undefined : json['techniciancomment'],
     };
 }
 
@@ -74,6 +95,9 @@ export function EntCarRepairrecordToJSON(value?: EntCarRepairrecord | null): any
         'datetime': value.datetime,
         'edges': EntCarRepairrecordEdgesToJSON(value.edges),
         'id': value.id,
+        'partrepair': value.partrepair,
+        'price': value.price,
+        'techniciancomment': value.techniciancomment,
     };
 }
 

@@ -24,9 +24,9 @@ import Typography from '@material-ui/core/Typography';
 import { EntCarInspection } from '../../api/models/EntCarInspection';
 import { EntUser } from '../../api/models/EntUser';
 import { EntRepairing } from '../../api/models/EntRepairing';
-///import { EntCarInspectionEdges } from '../../api';
-///import ComponentsTable from '../listambulance';
 import ComponentsTable from '../CarrepairrecordTable';
+import { colors } from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,13 +62,22 @@ export default function CarInspectionPage() {
     const api = new DefaultApi();
 
     const [status, setStatus] = useState(false);
+    const [errormessage, setErrormessage] = useState(String);
+    const [alerttype, setAlertType] = useState(String);
     const [alert, setAlert] = useState(true);
+    const [partrepairerror, setPartrepairerror] = React.useState('');
+    const [priceerror, setPriceerror] = React.useState('');
+    const [techniciancommenterror, setTechniciancommenterror] = React.useState('');
+
     const [users, setUsers] = useState<EntUser[]>([]);
     const [carinspections, setCarinspections] = useState<EntCarInspection[]>([]);
     const [repairings, setRepairings] = useState<EntRepairing[]>([]);
 
     const [loading, setLoading] = useState(true);
     const [datetime, setDatetime] = useState(String);
+    const [partrepairdata, setPartrepair] = useState(String);
+    const [pricedata, setPrice] = useState(Number);
+    const [techniciancommentdata, setTechniciancomment] = useState(String);
 
     const [repairingid, setRepairing] = useState(Number);
     const [carinspectionid, setCarinspection] = useState(Number);
@@ -95,7 +104,7 @@ export default function CarInspectionPage() {
             setUsers(us);
         };
         getUsers();
-
+        
         const checkJobPosition = async () => {
             const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
             setLoading(false);
@@ -110,8 +119,20 @@ export default function CarInspectionPage() {
             }
           }
         checkJobPosition();
-        
+
         }, [loading]);
+
+    const validatePartrepair = (val: string) => {
+            return val.match("^[ก-๙a-zA-Z-\\s]+$");
+    }
+    
+    const validatePrice = (val: number) => {
+            return val > 0 ? true:false 
+    }
+    
+    const validateTechniciancomment = (val: string) => {
+            return val.match("^[ก-๙0-9a-zA-Z-\\s]+$")||val.length==0;
+    }
 
     console.log(userid)
     const CarinspectionhandleChange = (event: React.ChangeEvent<{ value: unknown}>) => {
@@ -130,29 +151,88 @@ export default function CarInspectionPage() {
         setDatetime(event.target.value as string);
     };
 
+    const PartrepairhandleChange = (event: React.ChangeEvent<{ value: any }>) => {
+        const { value } = event.target;
+        const validateValue = value
+        checkPattern('partrepair', validateValue)
+        setPartrepair(event.target.value as string);
+      };
+
+    const PricehandleChange = (event: React.ChangeEvent<{ value: any }>) => {
+        const { value } = event.target;
+        const validateValue = value
+        checkPattern('price', validateValue)
+        setPrice(event.target.value as number);
+      };
+
+    const TechniciancommenthandleChange = (event: React.ChangeEvent<{ value: any }>) => {
+        const { value } = event.target;
+        const validateValue = value
+        checkPattern('techniciancomment', validateValue)
+        setTechniciancomment(event.target.value as string);
+      };
+
+    const checkPattern  = (id: string, value:string) => {
+        console.log(value);
+        switch(id) {
+          case 'partrepair':
+            validatePartrepair(value) ? setPartrepairerror('') : setPartrepairerror('หมายเหตุไม่ควรใส่ตัวอักษรพิเศษและตัวเลขถ้าไม่มีให้ใส่ -');
+            return;
+          case 'price':
+            validatePrice(Number(value)) ? setPriceerror('') : setPriceerror('กรุณากรอกราคาของการซ่อมให้ถูกต้อง');
+          return;
+          case 'techniciancomment':
+            validateTechniciancomment(value) ? setTechniciancommenterror('') : setTechniciancommenterror('คอมเมนท์ไม่ควรใส่ตัวอักษรพิเศษถ้าไม่มีให้ใส่ -');
+          return;
+            default:
+              return;
+        }
+      }
+
     const CreateCarrepairrecord = async () => {
-        if ((repairingid != null) && (repairingid != 0) && (carinspectionid != null) && (carinspectionid != 0) && (userid != null) && (userid != 0) && (datetime != "") && (datetime != null)) {
         const carrepairrecord = {
             carInspectionID : carinspectionid,
             repairingID : repairingid,
             userID : userid,
-            datetime : datetime + ":00+07:00"
+            datetime : datetime + ":00+07:00",
+            partrepair : partrepairdata,
+            price : Number(pricedata),
+            techniciancomment : techniciancommentdata,
         };
         console.log(carrepairrecord);
-        const res: any = await api.createCarrepairrecord({ carrepairrecord: carrepairrecord});
+        const apiUrl = 'http://localhost:8080/api/v1/carrepairrecords';
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(carrepairrecord),
+        };
+
+        console.log(carrepairrecord);
+
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === true) {
+                    setErrormessage("บันทึกข้อมูลสำเร็จ");
+                    setAlertType("success");
+
+                }
+                else {
+                    ErrorCaseCheck(data.error.Name);
+                    setAlertType("error");
+                }
+            });
         setStatus(true);
-        if(res.id != ''){
-            setAlert(true);
-            window.location.reload(false);
-            }
-        }else{
-            setAlert(false);
-            setStatus(true);
-        }
-        const timer = setTimeout(() => {
-            setStatus(false);
-        }, 1000);
+        console.log(carrepairrecord);
     };
+
+    const ErrorCaseCheck = (casename: string) => {
+        if (casename == "partrepair") { setErrormessage("กรุณากรอกหมายเหตุที่ซ่อมด้วยถ้าไม่มีให้ใส่ -");setPartrepairerror('หมายเหตุไม่ควรใส่ตัวอักษรพิเศษและตัวเลขถ้าไม่มีให้ใส่ -'); }
+        else if (casename == "price") { setErrormessage("กรุณากรอกราคาของการซ่อมให้ถูกต้อง"); }
+        else if (casename == "techniciancomment") { setErrormessage("คอมเมนท์ไม่ควรใส่ตัวอักษรพิเศษถ้าไม่มีให้ใส่ -"); }
+        else { setErrormessage("บันทึกไม่สำเร็จ"); }
+      }
 
     return (
         <Page theme={pageTheme.home}>
@@ -163,15 +243,11 @@ export default function CarInspectionPage() {
                 <ContentHeader title="ลงข้อมูลซ่อมบำรุง">
                     {status ? (
                         <div>
-                            {alert ? (
-                                <Alert severity="success">
-                                    บันทึกสำเร็จ
+                            {alerttype != "" ? (
+                                <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
+                                    {errormessage}
                                 </Alert>
-                            ) : (
-                                <Alert severity="warning" style={{marginTop: 20}}>
-                                    กรุณากรอกข้อมูลอีกครั้ง
-                                </Alert>
-                            )}
+                            ) : null}
                         </div>
                     ) : null}
                 </ContentHeader>
@@ -226,17 +302,32 @@ export default function CarInspectionPage() {
                                 variant="outlined"
                             >
                                 <TextField
-                                    id="user"
-                                    label="เจ้าหน้าที่"
+                                    id="pathrepair"
+                                    error={partrepairerror ? true:false}
+                                    label="หมายเหตุส่วนที่ซ่อม"
                                     type="string"
                                     size="medium"
-                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name} (${item.email})`)}
-                                    style={{ width: 400 }}
-                                />
+                                    value={partrepairdata}
+                                    helperText={partrepairerror}
+                                    onChange={PartrepairhandleChange}
+                                    style={{ width: 400 }}></TextField>
                             </FormControl>
+                            
                         </div>
 
                         <div>
+                            <FormControl>
+                            <TextField
+                                    id="price"
+                                    error={priceerror ? true:false}
+                                    label="เงินที่ใช้สำหรับการซ่อม"
+                                    type="string"
+                                    size="medium"
+                                    value={pricedata}
+                                    helperText={priceerror}
+                                    onChange={PricehandleChange}
+                                    style={{ width: 200 }}></TextField>
+                            </FormControl>
                             <FormControl
                                 className={classes.margin}
                                 variant="outlined"
@@ -251,6 +342,41 @@ export default function CarInspectionPage() {
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
+                                    style={{ width: 200 }}
+                                />
+                            </FormControl>
+                        </div>
+                        
+                        <div>
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                                <TextField
+                                    id="technicianerror"
+                                    error={techniciancommenterror ? true:false}
+                                    label="ความคิดเห็นเพิ่มเติมจากช่าง"
+                                    type="string"
+                                    size="medium"
+                                    value={techniciancommentdata}
+                                    helperText={techniciancommenterror}
+                                    onChange={TechniciancommenthandleChange}
+                                    style={{ width: 400 }}></TextField>
+                            </FormControl>
+                            
+                        </div>
+
+                        <div>
+                            <FormControl
+                                className={classes.margin}
+                                variant="outlined"
+                            >
+                                <TextField
+                                    id="user"
+                                    label="เจ้าหน้าที่"
+                                    type="string"
+                                    size="medium"
+                                    value={users.filter((filter:EntUser) => filter.id == userid).map((item:EntUser) => `${item.name} (${item.email})`)}
                                     style={{ width: 400 }}
                                 />
                             </FormControl>
