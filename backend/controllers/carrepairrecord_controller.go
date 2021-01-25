@@ -63,7 +63,6 @@ func (ctl *CarRepairrecordController) CreateCarRepairrecord(c *gin.Context) {
 		return
 	}
 
-	
 	u, err := ctl.client.User.
 		Query().
 		Where(user.IDEQ(int(obj.UserID))).
