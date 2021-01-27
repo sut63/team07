@@ -51,12 +51,8 @@ export default function ComponentsTable() {
            <TableCell align="center">เลขที่</TableCell>
            <TableCell align="center">เจ้าหน้าที่</TableCell>
            <TableCell align="center">รถพยาบาล</TableCell>
-           <TableCell align="center">ศูนย์ล้อ (เมตร)</TableCell>
-           <TableCell align="center">ระดับเสียง (เดซิเบล)</TableCell>
-           <TableCell align="center">ควันดำ (เปอร์เซ็นต์)</TableCell>
            <TableCell align="center">ผลการตรวจสภาพรถ</TableCell>
            <TableCell align="center">วัน/เดือน/ปี เวลา</TableCell>
-           <TableCell align="center">หมายเหตุ</TableCell>
            <TableCell align="center">จัดการข้อมูล</TableCell>
          </TableRow>
        </TableHead>
@@ -66,12 +62,8 @@ export default function ComponentsTable() {
              <TableCell align="center">{item.id}</TableCell>
              <TableCell align="center">{item.edges.user.name}</TableCell>
              <TableCell align="center">{item.edges.ambulance.carregistration}</TableCell>
-             <TableCell align="center">{item.wheelCenter}</TableCell>
-             <TableCell align="center">{item.soundLevel}</TableCell>
-             <TableCell align="center">{item.blacksmoke}</TableCell>
              <TableCell align="center">{item.edges.inspectionresult.resultName}</TableCell>
              <TableCell align="center">{moment(item.datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
-             <TableCell align="center">{item.note}</TableCell>
              <TableCell align="center">
                <Button
                  onClick={() => {
