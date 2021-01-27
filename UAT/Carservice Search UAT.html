@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Search</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">search success</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/Carservicesearch<datalist><option>http://localhost:3000/Carservicesearch</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=customer<datalist><option>id=customer</option><option>//input[@id='customer']</option><option>//div[@id='root']/div/div[2]/article/div[3]/div/input</option><option>//input</option><option>css=#customer</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=customer<datalist><option>id=customer</option><option>//input[@id='customer']</option><option>//div[@id='root']/div/div[2]/article/div[3]/div/input</option><option>//input</option><option>css=#customer</option></datalist></td><td>test A</td>
+</tr>
+<tr><td>click</td><td>xpath=(//button[@type='button'])[2]<datalist><option>xpath=(//button[@type='button'])[2]</option><option>//div[@id='root']/div/div[2]/article/div[4]/button</option><option>//div[4]/button</option><option>css=div.makeStyles-margin-422 &gt; button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div[2]/div/div<datalist><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div</option><option>//div[2]/div/div</option><option>css=div.MuiPaper-root.MuiAlert-root.MuiAlert-standardSuccess.MuiPaper-elevation0</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div[2]/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div/div[2]</option><option>//div[2]/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>พบข้อมูลที่ค้นหา</td>
+</tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">search fail</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/Carservicesearch<datalist><option>http://localhost:3000/Carservicesearch</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>id=customer<datalist><option>id=customer</option><option>//input[@id='customer']</option><option>//div[@id='root']/div/div[2]/article/div[3]/div/input</option><option>//input</option><option>css=#customer</option></datalist></td><td></td>
+</tr>
+<tr><td>type</td><td>id=customer<datalist><option>id=customer</option><option>//input[@id='customer']</option><option>//div[@id='root']/div/div[2]/article/div[3]/div/input</option><option>//input</option><option>css=#customer</option></datalist></td><td>Test B</td>
+</tr>
+<tr><td>click</td><td>xpath=(//button[@type='button'])[2]<datalist><option>xpath=(//button[@type='button'])[2]</option><option>//div[@id='root']/div/div[2]/article/div[4]/button</option><option>//div[4]/button</option><option>css=div.makeStyles-margin-25 &gt; button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary</option></datalist></td><td></td>
+</tr>
+<tr><td>click</td><td>//div[@id='root']/div/div[2]/article/div/div[2]/div/div<datalist><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div</option><option>//div[2]/div/div</option><option>css=div.MuiPaper-root.MuiAlert-root.MuiAlert-standardError.MuiPaper-elevation0</option></datalist></td><td></td>
+</tr>
+<tr><td>assertText</td><td>//div[@id='root']/div/div[2]/article/div/div[2]/div/div/div[2]<datalist><option>//div[@id='root']/div/div[2]/article/div/div[2]/div/div/div[2]</option><option>//div[2]/div/div/div[2]</option><option>css=div.MuiAlert-message</option></datalist></td><td>ไม่พบข้อมูลที่ค้นหา</td>
+</tr>
+</tbody></table>
+</body>
+</html>
