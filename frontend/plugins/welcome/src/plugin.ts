@@ -4,7 +4,6 @@ import Ambulance from './components/Ambulancecreate';
 import Ambulancetable from './components/listambulance';
 import Mainambulance from './components/Ambulancemain';
 import CarInspectionPage from './components/CarInspectionPage';
-//import Carservicetable from './components/Carservicetable';
 import Carservicecreate from './components/Carservicecreate';
 import Carservicemain from './components/Carservicemain';
 import Carcheckinout from './components/Carcheckinoutmain'
@@ -15,6 +14,7 @@ import LoginPage from './components/LoginPage'
 import MainDriverPage from './components/Maindriver'
 import CreateCarrepairrecord from './components/Carrepairrecordmain'
 import Carrepairrecordtable from './components/CarrepairrecordTable';
+import Carservicesearch from './components/Carservicesearch';
 
 export const plugin = createPlugin({
   id: 'welcome',
@@ -33,5 +33,6 @@ export const plugin = createPlugin({
     router.registerRoute('/carrepairmain', CreateCarrepairrecord);
     router.registerRoute('/Carrepairrecordtable', Carrepairrecordtable);
     router.registerRoute('/transporttable', TransportTable);
+    router.registerRoute('/carservicesearch', Carservicesearch);
   },
 });

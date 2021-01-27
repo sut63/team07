@@ -11,7 +11,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-import { Alert } from '@material-ui/lab';
+//import { Alert } from '@material-ui/lab';
 import { DefaultApi } from '../../api/apis';
 //import Autocomplete from '@material-ui/lab/Autocomplete';
 //import Typography from '@material-ui/core/Typography';
@@ -24,7 +24,7 @@ import { EntUser } from '../../api/models/EntUser';
 import { EntUrgent } from '../../api/models/EntUrgent';
 import { EntDistance } from '../../api/models/EntDistance';
 import Swal from 'sweetalert2';
-import SaveIcon from '@material-ui/icons/Save'; 
+//import SaveIcon from '@material-ui/icons/Save'; 
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -207,7 +207,7 @@ const handledatetimeChange = (event: any) => {
  }
 
  const validateAge = (val: number) => {
-  return val >=1 && val <=999 ? true:false
+  return val <= 999 && val >=1  ? true:false
 }
 
 const validateLocation = (val: string) => {
@@ -225,7 +225,7 @@ const checkpattern = (id: string, value:string) => {
       validateCustomer(value) ? setCustomerError('') : setCustomerError('กรุณากรอกชื่อ-นามสกุลให้ถูกต้อง');
       return;
     case 'age':
-      validateAge(Number(value)) ? setAgeError('') : setAgeError('กรุณาอายุให้ถูกต้อง');
+      validateAge(Number(value)) ? setAgeError('') : setAgeError('กรุณาระบุอายุให้ถูกต้อง');
       return;
       case 'location':
       validateLocation(value) ? setLocationError('') : setLocationError('กรุณากรอกที่อยู่ให้ถูกต้อง');
@@ -314,7 +314,7 @@ const checkpattern = (id: string, value:string) => {
         setErrorMessege("error","ระบุสถานที่ให้ถูกต้อง");
         return;
         case 'information':
-          setErrorMessege("error","ระบุข้อมูลให้ถูกต้อง");
+        setErrorMessege("error","ระบุข้อมูลให้ถูกต้อง");
         return;
       default:
         setErrorMessege("error","บันทึกข้อมูลไม่สำเร็จ");

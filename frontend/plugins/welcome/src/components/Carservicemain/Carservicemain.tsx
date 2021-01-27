@@ -21,9 +21,15 @@ const WelcomePage: FC<{}> = () => {
      <Header
        title={`ท่านกำลังใช้งาน ${profile.givenName || ':)'}`}
        subtitle="สวัสดีครับท่านสมาชิกชมรมคนชอบรถพยาบาล"
-     ></Header>
+     ><Link component={RouterLink} to="/Carservicesearch">
+     <Button variant="contained" color="primary" >
+       ไปยังหน้าค้นหา
+     </Button>
+   </Link>
+   </Header>
      <Content>
        <ContentHeader title="ตารางบันทึกการใช้รถพยาบาล">
+       
        <Link component={RouterLink} to="/Carservicecreate">
            <Button variant="contained" color="primary" >
              เพิ่มบันทึก

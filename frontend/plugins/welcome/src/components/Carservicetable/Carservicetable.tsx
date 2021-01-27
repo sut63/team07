@@ -48,8 +48,8 @@ export default function ComponentsTable() {
            <TableCell align="center">อายุผู้ใช้บริการ</TableCell>
            <TableCell align="center">ที่อยู่</TableCell>
            <TableCell align="center">การใช้บริการ</TableCell>
-           <TableCell align="center">ระยะทาง</TableCell>
            <TableCell align="center">ความเร่งด่วน</TableCell>
+           <TableCell align="center">ระยะทาง</TableCell>
            <TableCell align="center">ผู้บันทึก</TableCell>
            <TableCell align="center">วัน-เวลา</TableCell>
          </TableRow>
