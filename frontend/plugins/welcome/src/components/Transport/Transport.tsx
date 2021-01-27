@@ -14,7 +14,7 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import { Alert } from '@material-ui/lab';
 import { DefaultApi } from '../../api/apis';
-
+import ComponentsTable from '../TransportTable';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -103,7 +103,7 @@ export default function Create() {
 
 
     const getAmbulances = async () => {
-      const am = await api.listAmbulance({ limit: 10, offset: 0 });
+      const am = await api.listAmbulance();
       setLoading(false);
       setAmbulances(am);
     };
@@ -250,9 +250,9 @@ export default function Create() {
               ) : null}
             </div>
           ) : null}
-          <Link component={RouterLink} to="/TransportTable">
+          <Link component={RouterLink} to="/SearchTransport">
             <Button variant="contained" color="primary" style={{ backgroundColor: "#21b6ae" }}>
-              ตารางการส่งตัวผู้ป่วย
+              ค้นหาการส่งตัวผู้ป่วย
             </Button>
           </Link>
         </ContentHeader>
@@ -260,34 +260,14 @@ export default function Create() {
         <div className={classes.root}>
           <form noValidate autoComplete="off">
 
+            
+
             <div>
               <FormControl
                 className={classes.margin}
                 variant="outlined"
               >
                 <div className={classes.paper}><strong>โรงพยาบาลต้นทาง</strong></div>
-                <InputLabel id="receive-label"></InputLabel>
-                <Select
-                  labelId="receive-label"
-                  id="receive"
-                  value={receiveid}
-                  onChange={ReceivehandleChange}
-                  style={{ width: 400 }}
-                >
-                  {receives.map((item: EntHospital) => (
-                    <MenuItem value={item.id}>{item.hospital}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
-
-            <div>
-              <FormControl
-                className={classes.margin}
-                variant="outlined"
-              >
-                <div className={classes.paper}><strong>โรงพยาบาลที่จะปลายทาง</strong></div>
                 <InputLabel id="send-label"></InputLabel>
                 <Select
                   labelId="send-label"
@@ -297,6 +277,26 @@ export default function Create() {
                   style={{ width: 400 }}
                 >
                   {sends.map((item: EntHospital) => (
+                    <MenuItem value={item.id}>{item.hospital}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div>
+              <FormControl
+                className={classes.margin}
+                variant="outlined"
+              >
+                <div className={classes.paper}><strong>โรงพยาบาลปลายทาง</strong></div>
+                <InputLabel id="receive-label"></InputLabel>
+                <Select
+                  labelId="receive-label"
+                  id="receive"
+                  value={receiveid}
+                  onChange={ReceivehandleChange}
+                  style={{ width: 400 }}
+                >
+                  {receives.map((item: EntHospital) => (
                     <MenuItem value={item.id}>{item.hospital}</MenuItem>
                   ))}
                 </Select>
@@ -417,7 +417,7 @@ export default function Create() {
             </div>
           </form>
         </div>
-
+        <ComponentsTable></ComponentsTable>
       </Content>
     </Page>
   );

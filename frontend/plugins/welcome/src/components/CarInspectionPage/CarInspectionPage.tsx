@@ -87,7 +87,7 @@ export default function CarInspectionPage() {
 
     useEffect(() => {
         const getAmbulances = async () => {
-            const res = await api.listAmbulance({ limit: 10, offset: 0 });
+            const res = await api.listAmbulance();
             setLoading(false);
             setAmbulances(res);
         };

@@ -10,6 +10,7 @@ import Carcheckinout from './components/Carcheckinoutmain'
 import CreateCarcheckinout from './components/Carcheckinoutcreate'
 import CreateTransport from './components/Transport'
 import TransportTable from './components/TransportTable'
+import SearchTransport from './components/SearchTransport'
 import LoginPage from './components/LoginPage'
 import MainDriverPage from './components/Maindriver'
 import CreateCarrepairrecord from './components/Carrepairrecordmain'
@@ -45,6 +46,9 @@ export const plugin = createPlugin({
 //Transport Link    
     router.registerRoute('/createtransport', CreateTransport);
     router.registerRoute('/transporttable', TransportTable);
-    
+    router.registerRoute('/searchtransport',SearchTransport);
+    router.registerRoute('/carservicesearch', Carservicesearch);
+    router.registerRoute('/searchambulance', Searchambulance);
+    router.registerRoute('/carinspectionsearch', CarInspectionSearchPage);
   },
 });

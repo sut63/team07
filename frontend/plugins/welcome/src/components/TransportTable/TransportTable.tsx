@@ -52,19 +52,6 @@ export default function ComponentsTable() {
     };
  return (
 
-  <Page theme={pageTheme.service} >
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<Header
- style={HeaderCustom}
- title={`${profile.givenName}`}
- subtitle=""
->
-<Link component={RouterLink} to="/CreateTransport">
-            <Button variant="contained" color="primary" style={{backgroundColor: "#9834AE"}}>
-              กลับสู่หน้าส่งตัวผู้ป่วย
-            </Button>
-          </Link>
-</Header>
    <TableContainer component={Paper}>
      <Table className={classes.table} aria-label="simple table">
        <TableHead>
@@ -108,6 +95,5 @@ export default function ComponentsTable() {
        </TableBody>
      </Table>
    </TableContainer>
-   </Page>
  );
 }
