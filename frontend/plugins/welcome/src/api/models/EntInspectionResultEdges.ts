@@ -84,5 +84,3 @@ export function EntInspectionResultEdgesToJSON(value?: EntInspectionResultEdges 
         'statusof': value.statusof === undefined ? undefined : ((value.statusof as Array<any>).map(EntAmbulanceToJSON)),
     };
 }
-
-

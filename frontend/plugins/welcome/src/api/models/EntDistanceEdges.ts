@@ -60,5 +60,3 @@ export function EntDistanceEdgesToJSON(value?: EntDistanceEdges | null): any {
         'disid': value.disid === undefined ? undefined : ((value.disid as Array<any>).map(EntCarserviceToJSON)),
     };
 }
-
-

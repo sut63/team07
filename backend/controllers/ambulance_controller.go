@@ -171,8 +171,6 @@ func (ctl *AmbulanceController) GetAmbulance(c *gin.Context) {
 // @Description list ambulance entities
 // @ID list-ambulance
 // @Produce json
-// @Param limit  query int false "Limit"
-// @Param offset query int false "Offset"
 // @Success 200 {array} ent.Ambulance
 // @Failure 400 {object} gin.H
 // @Failure 500 {object} gin.H

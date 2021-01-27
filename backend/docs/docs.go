@@ -41,20 +41,6 @@ var doc = `{
                 ],
                 "summary": "List ambulance entities",
                 "operationId": "list-ambulance",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -925,16 +911,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get carservice by ID",
+                "description": "get urgent by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a carservice entity by ID",
-                "operationId": "get-carservice",
+                "summary": "Get a urgent entity by ID",
+                "operationId": "get-urgent",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Carservice ID",
+                        "description": "Urgent ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -944,7 +930,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Carservice"
+                            "$ref": "#/definitions/ent.Urgent"
                         }
                     },
                     "400": {

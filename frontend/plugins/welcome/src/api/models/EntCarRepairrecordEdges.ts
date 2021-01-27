@@ -84,5 +84,3 @@ export function EntCarRepairrecordEdgesToJSON(value?: EntCarRepairrecordEdges | 
         'user': EntUserToJSON(value.user),
     };
 }
-
-

@@ -689,15 +689,6 @@ paths:
     get:
       description: list ambulance entities
       operationId: list-ambulance
-      parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Offset
-        in: query
-        name: offset
-        type: integer
       produces:
       - application/json
       responses:
@@ -1310,10 +1301,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get carservice by ID
-      operationId: get-carservice
+      description: get urgent by ID
+      operationId: get-urgent
       parameters:
-      - description: Carservice ID
+      - description: Urgent ID
         in: path
         name: id
         required: true
@@ -1324,7 +1315,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Carservice'
+            $ref: '#/definitions/ent.Urgent'
         "400":
           description: Bad Request
           schema:
@@ -1337,7 +1328,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a carservice entity by ID
+      summary: Get a urgent entity by ID
   /distances:
     get:
       description: list distance entities

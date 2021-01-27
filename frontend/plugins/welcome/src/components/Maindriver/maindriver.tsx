@@ -105,6 +105,9 @@ const [loading, setLoading] = useState(true);
         <Link component={RouterLink} to="/CreateTransport">
         <Button><h1>ส่งผู้ป่วย</h1></Button>
         </Link>
+        <Link component={RouterLink} to="/Searchambulance">
+        <Button><h1>ค้นหารถพยาบาล</h1></Button>
+        </Link>
       </ButtonGroup>
       <br></br>
       <FormControl
