@@ -27,6 +27,10 @@ import { Image2Base64Function } from '../../image/Image2';
 
 import ComponanceTable from '../CarInspectionTable';
 
+import SearchIcon from '@material-ui/icons/Search';
+import SaveIcon from '@material-ui/icons/Save';
+import CachedIcon from '@material-ui/icons/Cached';
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -152,40 +156,40 @@ export default function CarInspectionPage() {
     };
 
     const CreateCarInspection = async () => {
-        if( datetime != "" ){
-        const carinspection = {
-            blackSmoke: Number(blacksmokedata),
-            soundLevel: Number(soundleveldata),
-            wheelCenter: Number(wheelcenterdata),
-            inspectionResultID: inspectionresultid,
-            ambulanceID: ambulanceid,
-            userID: userid,
-            datetime: datetime + ":00+07:00",
-            note: note
+        if (datetime != "") {
+            const carinspection = {
+                blackSmoke: Number(blacksmokedata),
+                soundLevel: Number(soundleveldata),
+                wheelCenter: Number(wheelcenterdata),
+                inspectionResultID: inspectionresultid,
+                ambulanceID: ambulanceid,
+                userID: userid,
+                datetime: datetime + ":00+07:00",
+                note: note
 
 
-        };
-        console.log(carinspection);
-        const apiUrl = 'http://localhost:8080/api/v1/carinspections';
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(carinspection),
-        };
-        fetch(apiUrl, requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.status === true) {
-                    setErrorMessege("บันทึกข้อมูลสำเร็จ");
-                    setAlertType("success");
+            };
+            console.log(carinspection);
+            const apiUrl = 'http://localhost:8080/api/v1/carinspections';
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(carinspection),
+            };
+            fetch(apiUrl, requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.status === true) {
+                        setErrorMessege("บันทึกข้อมูลสำเร็จ");
+                        setAlertType("success");
 
-                }
-                else {
-                    ErrorCaseCheck(data.error.Name);
-                    setAlertType("error");
-                }
-            });
+                    }
+                    else {
+                        ErrorCaseCheck(data.error.Name);
+                        setAlertType("error");
+                    }
+                });
         }
         else {
             ErrorCaseCheck("เวลาไม่ได้ใส่");
@@ -205,15 +209,15 @@ export default function CarInspectionPage() {
         else { setErrorMessege("บันทึกไม่สำเร็จ"); }
     }
 
-    const ValidateWheelCenter = (value : number) => {
+    const ValidateWheelCenter = (value: number) => {
         value > 0 ? setErrorWheelCenter(true) : setErrorWheelCenter(false);
     }
 
-    const ValidateSoundLevel = (value : number) => {
+    const ValidateSoundLevel = (value: number) => {
         value > 0 ? setErrorSoundLevel(true) : setErrorSoundLevel(false);
     }
 
-    const ValidateBlackSmoke = (value : number) => {
+    const ValidateBlackSmoke = (value: number) => {
         value > 0 && value <= 100 ? setErrorBlackSmoke(true) : setErrorBlackSmoke(false);
     }
 
@@ -222,7 +226,22 @@ export default function CarInspectionPage() {
             <Header
                 title={`${profile.givenName}`}
             //subtitle="Some quick intro and links."
-            ></Header>
+            >
+                <div className={classes.margin}>
+                    <Button
+                        onClick={() => {
+                            history.pushState("", "", "./carinspectionsearch");
+                            window.location.reload(false);
+                        }}
+                        variant="contained"
+                        color="primary"
+                        style={{ width: 300, backgroundColor: "#34eb77", color: "#000000", fontSize: 18 }}
+                        startIcon={<SearchIcon />}
+                    >
+                        <b>ค้นหาผลการตรวจสภาพรถ</b>
+                    </Button>
+                </div>
+            </Header>
             <Content>
                 <ContentHeader title="เพิ่มข้อมูลการตรวจสภาพรถ">
                     {status ? (
@@ -297,8 +316,8 @@ export default function CarInspectionPage() {
                                     type="number"
                                     size="medium"
                                     value={wheelcenterdata}
-                                    helperText={errorWheelCenter? "" : "ค่า ศูนย์ล้อ ต้องมากกว่า 0"}
-                                    error={errorWheelCenter? false : true}
+                                    helperText={errorWheelCenter ? "" : "ค่า ศูนย์ล้อ ต้องมากกว่า 0"}
+                                    error={errorWheelCenter ? false : true}
                                     onChange={WheelCenterhandleChange}
                                     style={{ width: 100 }}
                                 />
@@ -314,8 +333,8 @@ export default function CarInspectionPage() {
                                     type="number"
                                     size="medium"
                                     value={soundleveldata}
-                                    helperText={errorSoundLevel? "" : "ค่า ระดับเสียง ต้องมากกว่า 0"}
-                                    error={errorSoundLevel? false : true}
+                                    helperText={errorSoundLevel ? "" : "ค่า ระดับเสียง ต้องมากกว่า 0"}
+                                    error={errorSoundLevel ? false : true}
                                     onChange={SoundLevelhandleChange}
                                     style={{ width: 100 }}
                                 />
@@ -331,8 +350,8 @@ export default function CarInspectionPage() {
                                     type="number"
                                     size="medium"
                                     value={blacksmokedata}
-                                    helperText={errorBlackSmoke? "" : "ค่า ควันดำ ต้องมากกว่า 0 และไม่เกิน100"}
-                                    error={errorBlackSmoke? false : true}
+                                    helperText={errorBlackSmoke ? "" : "ค่า ควันดำ ต้องมากกว่า 0 และไม่เกิน100"}
+                                    error={errorBlackSmoke ? false : true}
                                     onChange={BlackSmokehandleChange}
                                     style={{ width: 100 }}
                                 />
@@ -403,6 +422,8 @@ export default function CarInspectionPage() {
                                 }}
                                 variant="contained"
                                 color="primary"
+                                style={{ width: 180, backgroundColor: "#365391" }}
+                                startIcon={<SaveIcon />}
                             >
                                 ยืนยัน
                             </Button>
@@ -412,7 +433,8 @@ export default function CarInspectionPage() {
                                 }}
                                 variant="contained"
                                 color="primary"
-                                style={{marginLeft: 20}}
+                                style={{ marginLeft: 40, width: 180, backgroundColor: "#1c0996" }}
+                                startIcon={<CachedIcon />}
                             >
                                 รีเฟรช
                             </Button>
