@@ -29,7 +29,6 @@ import { EntDistance } from '../../api/models/EntDistance';
 import { EntUrgent } from '../../api/models/EntUrgent'; */
 //import { EntUser } from '../../api/models/EntUser'; 
 import { EntCarservice } from '../../api/models/EntCarservice';
-import { EntUser } from '../../api/models/EntUser';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +60,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 /* const WelcomePage: FC<{}> = () => {
   const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
-
  */
 const check = {
   customercheck : true
@@ -70,22 +68,21 @@ const check = {
 export default function Searchtable() {
   const classes = useStyles();
   const api = new DefaultApi();
-  const [users, setUsers] = useState<EntUser[]>([]);
   const [carservices, setCarservices] = useState<EntCarservice[]>([]);
   const [loading, setLoading] = useState(true);
   const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
   const [status, setStatus] = useState(false);
   const [alerttype, setAlertType] = useState(String);
   const [errormessege, setErrorMessege] = useState(String);
+  const [users, setUsers] = useState<EntUser[]>([]);
+  const [userid, setUser] = useState(Number);
   /* const [urgents, setUrgents] = useState<EntUrgent[]>([]);
   const [distances, setDistances] = useState<EntDistance[]>([]);
   const [users, setUsers] = useState<EntUser[]>([]);
-
   const [disid, setDistance] = useState(Number);
   const [urgentid, setUrgent] = useState(Number);
   const [userid, setUser] = useState(Number); */
   const [carservicesearch, setCarserviceSearch] = useState(String);
-  const [userid, setUser] = useState(Number);
 
   //const [customersearch, setCustomerSearch] = useState(String);
 
@@ -103,37 +100,34 @@ export default function Searchtable() {
       setUsers(res);
     };
     getUsers();
-
     const getUrgents = async () => {
       const res = await api.listUrgent({ offset: 0 });
       setLoading(false);
       setUrgents(res);
     };
     getUrgents();
-
     const getDistances = async () => {
       const res = await api.listDistance({ offset: 0 });
       setLoading(false);
       setDistances(res);
     };
     getDistances(); */
+    const checkJobPosition = async () => {
+      const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+      setLoading(false);
+      if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์" ) {
+        localStorage.setItem("userdata",JSON.stringify(null));
+        localStorage.setItem("jobpositiondata",JSON.stringify(null));
+        history.pushState("","","./");
+        window.location.reload(false);        
+      }
+      else{
+          setUser(Number(localStorage.getItem("userdata")))
+      }
+    }
+  checkJobPosition();
   }, [loading]);
 
-
-  const checkJobPosition = async () => {
-    const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
-    setLoading(false);
-    if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์") {
-        localStorage.setItem("userdata", JSON.stringify(null));
-        localStorage.setItem("jobpositiondata", JSON.stringify(null));
-        history.pushState("", "", "./");
-        window.location.reload(false);
-    }
-    else {
-        setUser(Number(localStorage.getItem("userdata")))
-    }
-}
-checkJobPosition();
 
 
   const SearchCarservice = async () => {
@@ -175,7 +169,6 @@ checkJobPosition();
       return res;
     }
   }
-
   const DistanceSearch = (res: any) => {
     const data = res.filter((filter: EntCarservice) => filter?.edges?.disid?.id == disid)
     console.log(data.length)
@@ -194,7 +187,6 @@ checkJobPosition();
   /* const handleUrgentchange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setUrgent(event.target.value as number);
   };
-
   const handleDistancechange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setDistance(event.target.value as number);
   }; */
