@@ -18,6 +18,7 @@ import Carrepairrecordtable from './components/CarrepairrecordTable';
 import Carservicesearch from './components/Carservicesearch';
 import Searchambulance from './components/Searchambulance';
 import CarInspectionSearchPage from './components/CarInspectionSearchPage';
+import CarrepairrecordSearch from './components/Carrepairrecordsearch';
 
 export const plugin = createPlugin({
   id: 'welcome',
@@ -29,6 +30,7 @@ export const plugin = createPlugin({
 //Carrepair Link
     router.registerRoute('/carrepairmain', CreateCarrepairrecord);
     router.registerRoute('/Carrepairrecordtable', Carrepairrecordtable);
+    router.registerRoute('/carrepairrecordsearch', CarrepairrecordSearch);
 //Carservice Link
     router.registerRoute('/carservicemain', Carservicemain);
     router.registerRoute('/carservicecreate', Carservicecreate);

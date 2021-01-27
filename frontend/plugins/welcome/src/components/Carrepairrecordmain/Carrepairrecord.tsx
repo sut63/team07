@@ -28,6 +28,10 @@ import ComponentsTable from '../CarrepairrecordTable';
 import { colors } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 
+import SearchIcon from '@material-ui/icons/Search';
+import SaveIcon from '@material-ui/icons/Save';
+import CachedIcon from '@material-ui/icons/Cached';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -237,7 +241,20 @@ export default function CarInspectionPage() {
     return (
         <Page theme={pageTheme.home}>
             <Header title={`${profile.givenName}`}>
-                
+            <div className={classes.margin}>
+                    <Button
+                        onClick={() => {
+                            history.pushState("", "", "/carrepairrecordsearch");
+                            window.location.reload(false);
+                        }}
+                        variant="contained"
+                        color="primary"
+                        style={{ width: 300, backgroundColor: "#34eb77", color: "#000000", fontSize: 18 }}
+                        startIcon={<SearchIcon />}
+                    >
+                        <b>ค้นหาบันทึกซ่อมบำรุง</b>
+                    </Button>
+                </div>
             </Header>
             <Content>
                 <ContentHeader title="ลงข้อมูลซ่อมบำรุง">
