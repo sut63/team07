@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import * as React from 'react';
+import {
+  Content,
+  ContentHeader,
+} from '@backstage/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,17 +16,31 @@ import Button from '@material-ui/core/Button';
 import { DefaultApi } from '../../api/apis';
 import { EntCarCheckInOut } from '../../api/models/EntCarCheckInOut';
 import moment from 'moment';
+import TextField from '@material-ui/core/TextField';
+import { Alert } from '@material-ui/lab';
+import SearchIcon from "@material-ui/icons/Search";
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 const useStyles = makeStyles({
  table: {
    minWidth: 1500,
  },
+ formControl: {
+  width: 400,
+},
+textField: {
+  width: '25ch',
+},
 });
 export default function ComponentsTable() {
  
  const classes = useStyles();
  const api = new DefaultApi();
+
+ const [status, setStatus] = useState(false);
  const [loading, setLoading] = useState(true);
+ const [alert, setAlert] = useState(true);
+ const [search, setSearch] = useState(String);
  const [carcheckinout, setCarcheckinout] = useState<EntCarCheckInOut[]>([]);
 
  useEffect(() => {
@@ -34,19 +52,85 @@ export default function ComponentsTable() {
    getCarcheckinouts();
  }, [loading]);
 
+ const SearchhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  setSearch(event.target.value as string);
+};
+
+const getSearch = async () => {
+  const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
+  const carsearch = Searchcarinout(res);
+  setCarcheckinout(carsearch);
+}
+
+const Searchcarinout = (res : any) =>{
+  const findsearch = res.filter((filter: EntCarCheckInOut) => filter.edges?.ambulance?.carregistration?.includes(search))
+  console.log(findsearch)
+  setStatus(true);
+  if (findsearch.length != 0){
+    setAlert(true);
+    return findsearch
+  }
+  else{
+    setAlert(false);
+    return res
+  }
+};
+
  const deleteCarcheckinouts = async (id: number) => {
     await api.deleteCarcheckinout({ id: id });
    setLoading(true);
  };
 
  return (
+  <Content>
+  <ContentHeader title="ค้นหารถเข้าออก">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  {status ? (
+     <div>
+       {alert ? (
+         <Alert severity="success" onClose={() => {setStatus(false)}}>
+          พบข้อมูล
+         </Alert>
+       ) : (
+         <Alert severity="error" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
+           ไม่พบข้อมูล
+         </Alert>
+       )}
+     </div>
+   ) : null}
+  </ContentHeader>   
+            {/* <div className={classes.margin}> */}
+              <div>
+            <TextField
+                 id="search"
+                 label = "ค้นหาทะเบียนรถ"
+                //  variant="standard"
+                //  color="secondary"
+                 type="string"
+                 value={search}
+                 onChange={SearchhandleChange}
+                 className={classes.textField}
+                 style={{ width: 200 }}
+                />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Button
+              startIcon={<SearchIcon/>}
+                onClick={() => {
+                  getSearch();
+                }}
+                variant="contained"
+                color="primary"
+              >
+                ค้นหา
+             </Button>
+             </div>
+          {/* </div> */}
+          <br></br><br></br>
    
-
    <TableContainer component={Paper}>
      <Table className={classes.table} aria-label="simple table">
        <TableHead>
          <TableRow>
-           <TableCell align="center">ลำดับ</TableCell>
            <TableCell align="center">ทะเบียนรถ</TableCell>
            <TableCell align="center">เจ้าหน้าที่</TableCell>
            <TableCell align="center">วัตถุประสงค์</TableCell>
@@ -63,7 +147,6 @@ export default function ComponentsTable() {
 
          {carcheckinout.map((item:any )=> (
            <TableRow key={item.id}>
-             <TableCell align="center">{item.id}</TableCell>
              <TableCell align="center">{item.edges.ambulance.carregistration}</TableCell>
              <TableCell align="center">{item.edges.name.name}</TableCell>
              <TableCell align="center">{item.edges.purpose.objective}</TableCell>
@@ -81,6 +164,7 @@ export default function ComponentsTable() {
                  style={{ marginLeft: 2 }}
                  variant="contained" 
                  color="secondary"
+                 startIcon={<DeleteForeverIcon/>}
                >
                  Delete
                </Button>
@@ -90,7 +174,7 @@ export default function ComponentsTable() {
        </TableBody>
      </Table>
    </TableContainer>
-
+   </Content>
  );
 
 }

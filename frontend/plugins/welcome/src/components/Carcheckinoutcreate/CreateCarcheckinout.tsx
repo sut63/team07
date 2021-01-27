@@ -22,6 +22,8 @@ import Select from '@material-ui/core/Select';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
 import { EntUser } from '../../api/models/EntUser';
 import { EntPurpose } from '../../api/models/EntPurpose';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -281,7 +283,7 @@ export default function Create() {
                 onChange={AmbulancehandleChange}
                 style={{ width: 400 }}
               >
-                {ambulances.map((item: EntAmbulance) => (
+                {ambulances.filter((filter: any) => filter.edges.Hasstatus.resultName == "พร้อมใช้งาน").map((item: any) => (
                 <MenuItem value={item.id}>{item.carregistration}</MenuItem>
                 ))}
               </Select>
@@ -399,6 +401,7 @@ export default function Create() {
                 }}
                 variant="contained"
                 color="primary"
+                startIcon={<AssignmentTurnedInIcon/>}
               >
                 ยืนยัน
              </Button>
@@ -407,6 +410,7 @@ export default function Create() {
                 component={RouterLink}
                 to="/Carcheckinout"
                 variant="contained"
+                startIcon={<ArrowBackIcon/>}
               >
                 กลับ
              </Button>

@@ -22,21 +22,29 @@ export const plugin = createPlugin({
   id: 'welcome',
   register({ router }) {
     router.registerRoute('/', LoginPage);
-    router.registerRoute('/createambulance', Ambulance);
-    router.registerRoute('/listambulance', Ambulancetable);
-    router.registerRoute('/mainambulance', Mainambulance);
+//CarInspection Link
     router.registerRoute('/carinspection', CarInspectionPage);
-    router.registerRoute('/carservicemain', Carservicemain);
-    router.registerRoute('/carservicecreate', Carservicecreate);
-    router.registerRoute('/carcheckinout', Carcheckinout);
-    router.registerRoute('/createcarcheckinout', CreateCarcheckinout);
-    router.registerRoute('/createtransport', CreateTransport);
-    router.registerRoute('/maindriver', MainDriverPage);
+    router.registerRoute('/carinspectionsearch', CarInspectionSearchPage);
+//Carrepair Link
     router.registerRoute('/carrepairmain', CreateCarrepairrecord);
     router.registerRoute('/Carrepairrecordtable', Carrepairrecordtable);
-    router.registerRoute('/transporttable', TransportTable);
+//Carservice Link
+    router.registerRoute('/carservicemain', Carservicemain);
+    router.registerRoute('/carservicecreate', Carservicecreate);
     router.registerRoute('/carservicesearch', Carservicesearch);
+//MainDeiver
+    router.registerRoute('/maindriver', MainDriverPage);
+//Ambulance Link
+    router.registerRoute('/createambulance', Ambulance);
+    router.registerRoute('/listambulance', Ambulancetable);
     router.registerRoute('/searchambulance', Searchambulance);
-    router.registerRoute('/carinspectionsearch', CarInspectionSearchPage);
+    router.registerRoute('/mainambulance', Mainambulance);
+//Carcheckinout Link     
+    router.registerRoute('/carcheckinout', Carcheckinout);
+    router.registerRoute('/createcarcheckinout', CreateCarcheckinout);
+//Transport Link    
+    router.registerRoute('/createtransport', CreateTransport);
+    router.registerRoute('/transporttable', TransportTable);
+    
   },
 });
