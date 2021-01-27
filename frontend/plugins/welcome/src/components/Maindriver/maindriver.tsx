@@ -6,6 +6,10 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { jaikeleBase64Function } from '../../image/jaikele'
 import CardMedia from '@material-ui/core/CardMedia';
 import FormControl from '@material-ui/core/FormControl';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import AmbulancecarIcon from '@material-ui/icons/AirportShuttle';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import SearchIcon from "@material-ui/icons/Search";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
  Content,
@@ -96,17 +100,17 @@ const [loading, setLoading] = useState(true);
         aria-label="vertical contained primary button group"
         variant="text"
       >
-          <Link component={RouterLink} to="/createambulance">
-        <Button><h1>ลงทะเบียนรถพยาบาล</h1></Button>
+        <Link component={RouterLink} to="/createambulance">
+        <Button startIcon={<AmbulancecarIcon/>}><h1>ลงทะเบียนรถพยาบาล</h1></Button>
         </Link>
         <Link component={RouterLink} to="/Carcheckinout">
-        <Button><h1>ลงทะเบียนรถเข้าออก</h1></Button>
+        <Button startIcon={<ListAltIcon/>}><h1>ลงทะเบียนรถเข้าออก</h1></Button>
         </Link>
         <Link component={RouterLink} to="/CreateTransport">
-        <Button><h1>ส่งผู้ป่วย</h1></Button>
+        <Button startIcon={<ShoppingCartIcon/>}><h1>ส่งผู้ป่วย</h1></Button>
         </Link>
         <Link component={RouterLink} to="/Searchambulance">
-        <Button><h1>ค้นหารถพยาบาล</h1></Button>
+        <Button startIcon={<SearchIcon/>}><h1>ค้นหารถพยาบาล</h1></Button>
         </Link>
       </ButtonGroup>
       <br></br>
