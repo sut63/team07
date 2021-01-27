@@ -29,6 +29,7 @@ import { EntDistance } from '../../api/models/EntDistance';
 import { EntUrgent } from '../../api/models/EntUrgent'; */
 //import { EntUser } from '../../api/models/EntUser'; 
 import { EntCarservice } from '../../api/models/EntCarservice';
+import { EntUser } from '../../api/models/EntUser';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,6 +70,7 @@ const check = {
 export default function Searchtable() {
   const classes = useStyles();
   const api = new DefaultApi();
+  const [users, setUsers] = useState<EntUser[]>([]);
   const [carservices, setCarservices] = useState<EntCarservice[]>([]);
   const [loading, setLoading] = useState(true);
   const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
@@ -83,6 +85,7 @@ export default function Searchtable() {
   const [urgentid, setUrgent] = useState(Number);
   const [userid, setUser] = useState(Number); */
   const [carservicesearch, setCarserviceSearch] = useState(String);
+  const [userid, setUser] = useState(Number);
 
   //const [customersearch, setCustomerSearch] = useState(String);
 
@@ -116,6 +119,21 @@ export default function Searchtable() {
     getDistances(); */
   }, [loading]);
 
+
+  const checkJobPosition = async () => {
+    const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+    setLoading(false);
+    if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์") {
+        localStorage.setItem("userdata", JSON.stringify(null));
+        localStorage.setItem("jobpositiondata", JSON.stringify(null));
+        history.pushState("", "", "./");
+        window.location.reload(false);
+    }
+    else {
+        setUser(Number(localStorage.getItem("userdata")))
+    }
+}
+checkJobPosition();
 
 
   const SearchCarservice = async () => {

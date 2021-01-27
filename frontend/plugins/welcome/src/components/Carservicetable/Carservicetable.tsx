@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { DefaultApi } from '../../api/apis';
 import { EntCarservice } from '../../api/models/EntCarservice';
+import { EntUser } from '../../api/models/EntUser';
 import moment from 'moment';
 
 const useStyles = makeStyles({
@@ -23,6 +24,8 @@ export default function ComponentsTable() {
  const api = new DefaultApi();
  const [carservices, setCarservices] = useState<EntCarservice[]>([]);
  const [loading, setLoading] = useState(true);
+ const [users, setUsers] = useState<EntUser[]>([]);
+ const [userid, setUser] = useState(Number);
  
  useEffect(() => {
    const getCarservices = async () => {
@@ -31,6 +34,21 @@ export default function ComponentsTable() {
      setCarservices(res);
    };
    getCarservices();
+
+   const checkJobPosition = async () => {
+    const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+    setLoading(false);
+    if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์" ) {
+      localStorage.setItem("userdata",JSON.stringify(null));
+      localStorage.setItem("jobpositiondata",JSON.stringify(null));
+      history.pushState("","","./");
+      window.location.reload(false);        
+    }
+    else{
+        setUser(Number(localStorage.getItem("userdata")))
+    }
+  }
+checkJobPosition();
  }, [loading]);
  
  const deleteCarservices = async (id: number) => {
