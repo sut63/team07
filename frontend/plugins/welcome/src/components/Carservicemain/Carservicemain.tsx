@@ -14,7 +14,7 @@ import {
 } from '@backstage/core';
  
 const WelcomePage: FC<{}> = () => {
- const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
+const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
 
  return (
    <Page theme={pageTheme.library}>
