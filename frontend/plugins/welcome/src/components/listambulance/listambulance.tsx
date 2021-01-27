@@ -10,8 +10,13 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { DefaultApi } from '../../api/apis';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
-
+import {
+  Content,
+  ContentHeader,
+  Link,
+} from '@backstage/core';
 import moment from 'moment';
+import { EntUser } from '../../api/models/EntUser';
 
 const useStyles = makeStyles({
  table: {
@@ -25,14 +30,21 @@ export default function ComponentsTable() {
  const [loading, setLoading] = useState(true);
  const [ambulance, setAmbulance] = useState<EntAmbulance[]>([]);
  const [userid, setUser] = useState(Number);
-
+ const [users, setUsers] = useState<EntUser[]>([]);
  useEffect(() => {
    const getAmbulances = async () => {
-     const res = await api.listAmbulance({ limit: 120, offset: 0 });
+     const res = await api.listAmbulance();
      setLoading(false);
      setAmbulance(res);
    };
    getAmbulances();
+   const getUsers = async () => {
+ 
+    const us = await api.listUser();
+      setLoading(false);
+      setUsers(us);
+    };
+    getUsers();
    const checkJobPosition = async () => {
     const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
     setLoading(false);
@@ -55,36 +67,39 @@ checkJobPosition();
  };
 
  return (
-   
+  <Content>
+  <ContentHeader title="ข้อมูลรถที่ถูกลงทะเบียน">
+   <h1  style={{fontSize:'130%'}}> 
+  เจ้าหน้าที่ : {users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}
+  </h1>
+ 
+  </ContentHeader>
 
    <TableContainer component={Paper}>
      <Table className={classes.table} aria-label="simple table">
        <TableHead>
          <TableRow>
-           <TableCell align="center">ลำดับ</TableCell>
+          
            <TableCell align="center">ทะเบียนรถ</TableCell>
            <TableCell align="center">แบรนด์รถ</TableCell>
            <TableCell align="center">เครื่องยนต์</TableCell>
            <TableCell align="center">ความจุตัวถัง</TableCell>
            <TableCell align="center">บริษัทประกัน</TableCell>
            <TableCell align="center">สถานะ</TableCell>
-           <TableCell align="center">เจ้าหน้าที่</TableCell>
            <TableCell align="center">วันที่</TableCell>
            <TableCell align="center">ลบข้อมูล</TableCell>
          </TableRow>
        </TableHead>
        <TableBody>
 
-         {ambulance.map((item:any )=> (
+       {ambulance.filter((filter: any) => filter.edges?.Hasuser?.id == userid).map((item: any) => (
            <TableRow key={item.id}>
-             <TableCell align="center">{item.id}</TableCell>
              <TableCell align="center">{item.carregistration}</TableCell>
              <TableCell align="center">{item.edges?.Hasbrand?.brand}</TableCell>
              <TableCell align="center">{item.enginepower}</TableCell>
              <TableCell align="center">{item.displacement}</TableCell>
              <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
              <TableCell align="center">{item.edges?.Hasstatus?.resultName}</TableCell>
-             <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>
              <TableCell align="center">{moment(item.registerat).format('DD/MM/YYYY HH.mm น.')}</TableCell>
              <TableCell align="center">
                <Button
@@ -103,6 +118,7 @@ checkJobPosition();
        </TableBody>
      </Table>
    </TableContainer>
+   </Content>
 
  );
 

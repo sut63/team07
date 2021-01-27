@@ -8,7 +8,7 @@ import {
   ContentHeader,
   Link,
 } from '@backstage/core';
-import { makeStyles, Theme, createStyles, formatMs } from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -62,8 +62,7 @@ export default function AmbulanceCreate() {
   const profile = { givenName: 'ยินดีต้อนรับสู่ ระบบลงทะเบียนรถ' };
   const api = new DefaultApi();
   const [status, setStatus] = useState(false);
-  const [alert, setAlert] = useState(true);
-  const [alert2, setAlerts] = useState(true);
+ 
   //เก็บข้อมูลที่จะดึงมา
   const [ambulance, setAmbulance] = useState<EntAmbulance[]>([]);
   const [carbrands, setCarbrands] = useState<EntCarbrand[]>([]);
@@ -90,7 +89,7 @@ export default function AmbulanceCreate() {
 
   useEffect(() => {
     const getAmbulances = async () => {
-      const res = await api.listAmbulance({ limit: 120, offset: 0 });
+      const res = await api.listAmbulance();
       setLoading(false);
       setAmbulance(res);
     };
@@ -203,12 +202,7 @@ export default function AmbulanceCreate() {
     setcarstatus(event.target.value as number);
   };
 
-  const listamb = () => {
-    setStatus(false);
-    if(errormessege == "บันทึกข้อมูลสำเร็จ"){
-    window.location.href ="http://localhost:3000/mainambulance";
-    }
-  };
+
 
  
   const Registrationhandlehange = (event: React.ChangeEvent<{ id?: string; value: any }>) => {
@@ -219,7 +213,13 @@ export default function AmbulanceCreate() {
     setregistration(event.target.value as string);
     
   };
-  
+  const reload = () => {
+    setStatus(false);
+    if(errormessege == "บันทึกข้อมูลสำเร็จ"){
+    window.location.href ="http://localhost:3000/createambulance";
+    }
+  };
+
   
   const forcheck = () => {
     var i = 0;
@@ -309,39 +309,60 @@ else{
        <table>
        <tr>
          <th>
+           
            <h3 style={
              {color: "#483D8B",
              background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',
-             borderRadius: 10,
-             height: 20,
-             padding: '0 30px',
+             borderRadius: 15,
+             height: 30,
+             padding: '0 20px',
              
             }
           }>
             {users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}
         </h3>
         </th>
-        <th>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <Link component={RouterLink} to="/maindriver">
-            <Button variant="contained"style={{ background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',height: 40}}>
-              <h3
-              style={
-                {color: "#483D8B",
-                background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',
-                borderRadius: 10,
-                height: 25,
-                padding: '0 20px',
-                
-               }
-             }>
-               กลับหน้าหลัก
-            </h3>
-            </Button>
-          </Link>
-          </th>
+       
        </tr>
+       <th>
+       
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       <Link component={RouterLink} to="/maindriver">
+         <Button variant="contained"style={{ background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',height: 40}}>
+           <h3
+           style={
+             {color: "#483D8B",
+             background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',
+             borderRadius: 5,
+             height: 20,
+             padding: '0 15px',
+             
+            }
+          }>
+            กลับหน้าหลัก
+         </h3>
+         </Button>
+       </Link>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       <Link component={RouterLink} to="/mainambulance">
+         <Button variant="contained"style={{ background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',height: 40}}>
+           <h3
+           style={
+             {color: "#483D8B",
+             background: 'linear-gradient(45deg, #FFFACD 15%, #9932CC 120%)',
+             borderRadius: 10,
+             height: 20,
+             padding: '0 20px',
+             
+            }
+          }>
+            ตารางข้อมูล
+         </h3>
+         </Button>
+       </Link>
+       </th>
        </table>
+       
 
       </Header>
       <Content>
@@ -349,7 +370,7 @@ else{
       {status ? (
                         <div>
                             {alerttype != "" ? (
-                                <Alert severity={alerttype} onClose={() => { listamb() }}>
+                                <Alert severity={alerttype} onClose={() => { reload()}}>
                                     {errormessege}
                                 </Alert>
                             ) : null}
@@ -512,6 +533,7 @@ else{
               <Button
                 onClick={() => {
                   forcheck();
+                  getAmbulances();
                 }}
                 variant="outlined"
                 color="primary"
@@ -519,15 +541,6 @@ else{
                 startIcon={<SaveIcon />}
               >
                 บันทึกข้อมูล
-             </Button>
-              <Button
-                style={{ marginLeft: 20 }}
-                component={RouterLink}
-                to="/mainambulance"
-                variant="contained"
-                size="large"
-              >
-                กลับ
              </Button>
              </center>
             </div>

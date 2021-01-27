@@ -2,20 +2,15 @@ import React, { FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import ComponanceTable from '../listambulance';
 import Button from '@material-ui/core/Button';
-
-
-import TableRow from '@material-ui/core/TableRow';
-
- 
 import {
  Content,
  Header,
  Page,
  pageTheme,
- ContentHeader,
+
  Link,
 } from '@backstage/core';
-import { TableCell, TableContainer } from '@material-ui/core';
+
  
 const WelcomePage: FC<{}> = () => {
 const profile = { givenName: 'ข้อมูลการลงทะเบียนรถ' };
@@ -53,10 +48,6 @@ const HeaderCustom = {
           </table>
     </Header>
      <Content>
-       <ContentHeader title="รถพยาบาลในระบบ">
-       </ContentHeader>
-       <div>
-       </div>
        <ComponanceTable></ComponanceTable>
      </Content>
    </Page>

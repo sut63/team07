@@ -200,6 +200,7 @@ func main() {
 			User{"พี่โต", "to@email.com", "1234", 1},
 			User{"พี่หลาม", "lam@email.com", "1234", 1},
 			User{"อัลฟ่าน", "alfan@email.com", "1234", 2},
+			User{"เสขอัครเทวี", "tewee@email.com", "4321", 2},
 			User{"ใจเกเร", "jaikere@email.com", "1234", 3},
 			User{"แดงกีต้าร์", "dang@email.com", "1234", 3},
 			User{"อินเดีย", "india@email.com", "1234", 4},
