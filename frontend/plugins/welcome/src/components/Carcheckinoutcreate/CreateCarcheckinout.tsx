@@ -85,7 +85,7 @@ export default function Create() {
 
     const getAmbulances = async () => {
  
-      const a = await api.listAmbulance({ limit: 10, offset: 0 });
+      const a = await api.listAmbulance();
       setLoading(false);
       setAmbulances(a);
     };
@@ -123,7 +123,7 @@ export default function Create() {
     checkJobPosition();
  
   }, [loading]);
-  console.log(userid)
+  console.log("userid in table = ",userid)
   const CheckinhandleChange = (event: any) => {
     setCheckin(event.target.value as string);
   };
@@ -252,7 +252,8 @@ export default function Create() {
       ></Header>
       <Content>
         <ContentHeader title="ลงทะเบียนรถเข้าออก">
-        <Avatar alt="anfa" src={anfaBase64Function} /> &nbsp;&nbsp;&nbsp;&nbsp;
+          <Avatar alt="picture" src={anfaBase64Function} /> 
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3>
         &nbsp;&nbsp;&nbsp;&nbsp;
           {status ? (
