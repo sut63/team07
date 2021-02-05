@@ -155,8 +155,13 @@ const cleardata = () =>{
   
 }
 
-const checkcar = async()=>  {
+const checkcar =() => {
    var check = false;
+   if(carstatusid == 0 && registration == ""){
+    alertMessage("info","แสดงข้อมูลรถทั้งหมดในระบบ");
+    check = true;
+   }
+   else{
   ambulance.map(item => {
     if(registration != "" && carstatusid != 0){
    if(item.edges?.Hasstatus?.id == carstatusid && item.carregistration?.includes(registration)){
@@ -187,15 +192,12 @@ const checkcar = async()=>  {
   }
  
 })
+}
  if(!check){
   alertMessage("error","ไม่พบข้อมูลที่ค้นหา");
  }
- console.log(checktwofield)
- console.log(checkcarstatus)
- console.log(checkregistration)
- if(carstatusid == 0 && registration == ""){
-  alertMessage("info","แสดงข้อมูลรถทั้งหมดในระบบ");
- }
+
+ 
 };
 
 
