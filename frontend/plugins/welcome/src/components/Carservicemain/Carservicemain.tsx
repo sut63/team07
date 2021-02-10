@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import ComponanceTable from '../Carservicetable';
 import Button from '@material-ui/core/Button';
-//import Typography from '@material-ui/core/Typography';
  
 import {
  Content,

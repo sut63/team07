@@ -8,11 +8,7 @@ import {
 } from '@backstage/core';
 import TextField from '@material-ui/core/TextField';
 import { Link, Link as RouterLink } from 'react-router-dom';
-//import FormControl from '@material-ui/core/FormControl';
 import { Alert } from '@material-ui/lab';
-/* import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select'; */
 import moment from 'moment';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -55,9 +51,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-/* const WelcomePage: FC<{}> = () => {
-  const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
- */
 const check = {
   customercheck : true
 }
@@ -73,42 +66,9 @@ export default function Searchtable() {
   const [errormessege, setErrorMessege] = useState(String);
   const [users, setUsers] = useState<EntUser[]>([]);
   const [userid, setUser] = useState(Number);
-  /* const [urgents, setUrgents] = useState<EntUrgent[]>([]);
-  const [distances, setDistances] = useState<EntDistance[]>([]);
-  const [users, setUsers] = useState<EntUser[]>([]);
-  const [disid, setDistance] = useState(Number);
-  const [urgentid, setUrgent] = useState(Number);
-  const [userid, setUser] = useState(Number); */
   const [carservicesearch, setCarserviceSearch] = useState(String);
 
-  //const [customersearch, setCustomerSearch] = useState(String);
-
   useEffect(() => {
-    /* const getCarservices = async () => {
-      const res = await api.listCarservice({ limit: 10, offset: 0 });
-      setLoading(false);
-      setCarservices(res);
-    };
-    getCarservices();
- */
-    /* const getUsers = async () => {
-      const res = await api.listUser();
-      setLoading(false);
-      setUsers(res);
-    };
-    getUsers();
-    const getUrgents = async () => {
-      const res = await api.listUrgent({ offset: 0 });
-      setLoading(false);
-      setUrgents(res);
-    };
-    getUrgents();
-    const getDistances = async () => {
-      const res = await api.listDistance({ offset: 0 });
-      setLoading(false);
-      setDistances(res);
-    };
-    getDistances(); */
     const checkJobPosition = async () => {
       const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
       setLoading(false);
@@ -156,42 +116,9 @@ export default function Searchtable() {
         }
     }
 
-  /* const UrgentSearch = (res: any) => {
-    const data = res.filter((filter: EntCarservice) => filter?.edges?.urgentid?.id == urgentid)
-    console.log(data.length)
-    if (data.length != 0) {
-      return data;
-    }
-    else {
-      return res;
-    }
-  }
-  const DistanceSearch = (res: any) => {
-    const data = res.filter((filter: EntCarservice) => filter?.edges?.disid?.id == disid)
-    console.log(data.length)
-    if (data.length != 0) {
-      return data;
-    }
-    else {
-      return res;
-    }
-  } */
-
   const handleSearchChange = (event: any) => {
     setCarserviceSearch(event.target.value as string);
   };
-
-  /* const handleUrgentchange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setUrgent(event.target.value as number);
-  };
-  const handleDistancechange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setDistance(event.target.value as number);
-  }; */
-
-  /* const deleteCarservices = async (id: number) => {
-    const res = await api.deleteCarservice({ id: id });
-    setLoading(true);
-  }; */
 
   return (
     <Page theme={pageTheme.library}>

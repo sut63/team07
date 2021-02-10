@@ -52,17 +52,6 @@ type Purpose struct {
 	objective string
 }
 
-/* type Carservices struct {
-	Carservice []Carservice
-}
-
-type Carservice struct {
-	customer    string
-	age         int
-	location    string
-	information string
-} */
-
 type Urgents struct {
 	Urgent []Urgent
 }

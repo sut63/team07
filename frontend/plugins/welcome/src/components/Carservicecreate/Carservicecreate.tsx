@@ -11,20 +11,14 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
-//import { Alert } from '@material-ui/lab';
 import { DefaultApi } from '../../api/apis';
-//import Autocomplete from '@material-ui/lab/Autocomplete';
-//import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-//import InputAdornment from '@material-ui/core/InputAdornment';
-//import { EntCarservice } from '../../api/models/EntCarservice';
 import { EntUser } from '../../api/models/EntUser';
 import { EntUrgent } from '../../api/models/EntUrgent';
 import { EntDistance } from '../../api/models/EntDistance';
 import Swal from 'sweetalert2';
-//import SaveIcon from '@material-ui/icons/Save'; 
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -53,25 +47,6 @@ createStyles({
   },
 }),
 );
-
-/* const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  didOpen: toast => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  },
-}); */
-
-/* const setErrorMessege = (icon: any, title: any) => {
-  Toast.fire({
-    icon: icon,
-    title: title,
-  });
-} */
 
 export default function Create() {
  const classes = useStyles();
@@ -239,20 +214,7 @@ const checkpattern = (id: string, value:string) => {
 }
 
  const CreateCarservice = async ()=>{
-   //if ((customer != null) && (customer != "") && (location != null) && (location != "") && (information != null) && (information != "") && (datetime != null) && (datetime != "") && (urgentid != 0) &&  (urgentid != null) && (disid != 0) && (disid != null)) {
   if ((datetime != null) && (datetime != "")){
-   /* const carservice ={
-     userID: userid,
-     urgentID: urgentid,
-     distanceID: disid,
-     customer: customer,
-     age : age,
-     location: location,
-     information: information,
-     datetime: datetime + ":00+07:00",
-   }; */
-
-   //console.log(carservice);
       const apiUrl = 'http://localhost:8080/api/v1/carservices';
       const carservice = {
         userID: userid,
@@ -295,13 +257,6 @@ const checkpattern = (id: string, value:string) => {
       setStatus(true);
     
   };
-  /* const ErrorCaseCheck = (casename: string) => {
-    if (casename == "Customer") { setErrorMessege("กรุณาใส่ชื่อ-นามสกุลให้ถูกต้อง"); }
-    else if (casename == "Age") { setErrorMessege("กรุณาใส่อายุให้ถูกต้อง"); }
-    else if (casename == "Location") { setErrorMessege("กรุณาใส่ที่อยู่ให้ถูกต้อง"); }
-    else if (casename == "Information") { setErrorMessege("กรุณาระบุสาเหตุที่ใช้รถพยาบาลให้ถูกต้อง"); }
-    else { setErrorMessege("บันทึกไม่สำเร็จ");}
-  } */
   const ErrorCaseCheck = (field: string) => {
     switch(field) {
       case 'customer':
@@ -321,21 +276,6 @@ const checkpattern = (id: string, value:string) => {
         return;
     }
   }
-   /* const res: any = await api.createCarservice({ carservice: carservice });
-            setStatus(true);
-            if (res.id != '') {
-                setAlert(true);
-            }
-        }
-        else {
-            setStatus(true);
-            setAlert(false);
-        }
-  const timer = setTimeout(()=>{
-     setStatus(false);
-     window.location.reload(false);
-   },5000);
-    }; */
  
  return (
     <Page theme={pageTheme.library}>
