@@ -32,6 +32,10 @@ textField: {
   width: '25ch',
 },
 });
+
+const tablesearchcheck = {
+  ambulancesearchtable: true
+}
 export default function ComponentsTable() {
  
  const classes = useStyles();
@@ -39,41 +43,64 @@ export default function ComponentsTable() {
 
  const [status, setStatus] = useState(false);
  const [loading, setLoading] = useState(true);
- const [alert, setAlert] = useState(true);
+ const [alerttype, setAlertType] = useState(String);
+ const [errormessege, setErrorMessege] = useState(String);
  const [search, setSearch] = useState(String);
  const [carcheckinout, setCarcheckinout] = useState<EntCarCheckInOut[]>([]);
 
- useEffect(() => {
-   const getCarcheckinouts = async () => {
-     const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
-     setLoading(false);
-     setCarcheckinout(res);
-   };
-   getCarcheckinouts();
- }, [loading]);
-
- const SearchhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-  setSearch(event.target.value as string);
+ useEffect(() => {   
+  const getCarcheckinouts = async () => {
+const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
+setLoading(false);
+setCarcheckinout(res);
 };
+    getCarcheckinouts();
+
+}, [loading]);
 
 const getSearch = async () => {
   const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
   const carsearch = Searchcarinout(res);
-  setCarcheckinout(carsearch);
+
+  setErrorMessege("ไม่พบข้อมูล");
+  setAlertType("error");
+  setCarcheckinout([]);
+  if(search.length > 0){
+      Object.entries(tablesearchcheck).map(([key, value]) =>{
+          if (value == true){
+              setErrorMessege("พบข้อมูล");
+              setAlertType("success");
+              setCarcheckinout(carsearch);
+          }
+      })
+  }
+  setStatus(true);
+  resettablesearchcheck(); 
 }
 
-const Searchcarinout = (res : any) =>{
+const resettablesearchcheck = () =>{
+tablesearchcheck.ambulancesearchtable = true;
+}
+
+const Searchcarinout = (res: any) => {
   const findsearch = res.filter((filter: EntCarCheckInOut) => filter.edges?.ambulance?.carregistration?.includes(search))
   console.log(findsearch)
-  setStatus(true);
-  if (findsearch.length != 0){
-    setAlert(true);
-    return findsearch
+if (findsearch.length != 0 && search != "") {
+      return findsearch;
   }
-  else{
-    setAlert(false);
-    return res
+  else {
+      tablesearchcheck.ambulancesearchtable = false;
+      if(search == ""){
+          return res;
+      }
+      else{
+          return findsearch;
+      }
   }
+}
+
+const SearchhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+setSearch(event.target.value as string);
 };
 
  const deleteCarcheckinouts = async (id: number) => {
@@ -85,19 +112,15 @@ const Searchcarinout = (res : any) =>{
   <Content>
   <ContentHeader title="ค้นหารถเข้าออก">
     &nbsp;&nbsp;&nbsp;&nbsp;
-  {status ? (
+    {status ? (
      <div>
-       {alert ? (
-         <Alert severity="success" onClose={() => {setStatus(false)}}>
-          พบข้อมูล
-         </Alert>
-       ) : (
-         <Alert severity="error" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
-           ไม่พบข้อมูล
-         </Alert>
-       )}
+      {alerttype != "" ? (
+       <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
+          {errormessege}
+       </Alert>
+       ) : null}
      </div>
-   ) : null}
+    ) : null}
   </ContentHeader>   
             {/* <div className={classes.margin}> */}
               <div>
