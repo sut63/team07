@@ -26,7 +26,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { DefaultApi } from '../../api/apis';
 import { Alert } from '@material-ui/lab';
-
+import { EntUser } from '../../api/models/EntUser';
 import { EntTransport } from '../../api/models/EntTransport';
 import { EntHospital } from '../../api/models/EntHospital';
 
@@ -54,7 +54,8 @@ export default function CarInspectionSearchPage() {
     const [status, setStatus] = useState(false);
     const [alerttype, setAlertType] = useState(String);
     const [errormessege, setErrorMessege] = useState(String);
-
+    const [users, setUsers] = useState<EntUser[]>([]);
+    const [userid, setUser] = useState(Number);
     const [send, setSends] = useState<EntHospital[]>([]);
     const [receive, setReceivs] = useState<EntHospital[]>([]);
 
@@ -64,7 +65,7 @@ export default function CarInspectionSearchPage() {
     const [sendsearch, setSendSearch] = useState(Number);
     const [receivesearch, setReceiveSearch] = useState(Number);
     const [ambulancesearch, setAmbulanceSearch] = useState(String);
-
+    
     useEffect(() => {
 
        
@@ -81,7 +82,26 @@ export default function CarInspectionSearchPage() {
             setReceivs(rs);
           };
           getReceives();
-
+        const getUsers = async () => {
+            const us = await api.listUser();
+            setLoading(false);
+            setUsers(us);
+          };
+          getUsers();
+          const checkJobPosition = async () => {
+            const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+            setLoading(false);
+            if (jobdata != "เจ้าหน้าที่รถพยาบาล") {
+              localStorage.setItem("userdata", JSON.stringify(null));
+              localStorage.setItem("jobpositiondata", JSON.stringify(null));
+              history.pushState("", "", "./");
+              window.location.reload(false);        
+            }
+            else {
+              setUser(Number(localStorage.getItem("userdata")))
+            }
+          }
+          checkJobPosition();
 
     }, [loading]);
 
