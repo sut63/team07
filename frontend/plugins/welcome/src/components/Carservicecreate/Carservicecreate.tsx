@@ -334,7 +334,7 @@ const checkpattern = (id: string, value:string) => {
               label=""
               variant="standard"
               color="secondary"
-              type="string"
+              type="int"
               size="medium"
               value={age}
               helperText ={ageerror}
