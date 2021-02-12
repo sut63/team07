@@ -90,13 +90,13 @@ export default function Searchtable() {
   const SearchCarservice = async () => {
     const res = await api.listCarservice({ offset: 0 });
     const search = Carservicesearch(res);
-    setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
+    setErrorMessege("ไม่พบข้อมูล");
         setAlertType("error");
         setCarservices([]);
         if(search.length > 0){
             Object.entries(check).map(([key, value]) =>{
                 if (value == true){
-                    setErrorMessege("พบข้อมูลที่ค้นหา");
+                    setErrorMessege("พบข้อมูล");
                     setAlertType("success");
                     setCarservices(search);
                 }
@@ -144,7 +144,7 @@ export default function Searchtable() {
                     ) : null}
         </ContentHeader>
   
-        <div className={classes.paper}><strong>ค้นหาชื่อผู้ใช้บริการ</strong></div>
+        <div className={classes.paper}><strong>ค้นหาชื่อผู้ใช้บริการ (เว้นว่าง เพื่อแสดงข้อมูลทั้งหมด)</strong></div>
         <TextField className={classes.textField}
           style={{ width: 400, marginLeft: 20, marginRight: -10 }}
           id="customer"
@@ -168,7 +168,7 @@ export default function Searchtable() {
           </Button>
         </div>
         <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
+          <Table aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell align="center">เลขที่</TableCell>
