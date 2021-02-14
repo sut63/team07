@@ -12,8 +12,7 @@ import { DefaultApi } from '../../api/apis';
 import { EntAmbulance } from '../../api/models/EntAmbulance';
 import {
   Content,
-  ContentHeader,
-  Link,
+  ContentHeader
 } from '@backstage/core';
 import moment from 'moment';
 import { EntUser } from '../../api/models/EntUser';
