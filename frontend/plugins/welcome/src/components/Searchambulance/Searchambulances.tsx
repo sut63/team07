@@ -55,12 +55,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 const Toast = Swal.mixin({
- // toast: true,
+ 
   position: 'center',
   showConfirmButton: false,
-  //timer: 3000,
-  //timerProgressBar: true,
-  showCloseButton: true,
+   showCloseButton: true,
   
 });
 
