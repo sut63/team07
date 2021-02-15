@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import {
   Content,
   Header,
   Page,
   pageTheme,
   ContentHeader,
-  ApiProvider,
 } from '@backstage/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -18,19 +16,13 @@ import { DefaultApi } from '../../api/apis';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from '@material-ui/core/Select';
-import Typography from '@material-ui/core/Typography';
 import { EntCarInspection } from '../../api/models/EntCarInspection';
 import { EntUser } from '../../api/models/EntUser';
 import { EntRepairing } from '../../api/models/EntRepairing';
 import ComponentsTable from '../CarrepairrecordTable';
-import { colors } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
 
 import SearchIcon from '@material-ui/icons/Search';
-import SaveIcon from '@material-ui/icons/Save';
-import CachedIcon from '@material-ui/icons/Cached';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,7 +60,6 @@ export default function CarInspectionPage() {
     const [status, setStatus] = useState(false);
     const [errormessage, setErrormessage] = useState(String);
     const [alerttype, setAlertType] = useState(String);
-    const [alert, setAlert] = useState(true);
     const [partrepairerror, setPartrepairerror] = React.useState('');
     const [priceerror, setPriceerror] = React.useState('');
     const [techniciancommenterror, setTechniciancommenterror] = React.useState('');
@@ -89,7 +80,7 @@ export default function CarInspectionPage() {
 
     useEffect(() => {
         const getCarinspections = async () => {
-            const ci = await api.listCarinspection({ limit: 10, offset: 0 });
+            const ci = await api.listCarinspection();
             setLoading(false);
             setCarinspections(ci);
         };
@@ -145,10 +136,6 @@ export default function CarInspectionPage() {
 
     const RepairinghandleChange = (event: React.ChangeEvent<{ value: unknown}>) => {
         setRepairing(event.target.value as number)
-    };
-
-    const UserhandleChange = (event: React.ChangeEvent<{ value: unknown}>) => {
-        setUser(event.target.value as number)
     };
 
     const DateTimehandleChange = (event: any) => {
