@@ -59,6 +59,9 @@ const useStyles = makeStyles({
                 <TableCell align="center">รถพยาบาล</TableCell>
                 <TableCell align="center">ส่วนที่ซ่อม</TableCell>
                 <TableCell align="center">เจ้าหน้าที่</TableCell>
+                <TableCell align="center">หมายเหตุส่วนที่ซ่อม</TableCell>
+                <TableCell align="center">เงินที่ใช้สำหรับการซ่อม</TableCell>
+                <TableCell align="center">ความคิดเห็นจากช่าง</TableCell>
                 <TableCell align="center">วัน/เดือน/ปี เวลา</TableCell>
                 <TableCell align="center">จัดการข้อมูล</TableCell>
               </TableRow>
@@ -68,10 +71,13 @@ const useStyles = makeStyles({
                 <TableRow key={item.id}>
                   <TableCell align="center">{item.id}</TableCell>
                   {carinspections.filter((item2: EntCarInspection) => item2.id == item.edges.carinspection.id).map((item3: EntCarInspection) => (
-                    <TableCell align="center">{item3.edges.ambulance.carregistration}</TableCell>
+                    <TableCell align="center">{item3.edges?.ambulance?.carregistration}</TableCell>
                   ))}
                   <TableCell align="center">{item.edges?.keeper?.repairpart}</TableCell>
                   <TableCell align="center">{item.edges?.user?.name}</TableCell>
+                  <TableCell align="center">{item.partrepair}</TableCell>
+                  <TableCell align="center">{item.price}</TableCell>
+                  <TableCell align="center">{item.techniciancomment}</TableCell>
                   <TableCell align="center">{moment(item.datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
                   <TableCell align="center">
                     <Button

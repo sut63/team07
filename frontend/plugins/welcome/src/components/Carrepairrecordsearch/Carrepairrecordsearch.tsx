@@ -1,11 +1,10 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect} from 'react';
 import {
     Content,
     Header,
     Page,
     pageTheme,
     ContentHeader,
-    ItemCard,
 } from '@backstage/core';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -33,7 +32,7 @@ import { EntRepairing } from '../../api/models/EntRepairing';
 
 import SearchIcon from '@material-ui/icons/Search';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { EntCarInspection, EntUser } from '../../api';
+import { EntCarInspection} from '../../api';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
