@@ -27,7 +27,6 @@ import { Alert } from '@material-ui/lab';
 
 import moment from 'moment';
 
-import { EntCarInspection } from '../../api/models/EntCarInspection';
 import { EntInspectionResult } from '../../api/models/EntInspectionResult';
 
 import SearchIcon from '@material-ui/icons/Search';
@@ -44,17 +43,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const searchcheck = {
-    usersearchcheck: true,
-    ambulancesearchcheck: true,
-    resultsearchcheck: true
-}
-
 export default function CarInspectionSearchPage() {
     const classes = useStyles();
     const api = new DefaultApi();
     const profile = { givenName: 'ยินดีต้อนรับสู่ ระบบตรวจสภาพรถ' };
-    const [carinspections, setCarInspections] = useState<EntCarInspection[]>([]);
+    const [carinspections, setCarInspections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(false);
     const [alerttype, setAlertType] = useState(String);
@@ -90,82 +83,30 @@ export default function CarInspectionSearchPage() {
     }, [loading]);
 
     const SearchCarInspection = async () => {
-        const res = await api.listCarinspection();
-        const usersearch = UserSearch(res);
-        const ambulancesearch = AmbulanceSearch(usersearch);
-        const resultsearch = InspectionResultSearch(ambulancesearch);
-        
-        setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
-        setAlertType("error");
-        setCarInspections([]);
-        if(resultsearch.length > 0){
-            Object.entries(searchcheck).map(([key, value]) =>{
-                if (value == true){
-                    setErrorMessege("พบข้อมูลที่ค้นหา");
-                    setAlertType("success");
-                    setCarInspections(resultsearch);
+        const apiUrl = `http://localhost:8080/api/v1/searchcarinspections?ambulance=${ambulancesearch}&result=${inspectionresultsearch}&user=${usersearch}`;
+        const requestOptions = {
+            method: 'GET',
+        };
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.data)
+                setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
+                setAlertType("error");
+                setCarInspections([]);
+                if (data.data != null) {
+                    if(data.data.length >= 1) {
+                        setErrorMessege("พบข้อมูลที่ค้นหา");
+                        setAlertType("success");
+                        console.log(data.data)
+                        setCarInspections(data.data);
+                    }
                 }
-            })
-        }
 
-        setStatus(true);
-        ResetSearchCheck();
+                setStatus(true);
+            });
+
     }
-
-    const ResetSearchCheck = () => {
-        searchcheck.ambulancesearchcheck = true;
-        searchcheck.usersearchcheck = true;
-        searchcheck.resultsearchcheck = true;
-    }
-
-    const AmbulanceSearch = (res: any) => {
-        const data = res.filter((filter: EntCarInspection) => filter.edges?.ambulance?.carregistration?.includes(ambulancesearch))
-        if (data.length != 0 && ambulancesearch != "") {
-            return data;
-        }
-        else {
-            searchcheck.ambulancesearchcheck = false;
-            if(ambulancesearch == ""){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
-
-    const UserSearch = (res: any) => {
-        const data = res.filter((filter: EntCarInspection) => filter.edges?.user?.name?.includes(usersearch))
-        if (data.length != 0  && usersearch != "") {
-            return data;
-        }
-        else {
-            searchcheck.usersearchcheck = false;
-            if(usersearch == ""){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
-
-    const InspectionResultSearch = (res: any) => {
-        const data = res.filter((filter: EntCarInspection) => filter.edges?.inspectionresult?.id == inspectionresultsearch)
-        if (data.length != 0) {
-            return data;
-        }
-        else {
-            searchcheck.resultsearchcheck = false;
-            if(inspectionresultsearch == 0){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
-
 
     const InspectionResulthandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setInspectionResult(event.target.value as number);
@@ -187,7 +128,7 @@ export default function CarInspectionSearchPage() {
             ></Header>
             <Content>
                 <ContentHeader title="ค้นหาข้อมูลการตรวจสภาพรถ">
-                {status ? (
+                    {status ? (
                         <div>
                             {alerttype != "" ? (
                                 <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
@@ -289,12 +230,12 @@ export default function CarInspectionSearchPage() {
                         <TableBody>
                             {carinspections.map((item: any) => (
                                 <TableRow key={item.id}>
-                                    <TableCell align="center">{item.edges.user.name}</TableCell>
-                                    <TableCell align="center">{item.edges.ambulance.carregistration}</TableCell>
-                                    <TableCell align="center">{item.wheelCenter}</TableCell>
-                                    <TableCell align="center">{item.soundLevel}</TableCell>
+                                    <TableCell align="center">{item.edges.User.name}</TableCell>
+                                    <TableCell align="center">{item.edges.Ambulance.carregistration}</TableCell>
+                                    <TableCell align="center">{item.wheel_center}</TableCell>
+                                    <TableCell align="center">{item.sound_level}</TableCell>
                                     <TableCell align="center">{item.blacksmoke}</TableCell>
-                                    <TableCell align="center">{item.edges.inspectionresult.resultName}</TableCell>
+                                    <TableCell align="center">{item.edges.Inspectionresult.result_name}</TableCell>
                                     <TableCell align="center">{moment(item.datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
                                     <TableCell align="center">{item.note}</TableCell>
                                 </TableRow>

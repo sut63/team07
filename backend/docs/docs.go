@@ -1665,6 +1665,62 @@ var doc = `{
                 }
             }
         },
+        "/searchcarinspections": {
+            "get": {
+                "description": "get carinspection by Search",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carinspection entity by Search",
+                "operationId": "get-carinspection-by-search",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ambulance Search",
+                        "name": "ambulance",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Result Search",
+                        "name": "result",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Search",
+                        "name": "user",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.CarInspection"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/searchcarservices": {
             "get": {
                 "description": "get carinspection by Customer",
@@ -2963,6 +3019,7 @@ var doc = `{
         "OAuth2Application": {
             "type": "oauth2",
             "flow": "application",
+            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",
@@ -2981,6 +3038,7 @@ var doc = `{
         "OAuth2Password": {
             "type": "oauth2",
             "flow": "password",
+            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",

@@ -153,6 +153,62 @@ func (ctl *CarInspectionController) GetCarInspection(c *gin.Context) {
 	c.JSON(200, ci)
 }
 
+// GetCarInspectionBySearch handles GET requests to retrieve a carinspection entity
+// @Summary Get a carinspection entity by Search
+// @Description get carinspection by Search
+// @ID get-carinspection-by-search
+// @Produce  json
+// @Param ambulance query string false "Ambulance Search"
+// @Param result query int false "Result Search"
+// @Param user query string false "User Search"
+// @Success 200 {object} ent.CarInspection
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /searchcarinspections [get]
+func (ctl *CarInspectionController) GetCarInspectionBySearch(c *gin.Context) {
+	asearch := c.Query("ambulance")
+	usearch := c.Query("user")
+	irsearch, err := strconv.ParseInt(c.Query("result"), 10, 64)
+
+	irstring := ""
+	ir, err := ctl.client.InspectionResult.
+		Query().
+		Where(inspectionresult.IDEQ(int(irsearch))).
+		Only(context.Background())
+
+	if ir != nil {
+		irstring = ir.ResultName
+	}
+
+	ci, err := ctl.client.CarInspection.
+		Query().
+		WithAmbulance().
+		WithInspectionresult().
+		WithUser().
+		Where(carinspection.HasUserWith(user.NameContains(usearch))).
+		Where(carinspection.HasAmbulanceWith(ambulance.CarregistrationContains(asearch))).
+		Where(carinspection.HasInspectionresultWith(inspectionresult.ResultNameContains(irstring))).
+		All(context.Background())
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if asearch == "" && usearch == "" && irsearch == 0 {
+		c.JSON(200, gin.H{
+			"data": nil,
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"data": ci,
+	})
+}
+
 // ListCarInspection handles request to get a list of carinspection entities
 // @Summary List carinspection entities
 // @Description list carinspection entities
@@ -223,6 +279,7 @@ func NewCarInspectionController(router gin.IRouter, client *ent.Client) *CarInsp
 // InitCarInspectionController registers routes to the main engine
 func (ctl *CarInspectionController) register() {
 	cis := ctl.router.Group("/carinspections")
+	cisu := ctl.router.Group("/searchcarinspections")
 
 	cis.GET("", ctl.ListCarInspection)
 
@@ -230,4 +287,6 @@ func (ctl *CarInspectionController) register() {
 	cis.POST("", ctl.CreateCarInspection)
 	cis.GET(":id", ctl.GetCarInspection)
 	cis.DELETE(":id", ctl.DeleteCarInspection)
+
+	cisu.GET("", ctl.GetCarInspectionBySearch)
 }
