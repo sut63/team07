@@ -13,3 +13,5 @@
 ![ShawKuay](https://github.com/sut63/team07/blob/main/frontend/plugins/welcome/src/image/Classifieds_Image952554231144%20(1).jpg)
 
 เอาถ้วยนึงครับ
+
+![Ricardo](https://media.giphy.com/media/f3e3vLxB7TOuIxDVrX/giphy.gif)
