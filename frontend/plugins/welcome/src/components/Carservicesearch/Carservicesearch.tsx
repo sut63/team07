@@ -141,7 +141,7 @@ export default function Searchtable() {
         <TextField className={classes.textField}
           style={{ width: 400, marginLeft: 20, marginRight: -10 }}
           id="customer"
-          label=""
+          label="กรอกชื่อผู้ใช้บริการ"
           variant="standard"
           color="secondary"
           type="string"
