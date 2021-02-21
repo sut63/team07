@@ -60,3 +60,5 @@ export function EntInsuranceEdgesToJSON(value?: EntInsuranceEdges | null): any {
         'insuranceof': value.insuranceof === undefined ? undefined : ((value.insuranceof as Array<any>).map(EntAmbulanceToJSON)),
     };
 }
+
+

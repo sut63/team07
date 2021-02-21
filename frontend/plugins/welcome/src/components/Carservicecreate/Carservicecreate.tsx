@@ -67,11 +67,11 @@ export default function Create() {
  const [customer, setCustomer] = useState(String);
  const [age, setAge] = useState(Number);
  const [location, setLocation] = useState(String);
- const [information, setInformation] = useState(String);
+ const [serviceinfo, setServiceinfo] = useState(String);
  const [customererror, setCustomerError] = React.useState('');
  const [ageerror, setAgeError] = React.useState('');
  const [locationerror, setLocationError] = React.useState('');
- const [informationerror, setInformationError] = React.useState('');
+ const [serviceinfoerror, setServiceinfoError] = React.useState('');
  
  const Toast = Swal.mixin({
   toast: true,
@@ -154,11 +154,11 @@ const handleLocationChange = (event: React.ChangeEvent<{ value: any }>) => {
   setLocation(event.target.value as string);
 };
 
-const handleInformationChange = (event: React.ChangeEvent<{ value: any }>) => {
+const handleServiceinfoChange = (event: React.ChangeEvent<{ value: any }>) => {
   const { value } = event.target;
     const validateValue = value
     checkpattern('information', validateValue)
-  setInformation(event.target.value as string);
+  setServiceinfo(event.target.value as string);
 };
 
 const handledatetimeChange = (event: any) => {
@@ -189,7 +189,7 @@ const validateLocation = (val: string) => {
   return val.match("^[ก-๙0-9a-zA-Z\\s]+$");
 }
 
-const validateInformation = (val: string) => {
+const validateServiceinfo = (val: string) => {
   return val.match("^[ก-๙0-9a-zA-Z\\s]+$");
 }
 
@@ -205,8 +205,8 @@ const checkpattern = (id: string, value:string) => {
       case 'location':
       validateLocation(value) ? setLocationError('') : setLocationError('กรุณากรอกที่อยู่ให้ถูกต้อง');
     return;
-      case 'information':
-      validateInformation(value) ? setInformationError('') : setInformationError('กรุณากรอกสาเหตุการใช้รถให้ถูกต้องให้ถูกต้อง');
+      case 'serviceinfo':
+      validateServiceinfo(value) ? setServiceinfoError('') : setServiceinfoError('กรุณากรอกสาเหตุการใช้รถให้ถูกต้องให้ถูกต้อง');
     return;
     default:
       return;
@@ -223,7 +223,7 @@ const checkpattern = (id: string, value:string) => {
      customer: customer,
      age : Number(age),
      location: location,
-     information: information,
+     serviceinfo: serviceinfo,
      datetime: datetime + ":00+07:00",
    };
    const requestOptions = {
@@ -268,7 +268,7 @@ const checkpattern = (id: string, value:string) => {
       case 'location':
         setErrorMessege("error","ระบุสถานที่ให้ถูกต้อง");
         return;
-        case 'information':
+        case 'serviceinfo':
         setErrorMessege("error","ระบุข้อมูลให้ถูกต้อง");
         return;
       default:
@@ -359,16 +359,16 @@ const checkpattern = (id: string, value:string) => {
             <div className={classes.paper}><strong>การใช้บริการ</strong></div>
             <TextField className={classes.textField}
             style={{ width: 400 ,marginLeft:20,marginRight:-10}}
-              error = {informationerror ? true : false}
-              id="information"
+              error = {serviceinfoerror ? true : false}
+              id="serviceinfo"
               label=""
               variant="standard"
               color="secondary"
               type="string"
               size="medium"
-              value={information}
-              helperText = {informationerror}
-              onChange={handleInformationChange}
+              value={serviceinfo}
+              helperText = {serviceinfoerror}
+              onChange={handleServiceinfoChange}
             />
 
             <div>

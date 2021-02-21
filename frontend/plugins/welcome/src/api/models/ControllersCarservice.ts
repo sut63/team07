@@ -48,13 +48,13 @@ export interface ControllersCarservice {
      * @type {string}
      * @memberof ControllersCarservice
      */
-    information?: string;
+    location?: string;
     /**
      * 
      * @type {string}
      * @memberof ControllersCarservice
      */
-    location?: string;
+    serviceinfo?: string;
     /**
      * 
      * @type {number}
@@ -83,8 +83,8 @@ export function ControllersCarserviceFromJSONTyped(json: any, ignoreDiscriminato
         'customer': !exists(json, 'customer') ? undefined : json['customer'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'distanceID': !exists(json, 'distanceID') ? undefined : json['distanceID'],
-        'information': !exists(json, 'information') ? undefined : json['information'],
         'location': !exists(json, 'location') ? undefined : json['location'],
+        'serviceinfo': !exists(json, 'serviceinfo') ? undefined : json['serviceinfo'],
         'urgentID': !exists(json, 'urgentID') ? undefined : json['urgentID'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
     };
@@ -103,8 +103,8 @@ export function ControllersCarserviceToJSON(value?: ControllersCarservice | null
         'customer': value.customer,
         'datetime': value.datetime,
         'distanceID': value.distanceID,
-        'information': value.information,
         'location': value.location,
+        'serviceinfo': value.serviceinfo,
         'urgentID': value.urgentID,
         'userID': value.userID,
     };

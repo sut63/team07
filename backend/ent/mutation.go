@@ -4006,7 +4006,7 @@ type CarserviceMutation struct {
 	age             *int
 	addage          *int
 	location        *string
-	information     *string
+	serviceinfo     *string
 	_Datetime       *time.Time
 	clearedFields   map[string]struct{}
 	userid          *int
@@ -4229,41 +4229,41 @@ func (m *CarserviceMutation) ResetLocation() {
 	m.location = nil
 }
 
-// SetInformation sets the information field.
-func (m *CarserviceMutation) SetInformation(s string) {
-	m.information = &s
+// SetServiceinfo sets the serviceinfo field.
+func (m *CarserviceMutation) SetServiceinfo(s string) {
+	m.serviceinfo = &s
 }
 
-// Information returns the information value in the mutation.
-func (m *CarserviceMutation) Information() (r string, exists bool) {
-	v := m.information
+// Serviceinfo returns the serviceinfo value in the mutation.
+func (m *CarserviceMutation) Serviceinfo() (r string, exists bool) {
+	v := m.serviceinfo
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldInformation returns the old information value of the Carservice.
+// OldServiceinfo returns the old serviceinfo value of the Carservice.
 // If the Carservice object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *CarserviceMutation) OldInformation(ctx context.Context) (v string, err error) {
+func (m *CarserviceMutation) OldServiceinfo(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldInformation is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldServiceinfo is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldInformation requires an ID field in the mutation")
+		return v, fmt.Errorf("OldServiceinfo requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInformation: %w", err)
+		return v, fmt.Errorf("querying old value for OldServiceinfo: %w", err)
 	}
-	return oldValue.Information, nil
+	return oldValue.Serviceinfo, nil
 }
 
-// ResetInformation reset all changes of the "information" field.
-func (m *CarserviceMutation) ResetInformation() {
-	m.information = nil
+// ResetServiceinfo reset all changes of the "serviceinfo" field.
+func (m *CarserviceMutation) ResetServiceinfo() {
+	m.serviceinfo = nil
 }
 
 // SetDatetime sets the Datetime field.
@@ -4444,8 +4444,8 @@ func (m *CarserviceMutation) Fields() []string {
 	if m.location != nil {
 		fields = append(fields, carservice.FieldLocation)
 	}
-	if m.information != nil {
-		fields = append(fields, carservice.FieldInformation)
+	if m.serviceinfo != nil {
+		fields = append(fields, carservice.FieldServiceinfo)
 	}
 	if m._Datetime != nil {
 		fields = append(fields, carservice.FieldDatetime)
@@ -4464,8 +4464,8 @@ func (m *CarserviceMutation) Field(name string) (ent.Value, bool) {
 		return m.Age()
 	case carservice.FieldLocation:
 		return m.Location()
-	case carservice.FieldInformation:
-		return m.Information()
+	case carservice.FieldServiceinfo:
+		return m.Serviceinfo()
 	case carservice.FieldDatetime:
 		return m.Datetime()
 	}
@@ -4483,8 +4483,8 @@ func (m *CarserviceMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldAge(ctx)
 	case carservice.FieldLocation:
 		return m.OldLocation(ctx)
-	case carservice.FieldInformation:
-		return m.OldInformation(ctx)
+	case carservice.FieldServiceinfo:
+		return m.OldServiceinfo(ctx)
 	case carservice.FieldDatetime:
 		return m.OldDatetime(ctx)
 	}
@@ -4517,12 +4517,12 @@ func (m *CarserviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLocation(v)
 		return nil
-	case carservice.FieldInformation:
+	case carservice.FieldServiceinfo:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetInformation(v)
+		m.SetServiceinfo(v)
 		return nil
 	case carservice.FieldDatetime:
 		v, ok := value.(time.Time)
@@ -4605,8 +4605,8 @@ func (m *CarserviceMutation) ResetField(name string) error {
 	case carservice.FieldLocation:
 		m.ResetLocation()
 		return nil
-	case carservice.FieldInformation:
-		m.ResetInformation()
+	case carservice.FieldServiceinfo:
+		m.ResetServiceinfo()
 		return nil
 	case carservice.FieldDatetime:
 		m.ResetDatetime()

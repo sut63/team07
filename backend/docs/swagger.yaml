@@ -86,9 +86,9 @@ definitions:
         type: string
       distanceID:
         type: integer
-      information:
-        type: string
       location:
+        type: string
+      serviceinfo:
         type: string
       urgentID:
         type: integer
@@ -345,11 +345,11 @@ definitions:
       id:
         description: ID of the ent.
         type: integer
-      information:
-        description: Information holds the value of the "information" field.
-        type: string
       location:
         description: Location holds the value of the "location" field.
+        type: string
+      serviceinfo:
+        description: Serviceinfo holds the value of the "serviceinfo" field.
         type: string
     type: object
   ent.CarserviceEdges:
@@ -1775,6 +1775,35 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a repairing entity by ID
+  /searchcarservices:
+    get:
+      description: get carinspection by Customer
+      operationId: get-carservice-by-customer
+      parameters:
+      - description: Customer Search
+        in: query
+        name: customer
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Carservice'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a carinspection entity by Customer
   /transports:
     get:
       description: list transport entities
@@ -2011,7 +2040,6 @@ securityDefinitions:
     tokenUrl: https://example.com/oauth/token
     type: oauth2
   OAuth2Application:
-    authorizationUrl: ""
     flow: application
     scopes:
       admin: ' Grants read and write access to administrative information'
@@ -2026,7 +2054,6 @@ securityDefinitions:
       write: ' Grants write access'
     type: oauth2
   OAuth2Password:
-    authorizationUrl: ""
     flow: password
     scopes:
       admin: ' Grants read and write access to administrative information'

@@ -208,7 +208,7 @@ var (
 		{Name: "customer", Type: field.TypeString},
 		{Name: "age", Type: field.TypeInt},
 		{Name: "location", Type: field.TypeString},
-		{Name: "information", Type: field.TypeString},
+		{Name: "serviceinfo", Type: field.TypeString},
 		{Name: "datetime", Type: field.TypeTime},
 		{Name: "distance_disid", Type: field.TypeInt, Nullable: true},
 		{Name: "urgent_urgentid", Type: field.TypeInt, Nullable: true},

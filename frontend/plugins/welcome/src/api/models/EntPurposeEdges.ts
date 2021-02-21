@@ -60,3 +60,5 @@ export function EntPurposeEdgesToJSON(value?: EntPurposeEdges | null): any {
         'carcheckinout': value.carcheckinout === undefined ? undefined : ((value.carcheckinout as Array<any>).map(EntCarCheckInOutToJSON)),
     };
 }
+
+

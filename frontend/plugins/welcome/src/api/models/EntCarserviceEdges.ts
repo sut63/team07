@@ -84,3 +84,5 @@ export function EntCarserviceEdgesToJSON(value?: EntCarserviceEdges | null): any
         'userid': EntUserToJSON(value.userid),
     };
 }
+
+

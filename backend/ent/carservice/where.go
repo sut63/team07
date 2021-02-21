@@ -114,10 +114,10 @@ func Location(v string) predicate.Carservice {
 	})
 }
 
-// Information applies equality check predicate on the "information" field. It's identical to InformationEQ.
-func Information(v string) predicate.Carservice {
+// Serviceinfo applies equality check predicate on the "serviceinfo" field. It's identical to ServiceinfoEQ.
+func Serviceinfo(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldInformation), v))
+		s.Where(sql.EQ(s.C(FieldServiceinfo), v))
 	})
 }
 
@@ -426,22 +426,22 @@ func LocationContainsFold(v string) predicate.Carservice {
 	})
 }
 
-// InformationEQ applies the EQ predicate on the "information" field.
-func InformationEQ(v string) predicate.Carservice {
+// ServiceinfoEQ applies the EQ predicate on the "serviceinfo" field.
+func ServiceinfoEQ(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldInformation), v))
+		s.Where(sql.EQ(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationNEQ applies the NEQ predicate on the "information" field.
-func InformationNEQ(v string) predicate.Carservice {
+// ServiceinfoNEQ applies the NEQ predicate on the "serviceinfo" field.
+func ServiceinfoNEQ(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldInformation), v))
+		s.Where(sql.NEQ(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationIn applies the In predicate on the "information" field.
-func InformationIn(vs ...string) predicate.Carservice {
+// ServiceinfoIn applies the In predicate on the "serviceinfo" field.
+func ServiceinfoIn(vs ...string) predicate.Carservice {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -453,12 +453,12 @@ func InformationIn(vs ...string) predicate.Carservice {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldInformation), v...))
+		s.Where(sql.In(s.C(FieldServiceinfo), v...))
 	})
 }
 
-// InformationNotIn applies the NotIn predicate on the "information" field.
-func InformationNotIn(vs ...string) predicate.Carservice {
+// ServiceinfoNotIn applies the NotIn predicate on the "serviceinfo" field.
+func ServiceinfoNotIn(vs ...string) predicate.Carservice {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -470,70 +470,70 @@ func InformationNotIn(vs ...string) predicate.Carservice {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldInformation), v...))
+		s.Where(sql.NotIn(s.C(FieldServiceinfo), v...))
 	})
 }
 
-// InformationGT applies the GT predicate on the "information" field.
-func InformationGT(v string) predicate.Carservice {
+// ServiceinfoGT applies the GT predicate on the "serviceinfo" field.
+func ServiceinfoGT(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldInformation), v))
+		s.Where(sql.GT(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationGTE applies the GTE predicate on the "information" field.
-func InformationGTE(v string) predicate.Carservice {
+// ServiceinfoGTE applies the GTE predicate on the "serviceinfo" field.
+func ServiceinfoGTE(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldInformation), v))
+		s.Where(sql.GTE(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationLT applies the LT predicate on the "information" field.
-func InformationLT(v string) predicate.Carservice {
+// ServiceinfoLT applies the LT predicate on the "serviceinfo" field.
+func ServiceinfoLT(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldInformation), v))
+		s.Where(sql.LT(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationLTE applies the LTE predicate on the "information" field.
-func InformationLTE(v string) predicate.Carservice {
+// ServiceinfoLTE applies the LTE predicate on the "serviceinfo" field.
+func ServiceinfoLTE(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldInformation), v))
+		s.Where(sql.LTE(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationContains applies the Contains predicate on the "information" field.
-func InformationContains(v string) predicate.Carservice {
+// ServiceinfoContains applies the Contains predicate on the "serviceinfo" field.
+func ServiceinfoContains(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldInformation), v))
+		s.Where(sql.Contains(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationHasPrefix applies the HasPrefix predicate on the "information" field.
-func InformationHasPrefix(v string) predicate.Carservice {
+// ServiceinfoHasPrefix applies the HasPrefix predicate on the "serviceinfo" field.
+func ServiceinfoHasPrefix(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldInformation), v))
+		s.Where(sql.HasPrefix(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationHasSuffix applies the HasSuffix predicate on the "information" field.
-func InformationHasSuffix(v string) predicate.Carservice {
+// ServiceinfoHasSuffix applies the HasSuffix predicate on the "serviceinfo" field.
+func ServiceinfoHasSuffix(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldInformation), v))
+		s.Where(sql.HasSuffix(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationEqualFold applies the EqualFold predicate on the "information" field.
-func InformationEqualFold(v string) predicate.Carservice {
+// ServiceinfoEqualFold applies the EqualFold predicate on the "serviceinfo" field.
+func ServiceinfoEqualFold(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldInformation), v))
+		s.Where(sql.EqualFold(s.C(FieldServiceinfo), v))
 	})
 }
 
-// InformationContainsFold applies the ContainsFold predicate on the "information" field.
-func InformationContainsFold(v string) predicate.Carservice {
+// ServiceinfoContainsFold applies the ContainsFold predicate on the "serviceinfo" field.
+func ServiceinfoContainsFold(v string) predicate.Carservice {
 	return predicate.Carservice(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldInformation), v))
+		s.Where(sql.ContainsFold(s.C(FieldServiceinfo), v))
 	})
 }
 

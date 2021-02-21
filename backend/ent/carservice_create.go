@@ -41,9 +41,9 @@ func (cc *CarserviceCreate) SetLocation(s string) *CarserviceCreate {
 	return cc
 }
 
-// SetInformation sets the information field.
-func (cc *CarserviceCreate) SetInformation(s string) *CarserviceCreate {
-	cc.mutation.SetInformation(s)
+// SetServiceinfo sets the serviceinfo field.
+func (cc *CarserviceCreate) SetServiceinfo(s string) *CarserviceCreate {
+	cc.mutation.SetServiceinfo(s)
 	return cc
 }
 
@@ -141,12 +141,12 @@ func (cc *CarserviceCreate) Save(ctx context.Context) (*Carservice, error) {
 			return nil, &ValidationError{Name: "location", err: fmt.Errorf("ent: validator failed for field \"location\": %w", err)}
 		}
 	}
-	if _, ok := cc.mutation.Information(); !ok {
-		return nil, &ValidationError{Name: "information", err: errors.New("ent: missing required field \"information\"")}
+	if _, ok := cc.mutation.Serviceinfo(); !ok {
+		return nil, &ValidationError{Name: "serviceinfo", err: errors.New("ent: missing required field \"serviceinfo\"")}
 	}
-	if v, ok := cc.mutation.Information(); ok {
-		if err := carservice.InformationValidator(v); err != nil {
-			return nil, &ValidationError{Name: "information", err: fmt.Errorf("ent: validator failed for field \"information\": %w", err)}
+	if v, ok := cc.mutation.Serviceinfo(); ok {
+		if err := carservice.ServiceinfoValidator(v); err != nil {
+			return nil, &ValidationError{Name: "serviceinfo", err: fmt.Errorf("ent: validator failed for field \"serviceinfo\": %w", err)}
 		}
 	}
 	if _, ok := cc.mutation.Datetime(); !ok {
@@ -236,13 +236,13 @@ func (cc *CarserviceCreate) createSpec() (*Carservice, *sqlgraph.CreateSpec) {
 		})
 		c.Location = value
 	}
-	if value, ok := cc.mutation.Information(); ok {
+	if value, ok := cc.mutation.Serviceinfo(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: carservice.FieldInformation,
+			Column: carservice.FieldServiceinfo,
 		})
-		c.Information = value
+		c.Serviceinfo = value
 	}
 	if value, ok := cc.mutation.Datetime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

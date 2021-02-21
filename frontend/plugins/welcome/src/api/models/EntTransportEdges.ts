@@ -92,3 +92,5 @@ export function EntTransportEdgesToJSON(value?: EntTransportEdges | null): any {
         'user': EntUserToJSON(value.user),
     };
 }
+
+

@@ -79,7 +79,7 @@ checkJobPosition();
              <TableCell align="center">{item.customer}</TableCell>
              <TableCell align="center">{item.age}</TableCell>
              <TableCell align="center">{item.location}</TableCell>
-             <TableCell align="center">{item.information}</TableCell>
+             <TableCell align="center">{item.serviceinfo}</TableCell>
              <TableCell align="center">{item.edges?.urgentid?.urgent}</TableCell>
              <TableCell align="center">{item.edges?.disid?.distance}</TableCell>
              <TableCell align="center">{item.edges?.userid?.name}</TableCell>

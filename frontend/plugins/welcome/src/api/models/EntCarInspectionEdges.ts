@@ -96,3 +96,5 @@ export function EntCarInspectionEdgesToJSON(value?: EntCarInspectionEdges | null
         'user': EntUserToJSON(value.user),
     };
 }
+
+

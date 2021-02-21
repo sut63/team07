@@ -172,6 +172,10 @@ export interface GetCarrepairrecordRequest {
     id: number;
 }
 
+export interface GetCarserviceByCustomerRequest {
+    customer?: string;
+}
+
 export interface GetDistanceRequest {
     id: number;
 }
@@ -989,6 +993,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getCarrepairrecord(requestParameters: GetCarrepairrecordRequest): Promise<EntCarRepairrecord> {
         const response = await this.getCarrepairrecordRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get carinspection by Customer
+     * Get a carinspection entity by Customer
+     */
+    async getCarserviceByCustomerRaw(requestParameters: GetCarserviceByCustomerRequest): Promise<runtime.ApiResponse<EntCarservice>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.customer !== undefined) {
+            queryParameters['customer'] = requestParameters.customer;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/searchcarservices`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntCarserviceFromJSON(jsonValue));
+    }
+
+    /**
+     * get carinspection by Customer
+     * Get a carinspection entity by Customer
+     */
+    async getCarserviceByCustomer(requestParameters: GetCarserviceByCustomerRequest): Promise<EntCarservice> {
+        const response = await this.getCarserviceByCustomerRaw(requestParameters);
         return await response.value();
     }
 

@@ -68,3 +68,5 @@ export function EntHospitalEdgesToJSON(value?: EntHospitalEdges | null): any {
         'send': value.send === undefined ? undefined : ((value.send as Array<any>).map(EntTransportToJSON)),
     };
 }
+
+
