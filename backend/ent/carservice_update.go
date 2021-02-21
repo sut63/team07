@@ -56,9 +56,9 @@ func (cu *CarserviceUpdate) SetLocation(s string) *CarserviceUpdate {
 	return cu
 }
 
-// SetInformation sets the information field.
-func (cu *CarserviceUpdate) SetInformation(s string) *CarserviceUpdate {
-	cu.mutation.SetInformation(s)
+// SetServiceinfo sets the serviceinfo field.
+func (cu *CarserviceUpdate) SetServiceinfo(s string) *CarserviceUpdate {
+	cu.mutation.SetServiceinfo(s)
 	return cu
 }
 
@@ -165,9 +165,9 @@ func (cu *CarserviceUpdate) Save(ctx context.Context) (int, error) {
 			return 0, &ValidationError{Name: "location", err: fmt.Errorf("ent: validator failed for field \"location\": %w", err)}
 		}
 	}
-	if v, ok := cu.mutation.Information(); ok {
-		if err := carservice.InformationValidator(v); err != nil {
-			return 0, &ValidationError{Name: "information", err: fmt.Errorf("ent: validator failed for field \"information\": %w", err)}
+	if v, ok := cu.mutation.Serviceinfo(); ok {
+		if err := carservice.ServiceinfoValidator(v); err != nil {
+			return 0, &ValidationError{Name: "serviceinfo", err: fmt.Errorf("ent: validator failed for field \"serviceinfo\": %w", err)}
 		}
 	}
 
@@ -266,11 +266,11 @@ func (cu *CarserviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: carservice.FieldLocation,
 		})
 	}
-	if value, ok := cu.mutation.Information(); ok {
+	if value, ok := cu.mutation.Serviceinfo(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: carservice.FieldInformation,
+			Column: carservice.FieldServiceinfo,
 		})
 	}
 	if value, ok := cu.mutation.Datetime(); ok {
@@ -428,9 +428,9 @@ func (cuo *CarserviceUpdateOne) SetLocation(s string) *CarserviceUpdateOne {
 	return cuo
 }
 
-// SetInformation sets the information field.
-func (cuo *CarserviceUpdateOne) SetInformation(s string) *CarserviceUpdateOne {
-	cuo.mutation.SetInformation(s)
+// SetServiceinfo sets the serviceinfo field.
+func (cuo *CarserviceUpdateOne) SetServiceinfo(s string) *CarserviceUpdateOne {
+	cuo.mutation.SetServiceinfo(s)
 	return cuo
 }
 
@@ -537,9 +537,9 @@ func (cuo *CarserviceUpdateOne) Save(ctx context.Context) (*Carservice, error) {
 			return nil, &ValidationError{Name: "location", err: fmt.Errorf("ent: validator failed for field \"location\": %w", err)}
 		}
 	}
-	if v, ok := cuo.mutation.Information(); ok {
-		if err := carservice.InformationValidator(v); err != nil {
-			return nil, &ValidationError{Name: "information", err: fmt.Errorf("ent: validator failed for field \"information\": %w", err)}
+	if v, ok := cuo.mutation.Serviceinfo(); ok {
+		if err := carservice.ServiceinfoValidator(v); err != nil {
+			return nil, &ValidationError{Name: "serviceinfo", err: fmt.Errorf("ent: validator failed for field \"serviceinfo\": %w", err)}
 		}
 	}
 
@@ -636,11 +636,11 @@ func (cuo *CarserviceUpdateOne) sqlSave(ctx context.Context) (c *Carservice, err
 			Column: carservice.FieldLocation,
 		})
 	}
-	if value, ok := cuo.mutation.Information(); ok {
+	if value, ok := cuo.mutation.Serviceinfo(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: carservice.FieldInformation,
+			Column: carservice.FieldServiceinfo,
 		})
 	}
 	if value, ok := cuo.mutation.Datetime(); ok {

@@ -25,8 +25,8 @@ type Carservice struct {
 	Age int `json:"age,omitempty"`
 	// Location holds the value of the "location" field.
 	Location string `json:"location,omitempty"`
-	// Information holds the value of the "information" field.
-	Information string `json:"information,omitempty"`
+	// Serviceinfo holds the value of the "serviceinfo" field.
+	Serviceinfo string `json:"serviceinfo,omitempty"`
 	// Datetime holds the value of the "Datetime" field.
 	Datetime time.Time `json:"Datetime,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -99,7 +99,7 @@ func (*Carservice) scanValues() []interface{} {
 		&sql.NullString{}, // customer
 		&sql.NullInt64{},  // age
 		&sql.NullString{}, // location
-		&sql.NullString{}, // information
+		&sql.NullString{}, // serviceinfo
 		&sql.NullTime{},   // Datetime
 	}
 }
@@ -141,9 +141,9 @@ func (c *Carservice) assignValues(values ...interface{}) error {
 		c.Location = value.String
 	}
 	if value, ok := values[3].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field information", values[3])
+		return fmt.Errorf("unexpected type %T for field serviceinfo", values[3])
 	} else if value.Valid {
-		c.Information = value.String
+		c.Serviceinfo = value.String
 	}
 	if value, ok := values[4].(*sql.NullTime); !ok {
 		return fmt.Errorf("unexpected type %T for field Datetime", values[4])
@@ -218,8 +218,8 @@ func (c *Carservice) String() string {
 	builder.WriteString(fmt.Sprintf("%v", c.Age))
 	builder.WriteString(", location=")
 	builder.WriteString(c.Location)
-	builder.WriteString(", information=")
-	builder.WriteString(c.Information)
+	builder.WriteString(", serviceinfo=")
+	builder.WriteString(c.Serviceinfo)
 	builder.WriteString(", Datetime=")
 	builder.WriteString(c.Datetime.Format(time.ANSIC))
 	builder.WriteByte(')')

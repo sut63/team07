@@ -32,7 +32,7 @@ func (Carservice) Fields() []ent.Field {
 			}
 			return nil
 		}),
-		field.String("information").Validate(func(s string) error {
+		field.String("serviceinfo").Validate(func(s string) error {
 			match, _ := regexp.MatchString("^[ก-๙0-9a-zA-Z-\\s]+$",s)
 			if !match {
 				return errors.New("รูปแบบไม่ถูกต้อง")

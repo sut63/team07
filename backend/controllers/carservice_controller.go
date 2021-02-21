@@ -28,7 +28,7 @@ type Carservice struct {
 	Customer  string
 	Age		int
 	Location  string
-	Information  string 
+	Serviceinfo  string 
 	Datetime  string
 }
 
@@ -99,7 +99,7 @@ func (ctl *CarserviceController) CreateCarservice(c *gin.Context) {
 		SetCustomer(obj.Customer).
 		SetAge(obj.Age).
 		SetLocation(obj.Location).
-		SetInformation(obj.Information).
+		SetServiceinfo(obj.Serviceinfo).
 		Save(context.Background())
 	if err != nil {
 		fmt.Println(err)
@@ -151,6 +151,46 @@ func (ctl *CarserviceController) GetCarservice(c *gin.Context) {
 	}
 
 	c.JSON(200, cars)
+}
+
+// GetCarcarservicebysearch handles GET requests to retrieve a carservice entity
+// @Summary Get a carinspection entity by Customer
+// @Description get carinspection by Customer
+// @ID get-carservice-by-customer
+// @Produce  json
+// @Param customer query string false "Customer Search"
+// @Success 200 {object} ent.Carservice
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /searchcarservices [get]
+func (ctl *CarserviceController) GetCarcarservicebysearch(c *gin.Context) {
+	csearch := c.Query("customer")
+	
+	cs, err := ctl.client.Carservice.
+		Query().
+		WithUserid().
+		WithUrgentid().
+		WithDisid().
+		Where(carservice.CustomerContains(csearch)).
+		All(context.Background())
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if csearch == " " {
+		c.JSON(200, gin.H{
+			"data": nil,
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"data":    cs,
+	})
 }
 
 // ListCarservice handles request to get a list of carservice entities
@@ -226,11 +266,12 @@ func NewCarserviceController(router gin.IRouter, client *ent.Client) *Carservice
 // InitCarserviceController registers routes to the main engine
 func (ctl *CarserviceController) register() {
 	carservices := ctl.router.Group("/carservices")
-
+	cssu := ctl.router.Group("/searchcarservices")
 	carservices.GET("", ctl.ListCarservice)
 
 	// CRUD
 	carservices.GET(":id", ctl.GetCarservice)
 	carservices.POST("", ctl.CreateCarservice)
 	carservices.DELETE(":id", ctl.DeleteCarservice)
+	cssu.GET("", ctl.GetCarcarservicebysearch)
 }

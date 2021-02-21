@@ -57,17 +57,17 @@ export interface EntCarservice {
      */
     id?: number;
     /**
-     * Information holds the value of the "information" field.
-     * @type {string}
-     * @memberof EntCarservice
-     */
-    information?: string;
-    /**
      * Location holds the value of the "location" field.
      * @type {string}
      * @memberof EntCarservice
      */
     location?: string;
+    /**
+     * Serviceinfo holds the value of the "serviceinfo" field.
+     * @type {string}
+     * @memberof EntCarservice
+     */
+    serviceinfo?: string;
 }
 
 export function EntCarserviceFromJSON(json: any): EntCarservice {
@@ -85,8 +85,8 @@ export function EntCarserviceFromJSONTyped(json: any, ignoreDiscriminator: boole
         'customer': !exists(json, 'customer') ? undefined : json['customer'],
         'edges': !exists(json, 'edges') ? undefined : EntCarserviceEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'information': !exists(json, 'information') ? undefined : json['information'],
         'location': !exists(json, 'location') ? undefined : json['location'],
+        'serviceinfo': !exists(json, 'serviceinfo') ? undefined : json['serviceinfo'],
     };
 }
 
@@ -104,8 +104,8 @@ export function EntCarserviceToJSON(value?: EntCarservice | null): any {
         'customer': value.customer,
         'edges': EntCarserviceEdgesToJSON(value.edges),
         'id': value.id,
-        'information': value.information,
         'location': value.location,
+        'serviceinfo': value.serviceinfo,
     };
 }
 

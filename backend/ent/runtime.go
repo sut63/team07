@@ -8,8 +8,8 @@ import (
 	"github.com/team07/app/ent/ambulance"
 	"github.com/team07/app/ent/carcheckinout"
 	"github.com/team07/app/ent/carinspection"
-	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/carrepairrecord"
+	"github.com/team07/app/ent/carservice"
 	"github.com/team07/app/ent/distance"
 	"github.com/team07/app/ent/inspectionresult"
 	"github.com/team07/app/ent/jobposition"
@@ -112,24 +112,6 @@ func init() {
 			return nil
 		}
 	}()
-	carserviceFields := schema.Carservice{}.Fields()
-	_ = carserviceFields
-	// carserviceDescCustomer is the schema descriptor for customer field.
-	carserviceDescCustomer := carserviceFields[0].Descriptor()
-	// carservice.CustomerValidator is a validator for the "customer" field. It is called by the builders before save.
-	carservice.CustomerValidator = carserviceDescCustomer.Validators[0].(func(string) error)
-	// carserviceDescAge is the schema descriptor for age field.
-	carserviceDescAge := carserviceFields[1].Descriptor()
-	// carservice.AgeValidator is a validator for the "age" field. It is called by the builders before save.
-	carservice.AgeValidator = carserviceDescAge.Validators[0].(func(int) error)
-	// carserviceDescLocation is the schema descriptor for location field.
-	carserviceDescLocation := carserviceFields[2].Descriptor()
-	// carservice.LocationValidator is a validator for the "location" field. It is called by the builders before save.
-	carservice.LocationValidator = carserviceDescLocation.Validators[0].(func(string) error)
-	// carserviceDescInformation is the schema descriptor for information field.
-	carserviceDescInformation := carserviceFields[3].Descriptor()
-	// carservice.InformationValidator is a validator for the "information" field. It is called by the builders before save.
-	carservice.InformationValidator = carserviceDescInformation.Validators[0].(func(string) error)
 	carrepairrecordFields := schema.CarRepairrecord{}.Fields()
 	_ = carrepairrecordFields
 	// carrepairrecordDescPartrepair is the schema descriptor for partrepair field.
@@ -144,6 +126,24 @@ func init() {
 	carrepairrecordDescTechniciancomment := carrepairrecordFields[3].Descriptor()
 	// carrepairrecord.TechniciancommentValidator is a validator for the "techniciancomment" field. It is called by the builders before save.
 	carrepairrecord.TechniciancommentValidator = carrepairrecordDescTechniciancomment.Validators[0].(func(string) error)
+	carserviceFields := schema.Carservice{}.Fields()
+	_ = carserviceFields
+	// carserviceDescCustomer is the schema descriptor for customer field.
+	carserviceDescCustomer := carserviceFields[0].Descriptor()
+	// carservice.CustomerValidator is a validator for the "customer" field. It is called by the builders before save.
+	carservice.CustomerValidator = carserviceDescCustomer.Validators[0].(func(string) error)
+	// carserviceDescAge is the schema descriptor for age field.
+	carserviceDescAge := carserviceFields[1].Descriptor()
+	// carservice.AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	carservice.AgeValidator = carserviceDescAge.Validators[0].(func(int) error)
+	// carserviceDescLocation is the schema descriptor for location field.
+	carserviceDescLocation := carserviceFields[2].Descriptor()
+	// carservice.LocationValidator is a validator for the "location" field. It is called by the builders before save.
+	carservice.LocationValidator = carserviceDescLocation.Validators[0].(func(string) error)
+	// carserviceDescServiceinfo is the schema descriptor for serviceinfo field.
+	carserviceDescServiceinfo := carserviceFields[3].Descriptor()
+	// carservice.ServiceinfoValidator is a validator for the "serviceinfo" field. It is called by the builders before save.
+	carservice.ServiceinfoValidator = carserviceDescServiceinfo.Validators[0].(func(string) error)
 	distanceFields := schema.Distance{}.Fields()
 	_ = distanceFields
 	// distanceDescDistance is the schema descriptor for Distance field.

@@ -51,14 +51,10 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const check = {
-  customercheck : true
-}
-
 export default function Searchtable() {
   const classes = useStyles();
   const api = new DefaultApi();
-  const [carservices, setCarservices] = useState<EntCarservice[]>([]);
+  const [carservices, setCarservices] = useState([]);
   const [loading, setLoading] = useState(true);
   const profile = { givenName: 'ระบบบันทึกการใช้รถพยาบาล' };
   const [status, setStatus] = useState(false);
@@ -69,52 +65,49 @@ export default function Searchtable() {
   const [carservicesearch, setCarserviceSearch] = useState(String);
 
   useEffect(() => {
+
     const checkJobPosition = async () => {
       const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
       setLoading(false);
-      if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์" ) {
-        localStorage.setItem("userdata",JSON.stringify(null));
-        localStorage.setItem("jobpositiondata",JSON.stringify(null));
-        history.pushState("","","./");
-        window.location.reload(false);        
+      if (jobdata != "เจ้าหน้าที่โอเปอร์เรเตอร์") {
+        localStorage.setItem("userdata", JSON.stringify(null));
+        localStorage.setItem("jobpositiondata", JSON.stringify(null));
+        history.pushState("", "", "./");
+        window.location.reload(false);
       }
-      else{
-          setUser(Number(localStorage.getItem("userdata")))
+      else {
+        setUser(Number(localStorage.getItem("userdata")))
       }
     }
-  checkJobPosition();
+    checkJobPosition();
   }, [loading]);
 
 
 
   const SearchCarservice = async () => {
-    const res = await api.listCarservice({ offset: 0 });
-    const search = Carservicesearch(res);
-    setErrorMessege("ไม่พบข้อมูล");
+    const apiUrl = `http://localhost:8080/api/v1/searchcarservices?customer=${carservicesearch}`;
+    const requestOptions = {
+      method: 'GET',
+    };
+    fetch(apiUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.data)
+        setErrorMessege("ไม่พบข้อมูล");
         setAlertType("error");
         setCarservices([]);
-        if(search.length > 0){
-            Object.entries(check).map(([key, value]) =>{
-                if (value == true){
-                    setErrorMessege("พบข้อมูล");
-                    setAlertType("success");
-                    setCarservices(search);
-                }
-            })
+        if (data.data != null) {
+          if (data.data.length >= 1) {
+            setErrorMessege("พบข้อมูล");
+            setAlertType("success");
+            console.log(data.data)
+            setCarservices(data.data);
+          }
         }
 
         setStatus(true);
+      });
   }
-
-  const Carservicesearch = (res: any) => {
-    const data = res.filter((filter: EntCarservice) => filter?.customer?.includes(carservicesearch))
-    if (data.length != 0 && carservicesearch != "") {
-        return data;
-    }
-    else{
-      return data;
-        }
-    }
 
   const handleSearchChange = (event: any) => {
     setCarserviceSearch(event.target.value as string);
@@ -122,28 +115,28 @@ export default function Searchtable() {
 
   return (
     <Page theme={pageTheme.library}>
-     <Header
-       title={`ท่านกำลังใช้งาน ${profile.givenName || ':)'}`}
-       subtitle="สวัสดีครับท่านสมาชิกชมรมคนชอบรถพยาบาล"
-     ><Link component={RouterLink} to="/Carservicemain">
-     <Button variant="contained" color="primary" >
-       ย้อนกลับ
+      <Header
+        title={`ท่านกำลังใช้งาน ${profile.givenName || ':)'}`}
+        subtitle="สวัสดีครับท่านสมาชิกชมรมคนชอบรถพยาบาล"
+      ><Link component={RouterLink} to="/Carservicemain">
+          <Button variant="contained" color="primary" >
+            ย้อนกลับ
      </Button>
-   </Link>
-   </Header>
-     <Content>
+        </Link>
+      </Header>
+      <Content>
         <ContentHeader title="ค้นหาบันทึกการใช้รถพยาบาล">
-        {status ? (
-                        <div>
-                            {alerttype != "" ? (
-                                <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
-                                    {errormessege}
-                                </Alert>
-                            ) : null}
-                        </div>
-                    ) : null}
+          {status ? (
+            <div>
+              {alerttype != "" ? (
+                <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
+                  {errormessege}
+                </Alert>
+              ) : null}
+            </div>
+          ) : null}
         </ContentHeader>
-  
+
         <div className={classes.paper}><strong>ค้นหาชื่อผู้ใช้บริการ (เว้นว่าง เพื่อแสดงข้อมูลทั้งหมด)</strong></div>
         <TextField className={classes.textField}
           style={{ width: 400, marginLeft: 20, marginRight: -10 }}
@@ -183,17 +176,19 @@ export default function Searchtable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {carservices.map((item: any) => (
+              {carservices.map((item : any) => (
                 <TableRow key={item.id}>
                   <TableCell align="center">{item.id}</TableCell>
                   <TableCell align="center">{item.customer}</TableCell>
                   <TableCell align="center">{item.age}</TableCell>
                   <TableCell align="center">{item.location}</TableCell>
-                  <TableCell align="center">{item.information}</TableCell>
-                  <TableCell align="center">{item.edges?.urgentid?.urgent}</TableCell>
-                  <TableCell align="center">{item.edges?.disid?.distance}</TableCell>
-                  <TableCell align="center">{item.edges?.userid?.name}</TableCell>
-                  <TableCell align="center">{moment(item.datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
+                  <TableCell align="center">{item.serviceinfo}</TableCell>
+                  <TableCell align="center">{item.edges?.Urgentid?.urgent}</TableCell>
+                  <TableCell align="center">{item.edges?.Disid?.Distance}</TableCell>
+                  <TableCell align="center">{item.edges?.Userid?.name}</TableCell>
+                  <TableCell align="center">{moment(item.Datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
+                  <TableCell align="center">
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

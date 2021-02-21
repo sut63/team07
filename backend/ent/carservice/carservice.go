@@ -13,8 +13,8 @@ const (
 	FieldAge = "age"
 	// FieldLocation holds the string denoting the location field in the database.
 	FieldLocation = "location"
-	// FieldInformation holds the string denoting the information field in the database.
-	FieldInformation = "information"
+	// FieldServiceinfo holds the string denoting the serviceinfo field in the database.
+	FieldServiceinfo = "serviceinfo"
 	// FieldDatetime holds the string denoting the datetime field in the database.
 	FieldDatetime = "datetime"
 
@@ -56,7 +56,7 @@ var Columns = []string{
 	FieldCustomer,
 	FieldAge,
 	FieldLocation,
-	FieldInformation,
+	FieldServiceinfo,
 	FieldDatetime,
 }
 
@@ -74,6 +74,6 @@ var (
 	AgeValidator func(int) error
 	// LocationValidator is a validator for the "location" field. It is called by the builders before save.
 	LocationValidator func(string) error
-	// InformationValidator is a validator for the "information" field. It is called by the builders before save.
-	InformationValidator func(string) error
+	// ServiceinfoValidator is a validator for the "serviceinfo" field. It is called by the builders before save.
+	ServiceinfoValidator func(string) error
 )

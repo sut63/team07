@@ -1665,6 +1665,50 @@ var doc = `{
                 }
             }
         },
+        "/searchcarservices": {
+            "get": {
+                "description": "get carinspection by Customer",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carinspection entity by Customer",
+                "operationId": "get-carservice-by-customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer Search",
+                        "name": "customer",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Carservice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/transports": {
             "get": {
                 "description": "list transport entities",
@@ -2129,10 +2173,10 @@ var doc = `{
                 "distanceID": {
                     "type": "integer"
                 },
-                "information": {
+                "location": {
                     "type": "string"
                 },
-                "location": {
+                "serviceinfo": {
                     "type": "string"
                 },
                 "urgentID": {
@@ -2468,12 +2512,12 @@ var doc = `{
                     "description": "ID of the ent.",
                     "type": "integer"
                 },
-                "information": {
-                    "description": "Information holds the value of the \"information\" field.",
-                    "type": "string"
-                },
                 "location": {
                     "description": "Location holds the value of the \"location\" field.",
+                    "type": "string"
+                },
+                "serviceinfo": {
+                    "description": "Serviceinfo holds the value of the \"serviceinfo\" field.",
                     "type": "string"
                 }
             }
@@ -2919,7 +2963,6 @@ var doc = `{
         "OAuth2Application": {
             "type": "oauth2",
             "flow": "application",
-            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",
@@ -2938,7 +2981,6 @@ var doc = `{
         "OAuth2Password": {
             "type": "oauth2",
             "flow": "password",
-            "authorizationUrl": "",
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
                 "admin": " Grants read and write access to administrative information",

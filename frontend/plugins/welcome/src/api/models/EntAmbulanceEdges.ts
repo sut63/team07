@@ -132,3 +132,5 @@ export function EntAmbulanceEdgesToJSON(value?: EntAmbulanceEdges | null): any {
         'hasuser': EntUserToJSON(value.hasuser),
     };
 }
+
+
