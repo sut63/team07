@@ -1711,12 +1711,12 @@ var doc = `{
         },
         "/searchambulances": {
             "get": {
-                "description": "get ambulance by Ambulance",
+                "description": "get ambulance by Search",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a ambulance entity by Ambulance",
-                "operationId": "get-ambulance-by-ambulance",
+                "summary": "Get a ambulance entity by Search",
+                "operationId": "get-ambulance-by-search",
                 "parameters": [
                     {
                         "type": "string",
@@ -1726,7 +1726,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "description": "Result Search",
+                        "description": "Status Search",
                         "name": "status",
                         "in": "query"
                     }

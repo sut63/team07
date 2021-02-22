@@ -166,41 +166,78 @@ func (ctl *AmbulanceController) GetAmbulance(c *gin.Context) {
 	c.JSON(200, am)
 }
 
-// GetAmbulanceSearch handles GET requests to retrieve a ambulance entity
-// @Summary Get a ambulance entity by Ambulance
-// @Description get ambulance by Ambulance
-// @ID get-ambulance-by-ambulance
+// GetAmbulanceBySearch handles GET requests to retrieve a ambulance entity
+// @Summary Get a ambulance entity by Search
+// @Description get ambulance by Search
+// @ID get-ambulance-by-search
 // @Produce  json
 // @Param ambulance query string false "Ambulance Search"
-// @Param status query int false "Result Search"
+// @Param status query int false "Status Search"
 // @Success 200 {object} ent.Ambulance
 // @Failure 400 {object} gin.H
 // @Failure 404 {object} gin.H
 // @Failure 500 {object} gin.H
 // @Router /searchambulances [get]
-func (ctl *AmbulanceController) GetAmbulanceSearch(c *gin.Context) {
+func (ctl *AmbulanceController) GetAmbulanceBySearch(c *gin.Context) {
 	asearch := c.Query("ambulance")
 	irsearch, err := strconv.ParseInt(c.Query("status"), 10, 64)
 
-	irstring := ""
-	ir, err := ctl.client.InspectionResult.
-		Query().
-		Where(inspectionresult.IDEQ(int(irsearch))).
-		Only(context.Background())
-
-	if ir != nil {
-		irstring = ir.ResultName
-	}
-
-	am, err := ctl.client.Ambulance.
+	
+	if asearch != "" && irsearch != 0 {
+		am, err := ctl.client.Ambulance.
+			Query().
+			WithHasstatus().
+			WithHasbrand().
+			WithHasuser().
+			WithHasinsurance().
+			Where(ambulance.And(ambulance.CarregistrationContains(asearch),ambulance.HasHasstatusWith(inspectionresult.IDEQ(int(irsearch))))).
+			All(context.Background())
+			if err != nil {
+				c.JSON(404, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
+			c.JSON(200, gin.H{
+				"data":    am,
+			})
+	  } else if irsearch != 0 {
+		am, err := ctl.client.Ambulance.
 		Query().
 		WithHasstatus().
 		WithHasbrand().
 		WithHasuser().
-        WithHasinsurance().
-		Where(ambulance.CarregistrationContains(asearch)).
-		Where(ambulance.HasHasstatusWith(inspectionresult.ResultName(irstring))).
+		WithHasinsurance().
+		Where(ambulance.HasHasstatusWith(inspectionresult.IDEQ(int(irsearch)))).
 		All(context.Background())
+		if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	} 
+		c.JSON(200, gin.H{
+			"data":    am,
+		})
+	  }  else if asearch != "" {
+		am, err := ctl.client.Ambulance.
+		Query().
+		WithHasstatus().
+		WithHasbrand().
+		WithHasuser().
+		WithHasinsurance().
+		Where(ambulance.CarregistrationContains(asearch)).
+		All(context.Background())
+		if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	} 
+		c.JSON(200, gin.H{
+			"data":    am,
+		})
+	  }
 	if err != nil {
 		c.JSON(404, gin.H{
 			"error": err.Error(),
@@ -215,9 +252,6 @@ func (ctl *AmbulanceController) GetAmbulanceSearch(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"data":    am,
-	})
 }
 
 
@@ -300,5 +334,5 @@ func (ctl *AmbulanceController) register() {
 	ambulances.GET(":id", ctl.GetAmbulance)
 	ambulances.POST("", ctl.CreateAmbulance)
 	ambulances.DELETE(":id", ctl.DeleteAmbulance)
-	searchambulance.GET("", ctl.GetAmbulanceSearch)
+	searchambulance.GET("", ctl.GetAmbulanceBySearch)
 }
