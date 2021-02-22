@@ -993,6 +993,35 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a carcheckinout entity by ID
+  /carcheckinoutsearch:
+    get:
+      description: get carcheckinout by Ambulance
+      operationId: get-carcheckinout
+      parameters:
+      - description: Ambulance search
+        in: query
+        name: ambulance
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.CarCheckInOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a carcheckinout entity by Ambulance
   /carinspections:
     get:
       description: list carinspection entities
