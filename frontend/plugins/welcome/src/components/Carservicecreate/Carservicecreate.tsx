@@ -157,7 +157,7 @@ const handleLocationChange = (event: React.ChangeEvent<{ value: any }>) => {
 const handleServiceinfoChange = (event: React.ChangeEvent<{ value: any }>) => {
   const { value } = event.target;
     const validateValue = value
-    checkpattern('information', validateValue)
+    checkpattern('serviceinfo', validateValue)
   setServiceinfo(event.target.value as string);
 };
 
@@ -206,7 +206,7 @@ const checkpattern = (id: string, value:string) => {
       validateLocation(value) ? setLocationError('') : setLocationError('กรุณากรอกที่อยู่ให้ถูกต้อง');
     return;
       case 'serviceinfo':
-      validateServiceinfo(value) ? setServiceinfoError('') : setServiceinfoError('กรุณากรอกสาเหตุการใช้รถให้ถูกต้องให้ถูกต้อง');
+      validateServiceinfo(value) ? setServiceinfoError('') : setServiceinfoError('กรุณากรอกรายละเอียดการใช้รถให้ถูกต้อง');
     return;
     default:
       return;
