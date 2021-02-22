@@ -65,15 +65,12 @@ const Toast = Swal.mixin({
 
 export default function ComponentsTable() {
 const [carstatuses, setCarstatuses] = useState<EntInspectionResult[]>([]);
+const [ambulances, setAmbulances] = useState<EntAmbulance[]>([]);
  const [carstatusid, setcarstatus] = useState(Number);
  const classes = useStyles();
  const api = new DefaultApi();
  const [loading, setLoading] = useState(true);
  const [search, setSearch] = useState(false);
- const [checktwofield, settwofield] = useState(false);
- const [checkregistration, setregistrations] = useState(false);
- const [checkcarstatus, setcarstatuss] = useState(false);
- const [ambulance, setAmbulance] = useState<EntAmbulance[]>([]);
  const [userid, setUser] = useState(Number);
  const [registration, setregistration] = useState(String);
  const [users, setUsers] = useState<EntUser[]>([]);
@@ -88,12 +85,6 @@ const [carstatuses, setCarstatuses] = useState<EntInspectionResult[]>([]);
 }
 
  useEffect(() => {
-   const getAmbulances = async () => {
-     const res = await api.listAmbulance();
-     setLoading(false);
-     setAmbulance(res);
-   };
-   getAmbulances();
    const getCarstatuses = async () => {
  
     const ins = await api.listInspectionresult();
@@ -127,17 +118,11 @@ checkJobPosition();
 
 
  const statushandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-   setSearch(false);
-   settwofield(false);
-   setcarstatuss(false);
-   setregistrations(false);
+  
   setcarstatus(event.target.value as number);
 };
 const Registrationhandlehange = (event: React.ChangeEvent<{  value: unknown }>) => {
-  setSearch(false);
-  settwofield(false);
-  setcarstatuss(false);
-  setregistrations(false);
+ 
   setregistration(event.target.value as string);
   
 };
@@ -145,60 +130,39 @@ const Registrationhandlehange = (event: React.ChangeEvent<{  value: unknown }>) 
 const cleardata = () =>{
   setcarstatus(0);
   setregistration("");
-  setSearch(false);
-   settwofield(false);
-   setcarstatuss(false);
-   setregistrations(false);
-  setSearch(false);
   
 }
 
-const checkcar =() => {
-   var check = false;
-   if(carstatusid == 0 && registration == ""){
+const SearchCarInspection = async () => {
+  if(carstatusid == 0 && registration == ""){
     alertMessage("info","แสดงข้อมูลรถทั้งหมดในระบบ");
-    check = true;
+    const res = await api.listAmbulance();
+            setSearch(true);
+            setAmbulances(res);
    }
    else{
-  ambulance.map(item => {
-    if(registration != "" && carstatusid != 0){
-   if(item.edges?.Hasstatus?.id == carstatusid && item.carregistration?.includes(registration)){
-    settwofield(true);
-    alertMessage("success","พบข้อมูลที่ค้นหา");
-    check = true;
+  const apiUrl = `http://localhost:8080/api/v1/searchambulances?ambulance=${registration}&status=${carstatusid}`;
+  const requestOptions = {
+      method: 'GET',
+  };
+  fetch(apiUrl, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+          console.log(data.data)
+          alertMessage("warning","ไม่พบข้อมูลที่ค้นหา")
+          setAmbulances([]);
+          if (data.data != null) {
+              if(data.data.length >= 1) {
+                alertMessage("success","พบข้อมูลที่ค้นหา")
+                  console.log(data.data)
+                  setAmbulances(data.data);
+              }
+          }
 
-   }
-  
-   
-  }
-  else if(carstatusid != 0){
-    if(item.edges?.Hasstatus?.id === carstatusid){
-      setcarstatuss(true);
-      alertMessage("success","พบข้อมูลที่ค้นหา");
-      check = true;
-     }
-  
-     
-  }
-  else if(registration != ""){
-    if(item.carregistration?.includes(registration)){
-      setregistrations(true);
-      alertMessage("success","พบข้อมูลที่ค้นหา");
-      check = true;
-     }
-     
-  }
- 
-})
+      
+      });
+    }
 }
- if(!check){
-  alertMessage("error","ไม่พบข้อมูลที่ค้นหา");
- }
-
- 
-};
-
-
 
 
 
@@ -311,8 +275,7 @@ const checkcar =() => {
             <div></div>
             <Button
              onClick={() => {
-              checkcar();
-              setSearch(true);
+              SearchCarInspection();
               
             }}  
             endIcon={<SearchTwoToneIcon />}
@@ -361,10 +324,8 @@ const checkcar =() => {
     <Grid container  justify="center">
      <Grid item xs={12} md={10}>
       <Paper>
-      {search? (
-                     <div>
-                     {  checktwofield? (
-                          <TableContainer component={Paper}>
+        {search ?(
+      <TableContainer component={Paper}>
                           <Table className={classes.table} aria-label="simple table">
                             <TableHead>
                               <TableRow>
@@ -381,7 +342,7 @@ const checkcar =() => {
                             </TableHead>
                             <TableBody>
                      
-                              {ambulance.filter((filter: any) => filter.edges.Hasstatus.id == carstatusid && filter.carregistration.includes(registration)).map((item: any)=> (
+                              {ambulances.map((item: any)=> (
                                 <TableRow key={item.id}>
                                   <TableCell align="center">{item.id}</TableCell>
                                   <TableCell align="center">{item.carregistration}</TableCell>
@@ -389,7 +350,7 @@ const checkcar =() => {
                                   <TableCell align="center">{item.enginepower}</TableCell>
                                   <TableCell align="center">{item.displacement}</TableCell>
                                   <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
-                                  <TableCell align="center">{item.edges?.Hasstatus?.resultName}</TableCell>
+                                  <TableCell align="center">{item.edges.Hasstatus.resultName}</TableCell>
                                   <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>
                                   <TableCell align="center">{moment(item.registerat).format('DD/MM/YYYY HH.mm น.')}</TableCell>
                                   
@@ -398,125 +359,40 @@ const checkcar =() => {
                             </TableBody>
                           </Table>
                         </TableContainer>
-                     ) : (checkregistration) ?
-                      <TableContainer component={Paper}>
-                      <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell align="center">ลำดับ</TableCell>
-                            <TableCell align="center">ทะเบียนรถ</TableCell>
-                            <TableCell align="center">แบรนด์รถ</TableCell>
-                            <TableCell align="center">เครื่องยนต์</TableCell>
-                            <TableCell align="center">ความจุตัวถัง</TableCell>
-                            <TableCell align="center">บริษัทประกัน</TableCell>
-                            <TableCell align="center">สถานะ</TableCell>
-                            <TableCell align="center">เจ้าหน้าที่</TableCell>
-                            <TableCell align="center">วันที่</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                 
-                        {ambulance.filter((filter: any) => filter.carregistration.includes(registration) ).map((item: any)=> (
-                            <TableRow key={item.id}>
-                              <TableCell align="center">{item.id}</TableCell>
-                              <TableCell align="center">{item.carregistration}</TableCell>
-                              <TableCell align="center">{item.edges?.Hasbrand?.brand}</TableCell>
-                              <TableCell align="center">{item.enginepower}</TableCell>
-                              <TableCell align="center">{item.displacement}</TableCell>
-                              <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
-                              <TableCell align="center">{item.edges?.Hasstatus?.resultName}</TableCell>
-                              <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>
-                              <TableCell align="center">{moment(item.registerat).format('DD/MM/YYYY HH.mm น.')}</TableCell>
-                              
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                      :(checkcarstatus) ?
-                        <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="center">ลำดับ</TableCell>
-                              <TableCell align="center">ทะเบียนรถ</TableCell>
-                              <TableCell align="center">แบรนด์รถ</TableCell>
-                              <TableCell align="center">เครื่องยนต์</TableCell>
-                              <TableCell align="center">ความจุตัวถัง</TableCell>
-                              <TableCell align="center">บริษัทประกัน</TableCell>
-                              <TableCell align="center">สถานะ</TableCell>
-                              <TableCell align="center">เจ้าหน้าที่</TableCell>
-                              <TableCell align="center">วันที่</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                   
-                            {ambulance.filter((filter: any) => filter.edges.Hasstatus.id == carstatusid ).map((item: any)=> (
-                              <TableRow key={item.id}>
-                                <TableCell align="center">{item.id}</TableCell>
-                                <TableCell align="center">{item.carregistration}</TableCell>
-                                <TableCell align="center">{item.edges?.Hasbrand?.brand}</TableCell>
-                                <TableCell align="center">{item.enginepower}</TableCell>
-                                <TableCell align="center">{item.displacement}</TableCell>
-                                <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
-                                <TableCell align="center">{item.edges?.Hasstatus?.resultName}</TableCell>
-                                <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>
-                                <TableCell align="center">{moment(item.registerat).format('DD/MM/YYYY HH.mm น.')}</TableCell>
-                                
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                        :carstatusid == 0 && registration =="" ? (
-                          <div>
-                              <TableContainer component={Paper}>
-       <Table className={classes.table} aria-label="simple table">
-         <TableHead>
-           <TableRow>
-             <TableCell align="center">ลำดับ</TableCell>
-             <TableCell align="center">ทะเบียนรถ</TableCell>
-             <TableCell align="center">แบรนด์รถ</TableCell>
-             <TableCell align="center">เครื่องยนต์</TableCell>
-             <TableCell align="center">ความจุตัวถัง</TableCell>
-             <TableCell align="center">บริษัทประกัน</TableCell>
-             <TableCell align="center">สถานะ</TableCell>
-             <TableCell align="center">เจ้าหน้าที่</TableCell>
-             <TableCell align="center">วันที่</TableCell>
-             
-           </TableRow>
-         </TableHead>
-         <TableBody>
-  
-           {ambulance.map((item:any )=> (
-             <TableRow key={item.id}>
-               <TableCell align="center">{item.id}</TableCell>
-               <TableCell align="center">{item.carregistration}</TableCell>
-               <TableCell align="center">{item.edges?.Hasbrand?.brand}</TableCell>
-               <TableCell align="center">{item.enginepower}</TableCell>
-               <TableCell align="center">{item.displacement}</TableCell>
-               <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
-               <TableCell align="center">{item.edges?.Hasstatus?.resultName}</TableCell>
-               <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>
-               <TableCell align="center">{moment(item.registerat).format('DD/MM/YYYY HH.mm น.')}</TableCell>
-              
-             </TableRow>
-           ))}
-         </TableBody>
-       </Table>
-     </TableContainer>
-                              
-                          </div>
-                      ) : null}
-                      
-                      
-                    
-                     
-                     </div>
-                  
+        ):<TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell  align="center">ลำดับ</TableCell>
+              <TableCell align="center">ทะเบียนรถ</TableCell>
+              <TableCell align="center">แบรนด์รถ</TableCell>
+              <TableCell align="center">เครื่องยนต์</TableCell>
+              <TableCell align="center">ความจุตัวถัง</TableCell>
+              <TableCell align="center">บริษัทประกัน</TableCell>
+              <TableCell align="center">สถานะ</TableCell>
+              <TableCell align="center">เจ้าหน้าที่</TableCell>
+              <TableCell align="center">วันที่</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+   
+            {ambulances.map((item: any)=> (
+              <TableRow key={item.id}>
+                <TableCell align="center">{item.id}</TableCell>
+                <TableCell align="center">{item.carregistration}</TableCell>
+                <TableCell align="center">{item.edges?.Hasbrand?.brand}</TableCell>
+                <TableCell align="center">{item.enginepower}</TableCell>
+                <TableCell align="center">{item.displacement}</TableCell>
+                <TableCell align="center">{item.edges?.Hasinsurance?.company}</TableCell>
+                <TableCell align="center">{item.edges.Hasstatus.result_name}</TableCell>
+                <TableCell align="center">{item.edges?.Hasuser?.name}</TableCell>
+                <TableCell align="center">{moment(item.registerat).format('DD/MM/YYYY HH.mm น.')}</TableCell>
                 
-                
-                    ) : null}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>}
       </Paper>
      </Grid>
      </Grid>
