@@ -494,6 +494,50 @@ var doc = `{
                 }
             }
         },
+        "/carcheckinoutsearch": {
+            "get": {
+                "description": "get carcheckinout by Ambulance",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carcheckinout entity by Ambulance",
+                "operationId": "get-carcheckinout",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ambulance search",
+                        "name": "ambulance",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.CarCheckInOut"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/carinspections": {
             "get": {
                 "description": "list carinspection entities",

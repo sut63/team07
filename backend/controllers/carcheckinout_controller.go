@@ -8,10 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/team07/app/ent"
-	"github.com/team07/app/ent/user"
 	"github.com/team07/app/ent/ambulance"
-	"github.com/team07/app/ent/purpose"
 	"github.com/team07/app/ent/carcheckinout"
+	"github.com/team07/app/ent/purpose"
+	"github.com/team07/app/ent/user"
 )
 
 // CarCheckInOutController defines the struct for the carcheckinout controller
@@ -22,15 +22,15 @@ type CarCheckInOutController struct {
 
 // CarCheckInOut defines the struct for the carcheckinout
 type CarCheckInOut struct {
-	Ambulance   int
-	Name    	int
-	Purpose    	int
-	Place		string
-	Person		int
-	Distance	float64
-	Note   		string
-	Checkin     string
-	Checkout    string
+	Ambulance int
+	Name      int
+	Purpose   int
+	Place     string
+	Person    int
+	Distance  float64
+	Note      string
+	Checkin   string
+	Checkout  string
 }
 
 // CreateCarCheckInOut handles POST requests for adding carcheckinout entities
@@ -107,14 +107,14 @@ func (ctl *CarCheckInOutController) CreateCarCheckInOut(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(400, gin.H{
-			"error": err,
+			"error":  err,
 			"status": false,
 		})
 		return
 	}
 
 	c.JSON(200, gin.H{
-		"data": cio,
+		"data":   cio,
 		"status": true,
 	})
 }
@@ -151,6 +151,43 @@ func (ctl *CarCheckInOutController) GetCarCheckInOut(c *gin.Context) {
 	}
 
 	c.JSON(200, cio)
+}
+
+// GetCarCheckInOutsearch handles GET requests to retrieve a carcheckinout entity
+// @Summary Get a carcheckinout entity by Ambulance
+// @Description get carcheckinout by Ambulance
+// @ID get-carcheckinout
+// @Produce  json
+// @Param ambulance query string false "Ambulance search"
+// @Success 200 {object} ent.CarCheckInOut
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /carcheckinoutsearch [get]
+func (ctl *CarCheckInOutController) GetCarCheckInOutsearch(c *gin.Context) {
+	am := c.Query("ambulance")
+
+	cio, err := ctl.client.CarCheckInOut.
+		Query().
+		WithAmbulance().
+		Where(carcheckinout.HasAmbulanceWith(ambulance.Carregistration(am))).
+		All(context.Background())
+
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if am == "" {
+		c.JSON(200, gin.H{
+			"data": nil,
+		})
+	}
+	c.JSON(200, gin.H{
+		"data": cio,
+	})
 }
 
 // ListCarCheckInOut handles request to get a list of carcheckinout entities
@@ -245,10 +282,13 @@ func NewCarCheckInOutController(router gin.IRouter, client *ent.Client) *CarChec
 // InitCarCheckInOutController registers routes to the main engine
 func (ctl *CarCheckInOutController) register() {
 	carcheckinouts := ctl.router.Group("/carcheckinouts")
+	carcheckinoutsearch := ctl.router.Group("/carcheckinoutsearch")
 	carcheckinouts.GET("", ctl.ListCarCheckInOut)
 
 	// CRUD
 	carcheckinouts.POST("", ctl.CreateCarCheckInOut)
 	carcheckinouts.GET(":id", ctl.GetCarCheckInOut)
 	carcheckinouts.DELETE(":id", ctl.DeleteCarCheckInOut)
+
+	carcheckinoutsearch.GET("", ctl.GetCarCheckInOutsearch)
 }

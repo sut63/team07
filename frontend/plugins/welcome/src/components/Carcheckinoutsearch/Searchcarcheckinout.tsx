@@ -104,7 +104,8 @@ export default function Searchcarcheckinout() {
 
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState(true);
+  const [alerttype, setAlertType] = useState(String);
+  const [errormessege, setErrorMessege] = useState(String);
   const [search, setSearch] = useState(String);
 
   const [userid, setUser] = useState(Number);
@@ -152,25 +153,31 @@ export default function Searchcarcheckinout() {
     setUser(event.target.value as number);
   };
 
-  const getSearch = async () => {
-    const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
-    const carsearch = Searchcarinout(res);
-    setCarcheckinout(carsearch);
-  }
-
   const Searchcarinout = (res : any) =>{
-    const findsearch = res.filter((filter: EntCarCheckInOut) => filter.edges?.ambulance?.carregistration?.includes(search))
-    console.log(findsearch)
-    setStatus(true);
-    if (findsearch.length != 0){
-      setAlert(true);
-      return findsearch
-    }
-    else{
-      setAlert(false);
-      return res
-    }
-  };
+    const apiUrl = `http://localhost:8080/api/v1/carcheckinoutsearch?ambulance=${search}`;
+    const requestOptions = {
+      method: 'GET',
+  };  
+    fetch(apiUrl, requestOptions)
+      .then(response => response.json())
+        .then(data => {
+          console.log(data.data)
+          setErrorMessege("ไม่พบข้อมูล");
+          setAlertType("error");
+          setCarcheckinout([]);
+          if (data.data != null) {
+            if(data.data.length >= 1) {
+              setErrorMessege("พพบข้อมูล");
+              setAlertType("success");
+              console.log(data.data)
+              setCarcheckinout(data.data);
+          }
+      }
+
+      setStatus(true);
+  });
+
+}
 
   return (
  <Page theme={pageTheme.other}>
@@ -193,18 +200,14 @@ export default function Searchcarcheckinout() {
         <h3>{users.filter((filter: EntUser) => filter.id == userid).map((item: EntUser) => `${item.name} (${item.email})`)}</h3>
         &nbsp;&nbsp;&nbsp;&nbsp;
         {status ? (
-           <div>
-             {alert ? (
-               <Alert severity="success" onClose={() => {setStatus(false)}}>
-                พบข้อมูล
-               </Alert>
-             ) : (
-               <Alert severity="error" style={{ marginTop: 20 }} onClose={() => {setStatus(false)}}>
-                 ไม่พบข้อมูล
-               </Alert>
-             )}
-           </div>
-         ) : null}
+                        <div>
+                            {alerttype != "" ? (
+                                <Alert severity={alerttype} onClose={() => { setStatus(false) }}>
+                                    {errormessege}
+                                </Alert>
+                            ) : null}
+                        </div>
+                    ) : null}
         </ContentHeader>   
         <div className={classes.root}>
         <form noValidate autoComplete="off">
@@ -224,7 +227,7 @@ export default function Searchcarcheckinout() {
             &nbsp;&nbsp;&nbsp;&nbsp;
             <Button
                 onClick={() => {
-                  getSearch();
+                  Searchcarinout();
                 }}
                 variant="contained"
                 color="primary"
