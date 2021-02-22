@@ -1806,14 +1806,14 @@ paths:
       summary: Get a repairing entity by ID
   /searchambulances:
     get:
-      description: get ambulance by Ambulance
-      operationId: get-ambulance-by-ambulance
+      description: get ambulance by Search
+      operationId: get-ambulance-by-search
       parameters:
       - description: Ambulance Search
         in: query
         name: ambulance
         type: string
-      - description: Result Search
+      - description: Status Search
         in: query
         name: status
         type: integer
@@ -1836,7 +1836,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a ambulance entity by Ambulance
+      summary: Get a ambulance entity by Search
   /searchcarinspections:
     get:
       description: get carinspection by Search

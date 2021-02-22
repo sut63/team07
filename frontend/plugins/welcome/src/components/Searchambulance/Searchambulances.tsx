@@ -134,6 +134,7 @@ const cleardata = () =>{
 }
 
 const SearchCarInspection = async () => {
+  console.log(registration);
   if(carstatusid == 0 && registration == ""){
     alertMessage("info","แสดงข้อมูลรถทั้งหมดในระบบ");
     const res = await api.listAmbulance();
