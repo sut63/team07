@@ -1650,6 +1650,56 @@
                 }
             }
         },
+        "/searchambulances": {
+            "get": {
+                "description": "get ambulance by Ambulance",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a ambulance entity by Ambulance",
+                "operationId": "get-ambulance-by-ambulance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ambulance Search",
+                        "name": "ambulance",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Result Search",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Ambulance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/searchcarinspections": {
             "get": {
                 "description": "get carinspection by Search",
