@@ -166,6 +166,61 @@ func (ctl *AmbulanceController) GetAmbulance(c *gin.Context) {
 	c.JSON(200, am)
 }
 
+// GetAmbulanceSearch handles GET requests to retrieve a ambulance entity
+// @Summary Get a ambulance entity by Ambulance
+// @Description get ambulance by Ambulance
+// @ID get-ambulance-by-ambulance
+// @Produce  json
+// @Param ambulance query string false "Ambulance Search"
+// @Param status query int false "Result Search"
+// @Success 200 {object} ent.Ambulance
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /searchambulances [get]
+func (ctl *AmbulanceController) GetAmbulanceSearch(c *gin.Context) {
+	asearch := c.Query("ambulance")
+	irsearch, err := strconv.ParseInt(c.Query("status"), 10, 64)
+
+	irstring := ""
+	ir, err := ctl.client.InspectionResult.
+		Query().
+		Where(inspectionresult.IDEQ(int(irsearch))).
+		Only(context.Background())
+
+	if ir != nil {
+		irstring = ir.ResultName
+	}
+
+	am, err := ctl.client.Ambulance.
+		Query().
+		WithHasstatus().
+		WithHasbrand().
+		WithHasuser().
+        WithHasinsurance().
+		Where(ambulance.CarregistrationContains(asearch)).
+		Where(ambulance.HasHasstatusWith(inspectionresult.ResultName(irstring))).
+		All(context.Background())
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if asearch == "" && irsearch == 0 {
+		c.JSON(200, gin.H{
+			"data": nil,
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"data":    am,
+	})
+}
+
+
 // ListAmbulance handles request to get a list of ambulance entities
 // @Summary List ambulance entities
 // @Description list ambulance entities
@@ -238,11 +293,12 @@ func NewAmbulanceController(router gin.IRouter, client *ent.Client) *AmbulanceCo
 // InitAmbulanceController registers routes to the main engine
 func (ctl *AmbulanceController) register() {
 	ambulances := ctl.router.Group("/ambulances")
-
+    searchambulance := ctl.router.Group("/searchambulances")
 	ambulances.GET("", ctl.ListAmbulance)
 
 	// CRUD
 	ambulances.GET(":id", ctl.GetAmbulance)
 	ambulances.POST("", ctl.CreateAmbulance)
 	ambulances.DELETE(":id", ctl.DeleteAmbulance)
+	searchambulance.GET("", ctl.GetAmbulanceSearch)
 }
