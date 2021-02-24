@@ -1709,6 +1709,7 @@ var doc = `{
                 }
             }
         },
+<<<<<<< Updated upstream
         "/searchambulances": {
             "get": {
                 "description": "get ambulance by Search",
@@ -1717,6 +1718,16 @@ var doc = `{
                 ],
                 "summary": "Get a ambulance entity by Search",
                 "operationId": "get-ambulance-by-search",
+=======
+        "/searchtransports": {
+            "get": {
+                "description": "get transport by Ambulance",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a transport entity by Ambulance",
+                "operationId": "get-transport-by-ambulance",
+>>>>>>> Stashed changes
                 "parameters": [
                     {
                         "type": "string",
@@ -1726,6 +1737,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
+<<<<<<< Updated upstream
                         "description": "Status Search",
                         "name": "status",
                         "in": "query"
@@ -1828,6 +1840,16 @@ var doc = `{
                         "type": "string",
                         "description": "Customer Search",
                         "name": "customer",
+=======
+                        "description": "Send Search",
+                        "name": "send",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Receive Search",
+                        "name": "receive",
+>>>>>>> Stashed changes
                         "in": "query"
                     }
                 ],
@@ -1835,7 +1857,11 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
+<<<<<<< Updated upstream
                             "$ref": "#/definitions/ent.Carservice"
+=======
+                            "$ref": "#/definitions/ent.Transport"
+>>>>>>> Stashed changes
                         }
                     },
                     "400": {

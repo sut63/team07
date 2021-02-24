@@ -49,7 +49,7 @@ export default function CarInspectionSearchPage() {
     const classes = useStyles();
     const api = new DefaultApi();
     const profile = { givenName: 'ยินดีต้อนรับสู่ ระบบส่งตัวผู้ป่วย' };
-    const [transports, setTransports] = useState<EntTransport[]>([]);
+    const [transports, setTransports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState(false);
     const [alerttype, setAlertType] = useState(String);
@@ -108,81 +108,29 @@ export default function CarInspectionSearchPage() {
     
 
     const SearchTransport = async () => {
-        const res = await api.listTransport();
-        const ambulancesearch = AmbulanceSearch(res);
-        const sendsearch =  SendSearch(ambulancesearch);
-        const receivesearch =  ReceiveSearch(sendsearch);
-
-        setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
-        setAlertType("error");
-        setTransports([]);
-        if(receivesearch.length > 0){
-            Object.entries(searchcheck).map(([key, value]) =>{
-                if (value == true){
-                    setErrorMessege("พบข้อมูลที่ค้นหา");
-                    setAlertType("success");
-                    setTransports(receivesearch);
-                    console.log("testing")
+        const apiUrl = `http://localhost:8080/api/v1/searchtransprots?ambulance=${ambulancesearch}&send=${sendsearch}&receive=${receivesearch}`;
+        const requestOptions = {
+            method: 'GET',
+        };
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.data)
+                setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
+                setAlertType("error");
+                setTransports([]);
+                if (data.data != null) {
+                    if(data.data.length >= 1) {
+                        setErrorMessege("พบข้อมูลที่ค้นหา");
+                        setAlertType("success");
+                        console.log(data.data)
+                        setTransports(data.data);
+                    }
                 }
-            })
-        }
-        setStatus(true);
-        ResetSearchCheck();
-      
-    }
-    const ResetSearchCheck = () => {
-        searchcheck.ambulancesearchcheck = true;
-        searchcheck.receivecheck = true;
-        searchcheck.sendchcheck = true;
-    }
 
-    const AmbulanceSearch = (res: any) => {
-        const data = res.filter((filter: EntTransport) => filter.edges?.ambulance?.carregistration?.includes(ambulancesearch))
-        if (data.length != 0 && ambulancesearch != "") {
-            return data;
-        }
-        else {
-            searchcheck.ambulancesearchcheck = false;
-            if(ambulancesearch == ""){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
+                setStatus(true);
+            });
 
-    const SendSearch = (res: any) => {
-        const data = res.filter((filter: EntTransport) => filter.edges?.send?.id== sendsearch)
-        console.log(data);
-        if (data.length != 0 ) {
-            return data;
-        }
-        else {
-            searchcheck.receivecheck = false;
-            if(sendsearch == 0){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
-    const ReceiveSearch = (res: any) => {
-        const data = res.filter((filter: EntTransport) => filter.edges?.receive?.id == receivesearch)
-        console.log(data);
-        if (data.length != 0 ) {
-            return data;
-        }
-        else {
-            searchcheck.receivecheck = false;
-            if(receivesearch == 0){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
     }
 
     const SendhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -299,10 +247,10 @@ export default function CarInspectionSearchPage() {
                         <TableBody>
                             {transports.map((item: any) => (
                                 <TableRow key={item.id}>
-                                    <TableCell align="center">{item.edges.user.name}</TableCell>
-                                    <TableCell align="center">{item.edges.ambulance.carregistration}</TableCell>
-                                    <TableCell align="center">{item.edges?.send?.hospital}</TableCell>
-                                    <TableCell align="center">{item.edges?.receive?.hospital}</TableCell>
+                                    <TableCell align="center">{item.edges?.User?.name}</TableCell>
+                                    <TableCell align="center">{item.edges?.Ambulance?.carregistration}</TableCell>
+                                    <TableCell align="center">{item.edges?.Send?.hospital}</TableCell>
+                                    <TableCell align="center">{item.edges?.Receive?.hospital}</TableCell>
                                     <TableCell align="center">{item.symptom}</TableCell>
                                     <TableCell align="center">{item.drugallergy}</TableCell>
                                     <TableCell align="center">{item.note}</TableCell>
