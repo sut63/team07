@@ -157,7 +157,72 @@ func (ctl *TransportController) GetTransport(c *gin.Context) {
 
 	c.JSON(200, ts)
 }
+// GetTransportBySearch handles GET requests to retrieve a transport entity
+// @Summary Get a transport entity by Ambulance
+// @Description get transport by Ambulance
+// @ID get-transport-by-ambulance
+// @Produce  json
+// @Param ambulance query string false "Ambulance Search"
+// @Param send query int false "Send Search"
+// @Param receive query string false "Receive Search"
+// @Success 200 {object} ent.Transport
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /searchtransports [get]
+func (ctl *TransportController) GetTransportBySearch(c *gin.Context) {
+	asearch := c.Query("ambulance")
+	ssearch, err := strconv.ParseInt(c.Query("send"), 10, 64)
+	rsearch, err := strconv.ParseInt(c.Query("receive"), 10, 64)
 
+	sstring := ""
+	s, err := ctl.client.Hospital.
+		Query().
+		Where(hospital.IDEQ(int(ssearch))).
+		Only(context.Background())
+
+	if s != nil {
+		sstring = s.Hospital
+	}
+
+	rstring := ""
+	r, err := ctl.client.Hospital.
+		Query().
+		Where(hospital.IDEQ(int(rsearch))).
+		Only(context.Background())
+
+	if r != nil {
+		rstring = r.Hospital
+	}
+
+	ts, err := ctl.client.Transport.
+		Query().
+		WithAmbulance().
+		WithSend().
+		WithReceive().
+		WithUser().
+		Where(transport.HasSendWith(hospital.HospitalContains(sstring))).
+		Where(transport.HasReceiveWith(hospital.HospitalContains(rstring))).
+		Where(transport.HasAmbulanceWith(ambulance.CarregistrationContains(asearch))).
+		All(context.Background())
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if asearch == "" && ssearch == 0 && rsearch == 0 {
+		c.JSON(200, gin.H{
+			"data": nil,
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"data":    ts,
+	})
+}
 // ListTransport handles request to get a list of transport entities
 // @Summary List transport entities
 // @Description list transport entities
@@ -229,6 +294,7 @@ func NewTransportController(router gin.IRouter, client *ent.Client) *TransportCo
 // InitTransportController registers routes to the main engine
 func (ctl *TransportController) register() {
 	transports := ctl.router.Group("/transports")
+	searchtransport := ctl.router.Group("/searchtransprots")
 
 	transports.GET("", ctl.ListTransport)
 
@@ -236,5 +302,7 @@ func (ctl *TransportController) register() {
 	transports.GET(":id", ctl.GetTransport)
 	transports.POST("",ctl.CreateTransport)
 	transports.DELETE(":id", ctl.DeleteTransport)
+	
+	searchtransport.GET("", ctl.GetTransportBySearch)
 }
 
