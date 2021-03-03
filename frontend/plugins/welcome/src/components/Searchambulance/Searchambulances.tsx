@@ -130,6 +130,7 @@ const Registrationhandlehange = (event: React.ChangeEvent<{  value: unknown }>) 
 const cleardata = () =>{
   setcarstatus(0);
   setregistration("");
+  setAmbulances([]);
   
 }
 
