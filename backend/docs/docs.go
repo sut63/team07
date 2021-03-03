@@ -1665,7 +1665,78 @@ var doc = `{
                 }
             }
         },
+<<<<<<< Updated upstream
         "/searchcarrepairrecords": {
+=======
+<<<<<<< HEAD
+        "/searchambulances": {
+            "get": {
+                "description": "get ambulance by Search",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a ambulance entity by Search",
+                "operationId": "get-ambulance-by-search",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ambulance Search",
+                        "name": "ambulance",
+=======
+        "/searchcarrepairrecords": {
+            "get": {
+                "description": "get carrepairrecord by Carinspection",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carrepairrecord entity by Carinspection",
+                "operationId": "get-carrepairrecord-by-carinspection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Carinspection Search",
+                        "name": "carinspection",
+>>>>>>> 5c292f2... แก้ไขระบบค้นหาข้อมูลซ่อมบบำรุง - close #281
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+<<<<<<< HEAD
+                        "description": "Status Search",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Ambulance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/searchcarinspections": {
+>>>>>>> Stashed changes
             "get": {
                 "description": "get carrepairrecord by Carinspection",
                 "produces": [
@@ -1682,8 +1753,17 @@ var doc = `{
                     },
                     {
                         "type": "integer",
+<<<<<<< Updated upstream
                         "description": "Repairing Search",
                         "name": "repairing",
+=======
+                        "description": "Result Search",
+                        "name": "result",
+=======
+                        "description": "Repairing Search",
+                        "name": "repairing",
+>>>>>>> 5c292f2... แก้ไขระบบค้นหาข้อมูลซ่อมบบำรุง - close #281
+>>>>>>> Stashed changes
                         "in": "query"
                     },
                     {
@@ -1697,7 +1777,115 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
+<<<<<<< Updated upstream
                             "$ref": "#/definitions/ent.CarRepairrecord"
+=======
+<<<<<<< HEAD
+                            "$ref": "#/definitions/ent.CarInspection"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/searchcarservices": {
+            "get": {
+                "description": "get carinspection by Customer",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carinspection entity by Customer",
+                "operationId": "get-carservice-by-customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Customer Search",
+                        "name": "customer",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Carservice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/searchtransports": {
+            "get": {
+                "description": "get transport by Ambulance",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a transport entity by Ambulance",
+                "operationId": "get-transport-by-ambulance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ambulance Search",
+                        "name": "ambulance",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Send Search",
+                        "name": "send",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Receive Search",
+                        "name": "receive",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Transport"
+=======
+                            "$ref": "#/definitions/ent.CarRepairrecord"
+>>>>>>> 5c292f2... แก้ไขระบบค้นหาข้อมูลซ่อมบบำรุง - close #281
+>>>>>>> Stashed changes
                         }
                     },
                     "400": {
