@@ -114,18 +114,18 @@ func init() {
 	}()
 	carrepairrecordFields := schema.CarRepairrecord{}.Fields()
 	_ = carrepairrecordFields
-	// carrepairrecordDescPartrepair is the schema descriptor for partrepair field.
-	carrepairrecordDescPartrepair := carrepairrecordFields[1].Descriptor()
-	// carrepairrecord.PartrepairValidator is a validator for the "partrepair" field. It is called by the builders before save.
-	carrepairrecord.PartrepairValidator = carrepairrecordDescPartrepair.Validators[0].(func(string) error)
-	// carrepairrecordDescPrice is the schema descriptor for price field.
-	carrepairrecordDescPrice := carrepairrecordFields[2].Descriptor()
-	// carrepairrecord.PriceValidator is a validator for the "price" field. It is called by the builders before save.
-	carrepairrecord.PriceValidator = carrepairrecordDescPrice.Validators[0].(func(int) error)
-	// carrepairrecordDescTechniciancomment is the schema descriptor for techniciancomment field.
-	carrepairrecordDescTechniciancomment := carrepairrecordFields[3].Descriptor()
-	// carrepairrecord.TechniciancommentValidator is a validator for the "techniciancomment" field. It is called by the builders before save.
-	carrepairrecord.TechniciancommentValidator = carrepairrecordDescTechniciancomment.Validators[0].(func(string) error)
+	// carrepairrecordDescRepairdetail is the schema descriptor for repairdetail field.
+	carrepairrecordDescRepairdetail := carrepairrecordFields[1].Descriptor()
+	// carrepairrecord.RepairdetailValidator is a validator for the "repairdetail" field. It is called by the builders before save.
+	carrepairrecord.RepairdetailValidator = carrepairrecordDescRepairdetail.Validators[0].(func(string) error)
+	// carrepairrecordDescRepaircost is the schema descriptor for repaircost field.
+	carrepairrecordDescRepaircost := carrepairrecordFields[2].Descriptor()
+	// carrepairrecord.RepaircostValidator is a validator for the "repaircost" field. It is called by the builders before save.
+	carrepairrecord.RepaircostValidator = carrepairrecordDescRepaircost.Validators[0].(func(int) error)
+	// carrepairrecordDescCarmaintenance is the schema descriptor for carmaintenance field.
+	carrepairrecordDescCarmaintenance := carrepairrecordFields[3].Descriptor()
+	// carrepairrecord.CarmaintenanceValidator is a validator for the "carmaintenance" field. It is called by the builders before save.
+	carrepairrecord.CarmaintenanceValidator = carrepairrecordDescCarmaintenance.Validators[0].(func(string) error)
 	carserviceFields := schema.Carservice{}.Fields()
 	_ = carserviceFields
 	// carserviceDescCustomer is the schema descriptor for customer field.

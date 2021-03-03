@@ -156,6 +156,11 @@ export interface GetAmbulanceRequest {
     id: number;
 }
 
+export interface GetAmbulanceBySearchRequest {
+    ambulance?: string;
+    status?: number;
+}
+
 export interface GetCarbrandRequest {
     id: number;
 }
@@ -164,12 +169,28 @@ export interface GetCarcheckinoutRequest {
     id: number;
 }
 
+export interface GetCarcheckinoutsearchRequest {
+    ambulance?: string;
+}
+
 export interface GetCarinspectionRequest {
     id: number;
 }
 
+export interface GetCarinspectionBySearchRequest {
+    ambulance?: string;
+    result?: number;
+    user?: string;
+}
+
 export interface GetCarrepairrecordRequest {
     id: number;
+}
+
+export interface GetCarrepairrecordByCarinspectionRequest {
+    carinspection?: string;
+    repairing?: number;
+    user?: string;
 }
 
 export interface GetCarserviceByCustomerRequest {
@@ -202,6 +223,12 @@ export interface GetRepairingRequest {
 
 export interface GetTransportRequest {
     id: number;
+}
+
+export interface GetTransportByAmbulanceRequest {
+    ambulance?: string;
+    send?: number;
+    receive?: string;
 }
 
 export interface GetUrgentRequest {
@@ -869,6 +896,42 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get ambulance by Search
+     * Get a ambulance entity by Search
+     */
+    async getAmbulanceBySearchRaw(requestParameters: GetAmbulanceBySearchRequest): Promise<runtime.ApiResponse<EntAmbulance>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.ambulance !== undefined) {
+            queryParameters['ambulance'] = requestParameters.ambulance;
+        }
+
+        if (requestParameters.status !== undefined) {
+            queryParameters['status'] = requestParameters.status;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/searchambulances`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntAmbulanceFromJSON(jsonValue));
+    }
+
+    /**
+     * get ambulance by Search
+     * Get a ambulance entity by Search
+     */
+    async getAmbulanceBySearch(requestParameters: GetAmbulanceBySearchRequest): Promise<EntAmbulance> {
+        const response = await this.getAmbulanceBySearchRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get carbrand by ID
      * Get a carbrand entity by ID
      */
@@ -933,6 +996,38 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get carcheckinout by Ambulance
+     * Get a carcheckinout entity by Ambulance
+     */
+    async getCarcheckinoutsearchRaw(requestParameters: GetCarcheckinoutsearchRequest): Promise<runtime.ApiResponse<EntCarCheckInOut>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.ambulance !== undefined) {
+            queryParameters['ambulance'] = requestParameters.ambulance;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/carcheckinoutsearch`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntCarCheckInOutFromJSON(jsonValue));
+    }
+
+    /**
+     * get carcheckinout by Ambulance
+     * Get a carcheckinout entity by Ambulance
+     */
+    async getCarcheckinoutsearch(requestParameters: GetCarcheckinoutsearchRequest): Promise<EntCarCheckInOut> {
+        const response = await this.getCarcheckinoutsearchRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get carinspection by ID
      * Get a carinspection entity by ID
      */
@@ -965,6 +1060,46 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * get carinspection by Search
+     * Get a carinspection entity by Search
+     */
+    async getCarinspectionBySearchRaw(requestParameters: GetCarinspectionBySearchRequest): Promise<runtime.ApiResponse<EntCarInspection>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.ambulance !== undefined) {
+            queryParameters['ambulance'] = requestParameters.ambulance;
+        }
+
+        if (requestParameters.result !== undefined) {
+            queryParameters['result'] = requestParameters.result;
+        }
+
+        if (requestParameters.user !== undefined) {
+            queryParameters['user'] = requestParameters.user;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/searchcarinspections`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntCarInspectionFromJSON(jsonValue));
+    }
+
+    /**
+     * get carinspection by Search
+     * Get a carinspection entity by Search
+     */
+    async getCarinspectionBySearch(requestParameters: GetCarinspectionBySearchRequest): Promise<EntCarInspection> {
+        const response = await this.getCarinspectionBySearchRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * get carrepairrecord by ID
      * Get a carrepairrecord entity by ID
      */
@@ -993,6 +1128,46 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getCarrepairrecord(requestParameters: GetCarrepairrecordRequest): Promise<EntCarRepairrecord> {
         const response = await this.getCarrepairrecordRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get carrepairrecord by Carinspection
+     * Get a carrepairrecord entity by Carinspection
+     */
+    async getCarrepairrecordByCarinspectionRaw(requestParameters: GetCarrepairrecordByCarinspectionRequest): Promise<runtime.ApiResponse<EntCarRepairrecord>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.carinspection !== undefined) {
+            queryParameters['carinspection'] = requestParameters.carinspection;
+        }
+
+        if (requestParameters.repairing !== undefined) {
+            queryParameters['repairing'] = requestParameters.repairing;
+        }
+
+        if (requestParameters.user !== undefined) {
+            queryParameters['user'] = requestParameters.user;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/searchcarrepairrecords`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntCarRepairrecordFromJSON(jsonValue));
+    }
+
+    /**
+     * get carrepairrecord by Carinspection
+     * Get a carrepairrecord entity by Carinspection
+     */
+    async getCarrepairrecordByCarinspection(requestParameters: GetCarrepairrecordByCarinspectionRequest): Promise<EntCarRepairrecord> {
+        const response = await this.getCarrepairrecordByCarinspectionRaw(requestParameters);
         return await response.value();
     }
 
@@ -1249,6 +1424,46 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async getTransport(requestParameters: GetTransportRequest): Promise<EntTransport> {
         const response = await this.getTransportRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * get transport by Ambulance
+     * Get a transport entity by Ambulance
+     */
+    async getTransportByAmbulanceRaw(requestParameters: GetTransportByAmbulanceRequest): Promise<runtime.ApiResponse<EntTransport>> {
+        const queryParameters: runtime.HTTPQuery = {};
+
+        if (requestParameters.ambulance !== undefined) {
+            queryParameters['ambulance'] = requestParameters.ambulance;
+        }
+
+        if (requestParameters.send !== undefined) {
+            queryParameters['send'] = requestParameters.send;
+        }
+
+        if (requestParameters.receive !== undefined) {
+            queryParameters['receive'] = requestParameters.receive;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/searchtransports`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EntTransportFromJSON(jsonValue));
+    }
+
+    /**
+     * get transport by Ambulance
+     * Get a transport entity by Ambulance
+     */
+    async getTransportByAmbulance(requestParameters: GetTransportByAmbulanceRequest): Promise<EntTransport> {
+        const response = await this.getTransportByAmbulanceRaw(requestParameters);
         return await response.value();
     }
 
