@@ -108,7 +108,7 @@ export default function CarInspectionSearchPage() {
     
 
     const SearchTransport = async () => {
-        const apiUrl = `http://localhost:8080/api/v1/searchtransprots?ambulance=${ambulancesearch}&send=${sendsearch}&receive=${receivesearch}`;
+        const apiUrl = `http://localhost:8080/api/v1/searchtransports?ambulance=${ambulancesearch}&send=${sendsearch}&receive=${receivesearch}`;
         const requestOptions = {
             method: 'GET',
         };

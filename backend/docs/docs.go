@@ -955,16 +955,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get urgent by ID",
+                "description": "get carservice by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a urgent entity by ID",
-                "operationId": "get-urgent",
+                "summary": "Get a carservice entity by ID",
+                "operationId": "get-carservice",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Urgent ID",
+                        "description": "Carservice ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -974,7 +974,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Urgent"
+                            "$ref": "#/definitions/ent.Carservice"
                         }
                     },
                     "400": {
@@ -1709,7 +1709,6 @@ var doc = `{
                 }
             }
         },
-<<<<<<< Updated upstream
         "/searchambulances": {
             "get": {
                 "description": "get ambulance by Search",
@@ -1718,16 +1717,6 @@ var doc = `{
                 ],
                 "summary": "Get a ambulance entity by Search",
                 "operationId": "get-ambulance-by-search",
-=======
-        "/searchtransports": {
-            "get": {
-                "description": "get transport by Ambulance",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get a transport entity by Ambulance",
-                "operationId": "get-transport-by-ambulance",
->>>>>>> Stashed changes
                 "parameters": [
                     {
                         "type": "string",
@@ -1737,7 +1726,6 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-<<<<<<< Updated upstream
                         "description": "Status Search",
                         "name": "status",
                         "in": "query"
@@ -1840,7 +1828,54 @@ var doc = `{
                         "type": "string",
                         "description": "Customer Search",
                         "name": "customer",
-=======
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.Carservice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
+        "/searchtransports": {
+            "get": {
+                "description": "get transport by Ambulance",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a transport entity by Ambulance",
+                "operationId": "get-transport-by-ambulance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ambulance Search",
+                        "name": "ambulance",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "Send Search",
                         "name": "send",
                         "in": "query"
@@ -1849,7 +1884,6 @@ var doc = `{
                         "type": "string",
                         "description": "Receive Search",
                         "name": "receive",
->>>>>>> Stashed changes
                         "in": "query"
                     }
                 ],
@@ -1857,11 +1891,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-<<<<<<< Updated upstream
-                            "$ref": "#/definitions/ent.Carservice"
-=======
                             "$ref": "#/definitions/ent.Transport"
->>>>>>> Stashed changes
                         }
                     },
                     "400": {

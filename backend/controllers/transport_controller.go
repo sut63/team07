@@ -294,7 +294,7 @@ func NewTransportController(router gin.IRouter, client *ent.Client) *TransportCo
 // InitTransportController registers routes to the main engine
 func (ctl *TransportController) register() {
 	transports := ctl.router.Group("/transports")
-	searchtransport := ctl.router.Group("/searchtransprots")
+	searchtransport := ctl.router.Group("/searchtransports")
 
 	transports.GET("", ctl.ListTransport)
 

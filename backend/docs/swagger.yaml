@@ -1330,10 +1330,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get urgent by ID
-      operationId: get-urgent
+      description: get carservice by ID
+      operationId: get-carservice
       parameters:
-      - description: Urgent ID
+      - description: Carservice ID
         in: path
         name: id
         required: true
@@ -1344,7 +1344,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Urgent'
+            $ref: '#/definitions/ent.Carservice'
         "400":
           description: Bad Request
           schema:
@@ -1357,7 +1357,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a urgent entity by ID
+      summary: Get a carservice entity by ID
   /distances:
     get:
       description: list distance entities
@@ -1804,23 +1804,15 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a repairing entity by ID
-<<<<<<< Updated upstream
   /searchambulances:
     get:
       description: get ambulance by Search
       operationId: get-ambulance-by-search
-=======
-  /searchtransports:
-    get:
-      description: get transport by Ambulance
-      operationId: get-transport-by-ambulance
->>>>>>> Stashed changes
       parameters:
       - description: Ambulance Search
         in: query
         name: ambulance
         type: string
-<<<<<<< Updated upstream
       - description: Status Search
         in: query
         name: status
@@ -1890,15 +1882,6 @@ paths:
       - description: Customer Search
         in: query
         name: customer
-=======
-      - description: Send Search
-        in: query
-        name: send
-        type: integer
-      - description: Receive Search
-        in: query
-        name: receive
->>>>>>> Stashed changes
         type: string
       produces:
       - application/json
@@ -1906,11 +1889,7 @@ paths:
         "200":
           description: OK
           schema:
-<<<<<<< Updated upstream
             $ref: '#/definitions/ent.Carservice'
-=======
-            $ref: '#/definitions/ent.Transport'
->>>>>>> Stashed changes
         "400":
           description: Bad Request
           schema:
@@ -1923,11 +1902,44 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-<<<<<<< Updated upstream
       summary: Get a carinspection entity by Customer
-=======
+  /searchtransports:
+    get:
+      description: get transport by Ambulance
+      operationId: get-transport-by-ambulance
+      parameters:
+      - description: Ambulance Search
+        in: query
+        name: ambulance
+        type: string
+      - description: Send Search
+        in: query
+        name: send
+        type: integer
+      - description: Receive Search
+        in: query
+        name: receive
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.Transport'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
       summary: Get a transport entity by Ambulance
->>>>>>> Stashed changes
   /transports:
     get:
       description: list transport entities
