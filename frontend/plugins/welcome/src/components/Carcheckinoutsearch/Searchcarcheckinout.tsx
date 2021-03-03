@@ -153,7 +153,7 @@ export default function Searchcarcheckinout() {
     setUser(event.target.value as number);
   };
 
-  const Searchcarinout = (res : any) =>{
+  const Searchcarinout = () =>{
     const apiUrl = `http://localhost:8080/api/v1/carcheckinoutsearch?ambulance=${search}`;
     const requestOptions = {
       method: 'GET',

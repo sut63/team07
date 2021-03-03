@@ -33,9 +33,6 @@ textField: {
 },
 });
 
-const tablesearchcheck = {
-  ambulancesearchtable: true
-}
 export default function ComponentsTable() {
  
  const classes = useStyles();
@@ -46,61 +43,61 @@ export default function ComponentsTable() {
  const [alerttype, setAlertType] = useState(String);
  const [errormessege, setErrorMessege] = useState(String);
  const [search, setSearch] = useState(String);
+ const [userid, setUser] = useState(Number);
  const [carcheckinout, setCarcheckinout] = useState<EntCarCheckInOut[]>([]);
 
- useEffect(() => {   
-  const getCarcheckinouts = async () => {
-const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
-setLoading(false);
-setCarcheckinout(res);
-};
-    getCarcheckinouts();
+ useEffect(() => {
 
-}, [loading]);
+  // const getCarcheckinouts = async () => {
+  //     const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
+  //     setLoading(false);
+  //     setCarcheckinout(res);
+  //   };
+  //   getCarcheckinouts();
 
-const getSearch = async () => {
-  const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
-  const carsearch = Searchcarinout(res);
-
-  setErrorMessege("ไม่พบข้อมูล");
-  setAlertType("error");
-  setCarcheckinout([]);
-  if(search.length > 0){
-      Object.entries(tablesearchcheck).map(([key, value]) =>{
-          if (value == true){
-              setErrorMessege("พบข้อมูล");
-              setAlertType("success");
-              setCarcheckinout(carsearch);
-          }
-      })
-  }
-  setStatus(true);
-  resettablesearchcheck(); 
-}
-
-const resettablesearchcheck = () =>{
-tablesearchcheck.ambulancesearchtable = true;
-}
-
-const Searchcarinout = (res: any) => {
-  const findsearch = res.filter((filter: EntCarCheckInOut) => filter.edges?.ambulance?.carregistration?.includes(search))
-  console.log(findsearch)
-if (findsearch.length != 0 && search != "") {
-      return findsearch;
-  }
-  else {
-      tablesearchcheck.ambulancesearchtable = false;
-      if(search == ""){
-          return res;
+  const checkJobPosition = async () => {
+      const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
+      setLoading(false);
+      if (jobdata != "เจ้าหน้าที่รถพยาบาล" ) {
+        localStorage.setItem("userdata",JSON.stringify(null));
+        localStorage.setItem("jobpositiondata",JSON.stringify(null));
+        history.pushState("","","./");
+        window.location.reload(false);        
       }
-      else{
-          return findsearch;
+      else {
+        setUser(Number(localStorage.getItem("userdata")))
       }
-  }
+    }
+  checkJobPosition();
+
+}, [loading]);  
+
+const Searchcarinout = async () =>{
+  const apiUrl = `http://localhost:8080/api/v1/carcheckinoutsearch?ambulance=${search}`;
+  const requestOptions = {
+    method: 'GET',
+};  
+  fetch(apiUrl, requestOptions)
+    .then(response => response.json())
+      .then(data => {
+        console.log(data.data)
+        setErrorMessege("ไม่พบข้อมูล");
+        setAlertType("error");
+        setCarcheckinout([]);
+        if (data.data != null) {
+          if(data.data.length >= 1) {
+            console.log("Data >= 1")
+            setErrorMessege("พบข้อมูล");
+            setAlertType("success");
+            setCarcheckinout(data.data);
+        }
+    }
+    setStatus(true);
+});
 }
 
 const SearchhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-setSearch(event.target.value as string);
+  setSearch(event.target.value as string);
 };
 
  const deleteCarcheckinouts = async (id: number) => {
@@ -122,13 +119,10 @@ setSearch(event.target.value as string);
      </div>
     ) : null}
   </ContentHeader>   
-            {/* <div className={classes.margin}> */}
               <div>
             <TextField
                  id="search"
                  label = "ค้นหาทะเบียนรถ"
-                //  variant="standard"
-                //  color="secondary"
                  type="string"
                  value={search}
                  onChange={SearchhandleChange}
@@ -139,7 +133,7 @@ setSearch(event.target.value as string);
             <Button
               startIcon={<SearchIcon/>}
                 onClick={() => {
-                  getSearch();
+                  Searchcarinout();
                 }}
                 variant="contained"
                 color="primary"
@@ -147,7 +141,6 @@ setSearch(event.target.value as string);
                 ค้นหา
              </Button>
              </div>
-          {/* </div> */}
           <br></br><br></br>
    
    <TableContainer component={Paper}>
@@ -170,9 +163,9 @@ setSearch(event.target.value as string);
 
          {carcheckinout.map((item:any )=> (
            <TableRow key={item.id}>
-             <TableCell align="center">{item.edges.ambulance.carregistration}</TableCell>
-             <TableCell align="center">{item.edges.name.name}</TableCell>
-             <TableCell align="center">{item.edges.purpose.objective}</TableCell>
+             <TableCell align="center">{item.edges.Ambulance.carregistration}</TableCell>
+             <TableCell align="center">{item.edges.Name.name}</TableCell>
+             <TableCell align="center">{item.edges.Purpose.objective}</TableCell>
              <TableCell align="center">{item.note}</TableCell>
              <TableCell align="center">{item.person}</TableCell>
              <TableCell align="center">{item.distance}</TableCell>
