@@ -9,12 +9,12 @@ const (
 	FieldID = "id"
 	// FieldDatetime holds the string denoting the datetime field in the database.
 	FieldDatetime = "datetime"
-	// FieldPartrepair holds the string denoting the partrepair field in the database.
-	FieldPartrepair = "partrepair"
-	// FieldPrice holds the string denoting the price field in the database.
-	FieldPrice = "price"
-	// FieldTechniciancomment holds the string denoting the techniciancomment field in the database.
-	FieldTechniciancomment = "techniciancomment"
+	// FieldRepairdetail holds the string denoting the repairdetail field in the database.
+	FieldRepairdetail = "repairdetail"
+	// FieldRepaircost holds the string denoting the repaircost field in the database.
+	FieldRepaircost = "repaircost"
+	// FieldCarmaintenance holds the string denoting the carmaintenance field in the database.
+	FieldCarmaintenance = "carmaintenance"
 
 	// EdgeKeeper holds the string denoting the keeper edge name in mutations.
 	EdgeKeeper = "keeper"
@@ -52,9 +52,9 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldDatetime,
-	FieldPartrepair,
-	FieldPrice,
-	FieldTechniciancomment,
+	FieldRepairdetail,
+	FieldRepaircost,
+	FieldCarmaintenance,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the CarRepairrecord type.
@@ -65,10 +65,10 @@ var ForeignKeys = []string{
 }
 
 var (
-	// PartrepairValidator is a validator for the "partrepair" field. It is called by the builders before save.
-	PartrepairValidator func(string) error
-	// PriceValidator is a validator for the "price" field. It is called by the builders before save.
-	PriceValidator func(int) error
-	// TechniciancommentValidator is a validator for the "techniciancomment" field. It is called by the builders before save.
-	TechniciancommentValidator func(string) error
+	// RepairdetailValidator is a validator for the "repairdetail" field. It is called by the builders before save.
+	RepairdetailValidator func(string) error
+	// RepaircostValidator is a validator for the "repaircost" field. It is called by the builders before save.
+	RepaircostValidator func(int) error
+	// CarmaintenanceValidator is a validator for the "carmaintenance" field. It is called by the builders before save.
+	CarmaintenanceValidator func(string) error
 )

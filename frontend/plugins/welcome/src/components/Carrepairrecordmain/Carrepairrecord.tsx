@@ -145,35 +145,35 @@ export default function CarInspectionPage() {
     const PartrepairhandleChange = (event: React.ChangeEvent<{ value: any }>) => {
         const { value } = event.target;
         const validateValue = value
-        checkPattern('partrepair', validateValue)
+        checkPattern('repairdetail', validateValue)
         setPartrepair(event.target.value as string);
       };
 
     const PricehandleChange = (event: React.ChangeEvent<{ value: any }>) => {
         const { value } = event.target;
         const validateValue = value
-        checkPattern('price', validateValue)
+        checkPattern('repaircost', validateValue)
         setPrice(event.target.value as number);
       };
 
     const TechniciancommenthandleChange = (event: React.ChangeEvent<{ value: any }>) => {
         const { value } = event.target;
         const validateValue = value
-        checkPattern('techniciancomment', validateValue)
+        checkPattern('carmaintenance', validateValue)
         setTechniciancomment(event.target.value as string);
       };
 
     const checkPattern  = (id: string, value:string) => {
         console.log(value);
         switch(id) {
-          case 'partrepair':
-            validatePartrepair(value) ? setPartrepairerror('') : setPartrepairerror('หมายเหตุไม่ควรใส่ตัวอักษรพิเศษและตัวเลขถ้าไม่มีให้ใส่ -');
+          case 'repairdetail':
+            validatePartrepair(value) ? setPartrepairerror('') : setPartrepairerror('รายละเอียดส่วนที่ซ่อมไม่ควรใส่ตัวอักษรพิเศษและตัวเลขถ้าไม่มีให้ใส่ -');
             return;
-          case 'price':
+          case 'repaircost':
             validatePrice(Number(value)) ? setPriceerror('') : setPriceerror('กรุณากรอกราคาของการซ่อมให้ถูกต้อง');
           return;
-          case 'techniciancomment':
-            validateTechniciancomment(value) ? setTechniciancommenterror('') : setTechniciancommenterror('คอมเมนท์ไม่ควรใส่ตัวอักษรพิเศษถ้าไม่มีให้ใส่ -');
+          case 'carmaintenance':
+            validateTechniciancomment(value) ? setTechniciancommenterror('') : setTechniciancommenterror('คำแนะนำการซ่อมไม่ควรใส่ตัวอักษรพิเศษถ้าไม่มีให้ใส่ -');
           return;
             default:
               return;
@@ -186,9 +186,9 @@ export default function CarInspectionPage() {
             repairingID : repairingid,
             userID : userid,
             datetime : datetime + ":00+07:00",
-            partrepair : partrepairdata,
-            price : Number(pricedata),
-            techniciancomment : techniciancommentdata,
+            repairDetail : partrepairdata,
+            repairCost : Number(pricedata),
+            carMaintenance : techniciancommentdata,
         };
         console.log(carrepairrecord);
         const apiUrl = 'http://localhost:8080/api/v1/carrepairrecords';
@@ -219,9 +219,9 @@ export default function CarInspectionPage() {
     };
 
     const ErrorCaseCheck = (casename: string) => {
-        if (casename == "partrepair") { setErrormessage("กรุณากรอกหมายเหตุที่ซ่อมด้วยถ้าไม่มีให้ใส่ -");setPartrepairerror('หมายเหตุไม่ควรใส่ตัวอักษรพิเศษและตัวเลขถ้าไม่มีให้ใส่ -'); }
-        else if (casename == "price") { setErrormessage("กรุณากรอกราคาของการซ่อมให้ถูกต้อง"); }
-        else if (casename == "techniciancomment") { setErrormessage("คอมเมนท์ไม่ควรใส่ตัวอักษรพิเศษถ้าไม่มีให้ใส่ -"); }
+        if (casename == "repairdetail") { setErrormessage("กรุณากรอกรายละเอียดส่วนที่ซ่อมด้วยถ้าไม่มีให้ใส่ -");setPartrepairerror('รายละเอียดส่วนที่ซ่อมไม่ควรใส่ตัวอักษรพิเศษและตัวเลขถ้าไม่มีให้ใส่ -'); }
+        else if (casename == "repaircost") { setErrormessage("กรุณากรอกราคาของการซ่อมให้ถูกต้อง"); }
+        else if (casename == "carmaintenance") { setErrormessage("คำแนะนำการซ่อมไม่ควรใส่ตัวอักษรพิเศษถ้าไม่มีให้ใส่ -"); }
         else { setErrormessage("บันทึกไม่สำเร็จ"); }
       }
 
@@ -263,7 +263,7 @@ export default function CarInspectionPage() {
                                 className={classes.margin}
                                 variant="outlined"
                             >
-                                <div className={classes.paper}><strong>รถพยาบาล</strong></div>
+                                <div className={classes.paper}><strong>เลขใบแจ้งซ่อม</strong></div>
                                 <InputLabel id="brand-lavel"></InputLabel>
                                 <Select
                                     labelId="carinspection-label"
@@ -272,8 +272,8 @@ export default function CarInspectionPage() {
                                     onChange={CarinspectionhandleChange}
                                     style={{ width: 400}}
                                 >
-                                    {carinspections.filter((filter:any) => filter.edges?.inspectionresult?.resultName == "ส่งซ่อมแซม").map((item: any) => (
-                                        <MenuItem value={item.id}>{item.edges?.ambulance?.carregistration}</MenuItem>
+                                    {carinspections.map((item: EntCarInspection) => (
+                                        <MenuItem value={item.id}>{item.id}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -308,7 +308,7 @@ export default function CarInspectionPage() {
                                 <TextField
                                     id="pathrepair"
                                     error={partrepairerror ? true:false}
-                                    label="หมายเหตุส่วนที่ซ่อม"
+                                    label="รายละเอียดส่วนที่ซ่อม"
                                     type="string"
                                     size="medium"
                                     value={partrepairdata}
@@ -359,7 +359,7 @@ export default function CarInspectionPage() {
                                 <TextField
                                     id="technicianerror"
                                     error={techniciancommenterror ? true:false}
-                                    label="ความคิดเห็นเพิ่มเติมจากช่าง"
+                                    label="คำแนะนำการซ่อมบำรุง"
                                     type="string"
                                     size="medium"
                                     value={techniciancommentdata}

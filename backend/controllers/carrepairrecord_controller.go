@@ -8,10 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/team07/app/ent"
-	"github.com/team07/app/ent/carrepairrecord"
-	"github.com/team07/app/ent/user"
 	"github.com/team07/app/ent/carinspection"
+	"github.com/team07/app/ent/carrepairrecord"
 	"github.com/team07/app/ent/repairing"
+	"github.com/team07/app/ent/user"
 )
 
 // CarRepairrecordController defines the struct for the carrepairrecord controller
@@ -22,13 +22,13 @@ type CarRepairrecordController struct {
 
 // CarRepairrecord defines the struct for the carrepairrecord
 type CarRepairrecord struct {
-	RepairingID		int
-	UserID			int
-	CarInspectionID	int
-	Datetime		string
-	Partrepair		string
-	Price			int
-	Techniciancomment string
+	RepairingID     int
+	UserID          int
+	CarInspectionID int
+	Datetime        string
+	RepairDetail    string
+	RepairCost      int
+	CarMaintenance  string
 }
 
 // CreateCarRepairrecord handles POST requests for adding carrepairrecord entities
@@ -95,13 +95,13 @@ func (ctl *CarRepairrecordController) CreateCarRepairrecord(c *gin.Context) {
 		SetUser(u).
 		SetKeeper(r).
 		SetDatetime(times).
-		SetPartrepair(obj.Partrepair).
-		SetPrice(obj.Price).
-		SetTechniciancomment(obj.Techniciancomment).
+		SetRepairdetail(obj.RepairDetail).
+		SetRepaircost(obj.RepairCost).
+		SetCarmaintenance(obj.CarMaintenance).
 		Save(context.Background())
 	if err != nil {
 		c.JSON(400, gin.H{
-			"error": err,
+			"error":  err,
 			"status": false,
 		})
 		return
@@ -109,7 +109,7 @@ func (ctl *CarRepairrecordController) CreateCarRepairrecord(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"status": true,
-		"data": cr,
+		"data":   cr,
 	})
 }
 
@@ -148,6 +148,102 @@ func (ctl *CarRepairrecordController) GetCarRepairrecord(c *gin.Context) {
 	}
 
 	c.JSON(200, ci)
+}
+
+// GetCarRepairrecordBySearch handles GET requests to retrieve a carrepairrecord entity
+// @Summary Get a carrepairrecord entity by Carinspection
+// @Description get carrepairrecord by Carinspection
+// @ID get-carrepairrecord-by-carinspection
+// @Produce  json
+// @Param carinspection query string false "Carinspection Search"
+// @Param repairing query int false "Repairing Search"
+// @Param user query string false "User Search"
+// @Success 200 {object} ent.CarRepairrecord
+// @Failure 400 {object} gin.H
+// @Failure 404 {object} gin.H
+// @Failure 500 {object} gin.H
+// @Router /searchcarrepairrecords [get]
+func (ctl *CarRepairrecordController) GetCarRepairrecordBySearch(c *gin.Context) {
+	cisearch, err := strconv.ParseInt(c.Query("carinspection"), 10, 64)
+	usearch := c.Query("user")
+	rsearch, err := strconv.ParseInt(c.Query("repairing"), 10, 64)
+
+	rstring := ""
+	r, err := ctl.client.Repairing.
+		Query().
+		Where(repairing.IDEQ(int(rsearch))).
+		Only(context.Background())
+
+	if r != nil {
+		rstring = r.Repairpart
+	}
+
+	if cisearch != 0 {
+		cr, err := ctl.client.CarRepairrecord.
+			Query().
+			WithCarinspection().
+			WithKeeper().
+			WithUser().
+			Where(carrepairrecord.HasUserWith(user.NameContains(usearch))).
+			Where(carrepairrecord.HasCarinspectionWith(carinspection.IDEQ(int(cisearch)))).
+			Where(carrepairrecord.HasKeeperWith(repairing.RepairpartContains(rstring))).
+			All(context.Background())
+
+		if err != nil {
+			c.JSON(404, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if cisearch == 0 && usearch == "" && rsearch == 0 {
+			c.JSON(200, gin.H{
+				"data": nil,
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"data": cr,
+		})
+		return
+
+	} else {
+		cr, err := ctl.client.CarRepairrecord.
+			Query().
+			WithCarinspection().
+			WithKeeper().
+			WithUser().
+			Where(carrepairrecord.HasUserWith(user.NameContains(usearch))).
+			//Where(carrepairrecord.HasCarinspectionWith(carinspection.IDIn(int(cisearch)))).
+			Where(carrepairrecord.HasKeeperWith(repairing.RepairpartContains(rstring))).
+			All(context.Background())
+
+		if err != nil {
+			c.JSON(404, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if cisearch == 0 && usearch == "" && rsearch == 0 {
+			c.JSON(200, gin.H{
+				"data": nil,
+			})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"data": cr,
+		})
+		return
+	}
+	if err != nil {
+		c.JSON(404, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 }
 
 // ListCarRepairrecord handles request to get a list of carrepairrecord entities
@@ -220,10 +316,12 @@ func NewCarRepairrecord(router gin.IRouter, client *ent.Client) *CarRepairrecord
 // InitCarRepairrecordController register routes to the main engine
 func (ctl *CarRepairrecordController) register() {
 	cr := ctl.router.Group("/carrepairrecords")
+	crs := ctl.router.Group("/searchcarrepairrecord")
 
 	cr.GET("", ctl.ListCarRepairrecord)
 	cr.POST("", ctl.CreateCarRepairrecord)
 	// CRUD
 	cr.GET(":id", ctl.GetCarRepairrecord)
 	cr.DELETE(":id", ctl.DeleteCarRepairrecord)
+	crs.GET("", ctl.GetCarRepairrecordBySearch)
 }

@@ -2724,10 +2724,10 @@ type CarRepairrecordMutation struct {
 	typ                  string
 	id                   *int
 	datetime             *time.Time
-	partrepair           *string
-	price                *int
-	addprice             *int
-	techniciancomment    *string
+	repairdetail         *string
+	repaircost           *int
+	addrepaircost        *int
+	carmaintenance       *string
 	clearedFields        map[string]struct{}
 	keeper               *int
 	clearedkeeper        bool
@@ -2855,135 +2855,135 @@ func (m *CarRepairrecordMutation) ResetDatetime() {
 	m.datetime = nil
 }
 
-// SetPartrepair sets the partrepair field.
-func (m *CarRepairrecordMutation) SetPartrepair(s string) {
-	m.partrepair = &s
+// SetRepairdetail sets the repairdetail field.
+func (m *CarRepairrecordMutation) SetRepairdetail(s string) {
+	m.repairdetail = &s
 }
 
-// Partrepair returns the partrepair value in the mutation.
-func (m *CarRepairrecordMutation) Partrepair() (r string, exists bool) {
-	v := m.partrepair
+// Repairdetail returns the repairdetail value in the mutation.
+func (m *CarRepairrecordMutation) Repairdetail() (r string, exists bool) {
+	v := m.repairdetail
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPartrepair returns the old partrepair value of the CarRepairrecord.
+// OldRepairdetail returns the old repairdetail value of the CarRepairrecord.
 // If the CarRepairrecord object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *CarRepairrecordMutation) OldPartrepair(ctx context.Context) (v string, err error) {
+func (m *CarRepairrecordMutation) OldRepairdetail(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldPartrepair is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldRepairdetail is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldPartrepair requires an ID field in the mutation")
+		return v, fmt.Errorf("OldRepairdetail requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPartrepair: %w", err)
+		return v, fmt.Errorf("querying old value for OldRepairdetail: %w", err)
 	}
-	return oldValue.Partrepair, nil
+	return oldValue.Repairdetail, nil
 }
 
-// ResetPartrepair reset all changes of the "partrepair" field.
-func (m *CarRepairrecordMutation) ResetPartrepair() {
-	m.partrepair = nil
+// ResetRepairdetail reset all changes of the "repairdetail" field.
+func (m *CarRepairrecordMutation) ResetRepairdetail() {
+	m.repairdetail = nil
 }
 
-// SetPrice sets the price field.
-func (m *CarRepairrecordMutation) SetPrice(i int) {
-	m.price = &i
-	m.addprice = nil
+// SetRepaircost sets the repaircost field.
+func (m *CarRepairrecordMutation) SetRepaircost(i int) {
+	m.repaircost = &i
+	m.addrepaircost = nil
 }
 
-// Price returns the price value in the mutation.
-func (m *CarRepairrecordMutation) Price() (r int, exists bool) {
-	v := m.price
+// Repaircost returns the repaircost value in the mutation.
+func (m *CarRepairrecordMutation) Repaircost() (r int, exists bool) {
+	v := m.repaircost
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPrice returns the old price value of the CarRepairrecord.
+// OldRepaircost returns the old repaircost value of the CarRepairrecord.
 // If the CarRepairrecord object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *CarRepairrecordMutation) OldPrice(ctx context.Context) (v int, err error) {
+func (m *CarRepairrecordMutation) OldRepaircost(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldPrice is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldRepaircost is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldPrice requires an ID field in the mutation")
+		return v, fmt.Errorf("OldRepaircost requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrice: %w", err)
+		return v, fmt.Errorf("querying old value for OldRepaircost: %w", err)
 	}
-	return oldValue.Price, nil
+	return oldValue.Repaircost, nil
 }
 
-// AddPrice adds i to price.
-func (m *CarRepairrecordMutation) AddPrice(i int) {
-	if m.addprice != nil {
-		*m.addprice += i
+// AddRepaircost adds i to repaircost.
+func (m *CarRepairrecordMutation) AddRepaircost(i int) {
+	if m.addrepaircost != nil {
+		*m.addrepaircost += i
 	} else {
-		m.addprice = &i
+		m.addrepaircost = &i
 	}
 }
 
-// AddedPrice returns the value that was added to the price field in this mutation.
-func (m *CarRepairrecordMutation) AddedPrice() (r int, exists bool) {
-	v := m.addprice
+// AddedRepaircost returns the value that was added to the repaircost field in this mutation.
+func (m *CarRepairrecordMutation) AddedRepaircost() (r int, exists bool) {
+	v := m.addrepaircost
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetPrice reset all changes of the "price" field.
-func (m *CarRepairrecordMutation) ResetPrice() {
-	m.price = nil
-	m.addprice = nil
+// ResetRepaircost reset all changes of the "repaircost" field.
+func (m *CarRepairrecordMutation) ResetRepaircost() {
+	m.repaircost = nil
+	m.addrepaircost = nil
 }
 
-// SetTechniciancomment sets the techniciancomment field.
-func (m *CarRepairrecordMutation) SetTechniciancomment(s string) {
-	m.techniciancomment = &s
+// SetCarmaintenance sets the carmaintenance field.
+func (m *CarRepairrecordMutation) SetCarmaintenance(s string) {
+	m.carmaintenance = &s
 }
 
-// Techniciancomment returns the techniciancomment value in the mutation.
-func (m *CarRepairrecordMutation) Techniciancomment() (r string, exists bool) {
-	v := m.techniciancomment
+// Carmaintenance returns the carmaintenance value in the mutation.
+func (m *CarRepairrecordMutation) Carmaintenance() (r string, exists bool) {
+	v := m.carmaintenance
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTechniciancomment returns the old techniciancomment value of the CarRepairrecord.
+// OldCarmaintenance returns the old carmaintenance value of the CarRepairrecord.
 // If the CarRepairrecord object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *CarRepairrecordMutation) OldTechniciancomment(ctx context.Context) (v string, err error) {
+func (m *CarRepairrecordMutation) OldCarmaintenance(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldTechniciancomment is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldCarmaintenance is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldTechniciancomment requires an ID field in the mutation")
+		return v, fmt.Errorf("OldCarmaintenance requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTechniciancomment: %w", err)
+		return v, fmt.Errorf("querying old value for OldCarmaintenance: %w", err)
 	}
-	return oldValue.Techniciancomment, nil
+	return oldValue.Carmaintenance, nil
 }
 
-// ResetTechniciancomment reset all changes of the "techniciancomment" field.
-func (m *CarRepairrecordMutation) ResetTechniciancomment() {
-	m.techniciancomment = nil
+// ResetCarmaintenance reset all changes of the "carmaintenance" field.
+func (m *CarRepairrecordMutation) ResetCarmaintenance() {
+	m.carmaintenance = nil
 }
 
 // SetKeeperID sets the keeper edge to Repairing by id.
@@ -3121,14 +3121,14 @@ func (m *CarRepairrecordMutation) Fields() []string {
 	if m.datetime != nil {
 		fields = append(fields, carrepairrecord.FieldDatetime)
 	}
-	if m.partrepair != nil {
-		fields = append(fields, carrepairrecord.FieldPartrepair)
+	if m.repairdetail != nil {
+		fields = append(fields, carrepairrecord.FieldRepairdetail)
 	}
-	if m.price != nil {
-		fields = append(fields, carrepairrecord.FieldPrice)
+	if m.repaircost != nil {
+		fields = append(fields, carrepairrecord.FieldRepaircost)
 	}
-	if m.techniciancomment != nil {
-		fields = append(fields, carrepairrecord.FieldTechniciancomment)
+	if m.carmaintenance != nil {
+		fields = append(fields, carrepairrecord.FieldCarmaintenance)
 	}
 	return fields
 }
@@ -3140,12 +3140,12 @@ func (m *CarRepairrecordMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case carrepairrecord.FieldDatetime:
 		return m.Datetime()
-	case carrepairrecord.FieldPartrepair:
-		return m.Partrepair()
-	case carrepairrecord.FieldPrice:
-		return m.Price()
-	case carrepairrecord.FieldTechniciancomment:
-		return m.Techniciancomment()
+	case carrepairrecord.FieldRepairdetail:
+		return m.Repairdetail()
+	case carrepairrecord.FieldRepaircost:
+		return m.Repaircost()
+	case carrepairrecord.FieldCarmaintenance:
+		return m.Carmaintenance()
 	}
 	return nil, false
 }
@@ -3157,12 +3157,12 @@ func (m *CarRepairrecordMutation) OldField(ctx context.Context, name string) (en
 	switch name {
 	case carrepairrecord.FieldDatetime:
 		return m.OldDatetime(ctx)
-	case carrepairrecord.FieldPartrepair:
-		return m.OldPartrepair(ctx)
-	case carrepairrecord.FieldPrice:
-		return m.OldPrice(ctx)
-	case carrepairrecord.FieldTechniciancomment:
-		return m.OldTechniciancomment(ctx)
+	case carrepairrecord.FieldRepairdetail:
+		return m.OldRepairdetail(ctx)
+	case carrepairrecord.FieldRepaircost:
+		return m.OldRepaircost(ctx)
+	case carrepairrecord.FieldCarmaintenance:
+		return m.OldCarmaintenance(ctx)
 	}
 	return nil, fmt.Errorf("unknown CarRepairrecord field %s", name)
 }
@@ -3179,26 +3179,26 @@ func (m *CarRepairrecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDatetime(v)
 		return nil
-	case carrepairrecord.FieldPartrepair:
+	case carrepairrecord.FieldRepairdetail:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPartrepair(v)
+		m.SetRepairdetail(v)
 		return nil
-	case carrepairrecord.FieldPrice:
+	case carrepairrecord.FieldRepaircost:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPrice(v)
+		m.SetRepaircost(v)
 		return nil
-	case carrepairrecord.FieldTechniciancomment:
+	case carrepairrecord.FieldCarmaintenance:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTechniciancomment(v)
+		m.SetCarmaintenance(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CarRepairrecord field %s", name)
@@ -3208,8 +3208,8 @@ func (m *CarRepairrecordMutation) SetField(name string, value ent.Value) error {
 // or decremented during this mutation.
 func (m *CarRepairrecordMutation) AddedFields() []string {
 	var fields []string
-	if m.addprice != nil {
-		fields = append(fields, carrepairrecord.FieldPrice)
+	if m.addrepaircost != nil {
+		fields = append(fields, carrepairrecord.FieldRepaircost)
 	}
 	return fields
 }
@@ -3219,8 +3219,8 @@ func (m *CarRepairrecordMutation) AddedFields() []string {
 // that this field was not set, or was not define in the schema.
 func (m *CarRepairrecordMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case carrepairrecord.FieldPrice:
-		return m.AddedPrice()
+	case carrepairrecord.FieldRepaircost:
+		return m.AddedRepaircost()
 	}
 	return nil, false
 }
@@ -3230,12 +3230,12 @@ func (m *CarRepairrecordMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *CarRepairrecordMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case carrepairrecord.FieldPrice:
+	case carrepairrecord.FieldRepaircost:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddPrice(v)
+		m.AddRepaircost(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CarRepairrecord numeric field %s", name)
@@ -3268,14 +3268,14 @@ func (m *CarRepairrecordMutation) ResetField(name string) error {
 	case carrepairrecord.FieldDatetime:
 		m.ResetDatetime()
 		return nil
-	case carrepairrecord.FieldPartrepair:
-		m.ResetPartrepair()
+	case carrepairrecord.FieldRepairdetail:
+		m.ResetRepairdetail()
 		return nil
-	case carrepairrecord.FieldPrice:
-		m.ResetPrice()
+	case carrepairrecord.FieldRepaircost:
+		m.ResetRepaircost()
 		return nil
-	case carrepairrecord.FieldTechniciancomment:
-		m.ResetTechniciancomment()
+	case carrepairrecord.FieldCarmaintenance:
+		m.ResetCarmaintenance()
 		return nil
 	}
 	return fmt.Errorf("unknown CarRepairrecord field %s", name)

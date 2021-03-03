@@ -911,16 +911,16 @@ var doc = `{
         },
         "/carservices/{id}": {
             "get": {
-                "description": "get urgent by ID",
+                "description": "get carservice by ID",
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get a urgent entity by ID",
-                "operationId": "get-urgent",
+                "summary": "Get a carservice entity by ID",
+                "operationId": "get-carservice",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Urgent ID",
+                        "description": "Carservice ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -930,7 +930,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ent.Urgent"
+                            "$ref": "#/definitions/ent.Carservice"
                         }
                     },
                     "400": {
@@ -1665,6 +1665,62 @@ var doc = `{
                 }
             }
         },
+        "/searchcarrepairrecords": {
+            "get": {
+                "description": "get carrepairrecord by Carinspection",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a carrepairrecord entity by Carinspection",
+                "operationId": "get-carrepairrecord-by-carinspection",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Carinspection Search",
+                        "name": "carinspection",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Repairing Search",
+                        "name": "repairing",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Search",
+                        "name": "user",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ent.CarRepairrecord"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gin.H"
+                        }
+                    }
+                }
+            }
+        },
         "/transports": {
             "get": {
                 "description": "list transport entities",
@@ -2094,20 +2150,20 @@ var doc = `{
                 "carInspectionID": {
                     "type": "integer"
                 },
+                "carMaintenance": {
+                    "type": "string"
+                },
                 "datetime": {
                     "type": "string"
                 },
-                "partrepair": {
-                    "type": "string"
-                },
-                "price": {
+                "repairCost": {
                     "type": "integer"
+                },
+                "repairDetail": {
+                    "type": "string"
                 },
                 "repairingID": {
                     "type": "integer"
-                },
-                "techniciancomment": {
-                    "type": "string"
                 },
                 "userID": {
                     "type": "integer"
@@ -2367,6 +2423,10 @@ var doc = `{
         "ent.CarRepairrecord": {
             "type": "object",
             "properties": {
+                "carmaintenance": {
+                    "description": "Carmaintenance holds the value of the \"carmaintenance\" field.",
+                    "type": "string"
+                },
                 "datetime": {
                     "description": "Datetime holds the value of the \"datetime\" field.",
                     "type": "string"
@@ -2380,16 +2440,12 @@ var doc = `{
                     "description": "ID of the ent.",
                     "type": "integer"
                 },
-                "partrepair": {
-                    "description": "Partrepair holds the value of the \"partrepair\" field.",
-                    "type": "string"
-                },
-                "price": {
-                    "description": "Price holds the value of the \"price\" field.",
+                "repaircost": {
+                    "description": "Repaircost holds the value of the \"repaircost\" field.",
                     "type": "integer"
                 },
-                "techniciancomment": {
-                    "description": "Techniciancomment holds the value of the \"techniciancomment\" field.",
+                "repairdetail": {
+                    "description": "Repairdetail holds the value of the \"repairdetail\" field.",
                     "type": "string"
                 }
             }

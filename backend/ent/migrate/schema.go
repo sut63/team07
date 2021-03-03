@@ -143,9 +143,9 @@ var (
 	CarRepairrecordsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "datetime", Type: field.TypeTime},
-		{Name: "partrepair", Type: field.TypeString},
-		{Name: "price", Type: field.TypeInt},
-		{Name: "techniciancomment", Type: field.TypeString},
+		{Name: "repairdetail", Type: field.TypeString},
+		{Name: "repaircost", Type: field.TypeInt},
+		{Name: "carmaintenance", Type: field.TypeString},
 		{Name: "carinspection_id", Type: field.TypeInt, Nullable: true},
 		{Name: "repairing_id", Type: field.TypeInt, Nullable: true},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true},

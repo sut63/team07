@@ -63,16 +63,16 @@ definitions:
     properties:
       carInspectionID:
         type: integer
+      carMaintenance:
+        type: string
       datetime:
         type: string
-      partrepair:
-        type: string
-      price:
+      repairCost:
         type: integer
+      repairDetail:
+        type: string
       repairingID:
         type: integer
-      techniciancomment:
-        type: string
       userID:
         type: integer
     type: object
@@ -264,6 +264,9 @@ definitions:
     type: object
   ent.CarRepairrecord:
     properties:
+      carmaintenance:
+        description: Carmaintenance holds the value of the "carmaintenance" field.
+        type: string
       datetime:
         description: Datetime holds the value of the "datetime" field.
         type: string
@@ -276,15 +279,11 @@ definitions:
       id:
         description: ID of the ent.
         type: integer
-      partrepair:
-        description: Partrepair holds the value of the "partrepair" field.
-        type: string
-      price:
-        description: Price holds the value of the "price" field.
+      repaircost:
+        description: Repaircost holds the value of the "repaircost" field.
         type: integer
-      techniciancomment:
-        description: Techniciancomment holds the value of the "techniciancomment"
-          field.
+      repairdetail:
+        description: Repairdetail holds the value of the "repairdetail" field.
         type: string
     type: object
   ent.CarRepairrecordEdges:
@@ -1301,10 +1300,10 @@ paths:
             $ref: '#/definitions/gin.H'
       summary: Delete a Carservice entity by ID
     get:
-      description: get urgent by ID
-      operationId: get-urgent
+      description: get carservice by ID
+      operationId: get-carservice
       parameters:
-      - description: Urgent ID
+      - description: Carservice ID
         in: path
         name: id
         required: true
@@ -1315,7 +1314,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ent.Urgent'
+            $ref: '#/definitions/ent.Carservice'
         "400":
           description: Bad Request
           schema:
@@ -1328,7 +1327,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/gin.H'
-      summary: Get a urgent entity by ID
+      summary: Get a carservice entity by ID
   /distances:
     get:
       description: list distance entities
@@ -1775,6 +1774,43 @@ paths:
           schema:
             $ref: '#/definitions/gin.H'
       summary: Get a repairing entity by ID
+  /searchcarrepairrecords:
+    get:
+      description: get carrepairrecord by Carinspection
+      operationId: get-carrepairrecord-by-carinspection
+      parameters:
+      - description: Carinspection Search
+        in: query
+        name: carinspection
+        type: string
+      - description: Repairing Search
+        in: query
+        name: repairing
+        type: integer
+      - description: User Search
+        in: query
+        name: user
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ent.CarRepairrecord'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin.H'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Get a carrepairrecord entity by Carinspection
   /transports:
     get:
       description: list transport entities
