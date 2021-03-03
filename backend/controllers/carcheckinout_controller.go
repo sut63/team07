@@ -170,7 +170,9 @@ func (ctl *CarCheckInOutController) GetCarCheckInOutsearch(c *gin.Context) {
 	cio, err := ctl.client.CarCheckInOut.
 		Query().
 		WithAmbulance().
-		Where(carcheckinout.HasAmbulanceWith(ambulance.Carregistration(am))).
+		WithPurpose().
+		WithName().
+		Where(carcheckinout.HasAmbulanceWith(ambulance.CarregistrationContains(am))).
 		All(context.Background())
 
 	if err != nil {
@@ -184,6 +186,7 @@ func (ctl *CarCheckInOutController) GetCarCheckInOutsearch(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"data": nil,
 		})
+		return
 	}
 	c.JSON(200, gin.H{
 		"data": cio,
