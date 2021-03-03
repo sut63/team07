@@ -27,6 +27,12 @@ import {
  */
 export interface EntCarRepairrecord {
     /**
+     * Carmaintenance holds the value of the "carmaintenance" field.
+     * @type {string}
+     * @memberof EntCarRepairrecord
+     */
+    carmaintenance?: string;
+    /**
      * Datetime holds the value of the "datetime" field.
      * @type {string}
      * @memberof EntCarRepairrecord
@@ -45,23 +51,17 @@ export interface EntCarRepairrecord {
      */
     id?: number;
     /**
-     * Partrepair holds the value of the "partrepair" field.
-     * @type {string}
-     * @memberof EntCarRepairrecord
-     */
-    partrepair?: string;
-    /**
-     * Price holds the value of the "price" field.
+     * Repaircost holds the value of the "repaircost" field.
      * @type {number}
      * @memberof EntCarRepairrecord
      */
-    price?: number;
+    repaircost?: number;
     /**
-     * Techniciancomment holds the value of the "techniciancomment" field.
+     * Repairdetail holds the value of the "repairdetail" field.
      * @type {string}
      * @memberof EntCarRepairrecord
      */
-    techniciancomment?: string;
+    repairdetail?: string;
 }
 
 export function EntCarRepairrecordFromJSON(json: any): EntCarRepairrecord {
@@ -74,12 +74,12 @@ export function EntCarRepairrecordFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
+        'carmaintenance': !exists(json, 'carmaintenance') ? undefined : json['carmaintenance'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
         'edges': !exists(json, 'edges') ? undefined : EntCarRepairrecordEdgesFromJSON(json['edges']),
         'id': !exists(json, 'id') ? undefined : json['id'],
-        'partrepair': !exists(json, 'partrepair') ? undefined : json['partrepair'],
-        'price': !exists(json, 'price') ? undefined : json['price'],
-        'techniciancomment': !exists(json, 'techniciancomment') ? undefined : json['techniciancomment'],
+        'repaircost': !exists(json, 'repaircost') ? undefined : json['repaircost'],
+        'repairdetail': !exists(json, 'repairdetail') ? undefined : json['repairdetail'],
     };
 }
 
@@ -92,12 +92,12 @@ export function EntCarRepairrecordToJSON(value?: EntCarRepairrecord | null): any
     }
     return {
         
+        'carmaintenance': value.carmaintenance,
         'datetime': value.datetime,
         'edges': EntCarRepairrecordEdgesToJSON(value.edges),
         'id': value.id,
-        'partrepair': value.partrepair,
-        'price': value.price,
-        'techniciancomment': value.techniciancomment,
+        'repaircost': value.repaircost,
+        'repairdetail': value.repairdetail,
     };
 }
 

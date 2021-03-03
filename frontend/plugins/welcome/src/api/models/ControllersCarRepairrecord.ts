@@ -30,31 +30,31 @@ export interface ControllersCarRepairrecord {
      * @type {string}
      * @memberof ControllersCarRepairrecord
      */
-    datetime?: string;
+    carMaintenance?: string;
     /**
      * 
      * @type {string}
      * @memberof ControllersCarRepairrecord
      */
-    partrepair?: string;
+    datetime?: string;
     /**
      * 
      * @type {number}
      * @memberof ControllersCarRepairrecord
      */
-    price?: number;
+    repairCost?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersCarRepairrecord
+     */
+    repairDetail?: string;
     /**
      * 
      * @type {number}
      * @memberof ControllersCarRepairrecord
      */
     repairingID?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ControllersCarRepairrecord
-     */
-    techniciancomment?: string;
     /**
      * 
      * @type {number}
@@ -74,11 +74,11 @@ export function ControllersCarRepairrecordFromJSONTyped(json: any, ignoreDiscrim
     return {
         
         'carInspectionID': !exists(json, 'carInspectionID') ? undefined : json['carInspectionID'],
+        'carMaintenance': !exists(json, 'carMaintenance') ? undefined : json['carMaintenance'],
         'datetime': !exists(json, 'datetime') ? undefined : json['datetime'],
-        'partrepair': !exists(json, 'partrepair') ? undefined : json['partrepair'],
-        'price': !exists(json, 'price') ? undefined : json['price'],
+        'repairCost': !exists(json, 'repairCost') ? undefined : json['repairCost'],
+        'repairDetail': !exists(json, 'repairDetail') ? undefined : json['repairDetail'],
         'repairingID': !exists(json, 'repairingID') ? undefined : json['repairingID'],
-        'techniciancomment': !exists(json, 'techniciancomment') ? undefined : json['techniciancomment'],
         'userID': !exists(json, 'userID') ? undefined : json['userID'],
     };
 }
@@ -93,11 +93,11 @@ export function ControllersCarRepairrecordToJSON(value?: ControllersCarRepairrec
     return {
         
         'carInspectionID': value.carInspectionID,
+        'carMaintenance': value.carMaintenance,
         'datetime': value.datetime,
-        'partrepair': value.partrepair,
-        'price': value.price,
+        'repairCost': value.repairCost,
+        'repairDetail': value.repairDetail,
         'repairingID': value.repairingID,
-        'techniciancomment': value.techniciancomment,
         'userID': value.userID,
     };
 }

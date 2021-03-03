@@ -45,12 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const searchcheck = {
-    usersearchcheck: true,
-    ambulancesearchcheck: true,
-    repairingsearchcheck: true
-}
-
 export default function CarRepairrecordSearch() {
     const classes = useStyles();
     const api = new DefaultApi();
@@ -98,88 +92,28 @@ export default function CarRepairrecordSearch() {
     }, [loading]);
 
     const SearchCarRepairrecord = async () => {
-        const res = await api.listCarrepairrecord();
-        const usersearch = UserSearch(res);
-        const ambulancesearch = AmbulanceSearch(usersearch);
-        const repairingsearch = RepairingSearch(ambulancesearch);
-
-        setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
-        setAlertType("error");
-        setCarrepairrecords([]);
-        if(repairingsearch.length > 0){
-            Object.entries(searchcheck).map(([key, value]) => {
-                if (value == true){
-                    setErrorMessege("พบข้อมูลที่ค้นหา");
-                    setAlertType("success");
-                    setCarrepairrecords(repairingsearch);
+        const apiUrl = `http://localhost:8080/api/v1/searchcarrepairrecord?carinspection=${ambulancesearch}&repairing=${repairingsearch}&user=${usersearch}`;
+        const requestOptions = {
+            method: 'GET',
+        };
+        fetch(apiUrl, requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.data)
+                setErrorMessege("ไม่พบข้อมูลที่ค้นหา");
+                setAlertType("error");
+                setCarrepairrecords([]);
+                if (data.data != null) {
+                    if(data.data.length >= 1) {
+                        setErrorMessege("พบข้อมูลที่ค้นหา");
+                        setAlertType("success");
+                        console.log(data.data)
+                        setCarrepairrecords(data.data);
+                    }
                 }
-            })
-        }
-        
-        setStatus(true);
-        ResetSearchCheck();
-    }
 
-    const ResetSearchCheck = () => {
-        searchcheck.ambulancesearchcheck = true;
-        searchcheck.repairingsearchcheck = true;
-        searchcheck.usersearchcheck = true;
-    }
-
-    const AmbulanceSearch = (res: any) => {
-        const datafilter = carinspections.filter((item:EntCarInspection) => item.edges?.ambulance?.carregistration?.includes(ambulancesearch));
-        const data = res.filter((filter:any) => filter.edges?.carinspection?.id == datafilter.map((inspection:EntCarInspection) => inspection.id))
-        console.log(data)
-        if (data.length != 0 && ambulancesearch != "") {
-            return data;
-        }
-        else {
-            searchcheck.ambulancesearchcheck = false;
-            if(ambulancesearch == ""){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
-
-    const UserSearch = (res: any) => {
-        const data = res.filter((filter: EntCarRepairrecord) => filter.edges?.user?.name?.includes(usersearch))
-        if (data.length != 0 && usersearch != "") {
-            return data;
-        }
-        else {
-            searchcheck.usersearchcheck = false;
-            if(usersearch == ""){
-                return res;
-            }
-            else{
-                return data;
-            }
-        }
-    }
-
-    const RepairingSearch = (res: any) => {
-        const data = res.filter((filter: EntCarRepairrecord) => filter.edges?.keeper?.id == repairingsearch)
-        if (data.length != 0) {
-            return data;
-        }
-        else {
-            searchcheck.repairingsearchcheck = false;
-            if(data.length != 0) {
-                return data;
-            }
-            else {
-                searchcheck.repairingsearchcheck = false;
-                if(repairingsearch == 0){
-                    return res;
-                }
-                else{
-                    return data;
-                }
-            }
-        }
+                setStatus(true);
+            });
     }
 
     const RepairinghandleChange = (event: React.ChangeEvent<{value: unknown}>) => {
@@ -191,7 +125,7 @@ export default function CarRepairrecordSearch() {
     };
 
     const AmbulanceSearchhandleChange = (event: any) => {
-        setAmbulanceSearch(event.target.value as string);
+        setAmbulanceSearch(event.target.value as number);
     };
 
     return (
@@ -232,7 +166,7 @@ export default function CarRepairrecordSearch() {
                 >
                     <TextField
                         id="search"
-                        label="ค้นหาเลขทะเบียนรถ"
+                        label="ค้นหาใบการตรวจสภาพรถ"
                         type="string"
                         size="medium"
                         value={ambulancesearch}
@@ -291,25 +225,23 @@ export default function CarRepairrecordSearch() {
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">เจ้าหน้าที่</TableCell>
-                                <TableCell align="center">รถพยาบาล</TableCell>
+                                <TableCell align="center">เลขใบแจ้งซ่อม</TableCell>
                                 <TableCell align="center">ส่วนที่ซ่อม</TableCell>
-                                <TableCell align="center">หมายเหตุส่วนที่ซ่อม</TableCell>
+                                <TableCell align="center">รายละเอียดส่วนที่ซ่อม</TableCell>
                                 <TableCell align="center">เงินที่ใช้สำหรับการซ่อม</TableCell>
-                                <TableCell align="center">ความคิดเห็นจากช่าง</TableCell>
+                                <TableCell align="center">คำแนะนำการซ่อมบำรุง</TableCell>
                                 <TableCell align="center">วัน/เดือน/ปี เวลา</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {carrepairrecod.map((item: EntCarRepairrecord) => (
+                            {carrepairrecod.map((item: any) => (
                                 <TableRow key={item.id}>
-                                    <TableCell align="center">{item.edges?.user?.name}</TableCell>
-                                    {carinspections.filter((item2: EntCarInspection) => item2.id == item.edges?.carinspection?.id).map((item3: EntCarInspection) => (
-                                        <TableCell align="center">{item3.edges?.ambulance?.carregistration}</TableCell>
-                                    ))}
-                                    <TableCell align="center">{item.edges?.keeper?.repairpart}</TableCell>
-                                    <TableCell align="center">{item.partrepair}</TableCell>
-                                    <TableCell align="center">{item.price}</TableCell>
-                                    <TableCell align="center">{item.techniciancomment}</TableCell>
+                                    <TableCell align="center">{item.edges?.User?.name}</TableCell>
+                                    <TableCell align="center">{item.edges?.Carinspection?.id}</TableCell>
+                                    <TableCell align="center">{item.edges?.Keeper?.repairpart}</TableCell>
+                                    <TableCell align="center">{item.repairdetail}</TableCell>
+                                    <TableCell align="center">{item.repaircost}</TableCell>
+                                    <TableCell align="center">{item.carmaintenance}</TableCell>
                                     <TableCell align="center">{moment(item.datetime).format('DD/MM/YYYY HH.mm น.')}</TableCell>
                                 </TableRow>
                             ))}

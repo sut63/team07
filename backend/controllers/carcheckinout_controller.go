@@ -156,7 +156,7 @@ func (ctl *CarCheckInOutController) GetCarCheckInOut(c *gin.Context) {
 // GetCarCheckInOutsearch handles GET requests to retrieve a carcheckinout entity
 // @Summary Get a carcheckinout entity by Ambulance
 // @Description get carcheckinout by Ambulance
-// @ID get-carcheckinout
+// @ID get-carcheckinoutsearch
 // @Produce  json
 // @Param ambulance query string false "Ambulance search"
 // @Success 200 {object} ent.CarCheckInOut
