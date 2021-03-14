@@ -181,13 +181,7 @@ func (ctl *CarCheckInOutController) GetCarCheckInOutsearch(c *gin.Context) {
 		})
 		return
 	}
-
-	if am == "" {
-		c.JSON(200, gin.H{
-			"data": nil,
-		})
-		return
-	}
+	
 	c.JSON(200, gin.H{
 		"data": cio,
 	})

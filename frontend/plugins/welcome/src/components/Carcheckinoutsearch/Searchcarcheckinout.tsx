@@ -135,14 +135,15 @@ export default function Searchcarcheckinout() {
           localStorage.setItem("userdata",JSON.stringify(null));
           localStorage.setItem("jobpositiondata",JSON.stringify(null));
           history.pushState("","","./");
-          window.location.reload(false);        
+          window.location.reload(false);    
         }
         else{
             setUser(Number(localStorage.getItem("userdata")))
         }
       }
     checkJobPosition();
- 
+    
+    Searchcarinout();
   }, [loading]);  
 
   const SearchhandleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -173,7 +174,6 @@ export default function Searchcarcheckinout() {
               setCarcheckinout(data.data);
           }
       }
-
       setStatus(true);
   });
 

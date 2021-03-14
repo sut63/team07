@@ -48,13 +48,6 @@ export default function ComponentsTable() {
 
  useEffect(() => {
 
-  // const getCarcheckinouts = async () => {
-  //     const res = await api.listCarcheckinout({ limit: 120, offset: 0 });
-  //     setLoading(false);
-  //     setCarcheckinout(res);
-  //   };
-  //   getCarcheckinouts();
-
   const checkJobPosition = async () => {
       const jobdata = JSON.parse(String(localStorage.getItem("jobpositiondata")));
       setLoading(false);
@@ -69,6 +62,24 @@ export default function ComponentsTable() {
       }
     }
   checkJobPosition();
+
+  const apiUrl = `http://localhost:8080/api/v1/carcheckinoutsearch?ambulance=${search}`;
+  const requestOptions = {
+    method: 'GET',
+};  
+  fetch(apiUrl, requestOptions)
+    .then(response => response.json())
+      .then(data => {
+        console.log(data.data)
+        setCarcheckinout([]);
+        if (data.data != null) {
+          if(data.data.length >= 1) {
+            console.log("Data >= 1")
+            setCarcheckinout(data.data);
+        }
+    }
+    setStatus(true);
+});
 
 }, [loading]);  
 
