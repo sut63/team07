@@ -134,7 +134,7 @@ const cleardata = () =>{
   
 }
 
-const SearchCarInspection = async () => {
+const SearchAmbulance = async () => {
   console.log(registration);
   if(carstatusid == 0 && registration == ""){
     alertMessage("info","แสดงข้อมูลรถทั้งหมดในระบบ");
@@ -277,7 +277,7 @@ const SearchCarInspection = async () => {
             <div></div>
             <Button
              onClick={() => {
-              SearchCarInspection();
+              SearchAmbulance();
               
             }}  
             endIcon={<SearchTwoToneIcon />}
