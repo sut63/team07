@@ -55,15 +55,13 @@ const useStyles = makeStyles({
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="center">เลขที่</TableCell>
-                <TableCell align="center">รถพยาบาล</TableCell>
-                <TableCell align="center">ส่วนที่ซ่อม</TableCell>
                 <TableCell align="center">เจ้าหน้าที่</TableCell>
-                <TableCell align="center">หมายเหตุส่วนที่ซ่อม</TableCell>
+                <TableCell align="center">เลขใบแจ้งซ่อม</TableCell>
+                <TableCell align="center">ส่วนที่ซ่อม</TableCell>
+                <TableCell align="center">รายละเอียดส่วนที่ซ่อม</TableCell>
                 <TableCell align="center">เงินที่ใช้สำหรับการซ่อม</TableCell>
-                <TableCell align="center">ความคิดเห็นจากช่าง</TableCell>
+                <TableCell align="center">คำแนะนำการซ่อมบำรุง</TableCell>
                 <TableCell align="center">วัน/เดือน/ปี เวลา</TableCell>
-                <TableCell align="center">จัดการข้อมูล</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
